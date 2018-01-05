@@ -42,5 +42,7 @@
 + (NSInvocation*) invoke:(id)target andSelector:(SEL)selector;
 + (NSInvocation*) invoke:(id)target andSelector:(SEL)selector withObjectParam:(id)obj;
 + (NSInvocation*) invoke:(id)target andSelector:(SEL)selector withParam:(void*)argPtr;
++ (NSInvocation*) invokeArgs:(id)target andSelector:(SEL)selector, ...NS_REQUIRES_NIL_TERMINATION;
++ (NSInvocation*) invokeArgs:(id)target andSelector:(SEL)selector afterDelay:(float)delay, ...NS_REQUIRES_NIL_TERMINATION;
 
 @end

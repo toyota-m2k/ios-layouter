@@ -95,6 +95,43 @@
     return iv;
 }
 
++ (NSInvocation*) invokeArgs:(id)target andSelector:(SEL)selector, ...NS_REQUIRES_NIL_TERMINATION {
+    if(nil==target||nil==selector) {
+        return nil;
+    }
+    va_list args;
+    va_start(args, selector);
+    
+    NSInvocation* iv = [MICTargetSelector createInvocationForTarget:target andSelector:selector];
+    NSInteger index = 2;
+    void* arg;
+    while(nil!=(arg = va_arg(args, void*))) {
+        [iv setArgument:arg atIndex:index];
+        index++;
+    }
+    [iv invoke];
+    return iv;
+}
+
++ (NSInvocation*) invokeArgs:(id)target andSelector:(SEL)selector afterDelay:(float)delay, ...NS_REQUIRES_NIL_TERMINATION {
+    if(nil==target||nil==selector) {
+        return nil;
+    }
+    va_list args;
+    va_start(args, delay);
+    
+    NSInvocation* iv = [MMJTargetSelector createInvocationForTarget:target andSelector:selector];
+    NSInteger index = 2;
+    void* arg;
+    while(nil!=(arg = va_arg(args, void*))) {
+        [iv setArgument:arg atIndex:index];
+        index++;
+    }
+    [iv retainArguments];
+    [iv performSelector:@selector(invoke) withObject:nil afterDelay:delay];
+    return iv;
+}
+
 /**
  * セレクタ呼び出し用のNSInvocationオブジェクトを生成
  *  こまかくなんかやりたい場合用・・・通常は、beginCall/addArgument/endCallを使う想定。
