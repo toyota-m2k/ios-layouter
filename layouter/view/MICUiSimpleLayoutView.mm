@@ -2,8 +2,8 @@
 //  MICUiSimpleLayoutView.m
 //  スクロールやD&Dをサポートしない単純なレイアウトビューの基底クラス
 //
-//  Created by 豊田 光樹 on 2016/02/17.
-//  Copyright  2016年 M.TOYOTA Corporation. All rights reserved.
+//  Created by @toyota-m2k on 2016/02/17.
+//  Copyright  2016年 @toyota-m2k Corporation. All rights reserved.
 //
 
 #import "MICUiSimpleLayoutView.h"

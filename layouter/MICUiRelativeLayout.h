@@ -4,8 +4,8 @@
 //  親ビューまたは、兄弟ビューとの相対位置によってビューの配置を決定するレイアウタークラス
 //  (AndroidのRelativeLayout風）
 //
-//  Created by 豊田 光樹 on 2014/11/26.
-//  Copyright (c) 2014年 豊田 光樹. All rights reserved.
+//  Created by @toyota-m2k on 2014/11/26.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 
 #import "MICUiBaseLayout.h"
@@ -61,7 +61,7 @@ typedef enum _micUiRelativeLayoutScaling {
 
 /**
  * 親（RelativeLayout）にアタッチ
- *  @param 親の各辺からの距離（負値を与えると、親枠の外側になる）
+ *  @param distance 親の各辺からの距離（負値を与えると、親枠の外側になる）
  */
 + (MICUiRelativeLayoutAttachInfo*) newAttachParent:(CGFloat)distance;
 
@@ -99,7 +99,7 @@ typedef enum _micUiRelativeLayoutScaling {
 
 /**
  * 親（RelativeLayout）にアタッチ
- *  @param 親の各辺からの距離（負値を与えると、親枠の外側になる）
+ *  @param distance 親の各辺からの距離（負値を与えると、親枠の外側になる）
  */
 - (void) setAttachParent:(CGFloat)distance;
 
@@ -191,6 +191,13 @@ typedef enum _micUiRelativeLayoutScaling {
 @property (nonatomic) MICUiRelativeLayoutAttachInfo* right;
 @property (nonatomic) MICUiRelativeLayoutScalingInfo* horz;
 @property (nonatomic) MICUiRelativeLayoutScalingInfo* vert;
+
++ (instancetype) layoutHorz:(MICUiRelativeLayoutScalingInfo*)horz
+                       left:(MICUiRelativeLayoutAttachInfo*)left
+                      right:(MICUiRelativeLayoutAttachInfo*)right
+                       vert:(MICUiRelativeLayoutScalingInfo*)vert
+                        top:(MICUiRelativeLayoutAttachInfo*)top
+                     bottom:(MICUiRelativeLayoutAttachInfo*)bottom;
 
 /**
  * 初期化（あとで、すべてのレイアウト情報をセットしてください。）

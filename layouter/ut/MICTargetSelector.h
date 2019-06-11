@@ -1,9 +1,9 @@
 ﻿//
 //  MICTargetSelector.h
-//  ios-layouter
+//  layouter
 //
-//  Created by 豊田 光樹 on 2016/01/26.
-//  Copyright  2016年 M.TOYOTA Corporation. All rights reserved.
+//  Created by @toyota-m2k on 2016/01/26.
+//  Copyright  2016年 @toyota-m2k Corporation. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -43,6 +43,6 @@
 + (NSInvocation*) invoke:(id)target andSelector:(SEL)selector withObjectParam:(id)obj;
 + (NSInvocation*) invoke:(id)target andSelector:(SEL)selector withParam:(void*)argPtr;
 + (NSInvocation*) invokeArgs:(id)target andSelector:(SEL)selector, ...NS_REQUIRES_NIL_TERMINATION;
-+ (NSInvocation*) invokeArgs:(id)target andSelector:(SEL)selector afterDelay:(float)delay, ...NS_REQUIRES_NIL_TERMINATION;
++ (NSInvocation*) invokeArgs:(id)target andSelector:(SEL)selector afterDelay:(double)delay, ...NS_REQUIRES_NIL_TERMINATION;
 
 @end

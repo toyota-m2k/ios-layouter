@@ -3,8 +3,8 @@
 //
 //  ラベルタップで折りたたみ可能なビュー
 //
-//  Created by 豊田 光樹 on 2014/10/29.
-//  Copyright (c) 2014年 豊田 光樹. All rights reserved.
+//  Created by @toyota-m2k on 2014/10/29.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

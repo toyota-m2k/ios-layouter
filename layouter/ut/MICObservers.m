@@ -2,8 +2,8 @@
 //  MICObservers.m
 //  NSKeyValueObserverRegistration に対するオブザーバー登録／解除をいい具合にする
 //
-//  Created by 豊田 光樹 on 2017/11/02.
-//  Copyright  2017年 M.TOYOTA Corporation. All rights reserved.
+//  Created by @toyota-m2k on 2017/11/02.
+//  Copyright  2017年 @toyota-m2k Corporation. All rights reserved.
 //
 
 #import "MICObservers.h"
@@ -109,7 +109,7 @@
  * @param listener  プロパティ変更イベントを受け取るオブジェクト
  * @param handler   イベントハンドラー
  *                  　(void) handler:(id)target change:(NSDictionary *)change context:(void*)context
- * @param option    オブザーバー登録時のオプション
+ * @param options   オブザーバー登録時のオプション
  * @param context   オブザーバー登録時に渡すコンテキスト(nil可)
  */
 - (void) add:(NSString*)key to:(id)target listener:(id)listener handler:(SEL)handler options:(NSKeyValueObservingOptions)options context:(void*)context {

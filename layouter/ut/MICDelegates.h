@@ -2,8 +2,8 @@
 //  MICDelegates.h
 //  LayoutDemo
 //
-//  Created by 豊田 光樹 on 2014/12/22.
-//  Copyright (c) 2014年 M.TOYOTA. All rights reserved.
+//  Created by @toyota-m2k on 2014/12/22.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

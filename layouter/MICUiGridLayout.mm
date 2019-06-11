@@ -4,8 +4,8 @@
 //  ビューを格子状（タイル状）に並べるGrid型レイアウター
 //  （Metroのスタート画面からインスパイヤ）
 //
-//  Created by 豊田 光樹 on 2014/10/15.
-//  Copyright (c) 2014年 豊田 光樹. All rights reserved.
+//  Created by @toyota-m2k on 2014/10/15.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 
 #import "MICUiGridLayout.h"
@@ -622,9 +622,9 @@ static void find_next_pos(MICMatrix* matrix, int g, int f, int gw, int fw, int f
     int cx = (int)((x-(_marginLeft-_cellSpacingHorz/2))/(_cellSize.width+_cellSpacingHorz));
     int cy = (int)((y-(_marginTop-_cellSpacingVert/2))/(_cellSize.height+_cellSpacingVert));
     if(_growingOrientation==MICUiVertical) {
-        *g=cy, *f=cx;
+        *g=cy; *f=cx;
     } else {
-        *g=cx, *f=cy;
+        *g=cx; *f=cy;
     }
     if(clip) {
         if( *g<0 ) {
@@ -665,7 +665,7 @@ static void find_next_pos(MICMatrix* matrix, int g, int f, int gw, int fw, int f
     }
     int w = _fixedSideCount, h=_growingSideCount;
     if( _growingOrientation == MICUiHorizontal) {
-        w = _growingSideCount, h = _fixedSideCount;
+        w = _growingSideCount; h = _fixedSideCount;
     }
     return CGSizeMake(_marginLeft + _cellSize.width*w +_cellSpacingHorz*(w>0?w-1:0) + _marginRight,
                       _marginTop + _cellSize.height*h +_cellSpacingVert*(h>0?h-1:0) + _marginBottom);

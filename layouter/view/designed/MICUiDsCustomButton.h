@@ -3,13 +3,14 @@
 //
 //  オーナードローなボタンビューの基底クラス
 //
-//  Created by 豊田 光樹 on 2014/12/15.
-//  Copyright (c) 2014年 M.TOYOTA. All rights reserved.
+//  Created by @toyota-m2k on 2014/12/15.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 #import "MICUiStatefulResource.h"
 #import "MICUiLayout.h"
+#import "MICTargetSelector.h"
 
 @class MICUiDsCustomButton;
 
@@ -30,7 +31,9 @@
 /**
  * カスタムボタンクラス
  */
-@interface MICUiDsCustomButton : UIView<MICUiDraggableCellProtocol>
+@interface MICUiDsCustomButton : UIView<MICUiDraggableCellProtocol> {
+    MICTargetSelector* _targetSelector;
+}
 
 @property (nonatomic) NSString* text;                                               ///< ボタンのキャプション
 @property (nonatomic) id<MICUiStatefulResourceProtocol> colorResources;             ///< 色指定・背景画像指定用リソース
@@ -52,6 +55,12 @@
 @property (nonatomic) id<MICUiDsCustomButtonDelegate> customButtonDelegate;         ///< イベントリスナー
 @property (nonatomic) NSString* key;
 
+/**
+ * タップイベントのハンドラをセットする
+ *  - (void) onTapped:(MICUiDsCustomButton*)sender
+ */
+- (void) setTarget:(id)target action:(SEL)action;
+
 #pragma mark - PROTECTED methods
 
 /**
@@ -67,6 +76,8 @@
  */
 - (UIFont*) getFont;
 
+- (NSDictionary*) getTextAttributes:(NSTextAlignment)halign;
+
 /**
  * 描画領域を取得する。
  * テキスト、または、アイコンの描画位置を変更する場合は、サブクラスでオーバーライドする。デフォルトの実装は、
@@ -80,6 +91,13 @@
  *  通常はオーバーライド不要。drawContentをオーバーライドする場合に、テキスト出力のユーティリティとして利用する。
  */
 - (void) drawText:(CGContextRef)rctx rect:(CGRect)rect halign:(NSTextAlignment)halign valign:(MICUiAlign)valign;
+
+/**
+ * アイコンを描画する
+ *  通常はオーバーライド不要。アイコンの描画方法をカスタマイズする（例：SVGを使う、とか）ときにオーバーライドする。
+ */
+- (void) drawIcon:(CGContextRef)rctx icon:(UIImage*)icon rect:(CGRect)rect;
+
 
 /**
  * 背景を描画する

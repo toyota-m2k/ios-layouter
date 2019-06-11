@@ -1,9 +1,9 @@
 ﻿//
 //  MICImageUtil.mm
-//  ios-layouter
+//  layouter
 //
-//  Created by 豊田 光樹 on 2015/02/04.
-//  Copyright (c) 2015年 M.TOYOTA Corporation. All rights reserved.
+//  Created by @toyota-m2k on 2015/02/04.
+//  Copyright (c) 2015年 @toyota-m2k Corporation. All rights reserved.
 //
 
 #import "MICImageUtil.h"

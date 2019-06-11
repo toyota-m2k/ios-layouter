@@ -6,8 +6,8 @@
 //  レンダリングルール：
 //  このビューのサイズ（bounds)を基準として、ラベル領域を切り出し、残った領域をボディ領域とする。
 //
-//  Created by 豊田 光樹 on 2014/10/29.
-//  Copyright (c) 2014年 豊田 光樹. All rights reserved.
+//  Created by @toyota-m2k on 2014/10/29.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 
 #import "MICUiAccordionCellView.h"
@@ -407,9 +407,9 @@ static bool isPositionLeft(int flags) {
                              self.bounds = lastBounds;
                              self.frame = lastFrame;
                          } completion:^(BOOL result){
-                             _foldingStateChanging = false;
-                             if(nil!=_accordionDelegate) {
-                                 [_accordionDelegate accordionCellFolded:self fold:true lastFrame:lastFrame];
+                             self->_foldingStateChanging = false;
+                             if(nil!=self->_accordionDelegate) {
+                                 [self->_accordionDelegate accordionCellFolded:self fold:true lastFrame:lastFrame];
                              }
                              if(nil!=onCompleted) {
                                  onCompleted(result);
@@ -454,9 +454,9 @@ static bool isPositionLeft(int flags) {
                              self.bounds = lastBounds;
                              self.frame = lastFrame;
                          } completion:^(BOOL result){
-                             _foldingStateChanging = false;
-                             if(nil!=_accordionDelegate) {
-                                 [_accordionDelegate accordionCellFolded:self fold:false lastFrame:lastFrame];
+                             self->_foldingStateChanging = false;
+                             if(nil!=self->_accordionDelegate) {
+                                 [self->_accordionDelegate accordionCellFolded:self fold:false lastFrame:lastFrame];
                              }
                              if(nil!=onCompleted) {
                                  onCompleted(result);

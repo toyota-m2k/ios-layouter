@@ -2,8 +2,8 @@
 //  MICCGContext.h
 //  LayoutDemo
 //
-//  Created by 豊田 光樹 on 2014/12/03.
-//  Copyright (c) 2014年 M.TOYOTA. All rights reserved.
+//  Created by @toyota-m2k on 2014/12/03.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 #import <UIKit/UIKit.h>
 
@@ -82,7 +82,7 @@ public:
         return r;
     }
     
-    operator T() const {
+    operator T&() {
         return _res;
     }
 };
@@ -165,6 +165,183 @@ public:
     }
 };
 
+class MICCGMutablePath : public MICCGResource<CGMutablePathRef> {
+public:
+    MICCGMutablePath()
+    : MICCGResource<CGMutablePathRef>(CGPathCreateMutable(), true){
+    }
+    
+    MICCGMutablePath(CGMutablePathRef path, bool retained=true)
+    : MICCGResource<CGMutablePathRef>(path,retained) {
+    }
+    
+    const MICCGMutablePath& closePath() const {
+        CGPathCloseSubpath(_res);
+        return *this;
+    }
+    
+    const MICCGMutablePath& moveTo(
+                       CGFloat x,
+                       CGFloat y,
+                       CGAffineTransform* m = NULL
+                       ) const {
+        CGPathMoveToPoint(_res, m, x, y);
+        return *this;
+    }
+    const MICCGMutablePath& moveTo(const CGPoint p, CGAffineTransform* m = NULL) const {
+        moveTo(p.x, p.y, m);
+        return *this;
+    }
+    
+    const MICCGMutablePath& lineTo(
+                       CGFloat x,
+                       CGFloat y,
+                       CGAffineTransform* m = NULL
+                       ) const {
+        CGPathAddLineToPoint(_res, m, x, y);
+        return *this;
+    }
+    const MICCGMutablePath& lineTo( const CGPoint& p, CGAffineTransform* m = NULL) const {
+        lineTo(p.x, p.y, m);
+        return *this;
+    }
+    
+    
+    const MICCGMutablePath& addCurveToPoint(
+                                CGFloat cp1x,
+                                CGFloat cp1y,
+                                CGFloat cp2x,
+                                CGFloat cp2y,
+                                CGFloat x,
+                                CGFloat y,
+                                CGAffineTransform* m = NULL
+                                ) const {
+        CGPathAddCurveToPoint(_res, m, cp1x, cp1y, cp2x, cp2y, x, y);
+        return *this;
+    }
+    const MICCGMutablePath& addCurveToPoint(
+                                CGPoint cp1,
+                                CGPoint cp2,
+                                CGPoint p,
+                                CGAffineTransform* m = NULL
+                                ) const {
+        addCurveToPoint(cp1.x, cp1.y, cp2.x, cp2.y, p.x, p.y, m);
+        return *this;
+    }
+    
+    const MICCGMutablePath& addQuadCurveToPoint(
+                                    CGFloat cp1x,
+                                    CGFloat cp1y,
+                                    CGFloat x,
+                                    CGFloat y,
+                                    CGAffineTransform* m = NULL
+                                    ) const {
+        CGPathAddQuadCurveToPoint(_res, m, cp1x, cp1y, x, y);
+        return *this;
+    }
+    
+    const MICCGMutablePath& addQuadCurveToPoint(
+                                    CGPoint cp1,
+                                    CGPoint p,
+                                    CGAffineTransform* m = NULL
+                                    ) const {
+        addQuadCurveToPoint(cp1.x, cp1.y, p.x, p.y, m);
+        return *this;
+    }
+    
+    /* Add an arc of a circle to `path', possibly preceded by a straight line
+     segment. The arc is approximated by a sequence of Bzier curves. The
+     center of the arc is `(x,y)'; `radius' is its radius. `startAngle' is the
+     angle to the first endpoint of the arc, measured counter-clockwise from
+     the positive x-axis. `startAngle + delta' is the angle to the second
+     endpoint of the arc. If `delta' is positive, then the arc is drawn
+     counter-clockwise; if negative, clockwise. `startAngle' and `delta' are
+     measured in radians. If `matrix' is non-NULL, then the constructed Bzier
+     curves representing the arc will be transformed by `matrix' before they
+     are added to the path. */
+    //
+    //    CG_EXTERN void CGPathAddRelativeArc(CGMutablePathRef cg_nullable path,
+    //                                        const CGAffineTransform * __nullable matrix, CGFloat x, CGFloat y,
+    //                                        CGFloat radius, CGFloat startAngle, CGFloat delta)
+    const MICCGMutablePath& addArc (
+                                    CGFloat x,
+                                    CGFloat y,
+                                    CGFloat radius,
+                                    CGFloat startAngle,
+                                    CGFloat delta,
+                                    CGAffineTransform* m = NULL
+                                    ) const {
+        CGPathAddRelativeArc(_res, m, x, y, radius, startAngle, delta);
+        return *this;
+    }
+
+    
+    /* Add an arc of a circle to `path', possibly preceded by a straight line
+     segment. The arc is approximated by a sequence of Bzier curves. `(x, y)'
+     is the center of the arc; `radius' is its radius; `startAngle' is the
+     angle to the first endpoint of the arc; `endAngle' is the angle to the
+     second endpoint of the arc; and `clockwise' is true if the arc is to be
+     drawn clockwise, false otherwise. `startAngle' and `endAngle' are
+     measured in radians. If `m' is non-NULL, then the constructed Bzier
+     curves representing the arc will be transformed by `m' before they are
+     added to `path'.
+     
+     Note that using values very near 2π can be problematic. For example,
+     setting `startAngle' to 0, `endAngle' to 2π, and `clockwise' to true will
+     draw nothing. (It's easy to see this by considering, instead of 0 and 2π,
+     the values ε and 2π - ε, where ε is very small.) Due to round-off error,
+     however, it's possible that passing the value `2 * M_PI' to approximate
+     2π will numerically equal to 2π + δ, for some small δ; this will cause a
+     full circle to be drawn.
+     
+     If you want a full circle to be drawn clockwise, you should set
+     `startAngle' to 2π, `endAngle' to 0, and `clockwise' to true. This avoids
+     the instability problems discussed above. */
+    //
+    //    CG_EXTERN void CGPathAddArc(CGMutablePathRef cg_nullable path,
+    //                                const CGAffineTransform * __nullable m,
+    //                                CGFloat x, CGFloat y, CGFloat radius, CGFloat startAngle, CGFloat endAngle,
+    //                                bool clockwise)
+    const MICCGMutablePath& addArc (
+                        CGFloat x,
+                        CGFloat y,
+                        CGFloat radius,
+                        CGFloat startAngle,
+                        CGFloat endAngle,
+                        bool clockwise,
+                        CGAffineTransform* m = NULL
+                        ) const {
+        CGPathAddArc(_res, m, x, y, radius, startAngle, endAngle, clockwise);
+        return *this;
+    }
+    
+    /* Add an arc of a circle to `path', possibly preceded by a straight line
+     segment. The arc is approximated by a sequence of Bzier curves. `radius'
+     is the radius of the arc. The resulting arc is tangent to the line from
+     the current point of `path' to `(x1, y1)', and the line from `(x1, y1)'
+     to `(x2, y2)'. If `m' is non-NULL, then the constructed Bzier curves
+     representing the arc will be transformed by `m' before they are added to
+     `path'. */
+    //
+    //    CG_EXTERN void CGPathAddArcToPoint(CGMutablePathRef cg_nullable path,
+    //                                       const CGAffineTransform * __nullable m, CGFloat x1, CGFloat y1,
+    //                                       CGFloat x2, CGFloat y2, CGFloat radius)
+
+    const MICCGMutablePath& addArcToPoint(
+                              const CGPoint& p1,
+                              const CGPoint& p2,
+                              CGFloat radius,
+                              CGAffineTransform* m = NULL
+                              ) const {
+        CGPathAddArcToPoint(_res, m, p1.x, p1.y, p2.x, p2.y, radius);
+        return *this;
+    }
+    
+    CGPoint getCurrentPoint() const {
+        return CGPathGetCurrentPoint(_res);
+    }
+};
+
 #pragma mark - MICCGContext
 
 /**
@@ -197,115 +374,145 @@ public:
     
     class Path {
     private:
-        CGContextRef& _context;
+        const CGContextRef& _context;
         
     public:
-        Path(CGContextRef& ctx) : _context(ctx){
+        Path(const CGContextRef& ctx) : _context(ctx){
             CGContextBeginPath(_context);
         }
         Path(const Path& src) : _context(src._context) {
         }
         
-        void closePath() {
+        const Path& closePath() const {
             CGContextClosePath(_context);
+            return *this;
         }
         
-        Path& moveTo(
+        const Path& moveTo(
                     CGFloat x,
                     CGFloat y
-                    ) {
+                    ) const {
             CGContextMoveToPoint(_context, x, y);
             return *this;
         }
-        Path& moveTo(const CGPoint p) {
+        const Path& moveTo(const CGPoint p) const {
             moveTo(p.x, p.y);
             return *this;
         }
         
-        Path& lineTo(
+        const Path& lineTo(
                      CGFloat x,
                      CGFloat y
-                     ) {
+                     ) const {
             CGContextAddLineToPoint(_context, x, y);
             return *this;
         }
-        Path& lineTo( const CGPoint& p) {
+        const Path& lineTo( const CGPoint& p) const {
             lineTo(p.x, p.y);
             return *this;
         }
         
         
-        Path& addArc (
+        const Path& addArc (
                       CGFloat x,
                       CGFloat y,
                       CGFloat radius,
                       CGFloat startAngle,
                       CGFloat endAngle,
                       bool clockwise
-                     ) {
+                     ) const {
             CGContextAddArc(_context, x, y, radius, startAngle, endAngle, clockwise?1:0);
             return *this;
         }
         
-        Path& addArcToPoint(
+        const Path& addArcToPoint(
                            CGFloat x1,
                            CGFloat y1,
                            CGFloat x2,
                            CGFloat y2,
                            CGFloat radius
-                           ) {
+                           ) const {
             CGContextAddArcToPoint(_context, x1, y1, x2, y2, radius);
             return *this;
         }
         
-        Path& addArcToPoint(
+        const Path& addArcToPoint(
                            const CGPoint& p1,
                            const CGPoint& p2,
                            CGFloat radius
-                           ) {
+                           ) const {
             return addArcToPoint(p1.x, p1.y, p2.x, p2.y, radius);
         }
         
-        Path& addCurveToPoint(
+        const Path& addCurveToPoint(
                              CGFloat cp1x,
                              CGFloat cp1y,
                              CGFloat cp2x,
                              CGFloat cp2y,
                              CGFloat x,
                              CGFloat y
-                             ) {
+                             ) const {
             CGContextAddCurveToPoint(_context, cp1x, cp1y, cp2x, cp2y, x, y);
             return *this;
         }
-        
-        Path& addLine(
+        const Path& addCurveToPoint(
+                                    CGPoint cp1,
+                                    CGPoint cp2,
+                                    CGPoint p
+                                    ) const {
+            CGContextAddCurveToPoint(_context, cp1.x, cp1.y, cp2.x, cp2.y, p.x, p.y);
+            return *this;
+        }
+
+        const Path& addQuadCurveToPoint(
+                                    CGFloat cp1x,
+                                    CGFloat cp1y,
+                                    CGFloat x,
+                                    CGFloat y
+                                    ) const {
+            CGContextAddQuadCurveToPoint(_context, cp1x, cp1y, x, y);
+            return *this;
+        }
+        const Path& addQuadCurveToPoint(
+                                        CGPoint cp1,
+                                        CGPoint p
+                                        ) const {
+            CGContextAddQuadCurveToPoint(_context, cp1.x, cp1.y, p.x, p.y);
+            return *this;
+        }
+
+        const Path& addLine(
                      CGFloat x,
                      CGFloat y
-                     ) {
+                     ) const {
             return lineTo(x,y);
         }
         
-        Path& addPath(
+        const Path& addPath(
                      const CGPathRef& path
-                     ) {
+                     ) const {
             CGContextAddPath(_context, path);
             return *this;
         }
         
-        Path& addRect(
+        const Path& addRect(
                      const CGRect& rect
-                     ) {
+                     ) const {
             CGContextAddRect(_context, rect);
             return *this;
         }
         
-        CGPathRef copyPath() {
+        CGPathRef copyPath() const {
             return CGContextCopyPath(_context);
         }
         
-        void copyPath(MICCGPath& r) {
+        void copyPath(MICCGPath& r) const {
             r.release();
             r.setResource(copyPath(), true);
+        }
+        
+        CGPoint getCurrentPoint() const {
+            return CGContextGetPathCurrentPoint(_context);
         }
     };
     
@@ -745,7 +952,7 @@ public:
         popAll();
     }
     
-    void push() {
+    void pop() {
         if(_pushed>0) {
             _pushed--;
             CGContextRestoreGState(_context);
@@ -753,7 +960,7 @@ public:
         
     }
     
-    void pop() {
+    void push() {
         _pushed++;
         CGContextSaveGState(_context);
     }
@@ -764,6 +971,78 @@ public:
             CGContextRestoreGState(_context);
         }
     }
+};
+
+class MICCGAffinTransform {
+protected:
+    CGAffineTransform transform;
+    
+public:
+    void copyFrom(const CGAffineTransform& src) {
+        transform.a = src.a;
+        transform.b = src.b;
+        transform.c = src.b;
+        transform.d = src.d;
+        transform.tx = src.tx;
+        transform.ty = src.ty;
+    }
+
+    MICCGAffinTransform() {
+        copyFrom(CGAffineTransformIdentity);
+    }
+    
+    MICCGAffinTransform(const CGAffineTransform& src) {
+        copyFrom(src);
+    }
+    
+    operator CGAffineTransform() {
+        return transform;
+    }
+    operator CGAffineTransform*() {
+        return &transform;
+    }
+    
+
+    void scale(CGFloat scaleX, CGFloat scaleY) {
+        transform = CGAffineTransformScale(transform, scaleX, scaleY);
+    }
+    
+    void rotate(CGFloat rotate) {
+        transform = CGAffineTransformRotate(transform, rotate);
+    }
+    
+    void transrate(CGFloat x, CGFloat y) {
+        transform = CGAffineTransformTranslate(transform, x, y);
+    }
+    
+    void invert() {
+        transform = CGAffineTransformInvert(transform);
+    }
+    
+    void concat(const CGAffineTransform& src) {
+        transform = CGAffineTransformConcat(transform, src);
+    }
+    
+    bool operator == (const CGAffineTransform& src) {
+        return CGAffineTransformEqualToTransform(src, transform);
+    }
+    
+    bool operator != (const CGAffineTransform& src) {
+        return !(*this == src);
+    }
+    
+    CGPoint apply(const CGPoint& src) {
+        return CGPointApplyAffineTransform(src, transform);
+    }
+
+    CGRect apply(const CGRect& src) {
+        return CGRectApplyAffineTransform(src, transform);
+    }
+    
+    CGSize apply(const CGSize& src) {
+        return CGSizeApplyAffineTransform(src, transform);
+    }
+
 };
 
 #endif

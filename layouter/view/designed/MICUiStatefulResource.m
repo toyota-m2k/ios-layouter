@@ -3,11 +3,12 @@
 //
 //  状態依存のリソースを保持するためのクラス
 //
-//  Created by 豊田 光樹 on 2014/12/15.
-//  Copyright (c) 2014年 M.TOYOTA. All rights reserved.
+//  Created by @toyota-m2k on 2014/12/15.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 
 #import "MICUiStatefulResource.h"
+#import "MICVar.h"
 
 @implementation MICUiStatefulResource {
     NSDictionary* _resources;
@@ -30,8 +31,31 @@
 }
 
 - (void)setResource:(id)res forName:(NSString *)name {
-    [_resources setValue:res forKey:name];
+    if(![_resources isKindOfClass:NSMutableDictionary.class]) {
+        _resources = [NSMutableDictionary dictionaryWithDictionary:_resources];
+    }
+    [(NSMutableDictionary*)_resources setObject:res forKey:name];
 }
+
+- (void)complementResource:(id)res forName:(NSString *)name {
+    if(_resources[name]==nil) {
+        [self setResource:res forName:name];
+    }
+}
+
+- (void)mergeWithDictionary:(NSDictionary*) src overwrite:(bool)overwrite {
+    for(id key in src.keyEnumerator) {
+        if(overwrite||_resources[key]==nil) {
+            [self setResource:src[key] forName:key];
+        }
+    }
+}
+
+- (void)mergeResource:(MICUiStatefulResource*) src overwrite:(bool)overwrite {
+    [self mergeWithDictionary:src->_resources overwrite:overwrite];
+}
+
+
 
 - (id)getResourceForName:(NSString *)name {
     return [_resources objectForKey:name];
@@ -117,6 +141,34 @@
                     return MICUiStatefulIconSELECTED;
                 case MICUiViewStateNORMAL:
                     return MICUiStatefulIconNORMAL;
+                default:
+                    break;
+            }
+            break;
+        case MICUiResTypeSVG_PATH:
+            switch(state){
+                case MICUiViewStateACTIVATED:
+                    return MICUiStatefulSvgPathACTIVATED;
+                case MICUiViewStateDISABLED:
+                    return MICUiStatefulSvgPathDISABLED;
+                case MICUiViewStateSELECTED:
+                    return MICUiStatefulSvgPathSELECTED;
+                case MICUiViewStateNORMAL:
+                    return MICUiStatefulSvgPathNORMAL;
+                default:
+                    break;
+            }
+            break;
+        case MICUiResTypeSVG_COLOR:
+            switch(state){
+                case MICUiViewStateACTIVATED:
+                    return MICUiStatefulSvgColorACTIVATED;
+                case MICUiViewStateDISABLED:
+                    return MICUiStatefulSvgColorDISABLED;
+                case MICUiViewStateSELECTED:
+                    return MICUiStatefulSvgColorSELECTED;
+                case MICUiViewStateNORMAL:
+                    return MICUiStatefulSvgColorNORMAL;
                 default:
                     break;
             }

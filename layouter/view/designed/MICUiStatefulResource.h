@@ -3,8 +3,8 @@
 //
 //  状態依存のリソースを保持するためのクラス
 //
-//  Created by 豊田 光樹 on 2014/12/15.
-//  Copyright (c) 2014年 M.TOYOTA. All rights reserved.
+//  Created by @toyota-m2k on 2014/12/15.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -28,6 +28,8 @@ typedef enum _micUiResType {
     MICUiResTypeBORDERCOLOR,
     MICUiResTypeBGIMAGE,
     MICUiResTypeICON,
+    MICUiResTypeSVG_PATH,       // SVG Path
+    MICUiResTypeSVG_COLOR,      // fill color of SVG path
     ////
     __MICUIRESTYPECOUNT
 } MICUiResType;
@@ -57,6 +59,16 @@ typedef enum _micUiResType {
 #define MICUiStatefulIconACTIVATED @"IconActivated"
 #define MICUiStatefulIconDISABLED  @"IconDisabled"
 
+#define MICUiStatefulSvgPathNORMAL    @"SvgPathNormal"
+#define MICUiStatefulSvgPathSELECTED  @"SvgPathSelected"
+#define MICUiStatefulSvgPathACTIVATED @"SvgPathActivated"
+#define MICUiStatefulSvgPathDISABLED  @"SvgPathDisabled"
+
+#define MICUiStatefulSvgColorNORMAL    @"SvgColorNormal"
+#define MICUiStatefulSvgColorSELECTED  @"SvgColorSelected"
+#define MICUiStatefulSvgColorACTIVATED @"SvgColorActivated"
+#define MICUiStatefulSvgColorDISABLED  @"SvgColorDisabled"
+
 /**
  * 状態依存リソースのi/f定義
  */
@@ -76,6 +88,10 @@ typedef enum _micUiResType {
 - (instancetype) initWithDictionary:(NSDictionary*)definition;
 
 - (void)setResource:(id)res forName:(NSString *)name;
+- (void)complementResource:(id)res forName:(NSString *)name;
+- (void)mergeResource:(MICUiStatefulResource*) src overwrite:(bool)overwrite;
+- (void)mergeWithDictionary:(NSDictionary*) src overwrite:(bool)overwrite;
+
 - (id)getResourceForName:(NSString *)name;
 + (NSString*)getStateName:(MICUiResType)type forState:(MICUiViewState)state;
 

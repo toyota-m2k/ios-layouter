@@ -3,8 +3,8 @@
 //
 //  レイアウターの基底クラス
 //
-//  Created by 豊田 光樹 on 2014/11/10.
-//  Copyright (c) 2014年 豊田 光樹. All rights reserved.
+//  Created by @toyota-m2k on 2014/11/10.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 
 #import "MICUiBaseLayout.h"
@@ -516,6 +516,18 @@
 }
 
 /**
+ * ビューを検索
+ */
+- (UIView *)findView:(bool (^)(UIView *))matcher {
+    for(MICUiLayoutCell* cell in _children) {
+        if(matcher(cell.view)) {
+            return cell.view;
+        }
+    }
+    return nil;
+}
+
+/**
  * レイアウターにセル（ビュー）を追加する
  * このメソッドでは表示は更新されない。表示を更新する場合はupdateLayoutメソッドを呼ぶこと。
  *
@@ -663,7 +675,7 @@
 /**
  * ドラッグを開始する。
  *
- * @param touchPos  コンテナビュー座標でのタップ位置
+ * @param eventArg  コンテナビュー座標でのタップ位置など
  * @return true:ドラッグを開始した　/ false:ドラッグは開始していない。
  */
 - (BOOL)beginDrag:(id<MICUiDragEventArg>) eventArg {
@@ -831,7 +843,7 @@
 /**
  * 指定位置へドラッグする。
  *
- * @param touchPos  コンテナビュー座標でのドラッグ位置
+ * @param eventArg  コンテナビュー座標でのドラッグ位置など
  */
 - (void)dragTo:(id<MICUiDragEventArg>) eventArg {
     

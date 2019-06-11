@@ -11,8 +11,8 @@
 //  [ts addArgument:&fuga];
 //  [ts endCall];
 //
-//  Created by 豊田 光樹 on 2016/01/26.
-//  Copyright  2016年 M.TOYOTA Corporation. All rights reserved.
+//  Created by @toyota-m2k on 2016/01/26.
+//  Copyright  2016年 @toyota-m2k Corporation. All rights reserved.
 //
 
 #import "MICTargetSelector.h"
@@ -110,17 +110,18 @@
         index++;
     }
     [iv invoke];
+    va_end(args);
     return iv;
 }
 
-+ (NSInvocation*) invokeArgs:(id)target andSelector:(SEL)selector afterDelay:(float)delay, ...NS_REQUIRES_NIL_TERMINATION {
++ (NSInvocation*) invokeArgs:(id)target andSelector:(SEL)selector afterDelay:(double)delay, ...NS_REQUIRES_NIL_TERMINATION {
     if(nil==target||nil==selector) {
         return nil;
     }
     va_list args;
     va_start(args, delay);
     
-    NSInvocation* iv = [MMJTargetSelector createInvocationForTarget:target andSelector:selector];
+    NSInvocation* iv = [MICTargetSelector createInvocationForTarget:target andSelector:selector];
     NSInteger index = 2;
     void* arg;
     while(nil!=(arg = va_arg(args, void*))) {
@@ -129,6 +130,7 @@
     }
     [iv retainArguments];
     [iv performSelector:@selector(invoke) withObject:nil afterDelay:delay];
+    va_end(args);
     return iv;
 }
 

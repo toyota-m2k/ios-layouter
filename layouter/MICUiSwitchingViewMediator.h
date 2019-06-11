@@ -3,8 +3,8 @@
 //
 //  予め設定しておいたルールにしたがって、複数のビュー（ペイン）の表示非表示を自動的に切り替える仲介者クラス
 //
-//  Created by 豊田 光樹 on 2014/12/24.
-//  Copyright (c) 2014年 M.TOYOTA. All rights reserved.
+//  Created by @toyota-m2k on 2014/12/24.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

@@ -3,8 +3,8 @@
 //
 //  異なるビューの間をD&Dできるドラッグサポータークラス
 //
-//  Created by 豊田 光樹 on 2014/11/05.
-//  Copyright (c) 2014年 豊田 光樹. All rights reserved.
+//  Created by @toyota-m2k on 2014/11/05.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 
 #import "MICUiCellDragSupportEx.h"
@@ -161,7 +161,7 @@ public:
 - (void)dumpLayoutTree{
     [_layoutTree forEach:^bool(MICTreeNode *node) {
         MICStringBuffer sb;
-        for(int depth = node.depth ; depth>0; depth--) {
+        for(NSInteger depth = node.depth ; depth>0; depth--) {
             sb += @" - ";
         }
         NSLog(@"LayoutTree:%@%@",(NSString*)sb, [LAYOUT(node) description]);
@@ -321,7 +321,7 @@ public:
     [self setFirstTouchPosOnOverlay];
 
     [self findLayouterAtPoint:_touchPosOnOverlay onFound:^bool(MICTreeNode *found) {
-        _dragSrc = _dragDst = found;
+        self->_dragSrc = self->_dragDst = found;
         [LAYOUT(found) beginDrag:self];
         return true;
 //        if([LAYOUT(found) beginDrag:self]) {
@@ -361,10 +361,10 @@ public:
     }
     
     [self findLayouterAtPoint:_touchPosOnOverlay onFound:^bool(MICTreeNode *found) {
-        if(found == _dragDst) {
+        if(found == self->_dragDst) {
             // 同一レイアウター内の移動なら、レイアウター内だけで判断できるはず。
             [LAYOUT(found) dragTo:self];
-        } else if( [found isDescendantOf:_dragSrc] ) {
+        } else if( [found isDescendantOf:self->_dragSrc] ) {
             // 親階層から子階層へのドロップは禁止
             //
             // ここで　false を返すことで、このレイアウターを含む親階層のレイアウターにドロップ処理が流す。
@@ -372,12 +372,12 @@ public:
              return false;
         } else if( [LAYOUT(found) canDrop:self] ) {
             // レイアウター間の移動
-            [LAYOUT(_dragDst) dragLeave:self];
-            _dragDst = found;
+            [LAYOUT(self->_dragDst) dragLeave:self];
+            self->_dragDst = found;
             [LAYOUT(found) dragEnter:self];
             [LAYOUT(found) dragTo:self];
         } else {
-            if(_hoverChecker.hover(found, _touchPosOnOverlay)) {
+            if(self->_hoverChecker.hover(found, self->_touchPosOnOverlay)) {
                 [LAYOUT(found) dragHover:self];
             }
         }

@@ -3,8 +3,8 @@
 
 //  CGRectを使いやすくするためのクラス
 //
-//  Created by 豊田 光樹 on 2014/10/29.
-//  Copyright (c) 2014年 豊田 光樹. All rights reserved.
+//  Created by @toyota-m2k on 2014/10/29.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 
 #ifndef __MICUiRectUtil_h
@@ -54,7 +54,7 @@
 class MICRect : public CGRect {
 public:
     MICRect() {
-        origin.x = 0, origin.y=0, size.width=0, size.height=0;
+        origin.x = 0; origin.y=0; size.width=0; size.height=0;
     }
     MICRect(const CGRect& src) {
         setRect(src);
@@ -251,8 +251,8 @@ public:
         return *this;
     }
     MICRect& setRectXYWH(CGFloat x, CGFloat y,CGFloat width, CGFloat height) {
-        origin.x = x, origin.y = y;
-        size.width = width, size.height = height;
+        origin.x = x; origin.y = y;
+        size.width = width; size.height = height;
         return *this;
     }
     MICRect& setEmpty() {
@@ -297,15 +297,19 @@ public:
         return *this;
     }
 
+    MICRect& moveLeftBottom(const CGPoint& toPos);
+    MICRect& moveRightTop(const CGPoint& toPos);
+    MICRect& moveRightBottom(const CGPoint& toPos);
+
     /**
      * 移動量（ベクトル）を指定して矩形を移動
      */
     MICRect& move(const CGVector& v) {
-        CGRectOffset(*this, v.dx, v.dy);
+        *this = CGRectOffset(*this, v.dx, v.dy);
         return *this;
     }
     MICRect& move(CGFloat dx, CGFloat dy) {
-        CGRectOffset(*this, dx, dy);
+        *this = CGRectOffset(*this, dx, dy);
         return *this;
     }
 
@@ -532,6 +536,11 @@ public:
     static CGRect zero() {
         return CGRectZero;
     }
+    
+    MICRect& transform(const CGAffineTransform& tr) {
+        *this = (CGRectApplyAffineTransform(*this, tr));
+        return *this;
+    }
 };
 
 inline CGRect operator +(const CGRect& rc, const UIEdgeInsets& margin) {
@@ -640,6 +649,9 @@ public:
         height+=dh;
         return *this;
     }
+    MICSize& inflate(CGFloat d) {
+        return inflate(d,d);
+    }
     MICSize& inflate(const UIEdgeInsets& insets) {
         return inflate(insets.left+insets.right, insets.top+insets.bottom);
     }
@@ -651,6 +663,9 @@ public:
     MICSize& deflate(const UIEdgeInsets& insets) {
         return deflate(insets.left+insets.right, insets.top+insets.bottom);
         return *this;
+    }
+    MICSize& deflate(CGFloat d) {
+        return deflate(d,d);
     }
     
     static CGSize transpose(const CGSize& size) {
@@ -668,6 +683,14 @@ public:
     static CGSize zero() {
         return CGSizeZero;
     }
+    
+    MICSize& transform(const CGAffineTransform& tr) {
+        *this = (CGSizeApplyAffineTransform(*this, tr));
+        return *this;
+    }
+    
+    static CGSize max(const CGSize& s1, const CGSize& s2);
+    static CGSize min(const CGSize& s1, const CGSize& s2);
 };
 
 inline CGSize operator +(const CGSize& size, const UIEdgeInsets& margin) {
@@ -678,6 +701,13 @@ inline CGSize operator +(const CGSize& size, const UIEdgeInsets& margin) {
 inline CGSize operator -(const CGSize& size, const UIEdgeInsets& margin) {
     MICSize ms(size);
     return ms.deflate(margin);
+}
+
+inline CGSize MICSize::max(const CGSize& s1, const CGSize& s2) {
+    return MICSize(MAX(s1.width, s2.width), MAX(s1.height,s2.height));
+}
+inline CGSize MICSize::min(const CGSize& s1, const CGSize& s2) {
+    return MICSize(MIN(s1.width, s2.width), MIN(s1.height,s2.height));
 }
 
 //------------------------------------------------------------------------------------------
@@ -695,7 +725,7 @@ public:
         set(sx,sy);
     }
     MICPoint(const CGPoint& p) {
-        x = p.x, y=p.y;
+        x = p.x; y=p.y;
     }
     MICPoint(NSValue* value) {
         set(fromValue(value));
@@ -767,6 +797,10 @@ public:
         return CGPointZero;
     }
     
+    MICPoint& transform(const CGAffineTransform& tr) {
+        *this = (CGPointApplyAffineTransform(*this, tr));
+        return *this;
+    }
 };
 
 inline CGVector operator -(const CGPoint& to, const CGPoint& from) {
@@ -796,8 +830,13 @@ public:
         set(x,y);
     }
     
+    // CGPoint --> CGVector
+    MICVector(CGPoint pos) {
+        dx = pos.x; dy = pos.y;
+    }
+    
     MICVector(const CGVector& p) {
-        dx = p.dx, dy=p.dy;
+        dx = p.dx; dy = p.dy;
     }
 //    MICVector(const CGPoint& from, const CGPoint& to) {
 //        dx = to.x - from.x;
@@ -878,6 +917,20 @@ inline CGVector operator+(const CGVector& d, const CGVector& s) {
 inline CGVector operator-(const CGVector& d, const CGVector& s) {
     return CGVectorMake(d.dx-s.dx, d.dy-s.dy);
 }
+
+// MICRectのメンバー：MICVectorを使うので、ここにインラインで定義する
+inline MICRect& MICRect::moveLeftBottom(const CGPoint& toPos) {
+    return move(toPos-leftBottom());
+}
+
+inline MICRect& MICRect::moveRightTop(const CGPoint& toPos) {
+    return move(toPos-rightTop());
+}
+
+inline MICRect& MICRect::moveRightBottom(const CGPoint& toPos) {
+    return move(toPos-rightBottom());
+}
+
 
 //------------------------------------------------------------------------------------------
 #pragma mark - MICEdgeInsets
@@ -1034,6 +1087,13 @@ public:
 
 inline UIEdgeInsets operator -(const CGRect& outer, const CGRect& inner) {
     return MICEdgeInsets(outer, inner);
+}
+
+inline UIEdgeInsets operator+(const UIEdgeInsets& d, const UIEdgeInsets& s) {
+    return MICEdgeInsets(d.left+s.left, d.top+s.top, d.right+s.right, d.bottom+s.bottom);
+}
+inline UIEdgeInsets operator-(const UIEdgeInsets& d, const UIEdgeInsets& s) {
+    return MICEdgeInsets(d.left-s.left, d.top-s.top, d.right-s.right, d.bottom-s.bottom);
 }
 
 

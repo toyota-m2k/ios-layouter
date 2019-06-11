@@ -4,8 +4,8 @@
 //  親ビューまたは、兄弟ビューとの相対位置によってビューの配置を決定するレイアウタークラス
 //  (AndroidのRelativeLayout風）
 //
-//  Created by 豊田 光樹 on 2014/11/26.
-//  Copyright (c) 2014年 豊田 光樹. All rights reserved.
+//  Created by @toyota-m2k on 2014/11/26.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 
 #import "MICUiRelativeLayout.h"
@@ -246,6 +246,21 @@
 #pragma mark - レイアウト情報
 
 @implementation MICUiRelativeLayoutInfo
+
++ (instancetype) layoutHorz:(MICUiRelativeLayoutScalingInfo*)horz
+                       left:(MICUiRelativeLayoutAttachInfo*)left
+                      right:(MICUiRelativeLayoutAttachInfo*)right
+                       vert:(MICUiRelativeLayoutScalingInfo*)vert
+                        top:(MICUiRelativeLayoutAttachInfo*)top
+                     bottom:(MICUiRelativeLayoutAttachInfo*)bottom {
+    
+    return [[self alloc] initWithHorz:horz
+                                 left:left
+                                right:right
+                                 vert:vert
+                                  top:top
+                               bottom:bottom];
+}
 
 /**
  * 初期化（あとで、すべてのレイアウト情報をセットしてください。）

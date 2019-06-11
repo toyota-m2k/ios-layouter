@@ -3,8 +3,8 @@
 //
 //  AccordionCellとレイアウターを使って、ViewSwitcherMediatorの動作を利用するための実装
 //
-//  Created by 豊田 光樹 on 2015/01/07.
-//  Copyright (c) 2015年 M.TOYOTA. All rights reserved.
+//  Created by @toyota-m2k on 2015/01/07.
+//  Copyright (c) 2015年 @toyota-m2k. All rights reserved.
 //
 
 #import "MICUiSwitchingViewMediator.h"

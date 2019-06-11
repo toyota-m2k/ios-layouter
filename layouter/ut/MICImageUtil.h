@@ -3,11 +3,11 @@
 //
 //  すでにあるのかもしれないし、ないかもしれない、あったとしても、どこにあるかわからない、そんなUIImageに対する操作を実装するクラス。
 //
-//  Created by 豊田 光樹 on 2015/02/04.
-//  Copyright (c) 2015年 M.TOYOTA Corporation. All rights reserved.
+//  Created by @toyota-m2k on 2015/02/04.
+//  Copyright (c) 2015年 @toyota-m2k Corporation. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface MICImageUtil : NSObject
 

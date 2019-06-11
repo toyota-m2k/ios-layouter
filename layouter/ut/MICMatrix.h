@@ -2,8 +2,8 @@
 //  MICMatrix.h
 //  DTable
 //
-//  Created by 豊田 光樹 on 2014/10/31.
-//  Copyright (c) 2014年 豊田 光樹. All rights reserved.
+//  Created by @toyota-m2k on 2014/10/31.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -14,8 +14,8 @@
 /**
  * ２次元配列（ｍxｎマトリックス）クラス
  *
- * @param x     行数
- * @param y     列数
+ * cx     行数
+ * cy     列数
  */
 @interface MICMatrix : NSObject {
 }
@@ -29,9 +29,8 @@
 /**
  * 初期化
  *
- * @param x     行
- * @param y     列
- * @param v     値：nil可（その代わり、NSNullをセットしてもnilに変換してしまう）
+ * @param cx     行
+ * @param cy     列
  */
 - (id) initWithDimmensionX:(int)cx andY:(int)cy;
 

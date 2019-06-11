@@ -2,8 +2,8 @@
 //  MICSpan
 //  最大値/最小値を管理するクラス
 //
-//  Created by 豊田 光樹 on 2014/11/12.
-//  Copyright (c) 2014年 豊田 光樹. All rights reserved.
+//  Created by @toyota-m2k on 2014/11/12.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -114,7 +114,7 @@ public:
     
     /**
      * 与えられた値を、最大値／最小値の範囲でクリップして返す。
-     * @param  入力
+     * @param v 入力
      * @return 引数vをSpanの範囲でクリップした値
      */
     T limit(T v) const {
@@ -129,7 +129,7 @@ public:
     
     /**
      * 与えられたSpanを、このオブジェクトの最大値／最小値の範囲でクリップして返す。
-     * @param  入力・出力値
+     * @param v  入力・出力値
      * @return 引数をvの最大値・最小値を、このオブジェクトのSpanの範囲でクリップした値
      */
     MICSpan<T>& limit(MICSpan<T>& v) const {
@@ -142,7 +142,7 @@ public:
      * このオブジェクトの最大値・最小値を、引数limの範囲でクリップする。
      *  limit()の方向が逆転した版
      *
-     * @param  制限値を保持した入力
+     * @param lim 制限値を保持した入力
      * @return *this
      */
     MICSpan<T>& limitBy(const MICSpan<T>& lim) {

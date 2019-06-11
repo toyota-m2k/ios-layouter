@@ -2,8 +2,8 @@
 //  MICObservers.h
 //  NSKeyValueObserverRegistration に対するオブザーバー登録／解除をいい具合にする
 //
-//  Created by 豊田 光樹 on 2017/11/02.
-//  Copyright  2017年 M.TOYOTA Corporation. All rights reserved.
+//  Created by @toyota-m2k on 2017/11/02.
+//  Copyright  2017年 @toyota-m2k Corporation. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

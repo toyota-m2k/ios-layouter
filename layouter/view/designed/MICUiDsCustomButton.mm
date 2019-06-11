@@ -3,8 +3,8 @@
 //
 //  オーナードローなボタンビューの基底クラス
 //
-//  Created by 豊田 光樹 on 2014/12/15.
-//  Copyright (c) 2014年 M.TOYOTA. All rights reserved.
+//  Created by @toyota-m2k on 2014/12/15.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 
 #import "MICUiDsCustomButton.h"
@@ -29,9 +29,16 @@
         _contentMargin = MIC_BTN_CONTENT_MARGIN;
         _iconTextMargin = MIC_BTN_ICON_TEXT_MARGIN;
         _textHorzAlignment = MICUiAlignCENTER;
+        
+        self.backgroundColor = UIColor.clearColor;
     }
     return self;
 }
+
+- (void) setTarget:(id)target action:(SEL)action {
+    _targetSelector = [[MICTargetSelector alloc] initWithTarget:target selector:action];
+}
+
 
 #pragma mark - Button State
 
@@ -149,6 +156,10 @@
         if(touch.view == self) {
             if(nil!=_customButtonDelegate) {
                 [_customButtonDelegate onCustomButtonTapped:self];
+            }
+            if(nil!=_targetSelector) {
+                id me = self;
+                [_targetSelector performWithParam:&me];
             }
 //            self.selected = !self.selected;
         }
@@ -304,6 +315,10 @@
  *  通常はオーバーライド不要。drawContentをオーバーライドする場合に、テキスト出力のユーティリティとして利用する。
  */
 - (void)drawText:(CGContextRef)rctx rect:(CGRect)rect halign:(NSTextAlignment)halign valign:(MICUiAlign)valign {
+    if(nil==self.text) {
+        return;
+    }
+    
     NSDictionary *attr = [self getTextAttributes:halign];
     CGSize size = [self.text sizeWithAttributes:attr];
     MICRect rcText = rect;
@@ -338,6 +353,15 @@
 }
 
 /**
+ * アイコンを描画する
+ */
+- (void) drawIcon:(CGContextRef)rctx icon:(UIImage*)icon rect:(CGRect)rect {
+    if(nil!=icon) {
+        [icon drawInRect:rect];
+    }
+}
+
+/**
  * ボタンのコンテント（アイコンとテキスト）を描画する。
  * - 背景（塗りとボーダー）の描画方法を変更する場合はeraseBackgroundをオーバーライド
  * - アイコンとテキストの位置を変える→　getContentRect をオーバーライド
@@ -347,10 +371,11 @@
 - (void)drawContent:(CGContextRef)rctx rect:(CGRect)rect {
     MICCGContext ctx(rctx, false);
     
+    // アイコン/テキストの描画１を取得
     UIImage* icon = [self getIconForState:_buttonState];
     MICRect rcIcon, rcText;
     [self getContentRect:icon iconRect:&rcIcon textRect:&rcText];
-    
+   
     NSTextAlignment halign;
     switch(_textHorzAlignment) {
         case MICUiAlignRIGHT:
@@ -363,13 +388,12 @@
             halign = NSTextAlignmentCenter;
             break;
     }
+
+    // アイコンを描画
+    [self drawIcon:rctx icon:icon rect:rcIcon];
     
-    if(nil!=icon) {
-        [icon drawInRect:rcIcon];
-    }
-    if( nil!=_text) {
-        [self drawText:rctx rect:rcText halign:halign valign:MICUiAlignCENTER];
-    }
+    // テキストを描画
+    [self drawText:rctx rect:rcText halign:halign valign:MICUiAlignCENTER];
     
 }
 

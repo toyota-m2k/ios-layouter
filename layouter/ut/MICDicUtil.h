@@ -1,9 +1,9 @@
 ﻿//
 //  MICDicUtil.h
-//  ios-layouter
+//  layouter
 //
-//  Created by 豊田 光樹 on 2016/02/05.
-//  Copyright  2016年 M.TOYOTA Corporation. All rights reserved.
+//  Created by @toyota-m2k on 2016/02/05.
+//  Copyright  2016年 @toyota-m2k Corporation. All rights reserved.
 //
 
 #ifndef MICDicUtil_h
@@ -19,7 +19,8 @@ static inline id dic_obj(NSDictionary* dic, id key) {
 }
 
 static inline NSString* dic_string(NSDictionary* dic, id key) {
-    return dic_obj(dic,key);
+    id r = dic_obj(dic,key);
+    return (nil!=r && [r respondsToSelector:@selector(stringValue)]) ? [r stringValue] : r;
 }
 
 static inline NSString* safe_dic_string(NSDictionary* dic, id key) {
@@ -31,13 +32,14 @@ static inline NSDictionary* dic_dictionary(NSDictionary* dic, id key) {
     return dic_obj(dic,key);
 }
 
-#if defined(__cplusplus)
-inline NSInteger dic_integer(NSDictionary* dic, id key, NSInteger defval=0) {
-#else
 static inline NSInteger dic_integer(NSDictionary* dic, id key, NSInteger defval) {
-#endif
-    NSNumber* r = dic_obj(dic,key);
-    return (nil!=r) ? [r integerValue] : defval;
+    id r = dic_obj(dic,key);
+    return (nil!=r && [r respondsToSelector:@selector(integerValue)]) ? [r integerValue] : defval;
+}
+    
+static inline bool dic_bool(NSDictionary* dic, id key, bool defval) {
+    id r = dic_obj(dic,key);
+    return (nil!=r && [r respondsToSelector:@selector(boolValue)]) ? [r boolValue] : defval;
 }
 
 #endif /* MICDicUtil_h */

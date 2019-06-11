@@ -2,8 +2,8 @@
 //  MICMatrix.m
 //  DTable
 //
-//  Created by 豊田 光樹 on 2014/10/31.
-//  Copyright (c) 2014年 豊田 光樹. All rights reserved.
+//  Created by @toyota-m2k on 2014/10/31.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 
 #import "MICMatrix.h"

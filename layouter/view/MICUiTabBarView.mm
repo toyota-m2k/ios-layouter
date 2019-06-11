@@ -3,8 +3,8 @@
 //
 //  タブ（ボタンなど）を並べるタブバービュークラス
 //
-//  Created by 豊田 光樹 on 2014/11/20.
-//  Copyright (c) 2014年 豊田 光樹. All rights reserved.
+//  Created by @toyota-m2k on 2014/11/20.
+//  Copyright (c) 2014年 @toyota-m2k. All rights reserved.
 //
 
 #import "MICUiTabBarView.h"
@@ -383,7 +383,7 @@
 
 /**
  * タブバーのスクロールが終わったタイミングで、スクロールボタンの表示を更新する。
- * @protocol UIScrollViewDelegate
+ * protocol UIScrollViewDelegate
  */
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self updateButtonState];
