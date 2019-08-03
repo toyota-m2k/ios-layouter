@@ -1,0 +1,50 @@
+//
+//  WPLDelegatedObservableData.mm
+//  WP Layouter
+//
+//  Created by Mitsuki Toyota on 2019/08/02.
+//  Copyright © 2019 Mitsuki Toyota. All rights reserved.
+//
+
+#import "WPLDelegatedObservableData.h"
+
+/**
+ * 外部の値にデリゲートする監視可能データオブジェクト
+ * valueChanged は、デリゲート供給オブジェクトからキックする。
+ * WPLObservableMutableData の relations に登録することで、複数のデータソースにバインドして使うことができる。
+ */
+@implementation WPLDelegatedObservableData {
+    WPLSourceDelegateProc _sourceDelegateBlock;
+    MICTargetSelector* _sourceDelegateSelector;
+}
+
+-(instancetype) init {
+    self = [super init];
+    if(nil!=self) {
+        _sourceDelegateBlock = nil;
+        _sourceDelegateSelector = nil;
+    }
+    return self;
+}
+
+// Block または、TargetSelector を指定。
+// 両方設定している場合は blockの方を優先。
+// @property (nonatomic) WPLSourceDelegateProc sourceDelegateBlock;
+// @property (nonatomic) MICTargetSelector* sourceDelegateSelector;
+
+- (void) setSourceDelegateBlock:(WPLSourceDelegateProc) proc {
+    _sourceDelegateBlock = proc;
+}
+
+- (void) setSourceDelegateSelector:(MICTargetSelector*) ts {
+    _sourceDelegateSelector = ts;
+}
+
+- (WPLSourceDelegateProc) sourceDelegateBlock {
+    return _sourceDelegateBlock;
+}
+
+- (MICTargetSelector*) sourceDelegateSelector {
+    return _sourceDelegateSelector;
+}
+@end

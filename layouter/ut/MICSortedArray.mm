@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICSortedArray.mm
 //  Anytime
 //
@@ -41,7 +41,7 @@
     let cmp = _comparator;
     let asc = _ascending;
     let ary = [_array sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-        return cmp(obj1, obj2) * asc;
+        return (NSComparisonResult)(cmp(obj1, obj2) * asc);
     }];
     _array = [NSMutableArray arrayWithArray:ary];
 }
