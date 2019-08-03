@@ -23,7 +23,7 @@
                    vAlignment:(WPLCellAlignment)vAlignment
                    visibility:(WPLVisibility)visibility
             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
-    self = [super init];
+    self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
     if(nil!=self) {
         _cells = [NSMutableArray array];
         _needsLayoutChildren = true;
@@ -110,6 +110,7 @@
 - (void) addCell:(id<IWPLCell>) cell {
     cell.containerDelegate = self;
     [_cells addObject:cell];
+    [self.view addSubview:cell.view];
     self.needsLayoutChildren = true;
 }
 

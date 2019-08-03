@@ -21,4 +21,28 @@ typedef enum _WPLOrientation {
  */
 @interface WPLStackPanel : WPLContainerCell
 @property (nonatomic, readonly) WPLOrientation orientation;
+
+- (instancetype) initWithView:(UIView*)view
+                         name:(NSString*) name
+                       margin:(UIEdgeInsets) margin
+              requestViewSize:(CGSize) requestViewSize
+                   hAlignment:(WPLCellAlignment)hAlignment
+                   vAlignment:(WPLCellAlignment)vAlignment
+                   visibility:(WPLVisibility)visibility
+            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
+                  orientation:(WPLOrientation) orientation;
+
++ (instancetype) stackPanelViewWithName:(NSString*) name
+                                 margin:(UIEdgeInsets) margin
+                        requestViewSize:(CGSize) requestViewSize
+                             hAlignment:(WPLCellAlignment)hAlignment
+                             vAlignment:(WPLCellAlignment)vAlignment
+                             visibility:(WPLVisibility)visibility
+                      containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
+                            orientation:(WPLOrientation) orientation;
+
++ (instancetype)stackPanelViewWithName:(NSString*) name
+                           orientation:(WPLOrientation)orientation
+                            xalignment:(WPLCellAlignment)xalignment
+                     containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate;
 @end

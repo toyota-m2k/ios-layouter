@@ -8,12 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		841AD73622EE93AD00F9AB7D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD73522EE93AD00F9AB7D /* AppDelegate.m */; };
-		841AD73922EE93AD00F9AB7D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD73822EE93AD00F9AB7D /* ViewController.m */; };
+		841AD73922EE93AD00F9AB7D /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD73822EE93AD00F9AB7D /* ViewController.mm */; };
 		841AD73C22EE93AD00F9AB7D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 841AD73A22EE93AD00F9AB7D /* Main.storyboard */; };
 		841AD73E22EE93AE00F9AB7D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 841AD73D22EE93AE00F9AB7D /* Assets.xcassets */; };
 		841AD74122EE93AE00F9AB7D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 841AD73F22EE93AE00F9AB7D /* LaunchScreen.storyboard */; };
 		841AD74422EE93AE00F9AB7D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD74322EE93AE00F9AB7D /* main.m */; };
-		841AD74E22EE93AE00F9AB7D /* layouterSampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD74D22EE93AE00F9AB7D /* layouterSampleTests.m */; };
 		841AD75922EE93AE00F9AB7D /* layouterSampleUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD75822EE93AE00F9AB7D /* layouterSampleUITests.m */; };
 		841AD7C522EE93FA00F9AB7D /* MICAcom.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD76A22EE93FA00F9AB7D /* MICAcom.m */; };
 		841AD7C622EE93FA00F9AB7D /* MICResetableEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD76F22EE93FA00F9AB7D /* MICResetableEvent.m */; };
@@ -58,7 +57,7 @@
 		841AD7ED22EE93FA00F9AB7D /* MICUiVirtualView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD7C222EE93FA00F9AB7D /* MICUiVirtualView.mm */; };
 		841AD7EE22EE93FA00F9AB7D /* MICUiRelativeLayout.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD7C322EE93FA00F9AB7D /* MICUiRelativeLayout.mm */; };
 		841AD83B22F52AEE00F9AB7D /* WPLValueBinding.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD81F22F52AEE00F9AB7D /* WPLValueBinding.mm */; };
-		841AD83C22F52AEE00F9AB7D /* WPLBoolStateBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD82122F52AEE00F9AB7D /* WPLBoolStateBinding.m */; };
+		841AD83C22F52AEE00F9AB7D /* WPLBoolStateBinding.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD82122F52AEE00F9AB7D /* WPLBoolStateBinding.mm */; };
 		841AD83D22F52AEE00F9AB7D /* WPLCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD82622F52AEE00F9AB7D /* WPLCell.mm */; };
 		841AD83E22F52AEE00F9AB7D /* WPLTextCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD82722F52AEE00F9AB7D /* WPLTextCell.mm */; };
 		841AD83F22F52AEE00F9AB7D /* WPLValueCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD82822F52AEE00F9AB7D /* WPLValueCell.mm */; };
@@ -68,6 +67,8 @@
 		841AD84322F52AEE00F9AB7D /* WPLObservableData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD83522F52AEE00F9AB7D /* WPLObservableData.mm */; };
 		841AD84422F52AEE00F9AB7D /* WPLObservableMutableData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD83722F52AEE00F9AB7D /* WPLObservableMutableData.mm */; };
 		841AD84522F52AEE00F9AB7D /* WPLDelegatedObservableData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD83822F52AEE00F9AB7D /* WPLDelegatedObservableData.mm */; };
+		841AD84A22F53C4E00F9AB7D /* layouterSampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD74D22EE93AE00F9AB7D /* layouterSampleTests.m */; };
+		841AD84D22F5B09C00F9AB7D /* WPLSampleView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD84C22F5B09C00F9AB7D /* WPLSampleView.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,7 +93,7 @@
 		841AD73422EE93AD00F9AB7D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		841AD73522EE93AD00F9AB7D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		841AD73722EE93AD00F9AB7D /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		841AD73822EE93AD00F9AB7D /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		841AD73822EE93AD00F9AB7D /* ViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewController.mm; sourceTree = "<group>"; };
 		841AD73B22EE93AD00F9AB7D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		841AD73D22EE93AE00F9AB7D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		841AD74022EE93AE00F9AB7D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -197,7 +198,7 @@
 		841AD81E22F52AEE00F9AB7D /* WPLValueBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLValueBinding.h; sourceTree = "<group>"; };
 		841AD81F22F52AEE00F9AB7D /* WPLValueBinding.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLValueBinding.mm; sourceTree = "<group>"; };
 		841AD82022F52AEE00F9AB7D /* WPLBoolStateBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLBoolStateBinding.h; sourceTree = "<group>"; };
-		841AD82122F52AEE00F9AB7D /* WPLBoolStateBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WPLBoolStateBinding.m; sourceTree = "<group>"; };
+		841AD82122F52AEE00F9AB7D /* WPLBoolStateBinding.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLBoolStateBinding.mm; sourceTree = "<group>"; };
 		841AD82222F52AEE00F9AB7D /* WPLBindingDef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLBindingDef.h; sourceTree = "<group>"; };
 		841AD82422F52AEE00F9AB7D /* WPLValueCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLValueCell.h; sourceTree = "<group>"; };
 		841AD82522F52AEE00F9AB7D /* WPLTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLTextCell.h; sourceTree = "<group>"; };
@@ -220,6 +221,8 @@
 		841AD83822F52AEE00F9AB7D /* WPLDelegatedObservableData.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLDelegatedObservableData.mm; sourceTree = "<group>"; };
 		841AD83922F52AEE00F9AB7D /* WPLObservableData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLObservableData.h; sourceTree = "<group>"; };
 		841AD83A22F52AEE00F9AB7D /* WPLObservableMutableData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLObservableMutableData.h; sourceTree = "<group>"; };
+		841AD84B22F5B09C00F9AB7D /* WPLSampleView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLSampleView.h; sourceTree = "<group>"; };
+		841AD84C22F5B09C00F9AB7D /* WPLSampleView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLSampleView.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -274,12 +277,14 @@
 				841AD73422EE93AD00F9AB7D /* AppDelegate.h */,
 				841AD73522EE93AD00F9AB7D /* AppDelegate.m */,
 				841AD73722EE93AD00F9AB7D /* ViewController.h */,
-				841AD73822EE93AD00F9AB7D /* ViewController.m */,
+				841AD73822EE93AD00F9AB7D /* ViewController.mm */,
 				841AD73A22EE93AD00F9AB7D /* Main.storyboard */,
 				841AD73D22EE93AE00F9AB7D /* Assets.xcassets */,
 				841AD73F22EE93AE00F9AB7D /* LaunchScreen.storyboard */,
 				841AD74222EE93AE00F9AB7D /* Info.plist */,
 				841AD74322EE93AE00F9AB7D /* main.m */,
+				841AD84B22F5B09C00F9AB7D /* WPLSampleView.h */,
+				841AD84C22F5B09C00F9AB7D /* WPLSampleView.mm */,
 			);
 			path = layouterSample;
 			sourceTree = "<group>";
@@ -341,6 +346,7 @@
 				841AD76D22EE93FA00F9AB7D /* MICDicUtil.h */,
 				841AD76E22EE93FA00F9AB7D /* MICStringUtil.h */,
 				841AD76F22EE93FA00F9AB7D /* MICResetableEvent.m */,
+				841AD78822EE93FA00F9AB7D /* MICTargetSelector.h */,
 				841AD77022EE93FA00F9AB7D /* MICTargetSelector.m */,
 				841AD77122EE93FA00F9AB7D /* MICImageUtil.mm */,
 				841AD77222EE93FA00F9AB7D /* MICAsync.h */,
@@ -365,7 +371,6 @@
 				841AD78522EE93FA00F9AB7D /* MICImageUtil.h */,
 				841AD78622EE93FA00F9AB7D /* MICUiRectUtil.h */,
 				841AD78722EE93FA00F9AB7D /* MICAsync.m */,
-				841AD78822EE93FA00F9AB7D /* MICTargetSelector.h */,
 				841AD78922EE93FA00F9AB7D /* MICResetableEvent.h */,
 				841AD78A22EE93FA00F9AB7D /* MICSortedArray.mm */,
 				841AD78B22EE93FA00F9AB7D /* MICArray.m */,
@@ -447,11 +452,11 @@
 		841AD81D22F52AEE00F9AB7D /* binding */ = {
 			isa = PBXGroup;
 			children = (
+				841AD82222F52AEE00F9AB7D /* WPLBindingDef.h */,
 				841AD81E22F52AEE00F9AB7D /* WPLValueBinding.h */,
 				841AD81F22F52AEE00F9AB7D /* WPLValueBinding.mm */,
 				841AD82022F52AEE00F9AB7D /* WPLBoolStateBinding.h */,
-				841AD82122F52AEE00F9AB7D /* WPLBoolStateBinding.m */,
-				841AD82222F52AEE00F9AB7D /* WPLBindingDef.h */,
+				841AD82122F52AEE00F9AB7D /* WPLBoolStateBinding.mm */,
 			);
 			path = binding;
 			sourceTree = "<group>";
@@ -459,13 +464,13 @@
 		841AD82322F52AEE00F9AB7D /* cell */ = {
 			isa = PBXGroup;
 			children = (
-				841AD82422F52AEE00F9AB7D /* WPLValueCell.h */,
-				841AD82522F52AEE00F9AB7D /* WPLTextCell.h */,
-				841AD82622F52AEE00F9AB7D /* WPLCell.mm */,
-				841AD82722F52AEE00F9AB7D /* WPLTextCell.mm */,
-				841AD82822F52AEE00F9AB7D /* WPLValueCell.mm */,
 				841AD82922F52AEE00F9AB7D /* WPLCellDef.h */,
 				841AD82A22F52AEE00F9AB7D /* WPLCell.h */,
+				841AD82622F52AEE00F9AB7D /* WPLCell.mm */,
+				841AD82522F52AEE00F9AB7D /* WPLTextCell.h */,
+				841AD82722F52AEE00F9AB7D /* WPLTextCell.mm */,
+				841AD82422F52AEE00F9AB7D /* WPLValueCell.h */,
+				841AD82822F52AEE00F9AB7D /* WPLValueCell.mm */,
 			);
 			path = cell;
 			sourceTree = "<group>";
@@ -473,13 +478,13 @@
 		841AD82B22F52AEE00F9AB7D /* container */ = {
 			isa = PBXGroup;
 			children = (
-				841AD82C22F52AEE00F9AB7D /* WPLStackPanel.mm */,
-				841AD82D22F52AEE00F9AB7D /* WPLContainerCell.mm */,
-				841AD82E22F52AEE00F9AB7D /* WPLGrid.mm */,
 				841AD82F22F52AEE00F9AB7D /* WPLContainerDef.h */,
-				841AD83022F52AEE00F9AB7D /* WPLGrid.h */,
 				841AD83122F52AEE00F9AB7D /* WPLStackPanel.h */,
+				841AD82C22F52AEE00F9AB7D /* WPLStackPanel.mm */,
 				841AD83222F52AEE00F9AB7D /* WPLContainerCell.h */,
+				841AD82D22F52AEE00F9AB7D /* WPLContainerCell.mm */,
+				841AD83022F52AEE00F9AB7D /* WPLGrid.h */,
+				841AD82E22F52AEE00F9AB7D /* WPLGrid.mm */,
 			);
 			path = container;
 			sourceTree = "<group>";
@@ -488,12 +493,12 @@
 			isa = PBXGroup;
 			children = (
 				841AD83422F52AEE00F9AB7D /* WPLObservableDef.h */,
-				841AD83522F52AEE00F9AB7D /* WPLObservableData.mm */,
-				841AD83622F52AEE00F9AB7D /* WPLDelegatedObservableData.h */,
-				841AD83722F52AEE00F9AB7D /* WPLObservableMutableData.mm */,
-				841AD83822F52AEE00F9AB7D /* WPLDelegatedObservableData.mm */,
 				841AD83922F52AEE00F9AB7D /* WPLObservableData.h */,
+				841AD83522F52AEE00F9AB7D /* WPLObservableData.mm */,
 				841AD83A22F52AEE00F9AB7D /* WPLObservableMutableData.h */,
+				841AD83722F52AEE00F9AB7D /* WPLObservableMutableData.mm */,
+				841AD83622F52AEE00F9AB7D /* WPLDelegatedObservableData.h */,
+				841AD83822F52AEE00F9AB7D /* WPLDelegatedObservableData.mm */,
 			);
 			path = observable;
 			sourceTree = "<group>";
@@ -636,7 +641,8 @@
 				841AD7E722EE93FA00F9AB7D /* MICUiAccordionView.mm in Sources */,
 				841AD7CC22EE93FA00F9AB7D /* MICObservers.m in Sources */,
 				841AD7E122EE93FA00F9AB7D /* MICUiDsTabButton.mm in Sources */,
-				841AD73922EE93AD00F9AB7D /* ViewController.m in Sources */,
+				841AD73922EE93AD00F9AB7D /* ViewController.mm in Sources */,
+				841AD84D22F5B09C00F9AB7D /* WPLSampleView.mm in Sources */,
 				841AD7DF22EE93FA00F9AB7D /* MICUiDsCustomButton.mm in Sources */,
 				841AD83E22F52AEE00F9AB7D /* WPLTextCell.mm in Sources */,
 				841AD84022F52AEE00F9AB7D /* WPLStackPanel.mm in Sources */,
@@ -661,7 +667,7 @@
 				841AD84522F52AEE00F9AB7D /* WPLDelegatedObservableData.mm in Sources */,
 				841AD7C922EE93FA00F9AB7D /* MICPathRepository.m in Sources */,
 				841AD7E222EE93FA00F9AB7D /* MICUiDsDefaults.m in Sources */,
-				841AD83C22F52AEE00F9AB7D /* WPLBoolStateBinding.m in Sources */,
+				841AD83C22F52AEE00F9AB7D /* WPLBoolStateBinding.mm in Sources */,
 				841AD7CF22EE93FA00F9AB7D /* MICAsync.m in Sources */,
 				841AD7D322EE93FA00F9AB7D /* MICMatrix.m in Sources */,
 				841AD7E322EE93FA00F9AB7D /* MICUiStatefulResource.m in Sources */,
@@ -691,7 +697,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				841AD74E22EE93AE00F9AB7D /* layouterSampleTests.m in Sources */,
+				841AD84A22F53C4E00F9AB7D /* layouterSampleTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

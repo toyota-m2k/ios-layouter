@@ -36,6 +36,8 @@
 
     - (void) addRelation:(id<IWPLObservableData>)relation;
 
+    - (void) addRelations:(NSArray<id<IWPLObservableData>>*) relations;
+
     - (void) removeRelation:(id<IWPLObservableData>)relation;
 
     /**
@@ -53,6 +55,11 @@
     - (void) removeValueChangedListener:(id)key;
 
     /**
+     * for debug
+     */
+    - (bool) cyclicRelationCheck:(id<IWPLObservableData>)ob;
+
+    /**
      * 解放
      */
     - (void) dispose;
@@ -68,8 +75,9 @@
     @property (nonatomic) id value;
 @end
 
+@protocol IWPLDelegatedDataSource;
 
-typedef id (^WPLSourceDelegateProc)(void);
+typedef id (^WPLSourceDelegateProc)(id<IWPLDelegatedDataSource>);
 
 /**
  * valueを外部にデリゲートするデータオブジェクトの i/f

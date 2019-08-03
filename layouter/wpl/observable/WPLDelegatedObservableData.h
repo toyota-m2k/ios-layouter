@@ -15,4 +15,12 @@
  */
 @interface WPLDelegatedObservableData : WPLObservableData<IWPLDelegatedDataSource>
 
++ (instancetype) newData;
+
++ (instancetype) newDataWithSourceBlock:(WPLSourceDelegateProc)proc;
+
++ (instancetype) newDataWithSourceTarget:(id)target selector:(SEL)selector;
+
++ (instancetype) newDataWithSourceTargetSelector:(MICTargetSelector*) ts;
+
 @end

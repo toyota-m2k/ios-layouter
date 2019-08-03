@@ -23,7 +23,6 @@
 - (instancetype) init {
     self = [super init];
     if(self!=nil) {
-        _value = NSNull.null;
         _relations = nil;
         _valueChangedlisteners = nil;
     }
@@ -42,22 +41,26 @@
 }
 
 - (id) value {
-    return _value;
+    return nil;
 }
 
 - (NSString*) stringValue {
-    return (NSString*)_value;
+    id v = self.value;
+    return [v isKindOfClass:NSString.class] ? (NSString*)v : nil;
 }
 - (NSInteger) intValue {
-    return [(NSNumber*)_value integerValue];
+    id v = self.value;
+    return [v isKindOfClass:NSNumber.class] ? [(NSNumber*)v integerValue] : 0;
 }
 
 - (CGFloat) floatValue {
-    return [(NSNumber*)_value floatValue];
+    id v = self.value;
+    return [v isKindOfClass:NSNumber.class] ? [(NSNumber*)v doubleValue] : 0;
 }
 
 - (bool) boolValue {
-    return [(NSNumber*)_value boolValue];
+    id v = self.value;
+    return [v isKindOfClass:NSNumber.class] ? [(NSNumber*)v boolValue] : false;
 }
 
 - (void) valueChanged {
@@ -74,15 +77,43 @@
     }
 }
 
+- (bool) cyclicRelationCheck:(id<IWPLObservableData>)ob {
+    if(self == ob) {
+        return false;
+    }
+    if(_relations!=nil) {
+        for(id<IWPLObservableData> c in _relations) {
+            if(c==ob) {
+                return false;
+            }
+            if(![c cyclicRelationCheck:ob]) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 /**
  * 値変更が影響する属性のリストに追加
  * @param relation IWPLObservableDataオブジェクト
  */
 - (void) addRelation:(id<IWPLObservableData>)relation {
+#if DEBUG
+    if(![self cyclicRelationCheck:relation]) {
+        NSAssert(false, @"cyclic relations.");
+    }
+#endif
     if(nil==_relations) {
         _relations = [NSMutableArray array];
     }
     [_relations addObject:relation];
+}
+
+- (void)addRelations:(NSArray<id<IWPLObservableData>> *)relations {
+    for(id<IWPLObservableData> ob in relations) {
+        [self addRelation:ob];
+    }
 }
 
 /**

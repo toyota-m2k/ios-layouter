@@ -13,8 +13,6 @@
  * このクラスを直接使用することはない。
  *  --> WPLObservableMutableData, WPLDelegatedObservableData
  */
-@interface WPLObservableData : NSObject<IWPLObservableData> {
-    id _value;
-}
+@interface WPLObservableData : NSObject<IWPLObservableData>
 @end
 

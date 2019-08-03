@@ -12,4 +12,28 @@
  * UITextView用のCellクラス
  */
 @interface WPLTextCell : WPLValueCell<IWPLCellSuportReadonly, UITextViewDelegate, UITextFieldDelegate>
+- (instancetype) initWithView:(UIView*)view
+                         name:(NSString*) name
+                       margin:(UIEdgeInsets) margin
+              requestViewSize:(CGSize) requestViewSize
+                   hAlignment:(WPLCellAlignment)hAlignment
+                   vAlignment:(WPLCellAlignment)vAlignment
+                   visibility:(WPLVisibility)visibility;
+
++ (instancetype) newCellWithTextView:(UITextView*)textView
+                                name:(NSString*) name
+                              margin:(UIEdgeInsets) margin
+                     requestViewSize:(CGSize) requestViewSize
+                          hAlignment:(WPLCellAlignment)hAlignment
+                          vAlignment:(WPLCellAlignment)vAlignment
+                          visibility:(WPLVisibility)visibility;
+
++ (instancetype) newTextViewCellWithName:(NSString*) name
+                                  margin:(UIEdgeInsets) margin
+                         requestViewSize:(CGSize) requestViewSize
+                              hAlignment:(WPLCellAlignment)hAlignment
+                              vAlignment:(WPLCellAlignment)vAlignment
+                              visibility:(WPLVisibility)visibility;
+
+
 @end

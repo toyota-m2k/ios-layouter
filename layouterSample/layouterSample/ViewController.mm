@@ -7,16 +7,20 @@
 //
 
 #import "ViewController.h"
+#import "WPLSampleView.h"
+#import "MICVar.h"
 
 @interface ViewController ()
-
 @end
 
-@implementation ViewController
+@implementation ViewController {
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    let view = [[WPLSampleView alloc] initWithFrame:self.view.bounds];
+    [self.view addSubview:view];
 }
 
 

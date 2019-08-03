@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICTargetSelector.h
 //  layouter
 //
@@ -16,6 +16,8 @@
 
 - (instancetype)init;
 - (instancetype)initWithTarget:(id)target selector:(SEL)selector;
+
++ (instancetype) targetSelector:(id)target selector:(SEL)selector;
 
 // 公開しているが多分使わない
 - (NSInvocation*) createInvocation;

@@ -11,7 +11,17 @@
 /**
  * 最も一般的な監視可能オブジェクト
  */
-@implementation WPLObservableMutableData
+@implementation WPLObservableMutableData {
+    id _value;
+}
+
++ (instancetype) newData {
+    return [[WPLObservableMutableData alloc] init];
+}
+
+- (id) value {
+    return _value;
+}
 
 - (void) setValue:(id) v {
     if(v==nil) {
@@ -23,6 +33,15 @@
     }
 }
 
+- (instancetype) init {
+    self = [super init];
+    if(self!=nil) {
+        _value = nil;
+    }
+    return self;
+}
+
+
 - (void) setIntValue:(NSInteger)v {
     [self setValue:[NSNumber numberWithInteger:v]];
 }
@@ -32,7 +51,7 @@
 }
 
 - (void) setFloatValue:(CGFloat) v {
-    [self setValue:[NSNumber numberWithFloat:v]];
+    [self setValue:[NSNumber numberWithDouble:v]];
 }
 
 - (void) setStringValue:(NSString*)v {

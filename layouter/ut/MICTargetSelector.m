@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICTargetSelector.m
 //  target と selector をまとめて保持する、ありそうでなさそうなクラス（あったらごめん）
 //  TargetをSelectするためのユーティリティのような名前で申し訳ない、作ってから気づいたんよ。
@@ -37,6 +37,10 @@
         _invocation = nil;
     }
     return self;
+}
+
++ (instancetype) targetSelector:(id)target selector:(SEL)selector {
+    return [[MICTargetSelector alloc] initWithTarget:target selector:selector];
 }
 
 /**

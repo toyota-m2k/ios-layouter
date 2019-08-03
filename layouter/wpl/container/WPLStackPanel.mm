@@ -76,13 +76,34 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
                    visibility:(WPLVisibility)visibility
             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
                   orientation:(WPLOrientation) orientation {
-    self = [super init];
+    self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
     if(nil!=self) {
         _orientation = orientation;
         _cachedSize = MICSize();
     }
     return self;
 }
+
++ (instancetype) stackPanelViewWithName:(NSString*) name
+                       margin:(UIEdgeInsets) margin
+              requestViewSize:(CGSize) requestViewSize
+                   hAlignment:(WPLCellAlignment)hAlignment
+                   vAlignment:(WPLCellAlignment)vAlignment
+                   visibility:(WPLVisibility)visibility
+            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
+                  orientation:(WPLOrientation) orientation {
+    return [[WPLStackPanel alloc] initWithView:[[UIView alloc] init] name:name margin:margin requestViewSize:requestViewSize hAlignment: hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate orientation:orientation];
+}
+
++ (instancetype)stackPanelViewWithName:(NSString*) name
+                           orientation:(WPLOrientation)orientation
+                             xalignment:(WPLCellAlignment)xalignment
+                     containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
+    let hAlignment = (orientation==WPLOrientationVERTICAL) ? xalignment : WPLCellAlignmentSTART;
+    let vAlignment = (orientation==WPLOrientationVERTICAL) ? WPLCellAlignmentSTART : xalignment;
+    return [self stackPanelViewWithName:name margin:MICEdgeInsets() requestViewSize:MICSize() hAlignment:hAlignment vAlignment:vAlignment visibility:WPLVisibilityVISIBLE containerDelegate:containerDelegate orientation:orientation];
+}
+
 
 - (WPLOrientation) orientation {
     return _orientation;
@@ -176,6 +197,9 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
     if(align == WPLCellAlignmentSTRETCH && self.fixedSize==0 && W(self, s)!=W(self, _cachedSize)) {
         // Stretching
         [self innerLayout:W(self,s)];
+    }
+    if (MICSize(_cachedSize) != self.view.frame.size) {
+        self.view.frame = MICRect(self.view.frame.origin, _cachedSize);
     }
     self.needsLayout = false;
     [super layoutResolvedAt:point inSize:size];
