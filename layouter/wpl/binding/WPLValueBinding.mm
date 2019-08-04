@@ -62,6 +62,12 @@
     return self;
 }
 
+- (void) dispose {
+    _cell = nil;
+    _source = nil;
+    _customAction = nil;
+}
+
 /**
  * ソースの値が変更されたときのハンドラ
  */

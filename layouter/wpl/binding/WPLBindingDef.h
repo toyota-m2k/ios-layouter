@@ -48,6 +48,8 @@ typedef void (^WPLBindingCustomAction)(id<IWPLBinding> sender, bool fromView);
      * 値変更時のカスタムアクション
      */
     @property (nonatomic,readonly) WPLBindingCustomAction customAction;
+
+    - (void) dispose;
 @end
 
 /**

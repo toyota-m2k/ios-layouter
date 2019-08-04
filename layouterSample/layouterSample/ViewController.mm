@@ -21,6 +21,7 @@
     // Do any additional setup after loading the view.
     let view = [[WPLSampleView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:view];
+    
 }
 
 

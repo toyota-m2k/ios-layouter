@@ -14,7 +14,8 @@
 @interface WPLBoolStateBinding : WPLValueBinding<IWPLBoolStateBinding>
 - (instancetype) initWithCell:(id<IWPLCell>) cell
                        source:(id<IWPLObservableData>) source
-                  bindingMode:(WPLBindingMode)bindingMode customAction:(WPLBindingCustomAction)customAction
+                  bindingMode:(WPLBindingMode)bindingMode
+                 customAction:(WPLBindingCustomAction)customAction
                    actionType:(WPLBoolStateActionType) actionType
                      negation:(bool)negation;
 @end

@@ -19,24 +19,20 @@
     MICTargetSelector* _sourceDelegateSelector;
 }
 
-+ (instancetype) newData {
-    return [[WPLDelegatedObservableData alloc] init];
-}
-
 + (instancetype) newDataWithSourceBlock:(WPLSourceDelegateProc)proc {
-    WPLDelegatedObservableData* r = [self newData];
+    WPLDelegatedObservableData* r = [self new];
     r.sourceDelegateBlock = proc;
     return r;
 }
 
 + (instancetype) newDataWithSourceTarget:(id)target selector:(SEL)selector {
-    WPLDelegatedObservableData* r = [self newData];
+    WPLDelegatedObservableData* r = [self new];
     r.sourceDelegateSelector = [MICTargetSelector targetSelector:target selector:selector];
     return r;
 }
 
 + (instancetype) newDataWithSourceTargetSelector:(MICTargetSelector*) ts {
-    WPLDelegatedObservableData* r = [self newData];
+    WPLDelegatedObservableData* r = [self new];
     r.sourceDelegateSelector = ts;
     return r;
 }

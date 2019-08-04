@@ -15,10 +15,6 @@
     id _value;
 }
 
-+ (instancetype) newData {
-    return [[WPLObservableMutableData alloc] init];
-}
-
 - (id) value {
     return _value;
 }

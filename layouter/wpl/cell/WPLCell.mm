@@ -261,7 +261,11 @@
     }
     
     if(self.vAlignment!=WPLCellAlignmentSTRETCH) {
-        viewRect.size.height = self.view.frame.size.height;
+        if(self.requestViewSize.height>0) {
+            viewRect.size.height = self.requestViewSize.height;
+        } else {
+            viewRect.size.height = self.view.frame.size.height;
+        }
         if(self.vAlignment==WPLCellAlignmentCENTER) {
             viewRect.moveToVCenterOfOuterRect(rect);
         } else if(self.vAlignment == WPLCellAlignmentEND){

@@ -13,8 +13,6 @@
  */
 @interface WPLObservableMutableData: WPLObservableData<IWPLObservableMutableData>
 
-+ (instancetype) newData;
-
 - (void) setIntValue:(NSInteger)v;
 - (void) setBoolValue:(bool)v;
 - (void) setFloatValue:(CGFloat) v;
