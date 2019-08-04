@@ -116,7 +116,10 @@ static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
                       rowDefs:(NSArray<NSNumber*>*) rowDefs
                       colDefs:(NSArray<NSNumber*>*) colDefs {
-    self = [super init];
+    if(nil==view) {
+        view = [UIView new];
+    }
+    self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
     if(nil!=self) {
         _cachedSize = MICSize();
         _rowDefs = (rowDefs!=nil) ? rowDefs : @[@(0)];
@@ -126,6 +129,26 @@ static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
         _rowHeights = zeroArray(_rowDefs.count);
     }
     return self;
+}
+
++ (instancetype) newGridWithView:(UIView*)view
+                            name:(NSString*) name
+                          margin:(UIEdgeInsets) margin
+                 requestViewSize:(CGSize) requestViewSize
+                      hAlignment:(WPLCellAlignment)hAlignment
+                      vAlignment:(WPLCellAlignment)vAlignment
+                      visibility:(WPLVisibility)visibility
+                         rowDefs:(NSArray<NSNumber*>*) rowDefs
+                         colDefs:(NSArray<NSNumber*>*) colDefs
+               containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
+    return [[WPLGrid alloc] initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment
+                              vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate rowDefs:rowDefs colDefs:colDefs];
+    
+}
+
++ (instancetype) newGridOfRows:(NSArray<NSNumber*>*) rowDefs
+                    andColumns:(NSArray<NSNumber*>*) colDefs {
+    return [self newGridWithView:nil name:@"" margin:MICEdgeInsets() requestViewSize:MICSize() hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE) rowDefs:rowDefs colDefs:colDefs containerDelegate:nil];
 }
 
 // 行数
@@ -152,7 +175,7 @@ static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
         colSpan = 1;
     }
     if (row+rowSpan-1 >= self.rows || column+colSpan-1 >= self.columns) {
-        [NSException raise:NSRangeException format:@"WPLGrid.addCell: out of range."];
+        [NSException raise:NSRangeException format:@"WPLGrid.addCell: out of range (%ld,%ld).", (long)self.rows, (long)self.columns];
     }
     
     cell.extension = [WPLGridExtension newWithRow:row column:column rowSpan:rowSpan colSpan:colSpan];

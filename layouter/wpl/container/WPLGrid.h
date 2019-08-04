@@ -26,4 +26,23 @@
             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
                       rowDefs:(NSArray<NSNumber*>*) rowDefs
                       colDefs:(NSArray<NSNumber*>*) colDefs;
+
++ (instancetype) newGridWithView:(UIView*)view
+                            name:(NSString*) name
+                          margin:(UIEdgeInsets) margin
+                 requestViewSize:(CGSize) requestViewSize
+                      hAlignment:(WPLCellAlignment)hAlignment
+                      vAlignment:(WPLCellAlignment)vAlignment
+                      visibility:(WPLVisibility)visibility
+                         rowDefs:(NSArray<NSNumber*>*) rowDefs
+                         colDefs:(NSArray<NSNumber*>*) colDefs
+               containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate;
+
++ (instancetype) newGridOfRows:(NSArray<NSNumber*>*) rowDefs
+                    andColumns:(NSArray<NSNumber*>*) colDefs;
+
+- (void) addCell:(id<IWPLCell>)cell;
+- (void) addCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column;
+- (void) addCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan;
+
 @end
