@@ -130,6 +130,9 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
     CGFloat max = fix;
     CGFloat sum = 0;
     for (id<IWPLCell> c in self.cells) {
+        if(c.visibility==WPLVisibilityCOLLAPSED) {
+            continue;
+        }
         CGFloat regWidth = (self.orientation==WPLOrientationVERTICAL) ? fix : 0;
         CGFloat regHeight = (self.orientation==WPLOrientationVERTICAL) ? 0 : fix;
         CGSize size = [c calcMinSizeForRegulatingWidth:regWidth andRegulatingHeight:regHeight];
@@ -192,6 +195,10 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
  * セルの位置・サイズ確定
  */
 - (void) layoutResolvedAt:(CGPoint)point inSize:(CGSize)size {
+    self.needsLayout = false;
+    if(self.visibility==WPLVisibilityCOLLAPSED) {
+        return;
+    }
     MICSize s(MICSize(size) - self.margin);
     let align = self.orientation==WPLOrientationVERTICAL ? self.hAlignment : self.vAlignment;
     if(align == WPLCellAlignmentSTRETCH && self.fixedSize==0 && W(self, s)!=W(self, _cachedSize)) {
@@ -201,7 +208,6 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
     if (MICSize(_cachedSize) != self.view.frame.size) {
         self.view.frame = MICRect(self.view.frame.origin, _cachedSize);
     }
-    self.needsLayout = false;
     [super layoutResolvedAt:point inSize:size];
 }
 @end

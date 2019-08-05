@@ -15,42 +15,25 @@
  * Viewの値(text/checked, ...) と Sourceの値とをバインドするクラス
  */
 @implementation WPLValueBinding {
-    id<IWPLCell> _cell;
-    id<IWPLObservableData> _source;
-    WPLBindingMode _bindingMode;
-    WPLBindingCustomAction _customAction;
     id _sourceListenerKey;
     id _cellListenerKey;
-}
-
-- (id<IWPLCell>) cell {
-    return _cell;
-}
-- (id<IWPLObservableData>) source {
-    return _source;
-}
-- (WPLBindingMode) bindingMode {
-    return _bindingMode;
-}
-- (WPLBindingCustomAction) customAction {
-    return _customAction;
 }
 
 - (instancetype) initWithCell:(id<IWPLCell>) cell
                        source:(id<IWPLObservableData>) source
                   bindingMode:(WPLBindingMode)bindingMode
                  customAction:(WPLBindingCustomAction)customAction {
-    self = [super init];
+    self = [super initWithCell:cell source:source bindingMode:bindingMode customAction:customAction];
     if(self!=nil) {
-        _cell = cell;
-        _source = source;
-        _bindingMode = bindingMode;
-        _customAction = customAction;
         _sourceListenerKey = nil;
         _cellListenerKey = nil;
         bool supportValue = [cell conformsToProtocol:@protocol(IWPLCellSupportValue)];
-        if(bindingMode != WPLBindingModeVIEW_TO_SOURCE && supportValue) {
-            ((id<IWPLCellSupportValue>)cell).value = source.value;
+        if(supportValue) {
+            if(bindingMode != WPLBindingModeVIEW_TO_SOURCE) {
+                ((id<IWPLCellSupportValue>)cell).value = source.value;
+            } else if([source conformsToProtocol:@protocol(IWPLObservableMutableData)]){
+                ((id<IWPLObservableMutableData>)source).value = ((id<IWPLCellSupportValue>)cell).value;
+            }
         }
         if(bindingMode==WPLBindingModeTWO_WAY||bindingMode==WPLBindingModeSOURCE_TO_VIEW) {
             _sourceListenerKey = [source addValueChangedListener:self selector:@selector(onSourceValueChanged:)];
@@ -63,9 +46,15 @@
 }
 
 - (void) dispose {
-    _cell = nil;
-    _source = nil;
-    _customAction = nil;
+    if(nil!=_sourceListenerKey) {
+        [self.source removeValueChangedListener:_sourceListenerKey];
+        _sourceListenerKey = nil;
+    }
+    if(nil!=_cellListenerKey) {
+        [(id<IWPLCellSupportValue>)self.cell removeInputListener:_cellListenerKey];
+        _cellListenerKey = nil;
+    }
+    [super dispose];
 }
 
 /**
@@ -92,13 +81,5 @@
     [self invokeCustomActionFromView:true];
 }
 
-/**
- * カスタムアクションを呼び出す
- */
-- (void) invokeCustomActionFromView:(bool) fromView {
-    if(nil!=_customAction) {
-        _customAction(self, fromView);
-    }
-}
 
 @end

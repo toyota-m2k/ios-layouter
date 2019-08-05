@@ -6,23 +6,18 @@
 //  Copyright © 2019 Mitsuki Toyota. All rights reserved.
 //
 
-#import "WPLBindingDef.h"
+#import "WPLBindingBase.h"
 
 /**
  * ValueBinding
  *
  * Viewの値(text/checked, ...) と Sourceの値とをバインドするクラス
  */
-@interface WPLValueBinding : NSObject<IWPLBinding>
+@interface WPLValueBinding : WPLBindingBase
 
 - (instancetype) initWithCell:(id<IWPLCell>) cell
                        source:(id<IWPLObservableData>) source
                   bindingMode:(WPLBindingMode)bindingMode
                  customAction:(WPLBindingCustomAction)customAction;
-
-/**
- * カスタムアクションを呼び出す (protected)
- */
-- (void) invokeCustomActionFromView:(bool) fromView;
 
 @end

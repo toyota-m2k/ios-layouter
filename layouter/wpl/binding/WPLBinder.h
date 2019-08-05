@@ -32,7 +32,6 @@
              withBoolStateOfCell:(id<IWPLCell>)cell
                       actionType:(WPLBoolStateActionType) actionType
                         negation:(bool) negation
-                     bindingMode:(WPLBindingMode)mode
                      customActin:(WPLBindingCustomAction)customAction;
 
 - (void) unbind:(id<IWPLBinding>) bindKey;

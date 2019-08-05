@@ -15,17 +15,20 @@
 @implementation WPLBoolStateBinding {
     WPLBoolStateActionType _actionType;
     bool _negation;
+    id _sourceListenerKey;
 }
 
 - (instancetype) initWithCell:(id<IWPLCell>) cell
                        source:(id<IWPLObservableData>) source
-                  bindingMode:(WPLBindingMode)bindingMode customAction:(WPLBindingCustomAction)customAction
+                 customAction:(WPLBindingCustomAction)customAction
                    actionType:(WPLBoolStateActionType) actionType
                      negation:(bool)negation {
-    self = [super initWithCell:cell source:source bindingMode:bindingMode customAction:customAction];
+    self = [super initWithCell:cell source:source bindingMode:(WPLBindingModeSOURCE_TO_VIEW) customAction:customAction];
     if(self!=nil) {
         _actionType = actionType;
         _negation = negation;
+        [self setBoolStateFromSource:source];
+        _sourceListenerKey = [source addValueChangedListener:self selector:@selector(onSourceValueChanged:)];
     }
     return self;
 }
@@ -38,10 +41,7 @@
     return _negation;
 }
 
-- (void) onSourceValueChanged:(id<IWPLObservableData>) source {
-    if(self.bindingMode!=WPLBindingModeSOURCE_TO_VIEW && self.bindingMode!=WPLBindingModeTWO_WAY) {
-        return;
-    }
+- (void) setBoolStateFromSource:(id<IWPLObservableData>) source {
     let v = (_negation) ? !source.boolValue : source.boolValue;
     switch(_actionType) {
         case WPLBoolStateActionTypeVISIBLE_COLLAPSED:
@@ -62,11 +62,18 @@
         default:
             return;
     }
+}
+
+- (void) onSourceValueChanged:(id<IWPLObservableData>) source {
+    [self setBoolStateFromSource:source];
     [self invokeCustomActionFromView:false];
 }
 
-- (void) onViewInputChanged:(id<IWPLCell>) cell {
-    // ignored
+- (void)dispose {
+    if(nil!=_sourceListenerKey) {
+        [self.source removeValueChangedListener:_sourceListenerKey];
+        _sourceListenerKey = nil;
+    }
 }
 
 @end

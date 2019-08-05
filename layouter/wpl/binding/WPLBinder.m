@@ -74,9 +74,8 @@
              withBoolStateOfCell:(id<IWPLCell>)cell
                       actionType:(WPLBoolStateActionType) actionType
                         negation:(bool) negation
-                     bindingMode:(WPLBindingMode)mode
                      customActin:(WPLBindingCustomAction)customAction {
-    let binding = [[WPLBoolStateBinding alloc] initWithCell:cell source:[self property:propKey] bindingMode:mode customAction:customAction actionType:actionType negation:negation];
+    let binding = [[WPLBoolStateBinding alloc] initWithCell:cell source:[self property:propKey] customAction:customAction actionType:actionType negation:negation];
     [self addBinding:binding];
     return binding;
 }

@@ -239,7 +239,7 @@ static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
             // グリッドカラムの高さ/幅が固定値で指定されている
             SET_FLOAT(sizes, pos, fval);
         } else if ([ex spanForCol:forCol] == 1) {  // span>1 のものは除外
-            SET_FLOAT(sizes, pos, MAX(fval, [ex sSizeForCol:forCol]));
+            SET_FLOAT(sizes, pos, MAX(GET_FLOAT(sizes, pos), MAX(fval, [ex sSizeForCol:forCol])));
         } else {
             span = true;
         }
@@ -415,8 +415,12 @@ static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
  * セルの位置・サイズ確定
  */
 - (void) layoutResolvedAt:(CGPoint)point inSize:(CGSize)size {
+    self.needsLayout = false;
+    if(self.visibility==WPLVisibilityCOLLAPSED) {
+        return;
+    }
+
     NSAssert(!self.needsLayoutChildren, @"layout must be calculated.");
-    
     // STRETCH の場合に、与えられたサイズを使って配置を再計算する
     MICSize viewSize(MICSize(size) - self.margin);
     if(viewSize.width!=_cachedSize.width && self.hAlignment == WPLCellAlignmentSTRETCH && self.requestViewSize.width == 0) {
@@ -428,7 +432,10 @@ static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
     if(_cachedSize.width==0||_cachedSize.height==0) {
         [self innerLayout:viewSize];
     }
-    self.needsLayout = false;
+    if (MICSize(_cachedSize) != self.view.frame.size) {
+        // [super layoutResolvedAt:] は、view のサイズから配置計算するので、その前に、viewのサイズを設定しておく
+        self.view.frame = MICRect(self.view.frame.origin, _cachedSize);
+    }
     [super layoutResolvedAt:point inSize:size];
 }
 @end

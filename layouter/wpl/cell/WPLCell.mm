@@ -43,6 +43,7 @@
         _extension = nil;
         _visibility = visibility;
         view.hidden = (_visibility != WPLVisibilityVISIBLE);
+        [self updateViewSizeOnRequested];
         _needsLayout = true;
     }
     return self;
@@ -82,12 +83,24 @@
     return _requestViewSize;
 }
 
+- (void) updateViewSizeOnRequested {
+    MICRect rc(self.view.frame);
+    if(self.requestViewSize.width>0) {
+        rc.size.width = self.requestViewSize.width;
+    }
+    if(self.requestViewSize.height>0) {
+        rc.size.height = self.requestViewSize.height;
+    }
+    self.view.frame = rc;
+}
+
 /**
  * セルサイズを指定（ゼロなら、viewのサイズに合わせて自動調節）
  */
 - (void) setRequestViewSize:(CGSize) size {
     if(MICSize(_requestViewSize)!=size) {
         _requestViewSize = size;
+        [self updateViewSizeOnRequested];
         self.needsLayout = true;
     }
 }
@@ -245,6 +258,10 @@
  * @param size サイズ
  */
 - (void) layoutResolvedAt:(CGPoint)point inSize:(CGSize)size {
+    self.needsLayout = false;
+    if(self.visibility==WPLVisibilityCOLLAPSED) {
+        return;
+    }
     var rect = MICRect(MICRect(point, size) - _margin);
     var viewRect = MICRect(rect);
     if(self.hAlignment!=WPLCellAlignmentSTRETCH) {
@@ -273,7 +290,6 @@
         }
     }
     
-    self.needsLayout = false;
     self.view.frame = viewRect;
 }
 
