@@ -62,6 +62,8 @@
         return ((UITextView*)view).text;
     } else if([view isKindOfClass:UITextField.class]) {
         return ((UITextField*)view).text;
+    } else if([view isKindOfClass:UIButton.class]) {
+        return [(UIButton*)view titleForState:UIControlStateNormal];
     } else {
         return nil;
     }
@@ -84,6 +86,8 @@
             ((UITextView*)view).text = v;
         } else if([view isKindOfClass:UITextField.class]) {
             ((UITextField*)view).text = v;
+        } else if([view isKindOfClass:UIButton.class]) {
+            return [(UIButton*)view setTitle:v forState:UIControlStateNormal];
         } else {
             return;
         }

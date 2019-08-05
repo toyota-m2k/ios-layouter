@@ -17,6 +17,8 @@
 
 - (id<IWPLObservableData>) property:(id)key;
 - (id) createPropertyWithValue:(id)initialValue withKey:(id) key;
+- (id) createDependentPropertyWithKey:(id)key sourceProc:(WPLSourceDelegateProc)proc dependsOn:(id)relations, ... NS_REQUIRES_NIL_TERMINATION;
+
 - (id) addProperty:(id<IWPLObservableData>) prop forKey:(id) key;
 
 - (void) removeProperty:(id)key;

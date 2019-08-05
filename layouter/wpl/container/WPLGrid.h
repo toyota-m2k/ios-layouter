@@ -39,7 +39,8 @@
                containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate;
 
 + (instancetype) newGridOfRows:(NSArray<NSNumber*>*) rowDefs
-                    andColumns:(NSArray<NSNumber*>*) colDefs;
+                    andColumns:(NSArray<NSNumber*>*) colDefs
+               requestViewSize:(CGSize) requestViewSize;
 
 - (void) addCell:(id<IWPLCell>)cell;
 - (void) addCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column;

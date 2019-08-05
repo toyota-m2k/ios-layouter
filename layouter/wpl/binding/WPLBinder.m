@@ -34,8 +34,24 @@
 }
 
 - (id) createPropertyWithValue:(id)initialValue withKey:(id) key {
-    let ov = [[WPLObservableMutableData alloc] init];
+    let ov = [WPLObservableMutableData new];
     ov.value = initialValue;
+    return [self addProperty:ov forKey:key];
+}
+
+- (id) createDependentPropertyWithKey:(id)key sourceProc:(WPLSourceDelegateProc)proc dependsOn:(id)relations, ... {
+    let ov = [WPLDelegatedObservableData newDataWithSourceBlock:proc];
+    
+    va_list args;
+    va_start(args, relations);
+    
+    id rel = relations;
+    while(nil!=rel) {
+        let ovr = _properties[rel];
+        if(ovr!=nil) {
+            [ovr addRelation:ov];
+        }
+    }
     return [self addProperty:ov forKey:key];
 }
 

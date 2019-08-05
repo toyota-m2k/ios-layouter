@@ -72,6 +72,7 @@
 		841AD85022F6611900F9AB7D /* WPLSwitchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD84F22F6611900F9AB7D /* WPLSwitchCell.m */; };
 		841AD85322F6722C00F9AB7D /* WPLBinder.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD85222F6722C00F9AB7D /* WPLBinder.m */; };
 		841AD85622F7BD7D00F9AB7D /* WPLBindingBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD85522F7BD7D00F9AB7D /* WPLBindingBase.m */; };
+		841AD85922F8104C00F9AB7D /* WPLGridSampleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD85822F8104C00F9AB7D /* WPLGridSampleViewController.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -232,6 +233,8 @@
 		841AD85222F6722C00F9AB7D /* WPLBinder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WPLBinder.m; sourceTree = "<group>"; };
 		841AD85422F7BD7D00F9AB7D /* WPLBindingBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLBindingBase.h; sourceTree = "<group>"; };
 		841AD85522F7BD7D00F9AB7D /* WPLBindingBase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WPLBindingBase.m; sourceTree = "<group>"; };
+		841AD85722F8104C00F9AB7D /* WPLGridSampleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGridSampleViewController.h; sourceTree = "<group>"; };
+		841AD85822F8104C00F9AB7D /* WPLGridSampleViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridSampleViewController.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -294,6 +297,8 @@
 				841AD74322EE93AE00F9AB7D /* main.m */,
 				841AD84B22F5B09C00F9AB7D /* WPLSampleView.h */,
 				841AD84C22F5B09C00F9AB7D /* WPLSampleView.mm */,
+				841AD85722F8104C00F9AB7D /* WPLGridSampleViewController.h */,
+				841AD85822F8104C00F9AB7D /* WPLGridSampleViewController.mm */,
 			);
 			path = layouterSample;
 			sourceTree = "<group>";
@@ -688,6 +693,7 @@
 				841AD7CF22EE93FA00F9AB7D /* MICAsync.m in Sources */,
 				841AD7D322EE93FA00F9AB7D /* MICMatrix.m in Sources */,
 				841AD7E322EE93FA00F9AB7D /* MICUiStatefulResource.m in Sources */,
+				841AD85922F8104C00F9AB7D /* WPLGridSampleViewController.mm in Sources */,
 				841AD7CB22EE93FA00F9AB7D /* MICQueue.m in Sources */,
 				841AD7E822EE93FA00F9AB7D /* MICUiSimpleLayoutView.mm in Sources */,
 				841AD74422EE93AE00F9AB7D /* main.m in Sources */,

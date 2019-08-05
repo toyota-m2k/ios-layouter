@@ -15,6 +15,7 @@
 #import "WPLObservableMutableData.h"
 #import "MICVar.h"
 #import "WPLBinder.h"
+#import "WPLGridSampleViewController.h"
 
 @implementation WPLSampleView {
     WPLStackPanel* _stackPanel;
@@ -38,6 +39,13 @@
                                                 orientation:WPLOrientationVERTICAL];
         [self addSubview:_stackPanel.view];
 
+        let btn1 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [btn1 setTitle:@"Grid Test" forState:UIControlStateNormal];
+        [btn1 addTarget:self action:@selector(changeTestMode:) forControlEvents:(UIControlEventTouchUpInside)];
+        [btn1 sizeToFit];
+        let btncell1 = [WPLCell newCellWithView:btn1 name:@"modeButton" margin:MICEdgeInsets() requestViewSize:MICSize() hAlignment:WPLCellAlignmentSTART vAlignment:WPLCellAlignmentSTART visibility:WPLVisibilityVISIBLE containerDelegate:nil];
+        [_stackPanel addCell:btncell1];
+        
         let sw1 = [[UISwitch alloc] init];
         [sw1 sizeToFit];
         sw1.on = true;
@@ -57,9 +65,30 @@
     return self;
 }
 
+- (UIViewController*) presentViewController {
+    UIResponder* responder = self;
+    while ((responder = responder.nextResponder)!=nil) {
+        if([responder isKindOfClass:UIViewController.class]) {
+            return (UIViewController*)responder;
+        }
+    }
+    return nil;
+}
+
+- (void) changeTestMode:(id)_ {
+    let viewController = self.presentViewController;
+    if(nil!=viewController) {
+//        [viewController presentationController]
+        let vc = [WPLGridSampleViewController new];
+        // [vc present]
+        
+        [viewController presentViewController:vc animated:true completion:nil];
+    }
+    
+}
+
 - (void) createGridContents {
-    let subGrid = [WPLGrid newGridOfRows:@[@(WPL_GRID_SIZING_AUTO),@(WPL_GRID_SIZING_AUTO),@(WPL_GRID_SIZING_AUTO)] andColumns:@[@(WPL_GRID_SIZING_AUTO),@(WPL_GRID_SIZING_AUTO),@(WPL_GRID_SIZING_STRETCH),@(WPL_GRID_SIZING_AUTO)]];
-    subGrid.requestViewSize = MICSize(300,0);
+    let subGrid = [WPLGrid newGridOfRows:@[@(WPL_GRID_SIZING_AUTO),@(WPL_GRID_SIZING_AUTO),@(WPL_GRID_SIZING_AUTO)] andColumns:@[@(WPL_GRID_SIZING_AUTO),@(WPL_GRID_SIZING_AUTO),@(WPL_GRID_SIZING_STRETCH),@(WPL_GRID_SIZING_AUTO)] requestViewSize:MICSize(300,0)];
     subGrid.view.backgroundColor = UIColor.yellowColor;
     [_stackPanel addCell:subGrid];
     [_binder bindProperty:@"StackVisibility" withBoolStateOfCell:subGrid actionType:(WPLBoolStateActionTypeVISIBLE_COLLAPSED) negation:true customActin:nil];

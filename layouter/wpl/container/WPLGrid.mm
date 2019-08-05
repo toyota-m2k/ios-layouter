@@ -106,6 +106,10 @@ static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
     CGSize _cachedSize;
 }
 
+static NSArray<NSNumber*>* s_single_def_auto = @[@(0)];
+static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
+
+
 - (instancetype) initWithView:(UIView*)view
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin
@@ -122,10 +126,15 @@ static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
     self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
     if(nil!=self) {
         _cachedSize = MICSize();
-        _rowDefs = (rowDefs!=nil) ? rowDefs : @[@(0)];
-        _colDefs = (colDefs!=nil) ? colDefs : @[@(0)];
         
-        _columnWidths = zeroArray(colDefs.count);
+        // row/column definitions が省略されているときは、１x１グリッドとして定義を自動生成
+        // このとき、requestViewSizeが固定サイズなら、それに合わせて中身を伸縮（stretch)
+        //         requestViewSize == 0 （auto) なら、中身のサイズを変えずに、Gridの方を伸縮する。
+        // この動作を変更したければ、１x１でも、明示的に、row/column definitions を指定すること。
+        _rowDefs = (rowDefs!=nil&&rowDefs.count>0) ? rowDefs : (requestViewSize.height>0 ? s_single_def_stretch : s_single_def_auto);
+        _colDefs = (colDefs!=nil&&colDefs.count>0) ? colDefs : (requestViewSize.width>0  ? s_single_def_stretch : s_single_def_auto);
+        
+        _columnWidths = zeroArray(_colDefs.count);
         _rowHeights = zeroArray(_rowDefs.count);
     }
     return self;
@@ -147,8 +156,23 @@ static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
 }
 
 + (instancetype) newGridOfRows:(NSArray<NSNumber*>*) rowDefs
-                    andColumns:(NSArray<NSNumber*>*) colDefs {
-    return [self newGridWithView:nil name:@"" margin:MICEdgeInsets() requestViewSize:MICSize() hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE) rowDefs:rowDefs colDefs:colDefs containerDelegate:nil];
+                    andColumns:(NSArray<NSNumber*>*) colDefs
+               requestViewSize:(CGSize) requestViewSize {
+    return [self newGridWithView:nil name:@"" margin:MICEdgeInsets() requestViewSize:requestViewSize hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE) rowDefs:rowDefs colDefs:colDefs containerDelegate:nil];
+}
+
+- (void)setRequestViewSize:(CGSize)requestViewSize {
+    if(MICSize(requestViewSize)!=self.requestViewSize) {
+        // 自動生成された row/column definitions があれば、initWithView内のコメントに合致するように更新する
+        if(self.rows==1 && (_rowDefs==s_single_def_stretch||_rowDefs==s_single_def_auto)) {
+            _rowDefs = requestViewSize.height>0 ? s_single_def_stretch : s_single_def_auto;
+        }
+        if(self.columns==1 && (_colDefs==s_single_def_stretch||_colDefs==s_single_def_auto)) {
+            _colDefs = requestViewSize.width>0  ? s_single_def_stretch : s_single_def_auto;
+        }
+
+        [super setRequestViewSize:requestViewSize];
+    }
 }
 
 // 行数
@@ -218,8 +242,12 @@ static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
     _cachedSize.height = 0;
     for(id<IWPLCell> c in self.cells) {
         var ex = EXT(c);
-        ex.size = [c calcMinSizeForRegulatingWidth:(ex.colSpan>1) ? 0 : GET_FLOAT(_colDefs, ex.column)
-                               andRegulatingHeight:(ex.rowSpan>1) ? 0 : GET_FLOAT(_rowDefs, ex.row) ];
+        if(c.visibility!=WPLVisibilityCOLLAPSED) {
+            ex.size = [c calcMinSizeForRegulatingWidth:(ex.colSpan>1) ? 0 : GET_FLOAT(_colDefs, ex.column)
+                                   andRegulatingHeight:(ex.rowSpan>1) ? 0 : GET_FLOAT(_rowDefs, ex.row) ];
+        } else {
+            ex.size = MICSize();
+        }
     }
 }
 
@@ -231,6 +259,9 @@ static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
     let defs = (forCol) ? _colDefs : _rowDefs;
     bool span = false;
     for(id<IWPLCell> c in self.cells) {
+        if(c.visibility==WPLVisibilityCOLLAPSED) {
+            continue;
+        }
         let ex = EXT(c);
         NSInteger pos = [ex posForCol:forCol];
         
@@ -248,7 +279,7 @@ static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
 }
 
 /**
-* STRETCHs指定のセル幅を計算する
+* STRETCH指定のセル幅を計算する
 *
 * fixWidth/Height が有効な場合は、stretchedでないセルのサイズ（pass2で計算）を除いた残りの領域から比例配分する
 * それ以外の場合は、比例配分した結果がpass2で計算された幅すべて収まる最小サイズになるよう調整する
@@ -302,6 +333,9 @@ static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
 - (void) pass4_calcSpannedCellsForCol:(bool)forCol sizes:(NSMutableArray<NSNumber*>*) sizes fix:(CGFloat)fix {
     bool expansion = false;
     for(id<IWPLCell> c in self.cells) {
+        if(c.visibility == WPLVisibilityCOLLAPSED) {
+            continue;
+        }
         let ex = EXT(c);
         NSInteger span = [ex spanForCol:forCol];
         if(span>1) {
