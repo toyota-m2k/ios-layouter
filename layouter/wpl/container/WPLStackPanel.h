@@ -15,6 +15,62 @@ typedef enum _WPLOrientation {
     WPLOrientationVERTICAL,
 } WPLOrientation;
 
+#if defined(__cplusplus)
+
+class WPLStackPanelParams : public WPLCellParams {
+public:
+    WPLOrientation _orientation;
+    WPLStackPanelParams(WPLOrientation orientation=WPLOrientationVERTICAL, MICEdgeInsets margin=MICEdgeInsets(), MICSize requestViewSize=MICSize(), WPLAlignment align=WPLAlignment(), WPLVisibility visibility=WPLVisibilityVISIBLE)
+    : WPLCellParams(margin,requestViewSize,align,visibility)
+    , _orientation(orientation) {}
+    
+    WPLStackPanelParams(const WPLStackPanelParams& src)
+    : WPLCellParams(src)
+    , _orientation(src._orientation) {}
+    
+    // builder style methods ----
+    
+    WPLStackPanelParams& margin(const UIEdgeInsets& v) {
+        _margin = v;
+        return *this;
+    }
+    WPLStackPanelParams& requestViewSize(const CGSize& v) {
+        _requestViewSize = v;
+        return *this;
+    }
+    WPLStackPanelParams& requestViewSize(CGFloat width, CGFloat height) {
+        _requestViewSize = MICSize(width, height);
+        return *this;
+    }
+    WPLStackPanelParams& align(const WPLAlignment& v) {
+        _align = v;
+        return *this;
+    }
+
+    WPLStackPanelParams& horzAlign(const WPLCellAlignment v) {
+        _align.horz = v;
+        return *this;
+    }
+    
+    WPLStackPanelParams& vertAlign(const WPLCellAlignment v) {
+        _align.vert = v;
+        return *this;
+    }
+
+    WPLStackPanelParams& visibility(const WPLVisibility v) {
+        _visibility = v;
+        return *this;
+    }
+
+    WPLStackPanelParams& orientation(const WPLOrientation v) {
+        _orientation = v;
+        return *this;
+    }
+};
+
+#endif
+
+
 
 /**
  * StackPanel セル-コンテナ クラス
@@ -22,6 +78,9 @@ typedef enum _WPLOrientation {
 @interface WPLStackPanel : WPLContainerCell
 @property (nonatomic, readonly) WPLOrientation orientation;
 
+/**
+ * StackPanel の正統なコンストラクタ
+ */
 - (instancetype) initWithView:(UIView*)view
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin
@@ -32,17 +91,37 @@ typedef enum _WPLOrientation {
             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
                   orientation:(WPLOrientation) orientation;
 
-+ (instancetype) stackPanelViewWithName:(NSString*) name
-                                 margin:(UIEdgeInsets) margin
-                        requestViewSize:(CGSize) requestViewSize
-                             hAlignment:(WPLCellAlignment)hAlignment
-                             vAlignment:(WPLCellAlignment)vAlignment
-                             visibility:(WPLVisibility)visibility
-                      containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
-                            orientation:(WPLOrientation) orientation;
+/**
+ * インスタンス生成ヘルパー
+ * StackPanel用のUIViewは、自動的に作成され、superviewにaddSubviewされる。
+ */
++ (instancetype) stackPanelWithName:(NSString*) name
+                             margin:(UIEdgeInsets) margin
+                    requestViewSize:(CGSize) requestViewSize
+                         hAlignment:(WPLCellAlignment)hAlignment
+                         vAlignment:(WPLCellAlignment)vAlignment
+                         visibility:(WPLVisibility)visibility
+                  containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
+                        orientation:(WPLOrientation) orientation
+                          superview:(UIView*)superview;
 
-+ (instancetype)stackPanelViewWithName:(NSString*) name
-                           orientation:(WPLOrientation)orientation
-                            xalignment:(WPLCellAlignment)xalignment
-                     containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate;
+#if defined(__cplusplus)
+/**
+ * C++版インスタンス生成ヘルパー
+ * (Root Container 用）
+ */
++ (instancetype) stackPanelWithName:(NSString*) name
+                             params:(const WPLStackPanelParams&)params
+                          superview:(UIView*)superview
+                  containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate;
+
+/**
+ * C++版インスタンス生成ヘルパー
+ * (Sub-Container 用）
+ */
++ (instancetype) stackPanelWithName:(NSString*) name
+                             params:(const WPLStackPanelParams&)params;
+
+#endif
+
 @end

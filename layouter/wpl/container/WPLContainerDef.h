@@ -52,3 +52,5 @@
      */
     - (id<IWPLCell>) findByView:(UIView*) view;
 @end
+
+

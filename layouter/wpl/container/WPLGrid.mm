@@ -109,7 +109,23 @@ static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
 static NSArray<NSNumber*>* s_single_def_auto = @[@(0)];
 static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 
+/**
+ * WPLCell.initWithView のオーバーライド
+ */
+- (instancetype) initWithView:(UIView *)view
+                         name:(NSString *)name
+                       margin:(UIEdgeInsets)margin
+              requestViewSize:(CGSize)requestViewSize
+                   hAlignment:(WPLCellAlignment)hAlignment
+                   vAlignment:(WPLCellAlignment)vAlignment
+                   visibility:(WPLVisibility)visibility
+            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
+    return [self initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate rowDefs:nil colDefs:nil];
+}
 
+/**
+ * Gridの正統なコンストラクタ
+ */
 - (instancetype) initWithView:(UIView*)view
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin
@@ -120,9 +136,6 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
                       rowDefs:(NSArray<NSNumber*>*) rowDefs
                       colDefs:(NSArray<NSNumber*>*) colDefs {
-    if(nil==view) {
-        view = [UIView new];
-    }
     self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
     if(nil!=self) {
         _cachedSize = MICSize();
@@ -140,27 +153,52 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     return self;
 }
 
-+ (instancetype) newGridWithView:(UIView*)view
-                            name:(NSString*) name
-                          margin:(UIEdgeInsets) margin
-                 requestViewSize:(CGSize) requestViewSize
-                      hAlignment:(WPLCellAlignment)hAlignment
-                      vAlignment:(WPLCellAlignment)vAlignment
-                      visibility:(WPLVisibility)visibility
-                         rowDefs:(NSArray<NSNumber*>*) rowDefs
-                         colDefs:(NSArray<NSNumber*>*) colDefs
-               containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
+/**
+ * インスタンス生成ヘルパー
+ * Grid用UIViewを自動生成して、superviewにaddSubviewする。
+ */
++ (instancetype) gridWithName:(NSString*) name
+                       margin:(UIEdgeInsets) margin
+              requestViewSize:(CGSize) requestViewSize
+                   hAlignment:(WPLCellAlignment)hAlignment
+                   vAlignment:(WPLCellAlignment)vAlignment
+                   visibility:(WPLVisibility)visibility
+            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
+                      rowDefs:(NSArray<NSNumber*>*) rowDefs
+                      colDefs:(NSArray<NSNumber*>*) colDefs
+                    superview:(UIView*)superview{
+    let view = [UIView new];
+    if(nil!=superview) {
+        [superview addSubview:view];
+    }
     return [[WPLGrid alloc] initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment
                               vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate rowDefs:rowDefs colDefs:colDefs];
-    
 }
 
-+ (instancetype) newGridOfRows:(NSArray<NSNumber*>*) rowDefs
-                    andColumns:(NSArray<NSNumber*>*) colDefs
-               requestViewSize:(CGSize) requestViewSize {
-    return [self newGridWithView:nil name:@"" margin:MICEdgeInsets() requestViewSize:requestViewSize hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE) rowDefs:rowDefs colDefs:colDefs containerDelegate:nil];
+/**
+ * C++用インスタンス生成ヘルパー
+ * Grid用UIViewを自動生成して、superviewにaddSubviewする。
+ * (Root Container用）
+ */
++ (instancetype) gridWithName:(NSString*) name
+                       params:(const WPLGridParams&) params
+                         superview:(UIView*)superview
+                 containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
+    return [self gridWithName:name margin:params._margin requestViewSize:params._requestViewSize hAlignment:params._align.horz vAlignment:params._align.vert visibility:params._visibility containerDelegate:containerDelegate rowDefs:params._dimension.rowDefs colDefs:params._dimension.colDefs superview:superview];
 }
 
+/**
+ * C++版インスタンス生成ヘルパー
+ * (Sub-Container 用）
+ */
++ (instancetype) gridWithName:(NSString*) name
+                       params:(const WPLGridParams&) params {
+    return [self gridWithName:name params:params superview:nil containerDelegate:nil];
+}
+
+/**
+ * requestViewSize プロパティのセッターをオーバーライド
+ */
 - (void)setRequestViewSize:(CGSize)requestViewSize {
     if(MICSize(requestViewSize)!=self.requestViewSize) {
         // 自動生成された row/column definitions があれば、initWithView内のコメントに合致するように更新する

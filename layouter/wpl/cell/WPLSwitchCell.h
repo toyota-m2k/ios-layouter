@@ -10,21 +10,5 @@
 
 @interface WPLSwitchCell : WPLValueCell
 
-- (instancetype) initWithView:(UISwitch*)view
-                         name:(NSString*) name
-                       margin:(UIEdgeInsets) margin
-              requestViewSize:(CGSize) requestViewSize
-                   hAlignment:(WPLCellAlignment)hAlignment
-                   vAlignment:(WPLCellAlignment)vAlignment
-                   visibility:(WPLVisibility)visibility;
-
-+ (instancetype) newCellWithSwitchView:(UISwitch*)switchView
-                                  name:(NSString*) name
-                                margin:(UIEdgeInsets) margin
-                       requestViewSize:(CGSize) requestViewSize
-                            hAlignment:(WPLCellAlignment)hAlignment
-                            vAlignment:(WPLCellAlignment)vAlignment
-                            visibility:(WPLVisibility)visibility;
-
 @end
 

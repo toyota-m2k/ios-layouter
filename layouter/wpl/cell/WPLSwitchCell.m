@@ -11,31 +11,23 @@
 
 @implementation WPLSwitchCell
 
-- (instancetype) initWithView:(UISwitch*)view
+- (instancetype) initWithView:(UIView*)view
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin
               requestViewSize:(CGSize) requestViewSize
                    hAlignment:(WPLCellAlignment)hAlignment
                    vAlignment:(WPLCellAlignment)vAlignment
-                   visibility:(WPLVisibility)visibility {
+                   visibility:(WPLVisibility)visibility
+            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
     if(nil==view) {
         view = [[UISwitch alloc] init];
     }
+    NSAssert([view isKindOfClass:UISwitch.class], @"WPLSwitchCell: view must be instance of UISwitch");
     self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:nil];
     if(nil!=self) {
-        [view addTarget:self action:@selector(onSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+        [(UISwitch*)view addTarget:self action:@selector(onSwitchChanged:) forControlEvents:UIControlEventValueChanged];
     }
     return self;
-}
-
-+ (instancetype) newCellWithSwitchView:(UISwitch*)switchView
-                                name:(NSString*) name
-                              margin:(UIEdgeInsets) margin
-                     requestViewSize:(CGSize) requestViewSize
-                          hAlignment:(WPLCellAlignment)hAlignment
-                          vAlignment:(WPLCellAlignment)vAlignment
-                          visibility:(WPLVisibility)visibility {
-    return [[WPLSwitchCell alloc] initWithView:switchView name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility];
 }
 
 - (id) value {

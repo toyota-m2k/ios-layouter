@@ -24,13 +24,4 @@
  */
 @property (nonatomic) NSArray<id<IWPLCell>>* cells;
 
-- (instancetype) initWithView:(UIView*)view
-                         name:(NSString*) name
-                       margin:(UIEdgeInsets) margin
-              requestViewSize:(CGSize) requestViewSize
-                   hAlignment:(WPLCellAlignment)hAlignment
-                   vAlignment:(WPLCellAlignment)vAlignment
-                   visibility:(WPLVisibility)visibility
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate;
-
 @end

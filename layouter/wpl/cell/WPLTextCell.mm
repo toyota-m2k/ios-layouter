@@ -16,14 +16,19 @@
 @implementation WPLTextCell {
     bool _textFieldReadOnly;
 }
+
+/**
+ * 完全な初期化
+ */
 - (instancetype) initWithView:(UIView*)view
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin
               requestViewSize:(CGSize) requestViewSize
                    hAlignment:(WPLCellAlignment)hAlignment
                    vAlignment:(WPLCellAlignment)vAlignment
-                   visibility:(WPLVisibility)visibility {
-    self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:nil];
+                   visibility:(WPLVisibility)visibility
+            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
+    self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
     if(nil!=self) {
         _textFieldReadOnly = false;
         if([view isKindOfClass:UITextView.class]) {
@@ -33,25 +38,6 @@
         }
     }
     return self;
-}
-
-+ (instancetype) newCellWithTextView:(UITextView*)textView
-                                name:(NSString*) name
-                              margin:(UIEdgeInsets) margin
-                     requestViewSize:(CGSize) requestViewSize
-                          hAlignment:(WPLCellAlignment)hAlignment
-                          vAlignment:(WPLCellAlignment)vAlignment
-                          visibility:(WPLVisibility)visibility {
-    return [[WPLTextCell alloc] initWithView:textView name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility];
-}
-
-+ (instancetype) newTextViewCellWithName:(NSString*) name
-                                  margin:(UIEdgeInsets) margin
-                         requestViewSize:(CGSize) requestViewSize
-                              hAlignment:(WPLCellAlignment)hAlignment
-                              vAlignment:(WPLCellAlignment)vAlignment
-                              visibility:(WPLVisibility)visibility {
-    return [self newCellWithTextView:[[UITextView alloc] init] name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility];
 }
 
 - (id) value {
