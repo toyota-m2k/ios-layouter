@@ -29,27 +29,22 @@
         _binder = [WPLBinder new];
         
         //self.backgroundColor = UIColor.greenColor;
-        _stackPanel = [WPLStackPanel stackPanelViewWithName:@"rootStackPanel"
-                                                     margin:MICEdgeInsets()
-                                            requestViewSize:MICSize()
-                                                 hAlignment:WPLCellAlignmentCENTER
-                                                 vAlignment:WPLCellAlignmentCENTER
-                                                 visibility:WPLVisibilityVISIBLE
-                                          containerDelegate:self
-                                                orientation:WPLOrientationVERTICAL];
-        [self addSubview:_stackPanel.view];
+        _stackPanel = [WPLStackPanel stackPanelWithName:@"rootStackPanel"
+                                                 params:WPLStackPanelParams().align(WPLAlignment(WPLCellAlignmentCENTER))
+                                              superview:self
+                                      containerDelegate:self];
 
         let btn1 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         [btn1 setTitle:@"Grid Test" forState:UIControlStateNormal];
         [btn1 addTarget:self action:@selector(changeTestMode:) forControlEvents:(UIControlEventTouchUpInside)];
         [btn1 sizeToFit];
-        let btncell1 = [WPLCell newCellWithView:btn1 name:@"modeButton" margin:MICEdgeInsets() requestViewSize:MICSize() hAlignment:WPLCellAlignmentSTART vAlignment:WPLCellAlignmentSTART visibility:WPLVisibilityVISIBLE containerDelegate:nil];
+        let btncell1 = [WPLCell newCellWithView:btn1 name:@"modeButton" margin:MICEdgeInsets() requestViewSize:MICSize() hAlignment:WPLCellAlignmentSTART vAlignment:WPLCellAlignmentSTART visibility:WPLVisibilityVISIBLE];
         [_stackPanel addCell:btncell1];
         
         let sw1 = [[UISwitch alloc] init];
         [sw1 sizeToFit];
         sw1.on = true;
-        let swcell1 = [WPLSwitchCell newCellWithSwitchView:sw1 name:@"no1-switch" margin:MICEdgeInsets(0,0,0,20) requestViewSize:MICSize() hAlignment:(WPLCellAlignmentSTART) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE)];
+        let swcell1 = [WPLSwitchCell newCellWithView:sw1 name:@"no1-switch" margin:MICEdgeInsets(0,0,0,20) requestViewSize:MICSize() hAlignment:(WPLCellAlignmentSTART) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE)];
         [_stackPanel addCell:swcell1];
 
         [_binder createPropertyWithValue:@true withKey:@"StackVisibility"];
@@ -88,63 +83,64 @@
 }
 
 - (void) createGridContents {
-    let subGrid = [WPLGrid newGridOfRows:@[@(WPL_GRID_SIZING_AUTO),@(WPL_GRID_SIZING_AUTO),@(WPL_GRID_SIZING_AUTO)] andColumns:@[@(WPL_GRID_SIZING_AUTO),@(WPL_GRID_SIZING_AUTO),@(WPL_GRID_SIZING_STRETCH),@(WPL_GRID_SIZING_AUTO)] requestViewSize:MICSize(300,0)];
+    let subGrid = [WPLGrid gridWithName:@"subGrid"
+                                 params:WPLGridParams().requestViewSize(MICSize(300,0))
+                                                       .colDefs(@[@(WPL_GRID_SIZING_AUTO),@(WPL_GRID_SIZING_AUTO),@(WPL_GRID_SIZING_STRETCH),@(WPL_GRID_SIZING_AUTO)])
+                                                       .rowDefs(@[@(WPL_GRID_SIZING_AUTO),@(WPL_GRID_SIZING_AUTO),@(WPL_GRID_SIZING_AUTO)])
+                              superview:nil
+                      containerDelegate:nil];
     subGrid.view.backgroundColor = UIColor.yellowColor;
     [_stackPanel addCell:subGrid];
     [_binder bindProperty:@"StackVisibility" withBoolStateOfCell:subGrid actionType:(WPLBoolStateActionTypeVISIBLE_COLLAPSED) negation:true customActin:nil];
     
     let v1 = [[UIView alloc] init];
     v1.backgroundColor = UIColor.greenColor;
-    let vc1 = [WPLCell newCellWithView:v1 name:@"gv1" margin:MICEdgeInsets(0,0,5,0) requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE) containerDelegate:nil];
+    let vc1 = [WPLCell newCellWithView:v1 name:@"gv1" margin:MICEdgeInsets(0,0,5,0) requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE)];
     [subGrid addCell:vc1];
 
     let v2 = [[UIView alloc] init];
     v2.backgroundColor = UIColor.cyanColor;
-    let vc2 = [WPLCell newCellWithView:v2 name:@"gv2" margin:MICEdgeInsets(0,0,5,0) requestViewSize:MICSize(20,40) hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE) containerDelegate:nil];
+    let vc2 = [WPLCell newCellWithView:v2 name:@"gv2" margin:MICEdgeInsets(0,0,5,0) requestViewSize:MICSize(20,40) hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE)];
     [subGrid addCell:vc2 row:0 column:1];
     
     let v3 = [[UIView alloc] init];
     v3.backgroundColor = UIColor.greenColor;
-    let vc3 = [WPLCell newCellWithView:v3 name:@"gv3" margin:MICEdgeInsets(0,0,0,0) requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentSTRETCH) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE) containerDelegate:nil];
+    let vc3 = [WPLCell newCellWithView:v3 name:@"gv3" margin:MICEdgeInsets(0,0,0,0) requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentSTRETCH) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE)];
     [subGrid addCell:vc3 row:0 column:2];
 
     let v11 = [[UIView alloc] init];
     v11.backgroundColor = UIColor.greenColor;
-    let vc11 = [WPLCell newCellWithView:v11 name:@"gv11" margin:MICEdgeInsets(0,10,5,0) requestViewSize:MICSize(20,0) hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentSTRETCH) visibility:(WPLVisibilityVISIBLE) containerDelegate:nil];
+    let vc11 = [WPLCell newCellWithView:v11 name:@"gv11" margin:MICEdgeInsets(0,10,5,0) requestViewSize:MICSize(20,0) hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentSTRETCH) visibility:(WPLVisibilityVISIBLE)];
     [subGrid addCell:vc11 row:1 column:0 rowSpan:2 colSpan:1];
     
     let v12 = [[UIView alloc] init];
     v12.backgroundColor = UIColor.blueColor;
-    let vc12 = [WPLCell newCellWithView:v12 name:@"gv12" margin:MICEdgeInsets(0,10,5,0) requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE) containerDelegate:nil];
+    let vc12 = [WPLCell newCellWithView:v12 name:@"gv12" margin:MICEdgeInsets(0,10,5,0) requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE)];
     [subGrid addCell:vc12 row:1 column:1];
     
     let v13 = [[UIView alloc] init];
     v13.backgroundColor = UIColor.redColor;
-    let vc13 = [WPLCell newCellWithView:v13 name:@"gv13" margin:MICEdgeInsets(0,10,0,0) requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentSTRETCH) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE) containerDelegate:nil];
+    let vc13 = [WPLCell newCellWithView:v13 name:@"gv13" margin:MICEdgeInsets(0,10,0,0) requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentSTRETCH) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE)];
     [subGrid addCell:vc13 row:1 column:2];
 
     
     let v24 = [[UIView alloc] init];
     v24.backgroundColor = UIColor.blueColor;
-    let vc24 = [WPLCell newCellWithView:v24 name:@"gv24" margin:MICEdgeInsets(5,10,0,0) requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE) containerDelegate:nil];
+    let vc24 = [WPLCell newCellWithView:v24 name:@"gv24" margin:MICEdgeInsets(5,10,0,0) requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE)];
     [subGrid addCell:vc24 row:2 column:3];
 
     let v22 = [[UIView alloc] init];
     v22.backgroundColor = UIColor.orangeColor;
-    let vc22 = [WPLCell newCellWithView:v22 name:@"gv22" margin:MICEdgeInsets(0,10,0,0) requestViewSize:MICSize(0,20) hAlignment:(WPLCellAlignmentSTRETCH) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE) containerDelegate:nil];
+    let vc22 = [WPLCell newCellWithView:v22 name:@"gv22" margin:MICEdgeInsets(0,10,0,0) requestViewSize:MICSize(0,20) hAlignment:(WPLCellAlignmentSTRETCH) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE)];
     [subGrid addCell:vc22 row:2 column:1 rowSpan:1 colSpan:2];
 
 }
 
 - (void) createStackPanelContents {
-    let subStackPanel = [WPLStackPanel stackPanelViewWithName:@"subStackPanel"
-                                                       margin:MICEdgeInsets()
-                                              requestViewSize:MICSize()
-                                                   hAlignment:WPLCellAlignmentCENTER
-                                                   vAlignment:WPLCellAlignmentCENTER
-                                                   visibility:WPLVisibilityVISIBLE
-                                            containerDelegate:self
-                                                  orientation:WPLOrientationVERTICAL];
+    let subStackPanel = [WPLStackPanel stackPanelWithName:@"subStackPanel"
+                                                   params:WPLStackPanelParams().align(WPLAlignment(WPLCellAlignmentCENTER))
+                                                superview:nil
+                                        containerDelegate:nil];
     
     [_stackPanel addCell:subStackPanel];
     [_binder bindProperty:@"StackVisibility" withBoolStateOfCell:subStackPanel actionType:(WPLBoolStateActionTypeVISIBLE_COLLAPSED) negation:false customActin:nil];
@@ -155,16 +151,16 @@
     tv1.text = @"";
     tv1.backgroundColor = UIColor.cyanColor;
     
-    let tcell1 = [WPLTextCell newCellWithTextView:tv1 name:@"no1-text" margin:UIEdgeInsets() requestViewSize:MICSize(200,0) hAlignment:WPLCellAlignmentEND vAlignment:WPLCellAlignmentSTART visibility:WPLVisibilityVISIBLE];
+    let tcell1 = [WPLTextCell newCellWithView:tv1 name:@"no1-text" margin:UIEdgeInsets() requestViewSize:MICSize(200,0) hAlignment:WPLCellAlignmentEND vAlignment:WPLCellAlignmentSTART visibility:WPLVisibilityVISIBLE];
     
     let tv2 = [[UITextView alloc] initWithFrame:MICRect(0,0, 300, tv1.frame.size.height)];
     tv2.backgroundColor = UIColor.blueColor;
     
-    let tcell2 = [WPLTextCell newCellWithTextView:tv2 name:@"no2-text" margin:MICEdgeInsets(0,20,0,0) requestViewSize:MICSize(0,0) hAlignment:WPLCellAlignmentSTART vAlignment:WPLCellAlignmentSTART visibility:WPLVisibilityVISIBLE];
+    let tcell2 = [WPLTextCell newCellWithView:tv2 name:@"no2-text" margin:MICEdgeInsets(0,20,0,0) requestViewSize:MICSize(0,0) hAlignment:WPLCellAlignmentSTART vAlignment:WPLCellAlignmentSTART visibility:WPLVisibilityVISIBLE];
     
     let tv3 = [[UITextView alloc] initWithFrame:MICRect(0,0, 150, tv1.frame.size.height)];
     tv3.backgroundColor = UIColor.redColor;
-    let tcell3 = [WPLTextCell newCellWithTextView:tv3 name:@"no3-text" margin:MICEdgeInsets(0,20,0,0) requestViewSize:MICSize(0,0) hAlignment:WPLCellAlignmentSTRETCH vAlignment:WPLCellAlignmentSTART visibility:WPLVisibilityVISIBLE];
+    let tcell3 = [WPLTextCell newCellWithView:tv3 name:@"no3-text" margin:MICEdgeInsets(0,20,0,0) requestViewSize:MICSize(0,0) hAlignment:WPLCellAlignmentSTRETCH vAlignment:WPLCellAlignmentSTART visibility:WPLVisibilityVISIBLE];
     
     [_binder createPropertyWithValue:@"initial value" withKey:@"text1"];
     [_binder bindProperty:@"text1" withValueOfCell:tcell1 bindingMode:(WPLBindingModeTWO_WAY) customActin:nil];
@@ -174,28 +170,34 @@
     [subStackPanel addCell:tcell1];
     [subStackPanel addCell:tcell2];
     [subStackPanel addCell:tcell3];
+
+    let innerPanel = [WPLStackPanel stackPanelWithName:@"innerStackPanel"
+                                                params:WPLStackPanelParams()
+                                                        .margin(MICEdgeInsets(0,20,0,0))
+                                                        .orientation(WPLOrientationHORIZONTAL)
+                                             superview:nil containerDelegate:nil];
     
-    let innerPanel = [WPLStackPanel stackPanelViewWithName:@"innerStackPanel"
-                                                    margin:MICEdgeInsets(0,20,0,0)
-                                           requestViewSize:MICSize()
-                                                hAlignment:WPLCellAlignmentCENTER
-                                                vAlignment:WPLCellAlignmentCENTER
-                                                visibility:WPLVisibilityVISIBLE
-                                         containerDelegate:self
-                                               orientation:WPLOrientationHORIZONTAL];
+//    let innerPanel = [WPLStackPanel stackPanelViewWithName:@"innerStackPanel"∫
+//                                                    margin:MICEdgeInsets(0,20,0,0)
+//                                           requestViewSize:MICSize()
+//                                                hAlignment:WPLCellAlignmentCENTER
+//                                                vAlignment:WPLCellAlignmentCENTER
+//                                                visibility:WPLVisibilityVISIBLE
+//                                         containerDelegate:self
+//                                               orientation:WPLOrientationHORIZONTAL];
     [subStackPanel addCell:innerPanel];
     
     let v1 = [[UIView alloc] init];
     v1.backgroundColor = UIColor.purpleColor;
-    let vc1 = [WPLCell newCellWithView:v1 name:@"v1" margin:MICEdgeInsets(0,0,5,0) requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE) containerDelegate:nil];
+    let vc1 = [WPLCell newCellWithView:v1 name:@"v1" margin:MICEdgeInsets(0,0,5,0) requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE)];
     [innerPanel addCell:vc1];
     let v2 = [[UIView alloc] init];
     v2.backgroundColor = UIColor.purpleColor;
-    let vc2 = [WPLCell newCellWithView:v2 name:@"v2" margin:MICEdgeInsets(0,0,5,0) requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE) containerDelegate:nil];
+    let vc2 = [WPLCell newCellWithView:v2 name:@"v2" margin:MICEdgeInsets(0,0,5,0) requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE)];
     [innerPanel addCell:vc2];
     let v3 = [[UIView alloc] init];
     v3.backgroundColor = UIColor.purpleColor;
-    let vc3 = [WPLCell newCellWithView:v3 name:@"v3" margin:MICEdgeInsets() requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE) containerDelegate:nil];
+    let vc3 = [WPLCell newCellWithView:v3 name:@"v3" margin:MICEdgeInsets() requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE)];
     [innerPanel addCell:vc3];
     
 }

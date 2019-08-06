@@ -13,15 +13,6 @@
  */
 @interface WPLValueCell : WPLCell<IWPLCellSupportValue>
 
-- (instancetype) initWithView:(UIView*)view
-                         name:(NSString*) name
-                       margin:(UIEdgeInsets) margin
-              requestViewSize:(CGSize) requestViewSize
-                   hAlignment:(WPLCellAlignment)hAlignment
-                   vAlignment:(WPLCellAlignment)vAlignment
-                   visibility:(WPLVisibility)visibility
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate;
-
 // @protected
 - (void) onValueChanged;
 

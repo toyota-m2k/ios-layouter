@@ -22,7 +22,9 @@
 
 @synthesize containerDelegate = _containerDelegate, name = _name, extension = _extension, view = _view;
 
-
+/**
+ * 完全な初期化
+ */
 - (instancetype) initWithView:(UIView*)view
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin
@@ -49,16 +51,28 @@
     return self;
 }
 
+/**
+ * インスタンス生成ヘルパー
+ * 通常、containerDelegate は、ContainerCellへの addCell で設定されるため、ここでは nil にしておく。
+ */
 + (instancetype) newCellWithView:(UIView*)view
                             name:(NSString*) name
                           margin:(UIEdgeInsets) margin
                  requestViewSize:(CGSize) requestViewSize
                       hAlignment:(WPLCellAlignment)hAlignment
                       vAlignment:(WPLCellAlignment)vAlignment
-                      visibility:(WPLVisibility)visibility
-               containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
+                      visibility:(WPLVisibility)visibility {
     
-    return [[WPLCell alloc] initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
+    return [[self alloc] initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:nil];
+}
+
+/**
+ * C＋＋版　インスタンス生成ヘルパー
+ */
++ (instancetype)newCellWithView:(UIView *)view
+                           name:(NSString *)name
+                         params:(const WPLCellParams&)params {
+    return [[self alloc] initWithView:view name:name margin:params._margin requestViewSize:params._requestViewSize hAlignment:params._align.horz vAlignment:params._align.vert visibility:params._visibility containerDelegate:nil];
 }
 
 /**

@@ -67,6 +67,16 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
     CGSize _cachedSize;
 }
 
+/**
+ * newCellWithView で呼び出されたときに備えて WPLCell#initWithView をオーバーライドしておく。
+ */
+- (instancetype) initWithView:(UIView *)view name:(NSString *)name margin:(UIEdgeInsets)margin requestViewSize:(CGSize)requestViewSize hAlignment:(WPLCellAlignment)hAlignment vAlignment:(WPLCellAlignment)vAlignment visibility:(WPLVisibility)visibility containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
+    return [self initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate orientation:(WPLOrientationVERTICAL)];
+}
+
+/**
+ * StackPanel の正統なコンストラクタ
+ */
 - (instancetype) initWithView:(UIView*)view
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin
@@ -84,25 +94,54 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
     return self;
 }
 
-+ (instancetype) stackPanelViewWithName:(NSString*) name
-                       margin:(UIEdgeInsets) margin
-              requestViewSize:(CGSize) requestViewSize
-                   hAlignment:(WPLCellAlignment)hAlignment
-                   vAlignment:(WPLCellAlignment)vAlignment
-                   visibility:(WPLVisibility)visibility
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
-                  orientation:(WPLOrientation) orientation {
-    return [[WPLStackPanel alloc] initWithView:[[UIView alloc] init] name:name margin:margin requestViewSize:requestViewSize hAlignment: hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate orientation:orientation];
+/**
+ * インスタンス生成ヘルパー
+ * StackPanel用のUIViewは、自動的に作成され、superviewにaddSubviewされる。
+ */
++ (instancetype) stackPanelWithName:(NSString*) name
+                             margin:(UIEdgeInsets) margin
+                    requestViewSize:(CGSize) requestViewSize
+                         hAlignment:(WPLCellAlignment)hAlignment
+                         vAlignment:(WPLCellAlignment)vAlignment
+                         visibility:(WPLVisibility)visibility
+                  containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
+                        orientation:(WPLOrientation) orientation
+                          superview:(UIView*)superview {
+    let view = [UIView new];
+    if(nil!=superview) {
+        [superview addSubview:view];
+    }
+    return [[WPLStackPanel alloc] initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment: hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate orientation:orientation];
 }
 
-+ (instancetype)stackPanelViewWithName:(NSString*) name
-                           orientation:(WPLOrientation)orientation
-                             xalignment:(WPLCellAlignment)xalignment
-                     containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
-    let hAlignment = (orientation==WPLOrientationVERTICAL) ? xalignment : WPLCellAlignmentSTART;
-    let vAlignment = (orientation==WPLOrientationVERTICAL) ? WPLCellAlignmentSTART : xalignment;
-    return [self stackPanelViewWithName:name margin:MICEdgeInsets() requestViewSize:MICSize() hAlignment:hAlignment vAlignment:vAlignment visibility:WPLVisibilityVISIBLE containerDelegate:containerDelegate orientation:orientation];
+/**
+ * C++版インスタンス生成ヘルパー
+ */
++ (instancetype) stackPanelWithName:(NSString*) name
+                             params:(const WPLStackPanelParams&)params
+                            superview:(UIView*)superview
+                    containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
+
+    return [self stackPanelWithName:name margin:params._margin requestViewSize:params._requestViewSize hAlignment:params._align.horz vAlignment:params._align.vert visibility:params._visibility containerDelegate:containerDelegate orientation:params._orientation superview:superview];
 }
+
+/**
+ * C++版インスタンス生成ヘルパー
+ * (Sub-Container 用）
+ */
++ (instancetype) stackPanelWithName:(NSString*) name
+                             params:(const WPLStackPanelParams&)params {
+    return [self stackPanelWithName:name params:params superview:nil containerDelegate:nil];
+}
+
+//+ (instancetype)stackPanelViewWithName:(NSString*) name
+//                           orientation:(WPLOrientation)orientation
+//                             xalignment:(WPLCellAlignment)xalignment
+//                     containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
+//    let hAlignment = (orientation==WPLOrientationVERTICAL) ? xalignment : WPLCellAlignmentSTART;
+//    let vAlignment = (orientation==WPLOrientationVERTICAL) ? WPLCellAlignmentSTART : xalignment;
+//    return [self stackPanelViewWithName:name margin:MICEdgeInsets() requestViewSize:MICSize() hAlignment:hAlignment vAlignment:vAlignment visibility:WPLVisibilityVISIBLE containerDelegate:containerDelegate orientation:orientation];
+//}
 
 
 - (WPLOrientation) orientation {

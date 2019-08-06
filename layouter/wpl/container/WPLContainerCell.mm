@@ -15,6 +15,9 @@
     bool _needsLayoutChildren;
 }
 
+/**
+ * WPLCell.initWithViewのオーバーライド
+ */
 - (instancetype) initWithView:(UIView*)view
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin
