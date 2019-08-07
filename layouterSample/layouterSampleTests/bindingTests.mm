@@ -73,11 +73,11 @@
 
 
 - (id)addInputChangedListener:(id)target selector:(SEL)selector {
-    
+    return nil;
 }
 
 - (void)removeInputListener:(id)key {
-    <#code#>
+    return;
 }
 
 @end
