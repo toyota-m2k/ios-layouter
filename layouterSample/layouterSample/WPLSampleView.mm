@@ -138,10 +138,12 @@
 
 - (void) createStackPanelContents {
     let subStackPanel = [WPLStackPanel stackPanelWithName:@"subStackPanel"
-                                                   params:WPLStackPanelParams().align(WPLAlignment(WPLCellAlignmentCENTER))
+                                                   params:WPLStackPanelParams()
+                                                            .align(WPLAlignment(WPLCellAlignmentCENTER))
+                                                            .cellSpacing(10)
                                                 superview:nil
                                         containerDelegate:nil];
-    
+    subStackPanel.view.backgroundColor = UIColor.yellowColor;
     [_stackPanel addCell:subStackPanel];
     [_binder bindProperty:@"StackVisibility" withBoolStateOfCell:subStackPanel actionType:(WPLBoolStateActionTypeVISIBLE_COLLAPSED) negation:false customActin:nil];
     
@@ -156,11 +158,11 @@
     let tv2 = [[UITextView alloc] initWithFrame:MICRect(0,0, 300, tv1.frame.size.height)];
     tv2.backgroundColor = UIColor.blueColor;
     
-    let tcell2 = [WPLTextCell newCellWithView:tv2 name:@"no2-text" margin:MICEdgeInsets(0,20,0,0) requestViewSize:MICSize(0,0) hAlignment:WPLCellAlignmentSTART vAlignment:WPLCellAlignmentSTART visibility:WPLVisibilityVISIBLE];
+    let tcell2 = [WPLTextCell newCellWithView:tv2 name:@"no2-text" margin:MICEdgeInsets(0,0,0,0) requestViewSize:MICSize(0,0) hAlignment:WPLCellAlignmentSTART vAlignment:WPLCellAlignmentSTART visibility:WPLVisibilityVISIBLE];
     
     let tv3 = [[UITextView alloc] initWithFrame:MICRect(0,0, 150, tv1.frame.size.height)];
     tv3.backgroundColor = UIColor.redColor;
-    let tcell3 = [WPLTextCell newCellWithView:tv3 name:@"no3-text" margin:MICEdgeInsets(0,20,0,0) requestViewSize:MICSize(0,0) hAlignment:WPLCellAlignmentSTRETCH vAlignment:WPLCellAlignmentSTART visibility:WPLVisibilityVISIBLE];
+    let tcell3 = [WPLTextCell newCellWithView:tv3 name:@"no3-text" margin:MICEdgeInsets(0,0,0,0) requestViewSize:MICSize(0,0) hAlignment:WPLCellAlignmentSTRETCH vAlignment:WPLCellAlignmentSTART visibility:WPLVisibilityVISIBLE];
     
     [_binder createPropertyWithValue:@"initial value" withKey:@"text1"];
     [_binder bindProperty:@"text1" withValueOfCell:tcell1 bindingMode:(WPLBindingModeTWO_WAY) customActin:nil];
@@ -173,7 +175,7 @@
 
     let innerPanel = [WPLStackPanel stackPanelWithName:@"innerStackPanel"
                                                 params:WPLStackPanelParams()
-                                                        .margin(MICEdgeInsets(0,20,0,0))
+                                                        .margin(MICEdgeInsets(0,0,0,0))
                                                         .orientation(WPLOrientationHORIZONTAL)
                                              superview:nil containerDelegate:nil];
     

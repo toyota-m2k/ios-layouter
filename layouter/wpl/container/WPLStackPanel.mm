@@ -64,6 +64,7 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
  */
 @implementation WPLStackPanel {
     WPLOrientation _orientation;
+    CGFloat _cellSpacing;
     CGSize _cachedSize;
 }
 
@@ -71,7 +72,7 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
  * newCellWithView で呼び出されたときに備えて WPLCell#initWithView をオーバーライドしておく。
  */
 - (instancetype) initWithView:(UIView *)view name:(NSString *)name margin:(UIEdgeInsets)margin requestViewSize:(CGSize)requestViewSize hAlignment:(WPLCellAlignment)hAlignment vAlignment:(WPLCellAlignment)vAlignment visibility:(WPLVisibility)visibility containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
-    return [self initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate orientation:(WPLOrientationVERTICAL)];
+    return [self initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate orientation:(WPLOrientationVERTICAL) cellSpacing:0];
 }
 
 /**
@@ -85,10 +86,12 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
                    vAlignment:(WPLCellAlignment)vAlignment
                    visibility:(WPLVisibility)visibility
             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
-                  orientation:(WPLOrientation) orientation {
+                  orientation:(WPLOrientation) orientation
+                  cellSpacing:(CGFloat)cellSpacing {
     self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
     if(nil!=self) {
         _orientation = orientation;
+        _cellSpacing = cellSpacing;
         _cachedSize = MICSize();
     }
     return self;
@@ -106,12 +109,13 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
                          visibility:(WPLVisibility)visibility
                   containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
                         orientation:(WPLOrientation) orientation
+                        cellSpacing:(CGFloat)cellSpacing
                           superview:(UIView*)superview {
     let view = [UIView new];
     if(nil!=superview) {
         [superview addSubview:view];
     }
-    return [[WPLStackPanel alloc] initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment: hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate orientation:orientation];
+    return [[WPLStackPanel alloc] initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment: hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate orientation:orientation cellSpacing:cellSpacing];
 }
 
 /**
@@ -122,7 +126,7 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
                             superview:(UIView*)superview
                     containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
 
-    return [self stackPanelWithName:name margin:params._margin requestViewSize:params._requestViewSize hAlignment:params._align.horz vAlignment:params._align.vert visibility:params._visibility containerDelegate:containerDelegate orientation:params._orientation superview:superview];
+    return [self stackPanelWithName:name margin:params._margin requestViewSize:params._requestViewSize hAlignment:params._align.horz vAlignment:params._align.vert visibility:params._visibility containerDelegate:containerDelegate orientation:params._orientation cellSpacing:params._cellSpacing superview:superview];
 }
 
 /**
@@ -185,7 +189,7 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
         H(self, esize, H(self,size));
         EXT(c).point = epoint;
         EXT(c).size = esize;
-        sum += H(self, size);
+        sum += (H(self, size)+_cellSpacing);
     }
     
     for (id<IWPLCell> c in self.cells) {
@@ -196,7 +200,7 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
     }
     
     W(self, _cachedSize, max);
-    H(self, _cachedSize, sum);
+    H(self, _cachedSize, sum==0 ? 0 : sum-_cellSpacing);
     self.needsLayoutChildren = false;
 }
 

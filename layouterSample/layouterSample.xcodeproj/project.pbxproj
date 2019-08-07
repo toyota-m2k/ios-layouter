@@ -235,6 +235,7 @@
 		841AD85522F7BD7D00F9AB7D /* WPLBindingBase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WPLBindingBase.m; sourceTree = "<group>"; };
 		841AD85722F8104C00F9AB7D /* WPLGridSampleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGridSampleViewController.h; sourceTree = "<group>"; };
 		841AD85822F8104C00F9AB7D /* WPLGridSampleViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridSampleViewController.mm; sourceTree = "<group>"; };
+		841AD85A22FA629F00F9AB7D /* WPLGridL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGridL.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -505,6 +506,7 @@
 				841AD82D22F52AEE00F9AB7D /* WPLContainerCell.mm */,
 				841AD83022F52AEE00F9AB7D /* WPLGrid.h */,
 				841AD82E22F52AEE00F9AB7D /* WPLGrid.mm */,
+				841AD85A22FA629F00F9AB7D /* WPLGridL.h */,
 			);
 			path = container;
 			sourceTree = "<group>";

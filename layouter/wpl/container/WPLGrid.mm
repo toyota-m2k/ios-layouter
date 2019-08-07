@@ -10,13 +10,17 @@
 #import "MICVar.h"
 #import "MICUiRectUtil.h"
 
-// inner class
+#pragma mark - Inner Class
+
+/**
+ * WPLCell.extension にセットされるGridの管理情報クラス
+ */
 @interface WPLGridExtension : NSObject
-@property (nonatomic, readonly) NSInteger row;
-@property (nonatomic, readonly) NSInteger column;
-@property (nonatomic, readonly) NSInteger rowSpan;
-@property (nonatomic, readonly) NSInteger colSpan;
-@property (nonatomic) CGSize size;
+    @property (nonatomic, readonly) NSInteger row;
+    @property (nonatomic, readonly) NSInteger column;
+    @property (nonatomic, readonly) NSInteger rowSpan;
+    @property (nonatomic, readonly) NSInteger colSpan;
+    @property (nonatomic) CGSize size;
 @end
 
 @implementation WPLGridExtension
@@ -52,6 +56,8 @@
 //     return if(forCol) size.height else size.width
 // }
 @end
+
+#pragma mark - Utility Functions
 
 static inline WPLGridExtension* EXT(id<IWPLCell> cell)   { return (WPLGridExtension*)cell.extension; }
 
@@ -90,6 +96,8 @@ static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
     }
     return ary;
 }
+
+#pragma mark - WPLGrid クラス
 
 /**
  * Row/Column でレイアウト可能なコンテナセルクラス

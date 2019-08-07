@@ -20,9 +20,12 @@ typedef enum _WPLOrientation {
 class WPLStackPanelParams : public WPLCellParams {
 public:
     WPLOrientation _orientation;
+    CGFloat _cellSpacing;
+    
     WPLStackPanelParams(WPLOrientation orientation=WPLOrientationVERTICAL, MICEdgeInsets margin=MICEdgeInsets(), MICSize requestViewSize=MICSize(), WPLAlignment align=WPLAlignment(), WPLVisibility visibility=WPLVisibilityVISIBLE)
     : WPLCellParams(margin,requestViewSize,align,visibility)
-    , _orientation(orientation) {}
+    , _orientation(orientation)
+    , _cellSpacing(0) {}
     
     WPLStackPanelParams(const WPLStackPanelParams& src)
     : WPLCellParams(src)
@@ -66,6 +69,11 @@ public:
         _orientation = v;
         return *this;
     }
+    
+    WPLStackPanelParams& cellSpacing(const NSInteger v) {
+        _cellSpacing = v;
+        return *this;
+    }
 };
 
 #endif
@@ -89,7 +97,8 @@ public:
                    vAlignment:(WPLCellAlignment)vAlignment
                    visibility:(WPLVisibility)visibility
             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
-                  orientation:(WPLOrientation) orientation;
+                  orientation:(WPLOrientation) orientation
+                  cellSpacing:(CGFloat)cellSpacing;
 
 /**
  * インスタンス生成ヘルパー
@@ -103,6 +112,7 @@ public:
                          visibility:(WPLVisibility)visibility
                   containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
                         orientation:(WPLOrientation) orientation
+                        cellSpacing:(CGFloat)cellSpacing
                           superview:(UIView*)superview;
 
 #if defined(__cplusplus)
