@@ -73,6 +73,7 @@
 		841AD85322F6722C00F9AB7D /* WPLBinder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD85222F6722C00F9AB7D /* WPLBinder.mm */; };
 		841AD85622F7BD7D00F9AB7D /* WPLGenericBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD85522F7BD7D00F9AB7D /* WPLGenericBinding.m */; };
 		841AD85922F8104C00F9AB7D /* WPLGridSampleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD85822F8104C00F9AB7D /* WPLGridSampleViewController.mm */; };
+		841AD85C22FB203700F9AB7D /* bindingTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD85B22FB203700F9AB7D /* bindingTests.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -236,6 +237,7 @@
 		841AD85722F8104C00F9AB7D /* WPLGridSampleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGridSampleViewController.h; sourceTree = "<group>"; };
 		841AD85822F8104C00F9AB7D /* WPLGridSampleViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridSampleViewController.mm; sourceTree = "<group>"; };
 		841AD85A22FA629F00F9AB7D /* WPLGridL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGridL.h; sourceTree = "<group>"; };
+		841AD85B22FB203700F9AB7D /* bindingTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = bindingTests.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -309,6 +311,7 @@
 			children = (
 				841AD74D22EE93AE00F9AB7D /* layouterSampleTests.m */,
 				841AD74F22EE93AE00F9AB7D /* Info.plist */,
+				841AD85B22FB203700F9AB7D /* bindingTests.mm */,
 			);
 			path = layouterSampleTests;
 			sourceTree = "<group>";
@@ -724,6 +727,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				841AD84A22F53C4E00F9AB7D /* layouterSampleTests.m in Sources */,
+				841AD85C22FB203700F9AB7D /* bindingTests.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
