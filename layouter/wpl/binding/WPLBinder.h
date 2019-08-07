@@ -4,15 +4,14 @@
 //  Cell と　ObservableData のバインドを管理するクラス。
 //  このクラスを使わなくても、それぞれのインスタンスをばBindingクラスを使って関連づけていけばよいのだが、
 //  Viewごとにそれらの構築用のコードを書いて、どこか（Viewクラスのメンバーなど）に保持しなければならず、コード量も少なくなく、保守性、可読性が悪くなる。
-//  そこで、それらを管理するBinderクラスを作成して、できるだけ少ない呼び出しで、バインディングを構築できるようにしたい。
+//  Cell/ObservableData/Binding は、もう少し柔軟な操作が可能だが、柔軟性を多少犠牲にして（例えばプロパティはすべて文字列の名前をつけてアクセスする、とか）、
+//  できるだけ簡潔に利用できるようにすることを目指したクラス。
 //
 //  Created by Mitsuki Toyota on 2019/08/04.
 //  Copyright © 2019 Mitsuki Toyota. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "WPLBindingDef.h"
-
 
 @interface WPLBinder : NSObject
 
@@ -29,6 +28,12 @@
  */
 @property (nonatomic) bool autoDisposeProperties;
 
+/**
+ * Binding情報を破棄
+ */
+- (void) dispose;
+
+
 #pragma mark - bindable properties
 
 /**
@@ -36,7 +41,7 @@
  * @param key   createProperty/createDependentProperty の戻り値
  * @return IWPLObservableData型インスタンス（未登録ならnil）
  */
-- (id<IWPLObservableData>) property:(id)key;
+- (id<IWPLObservableData>) propertyForKey:(id)key;
 
 /**
  * 通常の値型（ObservableMutableData型）プロパティを作成して登録
@@ -47,17 +52,17 @@
 - (id) createPropertyWithValue:(id)initialValue withKey:(id) key;
 
 /**
- * Binding情報を破棄
- */
-- (void) dispose;
-
-/**
- * 参照型(DelegatedObservableData型）プロパティを生成して登録
+ * 依存型(DelegatedObservableData型）プロパティを生成して登録
  * @param key プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
  * @param sourceProc 値を解決するための関数ブロック
  * @param relations このプロパティが依存するプロパティ（のキー）。。。このメソッドが呼び出される時点で解決できなければ、指定は無効となるので、定義順序に注意。
  */
 - (id) createDependentPropertyWithKey:(id)key sourceProc:(WPLSourceDelegateProc)sourceProc dependsOn:(id)relations, ... NS_REQUIRES_NIL_TERMINATION;
+
+/**
+ * 上のメソッドの可変長引数部分をva_list型引数で渡せるようにしたメソッド
+ */
+- (id) createDependentPropertyWithKey:(id)key sourceProc:(WPLSourceDelegateProc)sourceProc dependsOn:(NSString*) firstRelation dependsOnArgument:(va_list) args;
 
 /**
  * 外部で作成したObservableData型のインスタンスをプロパティとしてバインダーに登録する。
@@ -68,6 +73,7 @@
 
 /**
  * プロパティをバインダーから削除する。
+ * @param key   addProperty, createProperty / createDependentProperty などが返した値。
  */
 - (void) removeProperty:(id)key;
 
@@ -107,6 +113,16 @@
                         negation:(bool) negation
                      customActin:(WPLBindingCustomAction)customAction;
 
+
+/**
+ * 特殊なバインドを作成　（SOURCE to VIEWのみ）
+ * バインドの内容は、customAction に記述する。
+ * （ソースが変更されると、customAction が呼び出されるので、そこでなんでも好きなことをするのだ）
+ */
+- (id<IWPLBinding>) bindProperty:(id)propKey
+                        withCell:(id<IWPLCell>)cell
+                    customAction:(WPLBindingCustomAction) customAction;
+
 /**
  * バインドを解除する
  * @param binding   バインディングインスタンス
@@ -118,59 +134,72 @@
 
 #if defined(__cplusplus)
 
-#if 0
-class CWPLObservableDataBuilder {
+class WPLBinderBuilder {
 private:
-    id<IWPLObservableData> _od;
-
+    WPLBinder* _binder;
 public:
-    CWPLObservableDataBuilder(id initialValue=nil) {
-        _od = [WPLObservableMutableData new];
-        if(nil!=initialValue) {
-            ((WPLObservableMutableData*)_od).value = initialValue;
-        }
+    WPLBinderBuilder() {
+        _binder = [WPLBinder new];
+    }
+    WPLBinderBuilder(WPLBinder* binder) {
+        _binder = binder;
+    }
+    WPLBinderBuilder(const WPLBinderBuilder& src) {
+        _binder = src._binder;
+    }
+    ~WPLBinderBuilder() {
+        _binder = nil;
     }
     
-    CWPLObservableDataBuilder(WPLSourceDelegateProc proc) {
-        _od = [WPLDelegatedObservableData newDataWithSourceBlock:proc];
-    }
     
-    CWPLObservableDataBuilder(id target, SEL sel) {
-        _od = [WPLDelegatedObservableData newDataWithSourceTarget:target selector:sel];
+    WPLBinderBuilder& property(NSString* name) {
+        [_binder createPropertyWithValue:nil withKey:name];
+        return *this;
+    }
+    WPLBinderBuilder& property(NSString* name, NSInteger initialValue) {
+        [_binder createPropertyWithValue:@(initialValue) withKey:name];
+        return *this;
+    }
+    WPLBinderBuilder& property(NSString* name, CGFloat initialValue) {
+        [_binder createPropertyWithValue:@(initialValue) withKey:name];
+        return *this;
+    }
+    WPLBinderBuilder& property(NSString* name, bool initialValue) {
+        [_binder createPropertyWithValue:@(initialValue) withKey:name];
+        return *this;
+    }
+    WPLBinderBuilder& property(NSString* name, NSString* initialValue) {
+        [_binder createPropertyWithValue:initialValue withKey:name];
+        return *this;
     }
 
-    CWPLObservableDataBuilder(const CWPLObservableDataBuilder& src) {
-        _od = src._od;
-    }
-    virtual ~CWPLObservableDataBuilder() {
-        _od = nil;
-    }
-    
-    CWPLObservableDataBuilder& addValueChangeListener( id target, SEL selector ) {
-        [_od addValueChangedListener:target selector:selector];
+    WPLBinderBuilder& dependentProperty(NSString* name, WPLSourceDelegateProc sourceProc, NSString* dependsOn=nil, ...) {
+        va_list args;
+        va_start(args, dependsOn);
+        [_binder createDependentPropertyWithKey:name sourceProc:sourceProc dependsOn:dependsOn dependsOnArgument:args];
+        va_end(args);
         return *this;
     }
     
-    CWPLObservableDataBuilder& addRelation(id<IWPLObservableData> rel) {
-        [_od addRelation:rel];
+    WPLBinderBuilder& bindValue(NSString* name, id<IWPLCell> cell, WPLBindingMode mode=WPLBindingModeSOURCE_TO_VIEW, WPLBindingCustomAction customAction=nil) {
+        [_binder bindProperty:name withValueOfCell:cell bindingMode:mode customActin:customAction];
         return *this;
     }
     
-    id<IWPLObservableData> create() {
-        id r = _id;
-        _id = nil;
-        return r;
+    WPLBinderBuilder& bindState(NSString* name, id<IWPLCell> cell, WPLBoolStateActionType actionType, bool negation, WPLBindingCustomAction customAction=nil ) {
+        [_binder bindProperty:name withBoolStateOfCell:cell actionType:actionType negation:negation customActin:customAction];
+        return *this;
     }
     
-    void abort() {
-        if(nil!=_od) {
-            [_od dispose];
-            _od = nil;
-        }
+    WPLBinderBuilder& bindCustom(NSString* name, id<IWPLCell> cell, WPLBindingCustomAction customAction) {
+        [_binder bindProperty:name withCell:cell customAction:customAction];
+        return *this;
+    }
+    
+    WPLBinder* build() {
+        return _binder;
     }
 };
-
-#endif			
 
 #endif
 

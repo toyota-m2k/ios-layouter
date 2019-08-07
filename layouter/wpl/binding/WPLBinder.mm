@@ -42,7 +42,7 @@
     if(nil!=_properties) {
         if(self.autoDisposeProperties) {
             for(id key in _properties.allKeys) {
-                let prop = [self property:key];
+                let prop = [self propertyForKey:key];
                 if(nil!=prop) {
                     [prop dispose];
                 }
@@ -69,7 +69,7 @@
  * @param key   createProperty/createDependentProperty の戻り値
  * @return IWPLObservableData型インスタンス（未登録ならnil）
  */
-- (id<IWPLObservableData>) property:(id)key {
+- (id<IWPLObservableData>) propertyForKey:(id)key {
     return _properties[key];
 }
 
@@ -86,23 +86,32 @@
 }
 
 /**
- * 参照型(DelegatedObservableData型）プロパティを生成して登録
+ * 依存型(DelegatedObservableData型）プロパティを生成して登録
  * @param key プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
  * @param sourceProc 値を解決するための関数ブロック
  * @param relations このプロパティが依存するプロパティ（のキー）。。。このメソッドが呼び出される時点で解決できなければ、指定は無効となるので、定義順序に注意。
  */
 - (id) createDependentPropertyWithKey:(id)key sourceProc:(WPLSourceDelegateProc)sourceProc dependsOn:(id)relations, ... {
     let ov = [WPLDelegatedObservableData newDataWithSourceBlock:sourceProc];
-    
     va_list args;
     va_start(args, relations);
-    
-    id rel = relations;
-    while(nil!=rel) {
+    [self createDependentPropertyWithKey:key sourceProc:sourceProc dependsOn:relations dependsOnArgument:args];
+    va_end(args);
+    return [self addProperty:ov forKey:key];
+}
+
+/**
+ * 上のメソッドの可変長引数部分をva_list型引数で渡せるようにしたメソッド
+ */
+- (id) createDependentPropertyWithKey:(id)key sourceProc:(WPLSourceDelegateProc)sourceProc dependsOn:(NSString*) firstRelation dependsOnArgument:(va_list) args {
+    let ov = [WPLDelegatedObservableData newDataWithSourceBlock:sourceProc];
+    id rel = firstRelation;
+    while(rel!=nil) {
         let ovr = _properties[rel];
         if(ovr!=nil) {
             [ovr addRelation:ov];
         }
+        rel = va_arg(args, id);
     }
     return [self addProperty:ov forKey:key];
 }
@@ -120,9 +129,13 @@
     return key;
 }
 
+/**
+ * プロパティをバインダーから削除する。
+ * @param key   addProperty, createProperty / createDependentProperty などが返した値。
+ */
 - (void) removeProperty:(id)key {
     if(self.autoDisposeProperties) {
-        let prop = [self property:key];
+        let prop = [self propertyForKey:key];
         if(nil!=prop){
             [prop dispose];
         }
@@ -151,7 +164,12 @@
                  withValueOfCell:(id<IWPLCell>)cell
                      bindingMode:(WPLBindingMode)bindingMode
                      customActin:(WPLBindingCustomAction)customAction {
-    let binding = [[WPLValueBinding alloc] initWithCell:cell source:[self property:propKey] bindingMode:bindingMode customAction:customAction];
+    let prop = [self propertyForKey:propKey];
+    if(nil==prop) {
+        NSAssert(false, @"no property %@", [propKey description]);
+        return nil;
+    }
+    let binding = [[WPLValueBinding alloc] initWithCell:cell source:prop bindingMode:bindingMode customAction:customAction];
     [self addBinding:binding];
     return binding;
 }
@@ -169,7 +187,30 @@
                       actionType:(WPLBoolStateActionType) actionType
                         negation:(bool) negation
                      customActin:(WPLBindingCustomAction)customAction {
-    let binding = [[WPLBoolStateBinding alloc] initWithCell:cell source:[self property:propKey] customAction:customAction actionType:actionType negation:negation];
+    let prop = [self propertyForKey:propKey];
+    if(nil==prop) {
+        NSAssert(false, @"no property %@", [propKey description]);
+        return nil;
+    }
+    let binding = [[WPLBoolStateBinding alloc] initWithCell:cell source:prop customAction:customAction actionType:actionType negation:negation];
+    [self addBinding:binding];
+    return binding;
+}
+
+/**
+ * 特殊なバインドを作成　（SOURCE to VIEWのみ）
+ * バインドの内容は、customAction に記述する。
+ * （ソースが変更されると、customAction が呼び出されるので、そこでなんでも好きなことをするのだ）
+ */
+- (id<IWPLBinding>) bindProperty:(id)propKey
+                        withCell:(id<IWPLCell>)cell
+                    customAction:(WPLBindingCustomAction) customAction {
+    let prop = [self propertyForKey:propKey];
+    if(nil==prop) {
+        NSAssert(false, @"no property %@", [propKey description]);
+        return nil;
+    }
+    let binding = [[WPLGenericBinding alloc] initWithCell:cell source:prop bindingMode:WPLBindingModeSOURCE_TO_VIEW customAction:customAction];
     [self addBinding:binding];
     return binding;
 }
