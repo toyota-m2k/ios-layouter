@@ -22,10 +22,10 @@ public:
     WPLOrientation _orientation;
     CGFloat _cellSpacing;
     
-    WPLStackPanelParams(WPLOrientation orientation=WPLOrientationVERTICAL, MICEdgeInsets margin=MICEdgeInsets(), MICSize requestViewSize=MICSize(), WPLAlignment align=WPLAlignment(), WPLVisibility visibility=WPLVisibilityVISIBLE)
+    WPLStackPanelParams(WPLOrientation orientation=WPLOrientationVERTICAL, MICEdgeInsets margin=MICEdgeInsets(), MICSize requestViewSize=MICSize(), WPLAlignment align=WPLAlignment(), CGFloat cellSpacing=0, WPLVisibility visibility=WPLVisibilityVISIBLE)
     : WPLCellParams(margin,requestViewSize,align,visibility)
     , _orientation(orientation)
-    , _cellSpacing(0) {}
+    , _cellSpacing(cellSpacing) {}
     
     WPLStackPanelParams(const WPLStackPanelParams& src)
     : WPLCellParams(src)
@@ -84,7 +84,10 @@ public:
  * StackPanel セル-コンテナ クラス
  */
 @interface WPLStackPanel : WPLContainerCell
-@property (nonatomic, readonly) WPLOrientation orientation;
+
+// properties
+@property (nonatomic) WPLOrientation orientation;
+@property (nonatomic) CGFloat cellSpacing;
 
 /**
  * StackPanel の正統なコンストラクタ

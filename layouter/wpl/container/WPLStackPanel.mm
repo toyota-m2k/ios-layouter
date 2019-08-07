@@ -152,6 +152,24 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
     return _orientation;
 }
 
+- (void) setOrientation:(WPLOrientation)orientation {
+    if(_orientation!=orientation) {
+        _orientation = orientation;
+        self.needsLayout = true;
+    }
+}
+
+- (CGFloat) cellSpacing {
+    return _cellSpacing;
+}
+
+- (void)setCellSpacing:(CGFloat)cellSpacing {
+    if(_cellSpacing!=cellSpacing) {
+        _cellSpacing = cellSpacing;
+        self.needsLayout = true;
+    }
+}
+
 // スタック伸長方向に垂直は方向のサイズ (Vertical --> Width, Horizontal --> Height)
 // 0なら中身に合わせて伸縮する
 - (CGFloat) fixedSize {
