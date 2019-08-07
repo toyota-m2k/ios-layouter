@@ -38,6 +38,7 @@ public:
         rowDefs = nil;
         colDefs = nil;
     }
+    
     WPLGridDefinition& rows(NSArray<NSNumber*>* v) {
         rowDefs = v;
         return *this;
@@ -64,6 +65,10 @@ public:
     
     WPLGridParams& margin(const UIEdgeInsets& v) {
         _margin = v;
+        return *this;
+    }
+    WPLCellParams& margin(CGFloat left, CGFloat top, CGFloat right, CGFloat bottom) {
+        _margin = MICEdgeInsets(left, top, right, bottom);
         return *this;
     }
     WPLGridParams& requestViewSize(const CGSize& v) {
@@ -105,6 +110,37 @@ public:
     
     WPLGridParams& colDefs(NSArray<NSNumber*>* v) {
         _dimension.cols(v);
+        return *this;
+    }
+};
+
+class WPLGridAddCellParams {
+public:
+    NSInteger _row;
+    NSInteger _column;
+    NSInteger _rowSpan;
+    NSInteger _colSpan;
+    
+    WPLGridAddCellParams(NSInteger row=0, NSInteger column=0, NSInteger rowSpan=1, NSInteger colSpan=1)
+    : _row(row)
+    , _column(column)
+    , _rowSpan(rowSpan)
+    , _colSpan(colSpan){}
+    
+    WPLGridAddCellParams& row(NSInteger v) {
+        _row = v;
+        return *this;
+    }
+    WPLGridAddCellParams& column(NSInteger v) {
+        _column = v;
+        return *this;
+    }
+    WPLGridAddCellParams& rowSpan(NSInteger v) {
+        _rowSpan = v;
+        return *this;
+    }
+    WPLGridAddCellParams& colSpan(NSInteger v) {
+        _colSpan = v;
         return *this;
     }
 };
@@ -169,8 +205,12 @@ public:
 
 #endif
 
+@property (nonatomic,readonly) NSInteger rows;
+@property (nonatomic,readonly) NSInteger columns;
+
 - (void) addCell:(id<IWPLCell>)cell;
 - (void) addCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column;
 - (void) addCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan;
+- (void) addCell:(id<IWPLCell>)cell params:(const WPLGridAddCellParams&) params;
 
 @end

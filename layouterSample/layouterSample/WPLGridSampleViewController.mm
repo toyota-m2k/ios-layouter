@@ -7,7 +7,7 @@
 //
 
 #import "WPLGridSampleViewController.h"
-#import "WPLGrid.h"
+#import "WPLGridL.h"
 #import "WPLStackPanel.h"
 #import "WPLBinder.h"
 #import "MICVar.h"
@@ -31,21 +31,26 @@
     self.view.backgroundColor = UIColor.whiteColor;
     
     _buttonPanel = [WPLStackPanel stackPanelWithName:@"buttonPanel"
-                                              params:WPLStackPanelParams().orientation(WPLOrientationHORIZONTAL)
+                                              params:WPLStackPanelParams().orientation(WPLOrientationHORIZONTAL).cellSpacing(10)
                                            superview:self.view containerDelegate:self];
     
     let btn1 = [UIButton buttonWithType:(UIButtonTypeRoundedRect)];
-    [btn1 setTitle:@"Test-①" forState:(UIControlStateNormal)];
+    [btn1 setTitle:@"Test-1" forState:(UIControlStateNormal)];
     [btn1 sizeToFit];
     [btn1 addTarget:self action:@selector(execTest1:) forControlEvents:(UIControlEventTouchUpInside)];
-    [_buttonPanel addCell:[WPLCell newCellWithView:btn1 name:@"test1-btn" margin:MICEdgeInsets(0,0,10,0) requestViewSize:MICSize() hAlignment:(WPLCellAlignmentSTART) vAlignment:(WPLCellAlignmentSTART) visibility:(WPLVisibilityVISIBLE)]];
-    
+    [_buttonPanel addCell:[WPLCell newCellWithView:btn1 name:@"test1-btn" params:WPLCellParams()]];
+     
     let btn2 = [UIButton buttonWithType:(UIButtonTypeRoundedRect)];
-    [btn2 setTitle:@"Test-②" forState:(UIControlStateNormal)];
+    [btn2 setTitle:@"Test-2" forState:(UIControlStateNormal)];
     [btn2 sizeToFit];
     [btn2 addTarget:self action:@selector(execTest2:) forControlEvents:(UIControlEventTouchUpInside)];
-    [_buttonPanel addCell:[WPLCell newCellWithView:btn2 name:@"test2-btn" margin:MICEdgeInsets(0,0,10,0) requestViewSize:MICSize() hAlignment:(WPLCellAlignmentSTART) vAlignment:(WPLCellAlignmentSTART) visibility:(WPLVisibilityVISIBLE)]];
-
+    [_buttonPanel addCell:[WPLCell newCellWithView:btn2 name:@"test2-btn" params:WPLCellParams()]];
+    
+    let btn3 = [UIButton buttonWithType:(UIButtonTypeRoundedRect)];
+    [btn3 setTitle:@"Test-3" forState:(UIControlStateNormal)];
+    [btn3 sizeToFit];
+    [btn3 addTarget:self action:@selector(execTest3:) forControlEvents:(UIControlEventTouchUpInside)];
+    [_buttonPanel addCell:[WPLCell newCellWithView:btn3 name:@"test3-btn" params:WPLCellParams()]];
 }
 
 - (void)viewWillLayoutSubviews {
@@ -79,16 +84,18 @@
     }
 }
 
+/**
+ * １x１のグリッドに、１つのビューをSTRETCH で、ぴったり配置する。
+ */
 - (void) execTest1:(id)_ {
     [self cleanup];
     _binder = [WPLBinder new];
     _rootGrid = [WPLGrid gridWithName:@"rootGrid" params:WPLGridParams().requestViewSize(MICSize(200,300)) superview:self.view containerDelegate:self];
-//    _rootGrid = [WPLGrid newGridOfRows:nil andColumns:nil requestViewSize:MICSize(200,300)];
     _rootGrid.view.backgroundColor = UIColor.greenColor;
     
     let v1 = [UIView new];
     v1.backgroundColor = UIColor.orangeColor;
-    let vc1 = [WPLCell newCellWithView:v1 name:@"v1" margin:MICEdgeInsets() requestViewSize:MICSize() hAlignment:(WPLCellAlignmentSTRETCH) vAlignment:(WPLCellAlignmentSTRETCH) visibility:(WPLVisibilityVISIBLE)];
+    let vc1 = [WPLCell newCellWithView:v1 name:@"v1" params:WPLCellParams().align(WPLAlignment(WPLCellAlignmentSTRETCH))];
     [_rootGrid addCell:vc1];
     
     [self.view addSubview:_rootGrid.view];
@@ -96,18 +103,19 @@
 
 }
 
-
+/**
+ * １つのグリッドセルに２つのViewを配置して、それぞれ排他的に表示・非表示を切り替えて再配置するテスト
+ */
 - (void) execTest2:(id)_ {
     [self cleanup];
     _binder = [WPLBinder new];
-    _rootGrid = [WPLGrid gridWithName:@"rootGrid" params:WPLGridParams().rowDefs(@[@0,@-1]) superview:self.view containerDelegate:self];
-//    [WPLGrid newGridOfRows:@[@0,@-1] andColumns:nil requestViewSize:MICSize()];
+    _rootGrid = [WPLGrid gridWithName:@"rootGrid" params:WPLGridParams().rowDefs(@[AUTO,STRC]) superview:self.view containerDelegate:self];
     _rootGrid.view.backgroundColor = UIColor.yellowColor;
     
     let sw1 = [[UISwitch alloc] init];
     [sw1 sizeToFit];
     sw1.on = true;
-    let swcell1 = [WPLSwitchCell newCellWithView:sw1 name:@"no1-switch" margin:MICEdgeInsets(0,0,0,20) requestViewSize:MICSize() hAlignment:(WPLCellAlignmentSTART) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE)];
+    let swcell1 = [WPLSwitchCell newCellWithView:sw1 name:@"no1-switch" params:WPLCellParams().vertAlign(WPLCellAlignmentCENTER).margin(MICEdgeInsets(0,0,0,20))];
     [_rootGrid addCell:swcell1 row:0 column:0];
     
     let subGrid1 = [WPLGrid gridWithName:@"subGrid1"
@@ -118,22 +126,52 @@
     
     let v1 = [UIView new];
     v1.backgroundColor = UIColor.greenColor;
-    let vc1 = [WPLCell newCellWithView:v1 name:@"v1" margin:MICEdgeInsets() requestViewSize:MICSize() hAlignment:(WPLCellAlignmentSTRETCH) vAlignment:(WPLCellAlignmentSTRETCH) visibility:(WPLVisibilityVISIBLE)];
+    let vc1 = [WPLCell newCellWithView:v1 name:@"v1" params:WPLCellParams().align(WPLAlignment(WPLCellAlignmentSTRETCH))];
     [subGrid1 addCell:vc1];
     
     let subGrid2 = [WPLGrid gridWithName:@"subGrid2" params:WPLGridParams().requestViewSize(200,100)];
-    //let subGrid2 = [WPLGrid newGridOfRows:nil andColumns:nil requestViewSize:MICSize(200,100)];
     [_rootGrid addCell:subGrid2 row:1 column:0];
     
     let v2 = [UIView new];
     v2.backgroundColor = UIColor.cyanColor;
-    let vc2 = [WPLCell newCellWithView:v2 name:@"v1" margin:MICEdgeInsets() requestViewSize:MICSize() hAlignment:(WPLCellAlignmentSTRETCH) vAlignment:(WPLCellAlignmentSTRETCH) visibility:(WPLVisibilityVISIBLE)];
+    let vc2 = [WPLCell newCellWithView:v2 name:@"v1" params:WPLCellParams().align(WPLAlignment(WPLCellAlignmentSTRETCH))];
     [subGrid2 addCell:vc2];
     
     [_binder createPropertyWithValue:@false withKey:@"check-selected"];
     [_binder bindProperty:@"check-selected" withValueOfCell:swcell1 bindingMode:(WPLBindingModeVIEW_TO_SOURCE) customActin:nil];
     [_binder bindProperty:@"check-selected" withBoolStateOfCell:subGrid1 actionType:(WPLBoolStateActionTypeVISIBLE_COLLAPSED) negation:false customActin:nil];
     [_binder bindProperty:@"check-selected" withBoolStateOfCell:subGrid2 actionType:(WPLBoolStateActionTypeVISIBLE_COLLAPSED) negation:true customActin:nil];
+    [self onChildCellModified:_rootGrid];
+}
+
+/**
+ * セルのSTRETCHでの、比率配分レイアウトのテスト
+ */
+- (void) execTest3:(id)_ {
+    [self cleanup];
+    _binder = [WPLBinder new];
+    let gridParams = WPLGridParams()
+                        .colDefs(@[AUTO,STRC,STRC,STRCx(2),AUTO])
+                        .rowDefs(@[AUTO,STRC,STRCx(2),STRCx(3),AUTO])
+                        .requestViewSize(300, 400);
+    _rootGrid = [WPLGrid gridWithName:@"rootGrid"
+                               params:gridParams
+                            superview:self.view containerDelegate:self];
+    _rootGrid.view.backgroundColor = UIColor.yellowColor;
+
+    for(NSInteger r=0 ; r<_rootGrid.rows; r++) {
+        for(NSInteger c=0 ; c<_rootGrid.columns ; c++) {
+            let v = [[UIView alloc] initWithFrame:MICRect(0,0,30,30)];
+            v.backgroundColor = UIColor.blueColor;
+            [_rootGrid addCell:[WPLCell newCellWithView:v
+                                                   name:[NSString stringWithFormat:@"c%ld-r%ld", (long)c, (long)r]
+                                                 params:WPLCellParams()
+                                                        .horzAlign((gridParams._dimension.colDefs[c].intValue==0)?WPLCellAlignmentCENTER :WPLCellAlignmentSTRETCH)
+                                                        .vertAlign((gridParams._dimension.rowDefs[r].intValue==0)?WPLCellAlignmentCENTER :WPLCellAlignmentSTRETCH)
+                                                        .margin(MICEdgeInsets(5,5,5,5))
+                                                    ] row:r column:c];
+        }
+    }
     [self onChildCellModified:_rootGrid];
 }
 

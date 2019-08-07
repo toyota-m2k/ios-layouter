@@ -252,6 +252,11 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     [super addCell:cell];
 }
 
+- (void) addCell:(id<IWPLCell>)cell params:(const WPLGridAddCellParams&) params {
+    [self addCell:cell row:params._row column:params._column rowSpan:params._rowSpan colSpan:params._colSpan];
+}
+
+
 //- (CGFloat) sumRange:(NSArray<NSNumber*>*) ary from:(NSInteger)from count:(NSInteger)count {
 //    if(count<0) {
 //        count = ary.count;

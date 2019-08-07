@@ -38,13 +38,13 @@
         [btn1 setTitle:@"Grid Test" forState:UIControlStateNormal];
         [btn1 addTarget:self action:@selector(changeTestMode:) forControlEvents:(UIControlEventTouchUpInside)];
         [btn1 sizeToFit];
-        let btncell1 = [WPLCell newCellWithView:btn1 name:@"modeButton" margin:MICEdgeInsets() requestViewSize:MICSize() hAlignment:WPLCellAlignmentSTART vAlignment:WPLCellAlignmentSTART visibility:WPLVisibilityVISIBLE];
+        let btncell1 = [WPLCell newCellWithView:btn1 name:@"modeButton" params:WPLCellParams()];
         [_stackPanel addCell:btncell1];
         
         let sw1 = [[UISwitch alloc] init];
         [sw1 sizeToFit];
         sw1.on = true;
-        let swcell1 = [WPLSwitchCell newCellWithView:sw1 name:@"no1-switch" margin:MICEdgeInsets(0,0,0,20) requestViewSize:MICSize() hAlignment:(WPLCellAlignmentSTART) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE)];
+        let swcell1 = [WPLSwitchCell newCellWithView:sw1 name:@"no1-switch" params:WPLCellParams().margin(MICEdgeInsets(0,0,0,20)).vertAlign(WPLCellAlignmentCENTER)];
         [_stackPanel addCell:swcell1];
 
         [_binder createPropertyWithValue:@true withKey:@"StackVisibility"];

@@ -67,7 +67,10 @@ public:
         _margin = v;
         return *this;
     }
-    
+    WPLCellParams& margin(CGFloat left, CGFloat top, CGFloat right, CGFloat bottom) {
+        _margin = MICEdgeInsets(left, top, right, bottom);
+        return *this;
+    }
     WPLCellParams& requestViewSize(const CGSize& v) {
         _requestViewSize = v;
         return *this;

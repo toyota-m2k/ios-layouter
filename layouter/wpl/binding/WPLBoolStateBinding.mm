@@ -1,6 +1,6 @@
 //
 //  WPLBoolStateBinding.m
-//  layouterSample
+//  WP Layouter
 //
 //  Created by Mitsuki Toyota on 2019/08/03.
 //  Copyright © 2019 Mitsuki Toyota. All rights reserved.
@@ -15,7 +15,6 @@
 @implementation WPLBoolStateBinding {
     WPLBoolStateActionType _actionType;
     bool _negation;
-    id _sourceListenerKey;
 }
 
 - (instancetype) initWithCell:(id<IWPLCell>) cell
@@ -23,12 +22,12 @@
                  customAction:(WPLBindingCustomAction)customAction
                    actionType:(WPLBoolStateActionType) actionType
                      negation:(bool)negation {
-    self = [super initWithCell:cell source:source bindingMode:(WPLBindingModeSOURCE_TO_VIEW) customAction:customAction];
+    self = [super initInternalWithCell:cell source:source bindingMode:(WPLBindingModeSOURCE_TO_VIEW) customAction:customAction enableSourceListener:false];
     if(self!=nil) {
         _actionType = actionType;
         _negation = negation;
         [self setBoolStateFromSource:source];
-        _sourceListenerKey = [source addValueChangedListener:self selector:@selector(onSourceValueChanged:)];
+        [self startSourceChangeListener];
     }
     return self;
 }
@@ -66,14 +65,8 @@
 
 - (void) onSourceValueChanged:(id<IWPLObservableData>) source {
     [self setBoolStateFromSource:source];
-    [self invokeCustomActionFromView:false];
+    [super onSourceValueChanged:source];
 }
 
-- (void)dispose {
-    if(nil!=_sourceListenerKey) {
-        [self.source removeValueChangedListener:_sourceListenerKey];
-        _sourceListenerKey = nil;
-    }
-}
 
 @end

@@ -9,5 +9,6 @@
 //
 #import "WPLGrid.h"
 
-#define AUTO    @(WPL_GRID_SIZING_AUTO)
-#define STRC    @(WPL_GRID_SIZING_STRETCH)
+#define AUTO        @(WPL_GRID_SIZING_AUTO)
+#define STRC        @(WPL_GRID_SIZING_STRETCH)
+#define STRCx(x)    @(WPL_GRID_SIZING_STRETCH*(x))

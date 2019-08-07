@@ -1,6 +1,6 @@
 //
 //  WPLValueBinding.m
-//  layouterSample
+//  WP Layouter
 //
 //  Created by Mitsuki Toyota on 2019/08/03.
 //  Copyright © 2019 Mitsuki Toyota. All rights reserved.
@@ -15,7 +15,6 @@
  * Viewの値(text/checked, ...) と Sourceの値とをバインドするクラス
  */
 @implementation WPLValueBinding {
-    id _sourceListenerKey;
     id _cellListenerKey;
 }
 
@@ -23,9 +22,8 @@
                        source:(id<IWPLObservableData>) source
                   bindingMode:(WPLBindingMode)bindingMode
                  customAction:(WPLBindingCustomAction)customAction {
-    self = [super initWithCell:cell source:source bindingMode:bindingMode customAction:customAction];
+    self = [super initInternalWithCell:cell source:source bindingMode:bindingMode customAction:customAction enableSourceListener:false];
     if(self!=nil) {
-        _sourceListenerKey = nil;
         _cellListenerKey = nil;
         bool supportValue = [cell conformsToProtocol:@protocol(IWPLCellSupportValue)];
         if(supportValue) {
@@ -36,7 +34,7 @@
             }
         }
         if(bindingMode==WPLBindingModeTWO_WAY||bindingMode==WPLBindingModeSOURCE_TO_VIEW) {
-            _sourceListenerKey = [source addValueChangedListener:self selector:@selector(onSourceValueChanged:)];
+            [self startSourceChangeListener];
         }
         if(bindingMode!=WPLBindingModeSOURCE_TO_VIEW && supportValue) {
             _cellListenerKey = [(id<IWPLCellSupportValue>)cell addInputChangedListener:self selector:@selector(onViewInputChanged:)];
@@ -46,10 +44,6 @@
 }
 
 - (void) dispose {
-    if(nil!=_sourceListenerKey) {
-        [self.source removeValueChangedListener:_sourceListenerKey];
-        _sourceListenerKey = nil;
-    }
     if(nil!=_cellListenerKey) {
         [(id<IWPLCellSupportValue>)self.cell removeInputListener:_cellListenerKey];
         _cellListenerKey = nil;

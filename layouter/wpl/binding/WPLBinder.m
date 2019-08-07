@@ -1,6 +1,6 @@
 //
 //  WPLBinder.m
-//  layouterSample
+//  WP Layouter
 //
 //  Created by Mitsuki Toyota on 2019/08/04.
 //  Copyright © 2019 Mitsuki Toyota. All rights reserved.
@@ -13,11 +13,17 @@
 #import "WPLDelegatedObservableData.h"
 #import "MICVar.h"
 
+/**
+ * Cell と　ObservableData のバインドを管理するクラス。
+ */
 @implementation WPLBinder {
     NSMutableDictionary<id,id<IWPLObservableData>> * _properties;
     NSMutableArray<id<IWPLBinding>>* _bindings;
 }
 
+/**
+ * 初期化
+ */
 - (instancetype) init {
     self = [super init];
     if(self!=nil) {
@@ -29,83 +35,9 @@
     return self;
 }
 
-- (id<IWPLObservableData>) property:(id)key {
-    return _properties[key];
-}
-
-- (id) createPropertyWithValue:(id)initialValue withKey:(id) key {
-    let ov = [WPLObservableMutableData new];
-    ov.value = initialValue;
-    return [self addProperty:ov forKey:key];
-}
-
-- (id) createDependentPropertyWithKey:(id)key sourceProc:(WPLSourceDelegateProc)proc dependsOn:(id)relations, ... {
-    let ov = [WPLDelegatedObservableData newDataWithSourceBlock:proc];
-    
-    va_list args;
-    va_start(args, relations);
-    
-    id rel = relations;
-    while(nil!=rel) {
-        let ovr = _properties[rel];
-        if(ovr!=nil) {
-            [ovr addRelation:ov];
-        }
-    }
-    return [self addProperty:ov forKey:key];
-}
-
-- (id) addProperty:(id<IWPLObservableData>) prop forKey:(id) key {
-    if(key==nil) {
-        key = prop;
-    }
-    [_properties setObject:prop forKey:key];
-    return key;
-}
-
-- (void) removeProperty:(id)key {
-    if(self.autoDisposeProperties) {
-        let prop = [self property:key];
-        if(nil!=prop){
-            [prop dispose];
-        }
-    }
-    [_properties removeObjectForKey:key];
-}
-
-- (void) addBinding:(id<IWPLBinding>) binding {
-    [_bindings addObject:binding];
-}
-
-- (id<IWPLBinding>) bindProperty:(id)propKey
-                 withValueOfCell:(id<IWPLCell>)cell
-                     bindingMode:(WPLBindingMode)mode
-                     customActin:(WPLBindingCustomAction)customAction {
-    let binding = [[WPLValueBinding alloc] initWithCell:cell source:[self property:propKey] bindingMode:mode customAction:customAction];
-    [self addBinding:binding];
-    return binding;
-}
-
-- (id<IWPLBinding>) bindProperty:(id)propKey
-             withBoolStateOfCell:(id<IWPLCell>)cell
-                      actionType:(WPLBoolStateActionType) actionType
-                        negation:(bool) negation
-                     customActin:(WPLBindingCustomAction)customAction {
-    let binding = [[WPLBoolStateBinding alloc] initWithCell:cell source:[self property:propKey] customAction:customAction actionType:actionType negation:negation];
-    [self addBinding:binding];
-    return binding;
-}
-
-- (void) unbind:(id<IWPLBinding>) bindKey {
-    NSInteger i = [_bindings indexOfObject:bindKey];
-    if(i != NSNotFound) {
-        if(self.autoDisposeBindings) {
-            [bindKey dispose];
-        }
-        [_bindings removeObjectAtIndex:i];
-    }
-}
-
+/**
+ * Binding情報を破棄
+ */
 - (void)dispose {
     if(nil!=_properties) {
         if(self.autoDisposeProperties) {
@@ -127,6 +59,132 @@
         }
         [_bindings removeAllObjects];
         _bindings = nil;
+    }
+}
+
+#pragma mark - bindable properties
+
+/**
+ * 登録済みのプロパティを取得
+ * @param key   createProperty/createDependentProperty の戻り値
+ * @return IWPLObservableData型インスタンス（未登録ならnil）
+ */
+- (id<IWPLObservableData>) property:(id)key {
+    return _properties[key];
+}
+
+/**
+ * 通常の値型（ObservableMutableData型）プロパティを作成して登録
+ * @param initialValue 初期値
+ * @param key プロパティを識別するキー(nilなら、内部で生成して戻り値に返す）。
+ * @return プロパティを識別するキー
+ */
+- (id) createPropertyWithValue:(id)initialValue withKey:(id) key {
+    let ov = [WPLObservableMutableData new];
+    ov.value = initialValue;
+    return [self addProperty:ov forKey:key];
+}
+
+/**
+ * 参照型(DelegatedObservableData型）プロパティを生成して登録
+ * @param key プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
+ * @param sourceProc 値を解決するための関数ブロック
+ * @param relations このプロパティが依存するプロパティ（のキー）。。。このメソッドが呼び出される時点で解決できなければ、指定は無効となるので、定義順序に注意。
+ */
+- (id) createDependentPropertyWithKey:(id)key sourceProc:(WPLSourceDelegateProc)sourceProc dependsOn:(id)relations, ... {
+    let ov = [WPLDelegatedObservableData newDataWithSourceBlock:sourceProc];
+    
+    va_list args;
+    va_start(args, relations);
+    
+    id rel = relations;
+    while(nil!=rel) {
+        let ovr = _properties[rel];
+        if(ovr!=nil) {
+            [ovr addRelation:ov];
+        }
+    }
+    return [self addProperty:ov forKey:key];
+}
+
+/**
+ * 外部で作成したObservableData型のインスタンスをプロパティとしてバインダーに登録する。
+ * @param prop ObservableData型インスタンス
+ * @param key プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
+ */
+- (id) addProperty:(id<IWPLObservableData>) prop forKey:(id) key {
+    if(key==nil) {
+        key = prop;
+    }
+    [_properties setObject:prop forKey:key];
+    return key;
+}
+
+- (void) removeProperty:(id)key {
+    if(self.autoDisposeProperties) {
+        let prop = [self property:key];
+        if(nil!=prop){
+            [prop dispose];
+        }
+    }
+    [_properties removeObjectForKey:key];
+}
+
+#pragma mark - binding properties with cells
+
+/**
+ * 外部で作成したバインディングインスタンスを登録する。
+ * @param binding   バインディングインスタンス
+ */
+- (void) addBinding:(id<IWPLBinding>) binding {
+    [_bindings addObject:binding];
+}
+
+/**
+ * セルの値とプロパティのバインディングを作成して登録
+ * @param propKey   バインドするプロパティを識別するキー（必ず登録済みのものを指定）
+ * @param cell      バインドするセル
+ * @param bindingMode   VIEW_TO_SOURCE_WITH_INIT | VIEW_TO_SOURCE | SOURCE_TO_VIEW | TWOWAY
+ * @param customAction  プロパティ、または、セルの値が変更されたときのコールバック関数（nil可）
+ */
+- (id<IWPLBinding>) bindProperty:(id)propKey
+                 withValueOfCell:(id<IWPLCell>)cell
+                     bindingMode:(WPLBindingMode)bindingMode
+                     customActin:(WPLBindingCustomAction)customAction {
+    let binding = [[WPLValueBinding alloc] initWithCell:cell source:[self property:propKey] bindingMode:bindingMode customAction:customAction];
+    [self addBinding:binding];
+    return binding;
+}
+
+/**
+ * セルの状態(Bool型）とプロパティのバインディングを作成して登録
+ * @param propKey       バインドするプロパティを識別するキー（必ず登録済みのものを指定）
+ * @param cell          バインドするセル
+ * @param actionType    Cellの何とバインドするか？
+ * @param negation      trueにすると、bool値を反転する
+ * @param customAction  プロパティ、または、セルの値が変更されたときのコールバック関数（nil可）
+ */
+- (id<IWPLBinding>) bindProperty:(id)propKey
+             withBoolStateOfCell:(id<IWPLCell>)cell
+                      actionType:(WPLBoolStateActionType) actionType
+                        negation:(bool) negation
+                     customActin:(WPLBindingCustomAction)customAction {
+    let binding = [[WPLBoolStateBinding alloc] initWithCell:cell source:[self property:propKey] customAction:customAction actionType:actionType negation:negation];
+    [self addBinding:binding];
+    return binding;
+}
+
+/**
+ * バインドを解除する
+ * @param binding   バインディングインスタンス
+ */
+- (void) unbind:(id<IWPLBinding>) binding {
+    NSInteger i = [_bindings indexOfObject:binding];
+    if(i != NSNotFound) {
+        if(self.autoDisposeBindings) {
+            [binding dispose];
+        }
+        [_bindings removeObjectAtIndex:i];
     }
 }
 
