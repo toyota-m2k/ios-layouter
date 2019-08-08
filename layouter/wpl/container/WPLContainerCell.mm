@@ -121,6 +121,7 @@
  * セルを削除
  */
 - (void) removeCell:(id<IWPLCell>) cell {
+    [cell.view removeFromSuperview];
     [cell dispose];
     [_cells removeObject:cell];
 }

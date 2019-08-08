@@ -284,10 +284,12 @@
         } else {
             viewRect.size.width = self.view.frame.size.width;
         }
-        if(self.hAlignment==WPLCellAlignmentCENTER) {
-            viewRect.moveToHCenterOfOuterRect(rect);
-        } else if(self.hAlignment == WPLCellAlignmentEND){
-            viewRect.move(rect.RB().x-viewRect.RB().x, 0);
+        if(viewRect.width()<rect.width()) {
+            if(self.hAlignment==WPLCellAlignmentCENTER) {
+                viewRect.moveToHCenterOfOuterRect(rect);
+            } else if(self.hAlignment == WPLCellAlignmentEND){
+                viewRect.move(rect.RB().x-viewRect.RB().x, 0);
+            }
         }
     }
     
@@ -297,10 +299,12 @@
         } else {
             viewRect.size.height = self.view.frame.size.height;
         }
-        if(self.vAlignment==WPLCellAlignmentCENTER) {
-            viewRect.moveToVCenterOfOuterRect(rect);
-        } else if(self.vAlignment == WPLCellAlignmentEND){
-            viewRect.move(0, rect.RB().y-viewRect.RB().y);
+        if(viewRect.height()<rect.height()) {
+            if(self.vAlignment==WPLCellAlignmentCENTER) {
+                viewRect.moveToVCenterOfOuterRect(rect);
+            } else if(self.vAlignment == WPLCellAlignmentEND){
+                viewRect.move(0, rect.RB().y-viewRect.RB().y);
+            }
         }
     }
     

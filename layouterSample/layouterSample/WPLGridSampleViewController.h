@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "WPLCellDef.h"
 
-@interface WPLGridSampleViewController : UIViewController<IWPLContainerCellDelegate>
+@interface WPLGridSampleViewController : UIViewController
 
 - (instancetype) initWithMain:(UIViewController*)main;
 
