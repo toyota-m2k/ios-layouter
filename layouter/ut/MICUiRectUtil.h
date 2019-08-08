@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICUiRectUtil.h
 
 //  CGRectを使いやすくするためのクラス
@@ -649,6 +649,9 @@ public:
         height+=dh;
         return *this;
     }
+    MICSize& inflate(const CGSize& s) {
+        return inflate(s.width, s.height);
+    }
     MICSize& inflate(CGFloat d) {
         return inflate(d,d);
     }
@@ -660,9 +663,11 @@ public:
         height-=dh;
         return *this;
     }
+    MICSize& deflate(const CGSize& s) {
+        return deflate(s.width,s.height);
+    }
     MICSize& deflate(const UIEdgeInsets& insets) {
         return deflate(insets.left+insets.right, insets.top+insets.bottom);
-        return *this;
     }
     MICSize& deflate(CGFloat d) {
         return deflate(d,d);
@@ -701,6 +706,15 @@ inline CGSize operator +(const CGSize& size, const UIEdgeInsets& margin) {
 inline CGSize operator -(const CGSize& size, const UIEdgeInsets& margin) {
     MICSize ms(size);
     return ms.deflate(margin);
+}
+
+inline CGSize operator +(const CGSize& size, const CGSize& s) {
+    MICSize ms(size);
+    return ms.inflate(s);
+}
+inline CGSize operator -(const CGSize& size, const CGSize& s) {
+    MICSize ms(size);
+    return ms.deflate(s);
 }
 
 inline CGSize MICSize::max(const CGSize& s1, const CGSize& s2) {

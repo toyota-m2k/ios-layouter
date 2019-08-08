@@ -170,7 +170,6 @@
 @end
 
 @implementation bindingTests{
-    WPLBinder* _binder;
 }
 
 - (void)setUp {
@@ -209,7 +208,6 @@ static inline NSString* label_braced_string(NSString* a, NSString* s) {
 
 
     let binder = [WPLBinder new];
-    _binder = binder;
     WPLBinderBuilder bb(binder);
     bb.property(@"AString", @"a")
     .property(@"BBool", true)
@@ -316,8 +314,7 @@ static inline NSString* label_braced_string(NSString* a, NSString* s) {
     XCTAssert([cellNestA.value isEqualToString:label_braced_string(cellA.value, cellBC.value)]);
     XCTAssert(cellBC.enabled==true);
 
-    [_binder dispose];
-    _binder = nil;
+    [binder dispose];
 }
 
 - (void)testPerformanceExample {

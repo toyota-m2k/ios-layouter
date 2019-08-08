@@ -10,7 +10,7 @@
 
 // Cell Definition (rowDef/colDef)のサイズとして指定可能なスペシャル値
 #define WPL_GRID_SIZING_AUTO 0           // Auto  中身に合わせてサイズを決定する
-#define WPL_GRID_SIZING_STRETCH -1.0     // *(1*)   2* は、2*SIZING_STRETCH と指定
+#define WPL_GRID_SIZING_STRETCH (-1.0)     // *(1*)   2* は、2*SIZING_STRETCH と指定
 
 #if defined(__cplusplus)
 
@@ -52,14 +52,17 @@ public:
 class WPLGridParams : public WPLCellParams {
 public:
     WPLGridDefinition _dimension;
+    MICSize _cellSpacing;
 
-    WPLGridParams(WPLGridDefinition dim = WPLGridDefinition(), MICEdgeInsets margin=MICEdgeInsets(), MICSize requestViewSize=MICSize(), WPLAlignment align=WPLAlignment(), WPLVisibility visibility=WPLVisibilityVISIBLE)
+    WPLGridParams(WPLGridDefinition dim = WPLGridDefinition(), CGSize cellMargin=MICSize(), UIEdgeInsets margin=MICEdgeInsets(), CGSize requestViewSize=MICSize(), WPLAlignment align=WPLAlignment(), WPLVisibility visibility=WPLVisibilityVISIBLE)
     : WPLCellParams(margin, requestViewSize, align, visibility)
-    , _dimension(dim) {}
+    , _dimension(dim)
+    , _cellSpacing(cellMargin) {}
     
     WPLGridParams(const WPLGridParams& src)
     : WPLCellParams(src)
-    , _dimension(src._dimension) {}
+    , _dimension(src._dimension)
+    , _cellSpacing(src._cellSpacing){}
     
     // builder style methods ----
     
@@ -110,6 +113,15 @@ public:
     
     WPLGridParams& colDefs(NSArray<NSNumber*>* v) {
         _dimension.cols(v);
+        return *this;
+    }
+    
+    WPLGridParams& cellSpacing(const CGSize& cellSpacing) {
+        _cellSpacing = cellSpacing;
+        return *this;
+    }
+    WPLGridParams& cellSpacing(CGFloat width, CGFloat height) {
+        _cellSpacing = MICSize(width, height);
         return *this;
     }
 };
@@ -164,7 +176,8 @@ public:
                    visibility:(WPLVisibility)visibility
             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
                       rowDefs:(NSArray<NSNumber*>*) rowDefs
-                      colDefs:(NSArray<NSNumber*>*) colDefs;
+                      colDefs:(NSArray<NSNumber*>*) colDefs
+                  cellSpacing:(CGSize) cellSpacing;
 
 /**
  * インスタンス生成ヘルパー
@@ -179,6 +192,7 @@ public:
             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
                       rowDefs:(NSArray<NSNumber*>*) rowDefs
                       colDefs:(NSArray<NSNumber*>*) colDefs
+                  cellSpacing:(CGSize) cellSpacing
                     superview:(UIView*)superview;
 
 //+ (instancetype) newGridOfRows:(NSArray<NSNumber*>*) rowDefs
@@ -205,6 +219,7 @@ public:
 
 #endif
 
+@property (nonatomic) CGSize cellSpacing;
 @property (nonatomic,readonly) NSInteger rows;
 @property (nonatomic,readonly) NSInteger columns;
 
