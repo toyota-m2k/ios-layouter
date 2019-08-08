@@ -51,7 +51,7 @@
     } else if([view isKindOfClass:UIButton.class]) {
         return [(UIButton*)view titleForState:UIControlStateNormal];
     } else {
-        return nil;
+        return @"";
     }
 }
 

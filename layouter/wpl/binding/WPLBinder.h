@@ -44,6 +44,13 @@
 - (id<IWPLObservableData>) propertyForKey:(id)key;
 
 /**
+ * Observablega*MutableData型のプロパティを取得
+ * @param key   createProperty/createDependentProperty の戻り値
+ * @return IWPLObservableMutableData型インスタンス（未登録、または、指定されたプロパティがMutableでなければnil）
+ */
+- (id<IWPLObservableMutableData>) mutablePropertyForKey:(id)key;
+
+/**
  * 通常の値型（ObservableMutableData型）プロパティを作成して登録
  * @param initialValue 初期値
  * @param key プロパティを識別するキー(nilなら、内部で生成して戻り値に返す）。
@@ -156,7 +163,11 @@ public:
         [_binder createPropertyWithValue:nil withKey:name];
         return *this;
     }
-    WPLBinderBuilder& property(NSString* name, NSInteger initialValue) {
+    WPLBinderBuilder& property(NSString* name, int initialValue) {
+        [_binder createPropertyWithValue:@(initialValue) withKey:name];
+        return *this;
+    }
+    WPLBinderBuilder& property(NSString* name, long initialValue) {
         [_binder createPropertyWithValue:@(initialValue) withKey:name];
         return *this;
     }

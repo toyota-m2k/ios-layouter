@@ -36,7 +36,9 @@
 
 - (void) setValue:(id)v {
     bool bv = ([v isKindOfClass:NSNumber.class]) ? ((NSNumber*)v).boolValue : false;
-    ((UISwitch*)self.view).on = bv;
+    if(!(((UISwitch*)self.view).on)!=!bv) {
+        ((UISwitch*)self.view).on = bv;
+    }
 }
 
 - (void) onSwitchChanged:(id) _ {

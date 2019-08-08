@@ -20,9 +20,6 @@
 }
 
 - (void) setValue:(id) v {
-    if(v==nil) {
-        v = NSNull.null;
-    }
     if(![_value isEqual:v]) {
         _value  = v;
         [self valueChanged];

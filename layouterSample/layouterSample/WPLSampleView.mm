@@ -74,7 +74,7 @@
     let viewController = self.presentViewController;
     if(nil!=viewController) {
 //        [viewController presentationController]
-        let vc = [WPLGridSampleViewController new];
+        let vc = [[WPLGridSampleViewController alloc] initWithMain:viewController];
         // [vc present]
         
         [viewController presentViewController:vc animated:true completion:nil];
@@ -216,6 +216,13 @@
     MICRect rc(MICPoint(), size);
     rc.moveCenter(MICRect(self.frame).center());
     cell.view.frame = rc;
+}
+
+- (void)didMoveToSuperview {
+    if(self.superview==nil) {
+        [_binder dispose];
+        [_stackPanel dispose];
+    }
 }
 
 @end

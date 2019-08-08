@@ -74,6 +74,20 @@
 }
 
 /**
+ * Observablega*MutableData型のプロパティを取得
+ * @param key   createProperty/createDependentProperty の戻り値
+ * @return IWPLObservableMutableData型インスタンス（未登録、または、指定されたプロパティがMutableでなければnil）
+ */
+- (id<IWPLObservableMutableData>) mutablePropertyForKey:(id)key {
+    let r = [self propertyForKey:key];
+    if([r conformsToProtocol:@protocol(IWPLObservableMutableData)]) {
+        return (id<IWPLObservableMutableData>)r;
+    } else {
+        return nil;
+    }
+}
+
+/**
  * 通常の値型（ObservableMutableData型）プロパティを作成して登録
  * @param initialValue 初期値
  * @param key プロパティを識別するキー(nilなら、内部で生成して戻り値に返す）。

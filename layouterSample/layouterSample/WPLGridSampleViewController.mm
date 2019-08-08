@@ -20,9 +20,18 @@
 @end
 
 @implementation WPLGridSampleViewController {
+    UIViewController* _mainVC;
     WPLBinder* _binder;
-    WPLStackPanel* _buttonPanel;
+    WPLGrid* _buttonPanel;
     WPLGrid* _rootGrid;
+}
+
+- (instancetype) initWithMain:(UIViewController*)main {
+    self = [super init];
+    if(nil!=self) {
+        _mainVC = main;
+    }
+    return self;
 }
 
 - (void)viewDidLoad {
@@ -30,27 +39,37 @@
     // Do any additional setup after loading the view.
     self.view.backgroundColor = UIColor.whiteColor;
     
-    _buttonPanel = [WPLStackPanel stackPanelWithName:@"buttonPanel"
-                                              params:WPLStackPanelParams().orientation(WPLOrientationHORIZONTAL).cellSpacing(10)
+    _buttonPanel = [WPLGrid gridWithName:@"buttonPanel"
+                                              params:WPLGridParams()
+                                                .requestViewSize(self.view.frame.size.width, 0)
+                                                .colDefs(@[AUTO,AUTO,AUTO,STRC])
+                                                .rowDefs(@[AUTO])
                                            superview:self.view containerDelegate:self];
     
     let btn1 = [UIButton buttonWithType:(UIButtonTypeRoundedRect)];
     [btn1 setTitle:@"Test-1" forState:(UIControlStateNormal)];
     [btn1 sizeToFit];
     [btn1 addTarget:self action:@selector(execTest1:) forControlEvents:(UIControlEventTouchUpInside)];
-    [_buttonPanel addCell:[WPLCell newCellWithView:btn1 name:@"test1-btn" params:WPLCellParams()]];
+    [_buttonPanel addCell:[WPLCell newCellWithView:btn1 name:@"test1-btn" params:WPLCellParams().margin(MICEdgeInsets(10))] row:0 column:0];
      
     let btn2 = [UIButton buttonWithType:(UIButtonTypeRoundedRect)];
     [btn2 setTitle:@"Test-2" forState:(UIControlStateNormal)];
     [btn2 sizeToFit];
     [btn2 addTarget:self action:@selector(execTest2:) forControlEvents:(UIControlEventTouchUpInside)];
-    [_buttonPanel addCell:[WPLCell newCellWithView:btn2 name:@"test2-btn" params:WPLCellParams()]];
+    [_buttonPanel addCell:[WPLCell newCellWithView:btn2 name:@"test2-btn" params:WPLCellParams().margin(MICEdgeInsets(10))] row:0 column:1];
     
     let btn3 = [UIButton buttonWithType:(UIButtonTypeRoundedRect)];
     [btn3 setTitle:@"Test-3" forState:(UIControlStateNormal)];
     [btn3 sizeToFit];
     [btn3 addTarget:self action:@selector(execTest3:) forControlEvents:(UIControlEventTouchUpInside)];
-    [_buttonPanel addCell:[WPLCell newCellWithView:btn3 name:@"test3-btn" params:WPLCellParams()]];
+    [_buttonPanel addCell:[WPLCell newCellWithView:btn3 name:@"test3-btn" params:WPLCellParams().margin(MICEdgeInsets(10))] row:0 column:2];
+    
+    let back = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [back setTitle:@"Back" forState:(UIControlStateNormal)];
+    [back sizeToFit];
+    [back addTarget:self action:@selector(backToMain:) forControlEvents:UIControlEventTouchUpInside];
+    [_buttonPanel addCell:[WPLCell newCellWithView:back name:@"back" params:WPLCellParams().horzAlign(WPLCellAlignmentEND).margin(MICEdgeInsets(10))] row:0 column:3];
+     
 }
 
 - (void)viewWillLayoutSubviews {
@@ -173,6 +192,17 @@
         }
     }
     [self onChildCellModified:_rootGrid];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [_binder dispose];
+    [_rootGrid dispose];
+    [_buttonPanel dispose];
+}
+
+- (void) backToMain:(id) _ {
+    [_mainVC dismissViewControllerAnimated:true completion:nil];
+    
 }
 
 /*

@@ -11,5 +11,7 @@
 
 @interface WPLGridSampleViewController : UIViewController<IWPLContainerCellDelegate>
 
+- (instancetype) initWithMain:(UIViewController*)main;
+
 @end
 

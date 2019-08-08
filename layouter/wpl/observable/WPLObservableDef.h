@@ -73,6 +73,10 @@
      * 値属性（R/W)
      */
     @property (nonatomic) id value;
+    @property (nonatomic) NSString* stringValue;
+    @property (nonatomic) CGFloat floatValue;
+    @property (nonatomic) bool boolValue;
+    @property (nonatomic) NSInteger intValue;
 @end
 
 @protocol IWPLDelegatedDataSource;

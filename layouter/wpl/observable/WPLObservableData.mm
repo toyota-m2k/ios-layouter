@@ -46,7 +46,7 @@
 
 - (NSString*) stringValue {
     id v = self.value;
-    return [v isKindOfClass:NSString.class] ? (NSString*)v : nil;
+    return [v isKindOfClass:NSString.class] ? (NSString*)v : @"";
 }
 - (NSInteger) intValue {
     id v = self.value;
