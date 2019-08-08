@@ -42,7 +42,7 @@
     _buttonPanel = [WPLGrid gridWithName:@"buttonPanel"
                                               params:WPLGridParams()
                                                 .requestViewSize(self.view.frame.size.width, 0)
-                                                .colDefs(@[AUTO,AUTO,AUTO,STRC])
+                                                .colDefs(@[AUTO,AUTO,AUTO,AUTO,STRC])
                                                 .rowDefs(@[AUTO])
                                            superview:self.view containerDelegate:self];
     
@@ -63,12 +63,18 @@
     [btn3 sizeToFit];
     [btn3 addTarget:self action:@selector(execTest3:) forControlEvents:(UIControlEventTouchUpInside)];
     [_buttonPanel addCell:[WPLCell newCellWithView:btn3 name:@"test3-btn" params:WPLCellParams().margin(MICEdgeInsets(10))] row:0 column:2];
-    
+
+    let btn4 = [UIButton buttonWithType:(UIButtonTypeRoundedRect)];
+    [btn4 setTitle:@"Test-4" forState:(UIControlStateNormal)];
+    [btn4 sizeToFit];
+    [btn4 addTarget:self action:@selector(execTest4:) forControlEvents:(UIControlEventTouchUpInside)];
+    [_buttonPanel addCell:[WPLCell newCellWithView:btn4 name:@"test4-btn" params:WPLCellParams().margin(MICEdgeInsets(10))] row:0 column:3];
+
     let back = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [back setTitle:@"Back" forState:(UIControlStateNormal)];
     [back sizeToFit];
     [back addTarget:self action:@selector(backToMain:) forControlEvents:UIControlEventTouchUpInside];
-    [_buttonPanel addCell:[WPLCell newCellWithView:back name:@"back" params:WPLCellParams().horzAlign(WPLCellAlignmentEND).margin(MICEdgeInsets(10))] row:0 column:3];
+    [_buttonPanel addCell:[WPLCell newCellWithView:back name:@"back" params:WPLCellParams().horzAlign(WPLCellAlignmentEND).margin(MICEdgeInsets(10))] row:0 column:4];
      
 }
 
@@ -189,6 +195,37 @@
                                                         .vertAlign((gridParams._dimension.rowDefs[r].intValue==0)?WPLCellAlignmentCENTER :WPLCellAlignmentSTRETCH)
                                                         .margin(MICEdgeInsets(5,5,5,5))
                                                     ] row:r column:c];
+        }
+    }
+    [self onChildCellModified:_rootGrid];
+}
+
+/**
+ * セルのSTRETCHでの、比率配分レイアウトのテスト
+ */
+- (void) execTest4:(id)_ {
+    [self cleanup];
+    _binder = [WPLBinder new];
+    var gridParams = WPLGridParams(WPLGridDefinition(),MICSize(1,1))
+    .colDefs(@[AUTO,STRC,STRC,STRCx(2),AUTO])
+    .rowDefs(@[AUTO,STRC,STRCx(2),STRCx(3),AUTO])
+    .cellSpacing(MICSize(5,10))
+    .requestViewSize(MICSize(300, 400));
+    _rootGrid = [WPLGrid gridWithName:@"rootGrid"
+                               params:gridParams
+                            superview:self.view containerDelegate:self];
+    _rootGrid.view.backgroundColor = UIColor.yellowColor;
+    
+    for(NSInteger r=0 ; r<_rootGrid.rows; r++) {
+        for(NSInteger c=0 ; c<_rootGrid.columns ; c++) {
+            let v = [[UIView alloc] initWithFrame:MICRect(0,0,30,30)];
+            v.backgroundColor = UIColor.cyanColor;
+            [_rootGrid addCell:[WPLCell newCellWithView:v
+                                                   name:[NSString stringWithFormat:@"c%ld-r%ld", (long)c, (long)r]
+                                                 params:WPLCellParams()
+                                .horzAlign((gridParams._dimension.colDefs[c].intValue==0)?WPLCellAlignmentCENTER :WPLCellAlignmentSTRETCH)
+                                .vertAlign((gridParams._dimension.rowDefs[r].intValue==0)?WPLCellAlignmentCENTER :WPLCellAlignmentSTRETCH)
+                                ] row:r column:c];
         }
     }
     [self onChildCellModified:_rootGrid];

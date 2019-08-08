@@ -29,7 +29,8 @@ public:
     
     WPLStackPanelParams(const WPLStackPanelParams& src)
     : WPLCellParams(src)
-    , _orientation(src._orientation) {}
+    , _orientation(src._orientation)
+    , _cellSpacing(src._cellSpacing) {}
     
     // builder style methods ----
     

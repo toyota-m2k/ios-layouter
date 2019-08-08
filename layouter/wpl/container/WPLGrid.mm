@@ -112,6 +112,8 @@ static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
     NSMutableArray<NSNumber*>* _columnWidths;
     
     CGSize _cachedSize;
+    
+    CGSize _cellSpacing;
 }
 
 static NSArray<NSNumber*>* s_single_def_auto = @[@(0)];
@@ -128,7 +130,7 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
                    vAlignment:(WPLCellAlignment)vAlignment
                    visibility:(WPLVisibility)visibility
             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
-    return [self initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate rowDefs:nil colDefs:nil];
+    return [self initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate rowDefs:nil colDefs:nil cellSpacing:MICSize()];
 }
 
 /**
@@ -143,10 +145,12 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
                    visibility:(WPLVisibility)visibility
             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
                       rowDefs:(NSArray<NSNumber*>*) rowDefs
-                      colDefs:(NSArray<NSNumber*>*) colDefs {
+                      colDefs:(NSArray<NSNumber*>*) colDefs
+                  cellSpacing:(CGSize)cellSpacing {
     self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
     if(nil!=self) {
         _cachedSize = MICSize();
+        _cellSpacing = cellSpacing;
         
         // row/column definitions が省略されているときは、１x１グリッドとして定義を自動生成
         // このとき、requestViewSizeが固定サイズなら、それに合わせて中身を伸縮（stretch)
@@ -174,13 +178,14 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
                       rowDefs:(NSArray<NSNumber*>*) rowDefs
                       colDefs:(NSArray<NSNumber*>*) colDefs
+                  cellSpacing:(CGSize)cellSpacing
                     superview:(UIView*)superview{
     let view = [UIView new];
     if(nil!=superview) {
         [superview addSubview:view];
     }
     return [[WPLGrid alloc] initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment
-                              vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate rowDefs:rowDefs colDefs:colDefs];
+                              vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate rowDefs:rowDefs colDefs:colDefs cellSpacing:cellSpacing];
 }
 
 /**
@@ -190,9 +195,9 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
  */
 + (instancetype) gridWithName:(NSString*) name
                        params:(const WPLGridParams&) params
-                         superview:(UIView*)superview
-                 containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
-    return [self gridWithName:name margin:params._margin requestViewSize:params._requestViewSize hAlignment:params._align.horz vAlignment:params._align.vert visibility:params._visibility containerDelegate:containerDelegate rowDefs:params._dimension.rowDefs colDefs:params._dimension.colDefs superview:superview];
+                    superview:(UIView*)superview
+            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
+    return [self gridWithName:name margin:params._margin requestViewSize:params._requestViewSize hAlignment:params._align.horz vAlignment:params._align.vert visibility:params._visibility containerDelegate:containerDelegate rowDefs:params._dimension.rowDefs colDefs:params._dimension.colDefs cellSpacing:params._cellSpacing superview:superview];
 }
 
 /**
@@ -228,6 +233,17 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 // カラム数
 - (NSInteger) columns {
     return _colDefs.count;
+}
+
+- (CGSize) cellSpacing {
+    return _cellSpacing;
+}
+
+- (void) setCellSpacing:(CGSize)cellSpacing {
+    if(MICSize(_cellSpacing)!=cellSpacing) {
+        _cellSpacing = cellSpacing;
+        self.needsLayout = true;
+    }
 }
 
 - (void) addCell:(id<IWPLCell>)cell {
@@ -284,6 +300,45 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 //}
 
 /**
+ * セルマージンを含むセルサイズを計算する
+ * 各セルに対して、calcMinSizeFor... を呼び出してセルが管理しているサイズを取得し、それに対してセルマージンを付加して返す。
+ * セルマージンは、各セルの右下についているものとし、右端、下端のセルは、セルマージンがゼロになるよう除外処理を入れる
+ */
+- (void) calcGellSizeWithCellSpacing:(id<IWPLCell>)cell {
+    MICSize size;
+    let ex = EXT(cell);
+    if(cell.visibility!=WPLVisibilityCOLLAPSED) {
+        size = [cell calcMinSizeForRegulatingWidth:(ex.colSpan>1) ? 0 : GET_FLOAT(_colDefs, ex.column)
+                                    andRegulatingHeight:(ex.rowSpan>1) ? 0 : GET_FLOAT(_rowDefs, ex.row) ] ;
+        if(ex.column+ex.colSpan < self.columns) {
+            size.width += _cellSpacing.width;
+        }
+        if(ex.row+ex.rowSpan < self.rows) {
+            size.height += _cellSpacing.height;
+        }
+    }
+    ex.size = size;
+}
+
+/**
+ * cell.extension に保持しているセルマージンを含むセルサイズから、セルマージンを除外した正味のセルサイズを取得する。
+ */
+- (CGSize) trimCellSpacing:(id<IWPLCell>)cell width:(CGFloat)width height:(CGFloat)height {
+    MICSize size;
+    if(cell.visibility!=WPLVisibilityCOLLAPSED) {
+        let ex = EXT(cell);
+        size.set(width,height);
+        if(ex.column+ex.colSpan < self.columns) {
+            size.width -= _cellSpacing.width;
+        }
+        if(ex.row+ex.rowSpan < self.rows) {
+            size.height -= _cellSpacing.height;
+        }
+    }
+    return size;
+}
+
+/**
  * すべてのセルのminSize を計算して、GridExtensionにセットする
  * グリッドセルのサイズが固定の場合は無駄になるかもしれないが、Row/Columnのどちらかで必要になるケースもあるので、
  * とにかく全部計算しておく。
@@ -292,13 +347,7 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     _cachedSize.width = 0;
     _cachedSize.height = 0;
     for(id<IWPLCell> c in self.cells) {
-        var ex = EXT(c);
-        if(c.visibility!=WPLVisibilityCOLLAPSED) {
-            ex.size = [c calcMinSizeForRegulatingWidth:(ex.colSpan>1) ? 0 : GET_FLOAT(_colDefs, ex.column)
-                                   andRegulatingHeight:(ex.rowSpan>1) ? 0 : GET_FLOAT(_rowDefs, ex.row) ];
-        } else {
-            ex.size = MICSize();
-        }
+        [self calcGellSizeWithCellSpacing:c];
     }
 }
 
@@ -415,7 +464,7 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 - (void) pass5_finalizeInWidths:(NSArray<NSNumber*>*)widths andHeights:(NSArray<NSNumber*>*)heights {
     for(id<IWPLCell> c in self.cells) {
         let ex = EXT(c);
-        MICSize size(sumRange(widths, ex.column, ex.colSpan), sumRange(heights, ex.row, ex.rowSpan));
+        MICSize size([self trimCellSpacing:c width:sumRange(widths, ex.column, ex.colSpan) height:sumRange(heights, ex.row, ex.rowSpan)]);
         MICPoint point(sumRange(widths, 0, ex.column), sumRange(heights, 0, ex.row));
         [c layoutResolvedAt:point inSize:size];
     }
