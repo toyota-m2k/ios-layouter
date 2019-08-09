@@ -119,6 +119,8 @@ static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
 static NSArray<NSNumber*>* s_single_def_auto = @[@(0)];
 static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 
+#pragma mark - Construction
+
 /**
  * WPLCell.initWithView のオーバーライド
  */
@@ -209,6 +211,8 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     return [self gridWithName:name params:params superview:nil containerDelegate:nil];
 }
 
+#pragma mark - Properties
+
 /**
  * requestViewSize プロパティのセッターをオーバーライド
  */
@@ -246,6 +250,8 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     }
 }
 
+#pragma mark - Appending Cell
+
 - (void) addCell:(id<IWPLCell>)cell {
     [self addCell:cell row:0 column:0 rowSpan:1 colSpan:1];
 }
@@ -268,9 +274,9 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     [super addCell:cell];
 }
 
-- (void) addCell:(id<IWPLCell>)cell params:(const WPLGridAddCellParams&) params {
-    [self addCell:cell row:params._row column:params._column rowSpan:params._rowSpan colSpan:params._colSpan];
-}
+//- (void) addCell:(id<IWPLCell>)cell params:(const WPLGridAddCellParams&) params {
+//    [self addCell:cell row:params._row column:params._column rowSpan:params._rowSpan colSpan:params._colSpan];
+//}
 
 
 //- (CGFloat) sumRange:(NSArray<NSNumber*>*) ary from:(NSInteger)from count:(NSInteger)count {
@@ -299,6 +305,8 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 //    }
 //}
 
+#pragma mark - Rendering
+
 /**
  * セルマージンを含むセルサイズを計算する
  * 各セルに対して、calcMinSizeFor... を呼び出してセルが管理しているサイズを取得し、それに対してセルマージンを付加して返す。
@@ -308,8 +316,9 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     MICSize size;
     let ex = EXT(cell);
     if(cell.visibility!=WPLVisibilityCOLLAPSED) {
-        size = [cell calcMinSizeForRegulatingWidth:(ex.colSpan>1) ? 0 : GET_FLOAT(_colDefs, ex.column)
-                                    andRegulatingHeight:(ex.rowSpan>1) ? 0 : GET_FLOAT(_rowDefs, ex.row) ] ;
+        MICSize regSize( (ex.colSpan>1) ? 0 : GET_FLOAT(_colDefs, ex.column),
+                         (ex.rowSpan>1) ? 0 : GET_FLOAT(_rowDefs, ex.row   ) );
+        size = [cell layoutPrepare:regSize];
         if(ex.column+ex.colSpan < self.columns) {
             size.width += _cellSpacing.width;
         }
@@ -466,7 +475,7 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
         let ex = EXT(c);
         MICSize size([self trimCellSpacing:c width:sumRange(widths, ex.column, ex.colSpan) height:sumRange(heights, ex.row, ex.rowSpan)]);
         MICPoint point(sumRange(widths, 0, ex.column), sumRange(heights, 0, ex.row));
-        [c layoutResolvedAt:point inSize:size];
+        [c layoutCompleted:MICRect(point,size)];
     }
 }
 
@@ -504,6 +513,7 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
  * 計算結果に基づいて、セルを配置する(Pass5)。
  */
 - (CGSize) innerLayout:(CGSize) fixSize {
+    NSAssert(fixSize.width>=0 && fixSize.height>=0, @"Grid.innerLayout: fix < 0");
     if(_cachedSize.width==0) {
         _cachedSize.width = [self calcColumnWidth:fixSize.width];
     }
@@ -516,12 +526,20 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 }
 
 /**
+ * サイズに負値が入らないようにして返す
+ */
+static inline MICSize positiveSize(const CGSize& size) {
+    return MICSize(MAX(size.width, 0), MAX(size.height,0));
+}
+
+/**
  * レイアウトを開始（ルートコンテナの場合のみ呼び出される）
  */
 - (CGSize) layout {
     if(self.needsLayoutChildren) {
         [self pass1_initParams];
-        [self innerLayout:self.requestViewSize];
+        
+        [self innerLayout:positiveSize(self.requestViewSize)];
         
         if(MICSize(_cachedSize)!=self.view.frame.size) {
             self.view.frame = MICRect(self.view.frame.origin, _cachedSize);
@@ -532,44 +550,66 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 }
 
 /**
- * セルサイズを計算する
- * 実際には、requestViewSizeベースでlayoutを実行して、そのサイズを返す
+ * レイアウト準備（仮配置）
+ * セル内部の配置を計算し、セルサイズを返す。
+ * このあと、親コンテナセルでレイアウトが確定すると、layoutCompleted: が呼び出されるので、そのときに、内部の配置を行う。
+ * @param regulatingCellSize    stretch指定のセルサイズを決めるためのヒント
+ *    セルサイズ決定の優先順位
+ *      requestedViweSize       regulatingCellSize          内部コンテンツ(view/cell)サイズ
+ *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズ
+ *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしない
+ *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない (regulatingCellSize の stretch 指定は無視する)
+ *        負値(stretch)            ○ 正値 (fixed)               regulatingCellSize にリサイズ
+ * @return  セルサイズ（マージンを含む
  */
-- (CGSize) calcMinSizeForRegulatingWidth:(CGFloat) regulatingWidth andRegulatingHeight:(CGFloat) regulatingHeight {
+- (CGSize) layoutPrepare:(CGSize) regulatingCellSize {
+    MICSize regSize([self sizeWithoutMargin:regulatingCellSize]);
     if(self.needsLayoutChildren) {
         [self pass1_initParams];
-        MICSize fixSize( (self.requestViewSize.width>0) ? self.requestViewSize.width : regulatingWidth,
-                        (self.requestViewSize.height>0) ? self.requestViewSize.height : regulatingHeight );
-        [self innerLayout:fixSize];
+        MICSize fixSize( (self.requestViewSize.width>=0)  ? self.requestViewSize.width  : regSize.width,
+                         (self.requestViewSize.height>=0) ? self.requestViewSize.height : regSize.height );
+        [self innerLayout:positiveSize(fixSize)];
     }
-    return MICSize(_cachedSize)+self.margin;
+    return [self sizeWithMargin:_cachedSize];
 }
 
+
 /**
- * セルの位置・サイズ確定
+ * レイアウトを確定する。
+ * layoutPrepareが呼ばれた後に呼び出される。
+ * @param finalCellRect     確定したセル領域（マージンを含む）
+ *
+ *  リサイズ＆配置ルール
+ *      requestedViweSize       finalCellRect                 内部コンテンツ(view/cell)サイズ
+ *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズし、alignmentに従ってfinalCellRect内に配置
+ *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしないで、alignmentに従ってfinalCellRect内に配置
+ *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない、alignmentに従ってfinalCellRect内に配置 (regulatingCellSize の stretch 指定は無視する)
+ *        負値(stretch)            ○ 正値 (fixed)               finalCellSize にリサイズ（regulatingCellSize!=finalCellRect.sizeの場合は再計算）。alignmentは無視
  */
-- (void) layoutResolvedAt:(CGPoint)point inSize:(CGSize)size {
+- (void) layoutCompleted:(CGRect) finalCellRect {
     self.needsLayout = false;
     if(self.visibility==WPLVisibilityCOLLAPSED) {
         return;
     }
 
     NSAssert(!self.needsLayoutChildren, @"layout must be calculated.");
-    // STRETCH の場合に、与えられたサイズを使って配置を再計算する
-    MICSize viewSize(MICSize(size) - self.margin);
-    if(viewSize.width!=_cachedSize.width && self.hAlignment == WPLCellAlignmentSTRETCH && self.requestViewSize.width == 0) {
+    
+    MICSize viewSize([self sizeWithoutMargin:finalCellRect.size]);
+    // layoutPrepareの計算結果とセルサイズが異なる場合、STRETCH 指定なら、与えられたサイズを使って配置を再計算する
+    if(viewSize.width!=_cachedSize.width && self.requestViewSize.width<0 /* stretch */) {
         _cachedSize.width = 0;
     }
-    if(viewSize.height!=_cachedSize.height && self.vAlignment == WPLCellAlignmentSTRETCH && self.requestViewSize.height==0) {
+    if(viewSize.height!=_cachedSize.height && self.requestViewSize.height<0 /* stretch */ ) {
         _cachedSize.height = 0;
     }
     if(_cachedSize.width==0||_cachedSize.height==0) {
         [self innerLayout:viewSize];
     }
+    // [super layoutCompleted:] は、auto-sizing のときにview のサイズを配置計算に使用するので、ここでサイズを設定しておく
     if (MICSize(_cachedSize) != self.view.frame.size) {
-        // [super layoutResolvedAt:] は、view のサイズから配置計算するので、その前に、viewのサイズを設定しておく
         self.view.frame = MICRect(self.view.frame.origin, _cachedSize);
     }
-    [super layoutResolvedAt:point inSize:size];
+    [super layoutCompleted:finalCellRect];
 }
+
 @end

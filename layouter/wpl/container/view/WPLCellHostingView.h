@@ -1,6 +1,6 @@
 //
 //  WPLCellHostingView.h
-//  layouterSample
+//  WP Layouter
 //
 //  Created by Mitsuki Toyota on 2019/08/08.
 //  Copyright © 2019 Mitsuki Toyota. All rights reserved.

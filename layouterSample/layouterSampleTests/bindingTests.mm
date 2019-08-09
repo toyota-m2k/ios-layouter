@@ -36,16 +36,16 @@
     return self;
 }
 
-- (CGSize)calcMinSizeForRegulatingWidth:(CGFloat)regulatingWidth andRegulatingHeight:(CGFloat)regulatingHeight {
-    return MICSize();
-}
-
 - (void)dispose {
     
 }
 
-- (void)layoutResolvedAt:(CGPoint)point inSize:(CGSize)size {
+- (void)layoutCompleted:(CGRect)finalCellRect {
     
+}
+
+- (CGSize)layoutPrepare:(CGSize)regulatingCellSize {
+    return MICSize();
 }
 
 @end

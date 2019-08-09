@@ -9,8 +9,8 @@
 #import "WPLContainerCell.h"
 
 // Cell Definition (rowDef/colDef)のサイズとして指定可能なスペシャル値
-#define WPL_GRID_SIZING_AUTO 0           // Auto  中身に合わせてサイズを決定する
-#define WPL_GRID_SIZING_STRETCH (-1.0)     // *(1*)   2* は、2*SIZING_STRETCH と指定
+#define WPL_GRID_SIZING_AUTO        WPL_CELL_SIZING_AUTO        // Auto  中身に合わせてサイズを決定する
+#define WPL_GRID_SIZING_STRETCH     WPL_CELL_SIZING_STRETCH     // *(1*)   2* は、2*SIZING_STRETCH と指定
 
 #if defined(__cplusplus)
 
@@ -126,37 +126,6 @@ public:
     }
 };
 
-class WPLGridAddCellParams {
-public:
-    NSInteger _row;
-    NSInteger _column;
-    NSInteger _rowSpan;
-    NSInteger _colSpan;
-    
-    WPLGridAddCellParams(NSInteger row=0, NSInteger column=0, NSInteger rowSpan=1, NSInteger colSpan=1)
-    : _row(row)
-    , _column(column)
-    , _rowSpan(rowSpan)
-    , _colSpan(colSpan){}
-    
-    WPLGridAddCellParams& row(NSInteger v) {
-        _row = v;
-        return *this;
-    }
-    WPLGridAddCellParams& column(NSInteger v) {
-        _column = v;
-        return *this;
-    }
-    WPLGridAddCellParams& rowSpan(NSInteger v) {
-        _rowSpan = v;
-        return *this;
-    }
-    WPLGridAddCellParams& colSpan(NSInteger v) {
-        _colSpan = v;
-        return *this;
-    }
-};
-
 #endif
 
 /**
@@ -226,6 +195,5 @@ public:
 - (void) addCell:(id<IWPLCell>)cell;
 - (void) addCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column;
 - (void) addCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan;
-- (void) addCell:(id<IWPLCell>)cell params:(const WPLGridAddCellParams&) params;
 
 @end

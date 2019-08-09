@@ -7,7 +7,8 @@
 //
 
 #import "WPLGridSampleViewController.h"
-#import "WPLGridL.h"
+#import "WPLContainersL.h"
+#import "WPLGrid.h"
 #import "WPLStackPanel.h"
 #import "WPLBinder.h"
 #import "MICVar.h"
@@ -52,13 +53,12 @@
                                        params:WPLGridParams()
                                                 .colDefs(@[STRC])
                                                 .rowDefs(@[AUTO,STRC])
-                                                .align(WPLAlignment(WPLCellAlignmentSTRETCH))];
+                                                .requestViewSize(-1,-1)];
     _hostingView.containerCell = rootContainer;
     
     let buttonPanel = [WPLGrid gridWithName:@"buttonPanel"
                                               params:WPLGridParams()
-                                                .requestViewSize(0, 0)
-                                                .horzAlign(WPLCellAlignmentSTRETCH)
+                                                .requestViewSize(-1, 0)
                                                 .colDefs(@[AUTO,AUTO,AUTO,AUTO,AUTO,STRC])
                                                 .rowDefs(@[AUTO])];
     
@@ -146,7 +146,7 @@
     
     let v1 = [UIView new];
     v1.backgroundColor = UIColor.orangeColor;
-    let vc1 = [WPLCell newCellWithView:v1 name:@"v1" params:WPLCellParams().align(WPLAlignment(WPLCellAlignmentSTRETCH))];
+    let vc1 = [WPLCell newCellWithView:v1 name:@"v1" params:WPLCellParams().requestViewSize(-1,-1)];
     [rootGrid addCell:vc1];
 
     [(WPLGrid*) _hostingView.containerCell addCell:rootGrid row:1 column:0];
@@ -178,7 +178,7 @@
     
     let v1 = [UIView new];
     v1.backgroundColor = UIColor.greenColor;
-    let vc1 = [WPLCell newCellWithView:v1 name:@"v1" params:WPLCellParams().align(WPLAlignment(WPLCellAlignmentSTRETCH))];
+    let vc1 = [WPLCell newCellWithView:v1 name:@"v1" params:WPLCellParams().requestViewSize(-1,-1)];
     [subGrid1 addCell:vc1];
     
     let subGrid2 = [WPLGrid gridWithName:@"subGrid2" params:WPLGridParams().requestViewSize(200,100)];
@@ -186,7 +186,7 @@
     
     let v2 = [UIView new];
     v2.backgroundColor = UIColor.cyanColor;
-    let vc2 = [WPLCell newCellWithView:v2 name:@"v1" params:WPLCellParams().align(WPLAlignment(WPLCellAlignmentSTRETCH))];
+    let vc2 = [WPLCell newCellWithView:v2 name:@"v1" params:WPLCellParams().requestViewSize(-1,-1)];
     [subGrid2 addCell:vc2];
     
     [_binder createPropertyWithValue:@false withKey:@"check-selected"];
@@ -219,9 +219,9 @@
             [rootGrid addCell:[WPLCell newCellWithView:v
                                                    name:[NSString stringWithFormat:@"c%ld-r%ld", (long)c, (long)r]
                                                  params:WPLCellParams()
-                                                        .horzAlign((gridParams._dimension.colDefs[c].intValue==0)?WPLCellAlignmentCENTER :WPLCellAlignmentSTRETCH)
-                                                        .vertAlign((gridParams._dimension.rowDefs[r].intValue==0)?WPLCellAlignmentCENTER :WPLCellAlignmentSTRETCH)
-                                                        .margin(MICEdgeInsets(5,5,5,5))
+                                                           .requestViewSize((gridParams._dimension.colDefs[c].intValue==0)?0:-1, (gridParams._dimension.rowDefs[r].intValue==0)?0:-1)
+                                                           .align(WPLAlignment(WPLCellAlignmentCENTER))
+                                                           .margin(MICEdgeInsets(5,5,5,5))
                                                     ] row:r column:c];
         }
     }
@@ -252,8 +252,9 @@
             [rootGrid addCell:[WPLCell newCellWithView:v
                                                    name:[NSString stringWithFormat:@"c%ld-r%ld", (long)c, (long)r]
                                                  params:WPLCellParams()
-                                .horzAlign((gridParams._dimension.colDefs[c].intValue==0)?WPLCellAlignmentCENTER :WPLCellAlignmentSTRETCH)
-                                .vertAlign((gridParams._dimension.rowDefs[r].intValue==0)?WPLCellAlignmentCENTER :WPLCellAlignmentSTRETCH)
+                                                           .requestViewSize((gridParams._dimension.colDefs[c].intValue==0)?0:-1,
+                                                                            ((gridParams._dimension.rowDefs[r].intValue==0)?0:-1))
+                                                           .align(WPLAlignment(WPLCellAlignmentCENTER))
                                 ] row:r column:c];
         }
     }
