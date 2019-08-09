@@ -13,9 +13,9 @@
 @implementation WPLCell {
     bool _needsLayout;
     
-    UIEdgeInsets _margin;
+    MICEdgeInsets _margin;
     WPLVisibility _visibility;
-    CGSize _requestViewSize;
+    MICSize _requestViewSize;
     WPLCellAlignment _hAlignment;
     WPLCellAlignment _vAlignment;
 }
@@ -227,87 +227,121 @@
     _view.userInteractionEnabled = v;
 }
 
+- (CGSize) requestCellSize {
+    return [self sizeWithMargin:_requestViewSize];
+}
+
+- (CGSize) sizeWithMargin:(CGSize)size {
+    MICSize s(size);
+    if(s.width>0) {
+        s.width += _margin.dw();
+    }
+    if(s.height>0) {
+        s.height += _margin.dh();
+    }
+    return s;
+}
+
+- (CGSize) sizeWithoutMargin:(CGSize)size {
+    MICSize s(size);
+    if(s.width>0) {
+        s.width -= _margin.dw();
+    }
+    if(s.height>0) {
+        s.height -= _margin.dh();
+    }
+    return s;
+}
+
+- (CGRect) rectWithMargin:(CGRect)rect {
+    return MICRect(rect) + self.margin;
+}
+- (CGRect) rectWithoutMargin:(CGRect)rect {
+    return MICRect(rect) - self.margin;
+}
+
+
 /**
- * セルサイズを計算
- * 以下の優先順序でサイズを決定
- * １）requestViewSizeで指定されたサイズ
- * ２）親コンテナから指定されたサイズ(regulatingSize)
- * ３）ビューのサイズ
- *
- * @param regulatingWidth   親コンテナから指定された幅(0:Auto-->セルのコンテンツに合わせる)
- * @param regulatingHeight  親コンテナから指定された高さ(0:Auto-->セルのコンテンツに合わせる)
- * @return マージンを含むセルサイズ
+ * レイアウト準備（仮配置）
+ * セル内部の配置を計算し、セルサイズを返す。
+ * このあと、親コンテナセルでレイアウトが確定すると、layoutCompleted: が呼び出されるので、そのときに、内部の配置を行う。
+ * @param regulatingCellSize    stretch指定のセルサイズを決めるためのヒント(セルマージンを含む)
+ *    セルサイズ決定の優先順位
+ *      requestedViweSize       regulatingCellSize          内部コンテンツ(view/cell)サイズ
+ *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズ
+ *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしない
+ *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない (regulatingCellSize の stretch 指定は無視する)
+ *        負値(stretch)            ○ 正値 (fixed)               regulatingCellSize にリサイズ
+ * @return  セルサイズ（マージンを含む
  */
-/** セルの最小サイズを計算 */
-- (CGSize) calcMinSizeForRegulatingWidth:(CGFloat) regulatingWidth andRegulatingHeight:(CGFloat) regulatingHeight {
+- (CGSize) layoutPrepare:(CGSize) regulatingCellSize {
     // width
     MICSize size(self.requestViewSize);
+    MICSize regSize([self sizeWithoutMargin:regulatingCellSize]);
     if(size.width<=0) {
-        if(regulatingWidth>0) {
-            size.width = regulatingWidth;
+        if(regSize.width>0) {
+            size.width = regSize.width;
         } else {
             size.width = self.view.frame.size.width;
         }
     }
     if(size.height<=0) {
-        if(regulatingHeight>0) {
-            size.height = regulatingHeight;
+        if(regSize.height>0) {
+            size.height = regSize.height;
         } else {
             size.height = self.view.frame.size.height;
         }
     }
-    return size + _margin;
+    return [self sizeWithMargin:size];
 }
 
 /**
- * セルの位置・サイズを確定してビューに反映する
+ * レイアウトを確定する。
+ * layoutPrepareが呼ばれた後に呼び出される。
+ * @param finalCellRect     確定したセル領域（マージンを含む）
  *
- * １）Alignment==STRETCHなら、与えられたサイズ(-margin)をViewにセット
- * ２）STRETCH以外なら、
- *    a) requestViewSize でサイズが指定されていれば、Viewのサイズを変更
- *    b) それ以外は、元のサイズのままにする
- * ３）マージンを考慮して、Viewの位置をセット
- *
- * @param point 位置
- * @param size サイズ
+ *  リサイズ＆配置ルール
+ *      requestedViweSize       finalCellRect                 内部コンテンツ(view/cell)サイズ
+ *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズし、alignmentに従ってfinalCellRect内に配置
+ *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしないで、alignmentに従ってfinalCellRect内に配置
+ *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない、alignmentに従ってfinalCellRect内に配置 (regulatingCellSize の stretch 指定は無視する)
+ *        負値(stretch)            ○ 正値 (fixed)               finalCellSize にリサイズ（regulatingCellSize!=finalCellRect.sizeの場合は再計算）。alignmentは無視
  */
-- (void) layoutResolvedAt:(CGPoint)point inSize:(CGSize)size {
+- (void) layoutCompleted:(CGRect) finalCellRect {
     self.needsLayout = false;
     if(self.visibility==WPLVisibilityCOLLAPSED) {
         return;
     }
-    var rect = MICRect(MICRect(point, size) - _margin);
-    var viewRect = MICRect(rect);
-    if(self.hAlignment!=WPLCellAlignmentSTRETCH) {
+    MICRect finRect([self rectWithoutMargin:finalCellRect]);
+    var viewRect = MICRect(finRect);
+    if(self.requestViewSize.width>=0) { // !stretch
         if(self.requestViewSize.width>0) {
             viewRect.size.width = self.requestViewSize.width;
         } else {
             viewRect.size.width = self.view.frame.size.width;
         }
-        if(viewRect.width()<rect.width()) {
+        if(viewRect.width()<finRect.width()) {
             if(self.hAlignment==WPLCellAlignmentCENTER) {
-                viewRect.moveToHCenterOfOuterRect(rect);
+                viewRect.moveToHCenterOfOuterRect(finRect);
             } else if(self.hAlignment == WPLCellAlignmentEND){
-                viewRect.move(rect.RB().x-viewRect.RB().x, 0);
+                viewRect.move(finRect.RB().x-viewRect.RB().x, 0);
             }
         }
     }
-    
-    if(self.vAlignment!=WPLCellAlignmentSTRETCH) {
+    if(self.requestViewSize.height>=0) { // !stretch
         if(self.requestViewSize.height>0) {
             viewRect.size.height = self.requestViewSize.height;
         } else {
             viewRect.size.height = self.view.frame.size.height;
         }
-        if(viewRect.height()<rect.height()) {
+        if(viewRect.height()<finRect.height()) {
             if(self.vAlignment==WPLCellAlignmentCENTER) {
-                viewRect.moveToVCenterOfOuterRect(rect);
+                viewRect.moveToVCenterOfOuterRect(finRect);
             } else if(self.vAlignment == WPLCellAlignmentEND){
-                viewRect.move(0, rect.RB().y-viewRect.RB().y);
+                viewRect.move(0, finRect.RB().y-viewRect.RB().y);
             }
         }
     }
-    
     self.view.frame = viewRect;
 }
 

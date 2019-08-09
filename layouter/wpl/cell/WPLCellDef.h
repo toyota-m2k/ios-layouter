@@ -9,6 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+#define WPL_CELL_SIZING_AUTO 0           // Auto  中身に合わせてサイズを決定する
+#define WPL_CELL_SIZING_STRETCH (-1.0)   // Stretch 親のサイズに合わせて決定する
+
 /**
  * セルの配置指定
  */
@@ -16,7 +19,6 @@ typedef enum _WPLCellAlignment {
     WPLCellAlignmentSTART,
     WPLCellAlignmentEND,
     WPLCellAlignmentCENTER,
-    WPLCellAlignmentSTRETCH,    // requestViewWidth/Height は無視して、コンテナのサイズに合わせて伸縮する
 } WPLCellAlignment;
 
 /**
@@ -56,11 +58,34 @@ typedef enum _WPLVisibility {
     @property(nonatomic, weak) id<IWPLContainerCellDelegate> containerDelegate;  // 親コンテナにサイズ変更を通知するためのデリゲート
     @property(nonatomic) id extension;                      // 親コンテナが自由に利用するメンバー
 
-    /** セルの最小サイズを計算 */
-    - (CGSize) calcMinSizeForRegulatingWidth:(CGFloat) regulatingWidth andRegulatingHeight:(CGFloat) regulatingHeight;
+    /**
+     * レイアウト準備（仮配置）
+     * セル内部の配置を計算し、セルサイズを返す。
+     * このあと、親コンテナセルでレイアウトが確定すると、layoutCompleted: が呼び出されるので、そのときに、内部の配置を行う。
+     * @param regulatingCellSize    stretch指定のセルサイズを決めるためのヒント
+     *    セルサイズ決定の優先順位
+     *      requestedViweSize       regulatingCellSize          内部コンテンツ(view/cell)サイズ
+     *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズ
+     *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしない
+     *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない (regulatingCellSize の stretch 指定は無視する)
+     *        負値(stretch)            ○ 正値 (fixed)               regulatingCellSize にリサイズ
+     * @return  セルサイズ（マージンを含む
+     */
+    - (CGSize) layoutPrepare:(CGSize) regulatingCellSize;
 
-    /** レイアウト確定 */
-    - (void) layoutResolvedAt:(CGPoint)point inSize:(CGSize)size;
+    /**
+     * レイアウトを確定する。
+     * layoutPrepareが呼ばれた後に呼び出される。
+     * @param finalCellRect     確定したセル領域（マージンを含む）
+     *
+     *  リサイズ＆配置ルール
+     *      requestedViweSize       finalCellRect                 内部コンテンツ(view/cell)サイズ
+     *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズし、alignmentに従ってfinalCellRect内に配置
+     *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしないで、alignmentに従ってfinalCellRect内に配置
+     *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない、alignmentに従ってfinalCellRect内に配置 (regulatingCellSize の stretch 指定は無視する)
+     *        負値(stretch)            ○ 正値 (fixed)               finalCellSize にリサイズ（regulatingCellSize!=finalCellRect.sizeの場合は再計算）。alignmentは無視
+     */
+    - (void) layoutCompleted:(CGRect) finalCellRect;
 
     // For bindings
     @property(nonatomic) WPLVisibility visibility;         // 表示・非表示

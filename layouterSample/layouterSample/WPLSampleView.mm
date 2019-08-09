@@ -105,12 +105,12 @@
     
     let v3 = [[UIView alloc] init];
     v3.backgroundColor = UIColor.greenColor;
-    let vc3 = [WPLCell newCellWithView:v3 name:@"gv3" margin:MICEdgeInsets(0,0,0,0) requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentSTRETCH) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE)];
+    let vc3 = [WPLCell newCellWithView:v3 name:@"gv3" params:WPLCellParams().requestViewSize(-1,20).vertAlign(WPLCellAlignmentCENTER)];
     [subGrid addCell:vc3 row:0 column:2];
 
     let v11 = [[UIView alloc] init];
     v11.backgroundColor = UIColor.greenColor;
-    let vc11 = [WPLCell newCellWithView:v11 name:@"gv11" margin:MICEdgeInsets(0,10,5,0) requestViewSize:MICSize(20,0) hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentSTRETCH) visibility:(WPLVisibilityVISIBLE)];
+    let vc11 = [WPLCell newCellWithView:v11 name:@"gv11" params:WPLCellParams().margin(0,10,5,0).requestViewSize(20,-1).horzAlign(WPLCellAlignmentCENTER)];
     [subGrid addCell:vc11 row:1 column:0 rowSpan:2 colSpan:1];
     
     let v12 = [[UIView alloc] init];
@@ -120,7 +120,7 @@
     
     let v13 = [[UIView alloc] init];
     v13.backgroundColor = UIColor.redColor;
-    let vc13 = [WPLCell newCellWithView:v13 name:@"gv13" margin:MICEdgeInsets(0,10,0,0) requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentSTRETCH) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE)];
+    let vc13 = [WPLCell newCellWithView:v13 name:@"gv13" params:WPLCellParams().margin(0,10,0,0).requestViewSize(-1,20).vertAlign(WPLCellAlignmentCENTER)];
     [subGrid addCell:vc13 row:1 column:2];
 
     
@@ -131,7 +131,7 @@
 
     let v22 = [[UIView alloc] init];
     v22.backgroundColor = UIColor.orangeColor;
-    let vc22 = [WPLCell newCellWithView:v22 name:@"gv22" margin:MICEdgeInsets(0,10,0,0) requestViewSize:MICSize(0,20) hAlignment:(WPLCellAlignmentSTRETCH) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE)];
+    let vc22 = [WPLCell newCellWithView:v22 name:@"gv22" params:WPLCellParams().margin(0,10,0,0).requestViewSize(-1,20).vertAlign(WPLCellAlignmentCENTER)];
     [subGrid addCell:vc22 row:2 column:1 rowSpan:1 colSpan:2];
 
 }
@@ -162,8 +162,8 @@
     
     let tv3 = [[UITextView alloc] initWithFrame:MICRect(0,0, 150, tv1.frame.size.height)];
     tv3.backgroundColor = UIColor.redColor;
-    let tcell3 = [WPLTextCell newCellWithView:tv3 name:@"no3-text" margin:MICEdgeInsets(0,0,0,0) requestViewSize:MICSize(0,0) hAlignment:WPLCellAlignmentSTRETCH vAlignment:WPLCellAlignmentSTART visibility:WPLVisibilityVISIBLE];
-    
+    let tcell3 = [WPLTextCell newCellWithView:tv3 name:@"no3-text"
+                                       params:WPLCellParams().requestViewSize(-1,-1)];
     [_binder createPropertyWithValue:@"initial value" withKey:@"text1"];
     [_binder bindProperty:@"text1" withValueOfCell:tcell1 bindingMode:(WPLBindingModeTWO_WAY) customActin:nil];
     [_binder bindProperty:@"text1" withValueOfCell:tcell2 bindingMode:(WPLBindingModeSOURCE_TO_VIEW) customActin:nil];

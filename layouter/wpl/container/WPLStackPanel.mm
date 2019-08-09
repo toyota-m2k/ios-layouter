@@ -188,15 +188,16 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
  * レイアウト計算　＆　セルの配置
  */
 - (void) innerLayout:(CGFloat) fix {
+    NSAssert(fix>=0,@"StackLayout.innerLayout: fix < 0");
     CGFloat max = fix;
     CGFloat sum = 0;
     for (id<IWPLCell> c in self.cells) {
         if(c.visibility==WPLVisibilityCOLLAPSED) {
             continue;
         }
-        CGFloat regWidth = (self.orientation==WPLOrientationVERTICAL) ? fix : 0;
-        CGFloat regHeight = (self.orientation==WPLOrientationVERTICAL) ? 0 : fix;
-        CGSize size = [c calcMinSizeForRegulatingWidth:regWidth andRegulatingHeight:regHeight];
+        MICSize regSize( (self.orientation==WPLOrientationVERTICAL) ? fix : 0,
+                         (self.orientation==WPLOrientationVERTICAL) ? 0 : fix  );
+        CGSize size = [c layoutPrepare:regSize];
         if (fix == 0) {
             max = MAX(max, W(self, size));
         }
@@ -214,7 +215,7 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
         MICSize esize(EXT(c).size);
         W(self, esize, max);
         EXT(c).size = esize;
-        [c layoutResolvedAt:EXT(c).point inSize:EXT(c).size];
+        [c layoutCompleted:MICRect(EXT(c).point, EXT(c).size)];
     }
     
     W(self, _cachedSize, max);
@@ -229,7 +230,8 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
  */
 - (CGSize) layout {
     if(self.needsLayoutChildren) {
-        [self innerLayout:self.fixedSize];
+        let fix = MAX(self.fixedSize, 0);   // innerLayout:に負値は渡さないようにする。
+        [self innerLayout:fix];
     }
     // Viweの位置はそのままで、サイズだけ変更する
     if (MICSize(_cachedSize) != self.view.frame.size) {
@@ -240,35 +242,54 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
 }
 
 /**
- * サイズ計算
- * 伸長方向： セルサイズの合計 (requestViewSizeは無視）
- * 固定方向： requestViewSize 設定されていなければ、全セルの最大サイズ
+ * レイアウト準備（仮配置）
+ * セル内部の配置を計算し、セルサイズを返す。
+ * このあと、親コンテナセルでレイアウトが確定すると、layoutCompleted: が呼び出されるので、そのときに、内部の配置を行う。
+ * @param regulatingCellSize    stretch指定のセルサイズを決めるためのヒント
+ *    セルサイズ決定の優先順位
+ *      requestedViweSize       regulatingCellSize          内部コンテンツ(view/cell)サイズ
+ *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズ
+ *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしない
+ *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない (regulatingCellSize の stretch 指定は無視する)
+ *        負値(stretch)            ○ 正値 (fixed)               regulatingCellSize にリサイズ
+ * @return  セルサイズ（マージンを含む
  */
-- (CGSize) calcMinSizeForRegulatingWidth:(CGFloat) regulatingWidth andRegulatingHeight:(CGFloat) regulatingHeight {
+- (CGSize) layoutPrepare:(CGSize) regulatingCellSize {
+    MICSize regSize([self sizeWithoutMargin:regulatingCellSize]);
     if(self.needsLayoutChildren) {
-        CGFloat fix = self.orientation==WPLOrientationVERTICAL ? regulatingWidth : regulatingHeight;
+        CGFloat fix = self.orientation==WPLOrientationVERTICAL ? regSize.width : regSize.height;
         [self innerLayout:fix];
     }
-    return MICSize(_cachedSize) + self.margin;
+    return [self sizeWithMargin:_cachedSize];
 }
 
 /**
- * セルの位置・サイズ確定
+ * レイアウトを確定する。
+ * layoutPrepareが呼ばれた後に呼び出される。
+ * @param finalCellRect     確定したセル領域（マージンを含む）
+ *
+ *  リサイズ＆配置ルール
+ *      requestedViweSize       finalCellRect                 内部コンテンツ(view/cell)サイズ
+ *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズし、alignmentに従ってfinalCellRect内に配置
+ *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしないで、alignmentに従ってfinalCellRect内に配置
+ *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない、alignmentに従ってfinalCellRect内に配置 (regulatingCellSize の stretch 指定は無視する)
+ *        負値(stretch)            ○ 正値 (fixed)               finalCellSize にリサイズ（regulatingCellSize!=finalCellRect.sizeの場合は再計算）。alignmentは無視
  */
-- (void) layoutResolvedAt:(CGPoint)point inSize:(CGSize)size {
+- (void) layoutCompleted:(CGRect) finalCellRect {
     self.needsLayout = false;
     if(self.visibility==WPLVisibilityCOLLAPSED) {
         return;
     }
-    MICSize s(MICSize(size) - self.margin);
-    let align = self.orientation==WPLOrientationVERTICAL ? self.hAlignment : self.vAlignment;
-    if(align == WPLCellAlignmentSTRETCH && self.fixedSize==0 && W(self, s)!=W(self, _cachedSize)) {
+    MICRect finRect([self rectWithoutMargin:finalCellRect]);
+    // layoutPrepareの計算結果とセルサイズが異なる場合、STRETCH 指定なら、与えられたサイズを使って配置を再計算する
+    if(self.fixedSize<0 /* stretch */ && W(self, finRect.size)!=W(self, _cachedSize)) {
         // Stretching
-        [self innerLayout:W(self,s)];
+        [self innerLayout:W(self,finRect.size)];
     }
+    // [super layoutCompleted:] は、auto-sizing のときにview のサイズを配置計算に使用するので、ここでサイズを設定しておく
     if (MICSize(_cachedSize) != self.view.frame.size) {
         self.view.frame = MICRect(self.view.frame.origin, _cachedSize);
     }
-    [super layoutResolvedAt:point inSize:size];
+    [super layoutCompleted:finalCellRect];
 }
 @end

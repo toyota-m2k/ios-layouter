@@ -58,26 +58,12 @@
     if(viewRect.isEmpty()) {
         return;
     }
-//    MICSize reqSize(_containerCell.requestViewSize);
-//    if(_containerCell.hAlignment==WPLCellAlignmentSTRETCH) {
-//        reqSize.width = viewRect.width();
-//    }
-//    if(_containerCell.vAlignment==WPLCellAlignmentSTRETCH) {
-//        reqSize.height = viewRect.height();
-//    }
-//    _containerCell.requestViewSize = reqSize;
-    
-//    if(!_needsLayout && _containerCell.hAlignment==WPLCellAlignmentSTART && _containerCell.vAlignment==WPLCellAlignmentSTART) {
-//        return;
-//    }
-
-    MICSize cellSize([_containerCell calcMinSizeForRegulatingWidth:viewRect.width()
-                                               andRegulatingHeight:viewRect.height()]);
+    MICSize cellSize([_containerCell layoutPrepare:viewRect.size]);
     MICRect cellRect(viewRect);
     [self renderSub:true  viewRect:viewRect cellSize:cellSize cellRect:cellRect];
     [self renderSub:false viewRect:viewRect cellSize:cellSize cellRect:cellRect];
     
-    [_containerCell layoutResolvedAt:cellRect.origin inSize:cellRect.size];
+    [_containerCell layoutCompleted:cellRect];
     _needsLayout = false;
 }
 
@@ -118,6 +104,9 @@ static inline void move_rect(bool forHorz, MICRect& rect, CGFloat diff) {
           viewRect:(const MICRect&) viewRect
           cellSize:(const MICSize&) cellSize
           cellRect:(MICRect&)cellRect {
+    if(get_size(forHorz, _containerCell.requestViewSize)<0) {
+        return; // stretch
+    }
     switch([self align:forHorz]) {
         case WPLCellAlignmentSTART:
             cellRect.setWidth(get_size(forHorz, cellSize));
@@ -130,7 +119,6 @@ static inline void move_rect(bool forHorz, MICRect& rect, CGFloat diff) {
             set_size(forHorz, cellRect, get_size(forHorz, cellSize));
             move_rect(forHorz, cellRect, diff_point(forHorz, cellRect.center(), viewRect.center()));
             break;
-        case WPLCellAlignmentSTRETCH:
         default:
             break;
     }

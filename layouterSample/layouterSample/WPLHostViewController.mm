@@ -55,10 +55,10 @@
                               params:WPLGridParams()
                                 .rowDefs(@[AUTO,STRC,AUTO])
                                 .colDefs(@[STRC,AUTO,AUTO])
-                                .align(WPLAlignment(WPLCellAlignmentSTRETCH))
+                                .requestViewSize(-1, -1)
                                 .cellSpacing(10, 10)];
     
-    let c1 = [WPLCell newCellWithView:[self viewInColor:UIColor.cyanColor] name:@"v1" params:WPLCellParams().horzAlign(WPLCellAlignmentSTRETCH)];
+    let c1 = [WPLCell newCellWithView:[self viewInColor:UIColor.cyanColor] name:@"v1" params:WPLCellParams().requestViewSize(-1,0)];
     [grid addCell:c1 row:0 column:0];
 
     let c2 = [WPLCell newCellWithView:[self viewInColor:UIColor.orangeColor] name:@"v2" params:WPLCellParams()];
@@ -67,7 +67,7 @@
     let c3 = [WPLCell newCellWithView:[self viewInColor:UIColor.yellowColor] name:@"v3" params:WPLCellParams()];
     [grid addCell:c3 row:0 column:2];
 
-    let c4 = [WPLCell newCellWithView:[self viewInColor:UIColor.greenColor] name:@"v4" params:WPLCellParams().horzAlign(WPLCellAlignmentSTRETCH)];
+    let c4 = [WPLCell newCellWithView:[self viewInColor:UIColor.greenColor] name:@"v4" params:WPLCellParams().requestViewSize(-1,0)];
     [grid addCell:c4 row:2 column:0];
 
     let c5 = [WPLCell newCellWithView:[self viewInColor:UIColor.purpleColor] name:@"v5" params:WPLCellParams()];
@@ -76,14 +76,14 @@
     let c6 = [WPLCell newCellWithView:[self viewInColor:UIColor.redColor] name:@"v6" params:WPLCellParams()];
     [grid addCell:c6 row:2 column:2];
     
-    let stack = [WPLStackPanel stackPanelWithName:@"stack" params:WPLStackPanelParams().align(WPLAlignment(WPLCellAlignmentSTRETCH)).cellSpacing(10)];
+    let stack = [WPLStackPanel stackPanelWithName:@"stack" params:WPLStackPanelParams().requestViewSize(-1,-1).cellSpacing(10)];
     stack.view.backgroundColor = UIColor.lightGrayColor;
 //    stack.visibility = WPLVisibilityCOLLAPSED;
     [grid addCell:stack row:1 column:0 rowSpan:1 colSpan:3];
     
-    let s1 = [WPLCell newCellWithView:[self viewInColor:UIColor.blueColor] name:@"s1" params:WPLCellParams().horzAlign(WPLCellAlignmentSTRETCH)];
-    let s2 = [WPLCell newCellWithView:[self viewInColor:UIColor.brownColor] name:@"s2" params:WPLCellParams().horzAlign(WPLCellAlignmentSTRETCH)];
-    let s3 = [WPLCell newCellWithView:[self viewInColor:UIColor.darkGrayColor] name:@"s3" params:WPLCellParams().horzAlign(WPLCellAlignmentSTRETCH)];
+    let s1 = [WPLCell newCellWithView:[self viewInColor:UIColor.blueColor] name:@"s1" params:WPLCellParams().requestViewSize(-1,0)];
+    let s2 = [WPLCell newCellWithView:[self viewInColor:UIColor.brownColor] name:@"s2" params:WPLCellParams().requestViewSize(-1,0)];
+    let s3 = [WPLCell newCellWithView:[self viewInColor:UIColor.darkGrayColor] name:@"s3" params:WPLCellParams().requestViewSize(-1,0)];
     
     let btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [btn setTitle:@"Back" forState:UIControlStateNormal];
