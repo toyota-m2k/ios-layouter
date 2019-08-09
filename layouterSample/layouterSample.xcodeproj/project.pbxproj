@@ -513,18 +513,19 @@
 		841AD82B22F52AEE00F9AB7D /* container */ = {
 			isa = PBXGroup;
 			children = (
+				841AD86622FD4EA200F9AB7D /* view */,
 				841AD82F22F52AEE00F9AB7D /* WPLContainerDef.h */,
-				841AD83122F52AEE00F9AB7D /* WPLStackPanel.h */,
-				841AD82C22F52AEE00F9AB7D /* WPLStackPanel.mm */,
 				841AD83222F52AEE00F9AB7D /* WPLContainerCell.h */,
 				841AD82D22F52AEE00F9AB7D /* WPLContainerCell.mm */,
+				841AD83122F52AEE00F9AB7D /* WPLStackPanel.h */,
+				841AD82C22F52AEE00F9AB7D /* WPLStackPanel.mm */,
+				841AD86322FC5C4100F9AB7D /* WPLFrame.h */,
+				841AD86422FC5C4100F9AB7D /* WPLFrame.mm */,
 				841AD83022F52AEE00F9AB7D /* WPLGrid.h */,
 				841AD82E22F52AEE00F9AB7D /* WPLGrid.mm */,
 				841AD85A22FA629F00F9AB7D /* WPLGridL.h */,
 				841AD85D22FBFBC600F9AB7D /* WPLCellHostingView.h */,
 				841AD85E22FBFBC600F9AB7D /* WPLCellHostingView.mm */,
-				841AD86322FC5C4100F9AB7D /* WPLFrame.h */,
-				841AD86422FC5C4100F9AB7D /* WPLFrame.mm */,
 			);
 			path = container;
 			sourceTree = "<group>";
@@ -541,6 +542,13 @@
 				841AD83822F52AEE00F9AB7D /* WPLDelegatedObservableData.mm */,
 			);
 			path = observable;
+			sourceTree = "<group>";
+		};
+		841AD86622FD4EA200F9AB7D /* view */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = view;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

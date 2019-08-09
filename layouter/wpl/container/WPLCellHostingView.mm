@@ -12,11 +12,16 @@
 
 /**
  * セルをホスティングするビュー
+ * WPLContainerCell (Grid/StackPanel)を直接操作するのは、リサイズ時の再配置などの実装が結構、面倒なので、
+ * それらの厄介事を、このビューで吸収してあげようという試み。
  */
 @implementation WPLCellHostingView {
     bool _needsLayout;
 }
 
+/**
+ * 初期化 (UIViewの初期化と同じ）
+ */
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
@@ -30,6 +35,12 @@
     return [self initWithFrame:MICRect::zero()];
 }
 
+#pragma mark - Properties
+
+/**
+ * containerCellプロパティ (setter)
+ * コンテナーセルをアタッチする。
+ */
 - (void)setContainerCell:(id<IWPLContainerCell>)containerCell {
     if(nil!=_containerCell) {
         [_containerCell dispose];
@@ -45,36 +56,33 @@
     }
 }
 
+/**
+ * ビューのサイズ変更を横取りして、コンテナの再配置を実行する。
+ */
 - (void)setFrame:(CGRect)frame {
     [super setFrame:frame];
     [self renderCell];
 }
 
-- (void) renderCell {
-    if(_containerCell==nil) {
-        return;
-    }
-    MICRect viewRect(self.bounds);
-    if(viewRect.isEmpty()) {
-        return;
-    }
-    MICSize cellSize([_containerCell layoutPrepare:viewRect.size]);
-    MICRect cellRect(viewRect);
-    [self renderSub:true  viewRect:viewRect cellSize:cellSize cellRect:cellRect];
-    [self renderSub:false viewRect:viewRect cellSize:cellSize cellRect:cellRect];
-    
-    [_containerCell layoutCompleted:cellRect];
-    _needsLayout = false;
-}
+#pragma mark - Rendering Utilities
 
+/**
+ * 指定方向のアラインメントを取得
+ */
 - (WPLCellAlignment) align:(bool)forHorz {
     return (forHorz) ? _containerCell.hAlignment : _containerCell.vAlignment;
 }
 
+/**
+ * 指定方向のサイズを取得
+ */
 static inline CGFloat get_size(bool forHorz, const CGSize& size) {
     return forHorz ? size.width : size.height;
 }
 
+/**
+ * 指定方向のサイズを設定
+ */
 static inline void set_size(bool forHorz, MICRect& rect, CGFloat v) {
     if(forHorz) {
         rect.setWidth(v);
@@ -87,10 +95,16 @@ static inline void set_size(bool forHorz, MICRect& rect, CGFloat v) {
 //    return forHorz ? point.x : point.y;
 //}
 
+/**
+ * ２点間の指定方向の距離を取得
+ */
 static inline CGFloat diff_point(bool forHorz, const CGPoint& p1, const CGPoint& p2) {
     return forHorz ? p2.x - p1.x : p2.y - p1.y;
 }
 
+/**
+ * 指定方向に、点を移動
+ */
 static inline void move_rect(bool forHorz, MICRect& rect, CGFloat diff) {
     if(forHorz) {
         rect.move(diff, 0);
@@ -99,11 +113,35 @@ static inline void move_rect(bool forHorz, MICRect& rect, CGFloat diff) {
     }
 }
 
+#pragma mark - Rendering
 
-- (void) renderSub:(bool)forHorz
-          viewRect:(const MICRect&) viewRect
-          cellSize:(const MICSize&) cellSize
-          cellRect:(MICRect&)cellRect {
+/**
+ * コンテナ内の再配置処理
+ */
+- (void) renderCell {
+    if(_containerCell==nil) {
+        return;
+    }
+    MICRect viewRect(self.bounds);
+    if(viewRect.isEmpty()) {
+        return;
+    }
+    MICSize cellSize([_containerCell layoutPrepare:viewRect.size]);
+    MICRect cellRect(viewRect);
+    [self renderSubForHorz:true  viewRect:viewRect cellSize:cellSize cellRect:cellRect];
+    [self renderSubForHorz:false viewRect:viewRect cellSize:cellSize cellRect:cellRect];
+    
+    [_containerCell layoutCompleted:cellRect];
+    _needsLayout = false;
+}
+
+/**
+ * 横・縦方向それぞれについて配置を計算する
+ */
+- (void) renderSubForHorz:(bool)forHorz
+                 viewRect:(const MICRect&) viewRect
+                 cellSize:(const MICSize&) cellSize
+                 cellRect:(MICRect&)cellRect {
     if(get_size(forHorz, _containerCell.requestViewSize)<0) {
         return; // stretch
     }
@@ -124,6 +162,12 @@ static inline void move_rect(bool forHorz, MICRect& rect, CGFloat diff) {
     }
 }
 
+#pragma mark - IWPLContainerCellDelegate i/f
+
+/**
+ * コンテナ内の子セルからの再配置要求を受け取る
+ * IWPLContainerCellDelegate
+ */
 - (void)onChildCellModified:(id<IWPLCell>)cell {
     _needsLayout = true;
     [self renderCell];
