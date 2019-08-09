@@ -76,6 +76,7 @@
 		841AD85C22FB203700F9AB7D /* bindingTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD85B22FB203700F9AB7D /* bindingTests.mm */; };
 		841AD85F22FBFBC600F9AB7D /* WPLCellHostingView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD85E22FBFBC600F9AB7D /* WPLCellHostingView.mm */; };
 		841AD86222FC0F8D00F9AB7D /* WPLHostViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD86122FC0F8D00F9AB7D /* WPLHostViewController.mm */; };
+		841AD86522FC5C4100F9AB7D /* WPLFrame.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD86422FC5C4100F9AB7D /* WPLFrame.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -244,6 +245,8 @@
 		841AD85E22FBFBC600F9AB7D /* WPLCellHostingView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLCellHostingView.mm; sourceTree = "<group>"; };
 		841AD86022FC0F8D00F9AB7D /* WPLHostViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLHostViewController.h; sourceTree = "<group>"; };
 		841AD86122FC0F8D00F9AB7D /* WPLHostViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLHostViewController.mm; sourceTree = "<group>"; };
+		841AD86322FC5C4100F9AB7D /* WPLFrame.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLFrame.h; sourceTree = "<group>"; };
+		841AD86422FC5C4100F9AB7D /* WPLFrame.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLFrame.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -520,6 +523,8 @@
 				841AD85A22FA629F00F9AB7D /* WPLGridL.h */,
 				841AD85D22FBFBC600F9AB7D /* WPLCellHostingView.h */,
 				841AD85E22FBFBC600F9AB7D /* WPLCellHostingView.mm */,
+				841AD86322FC5C4100F9AB7D /* WPLFrame.h */,
+				841AD86422FC5C4100F9AB7D /* WPLFrame.mm */,
 			);
 			path = container;
 			sourceTree = "<group>";
@@ -675,6 +680,7 @@
 				841AD7D822EE93FA00F9AB7D /* MICUiCellDragSupportEx.mm in Sources */,
 				841AD7D622EE93FA00F9AB7D /* MICUiGridLayout.mm in Sources */,
 				841AD7E722EE93FA00F9AB7D /* MICUiAccordionView.mm in Sources */,
+				841AD86522FC5C4100F9AB7D /* WPLFrame.mm in Sources */,
 				841AD7CC22EE93FA00F9AB7D /* MICObservers.m in Sources */,
 				841AD7E122EE93FA00F9AB7D /* MICUiDsTabButton.mm in Sources */,
 				841AD73922EE93AD00F9AB7D /* ViewController.mm in Sources */,
