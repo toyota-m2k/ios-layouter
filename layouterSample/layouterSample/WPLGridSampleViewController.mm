@@ -7,7 +7,8 @@
 //
 
 #import "WPLGridSampleViewController.h"
-#import "WPLGridL.h"
+#import "WPLContainersL.h"
+#import "WPLGrid.h"
 #import "WPLStackPanel.h"
 #import "WPLBinder.h"
 #import "MICVar.h"

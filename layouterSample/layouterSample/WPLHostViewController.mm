@@ -8,7 +8,8 @@
 
 #import "WPLHostViewController.h"
 #import "WPLCellHostingView.h"
-#import "WPLGridL.h"
+#import "WPLGrid.h"
+#import "WPLContainersL.h"
 #import "WPLStackPanel.h"
 #import "WPLBinder.h"
 #import "MICVar.h"

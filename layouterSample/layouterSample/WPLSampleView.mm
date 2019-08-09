@@ -12,6 +12,7 @@
 #import "WPLSwitchCell.h"
 #import "WPLStackPanel.h"
 #import "WPLGrid.h"
+#import "WPLFrame.h"
 #import "WPLObservableMutableData.h"
 #import "MICVar.h"
 #import "WPLBinder.h"
@@ -22,6 +23,13 @@
     WPLBinder* _binder;
     
 }
+#define NPSw1 @"Sw1"
+#define NPSw2 @"Sw2"
+
+#define DPStackVisibility @"StackVisibility"
+#define DPGridVisibility @"GridVisibility"
+#define DPFrameVisibility @"FrameVisibility"
+
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -30,7 +38,7 @@
         
         //self.backgroundColor = UIColor.greenColor;
         _stackPanel = [WPLStackPanel stackPanelWithName:@"rootStackPanel"
-                                                 params:WPLStackPanelParams().align(WPLAlignment(WPLCellAlignmentCENTER))
+                                                 params:WPLStackPanelParams().align(WPLAlignment(WPLCellAlignmentCENTER)).cellSpacing(20)
                                               superview:self
                                       containerDelegate:self];
 
@@ -41,17 +49,48 @@
         let btncell1 = [WPLCell newCellWithView:btn1 name:@"modeButton" params:WPLCellParams()];
         [_stackPanel addCell:btncell1];
         
+        let btnStack = [WPLStackPanel stackPanelWithName:@"switchPanel" params:WPLStackPanelParams().cellSpacing(10).orientation(WPLOrientationHORIZONTAL)];
+        [_stackPanel addCell:btnStack];
+        
+        
         let sw1 = [[UISwitch alloc] init];
         [sw1 sizeToFit];
         sw1.on = true;
-        let swcell1 = [WPLSwitchCell newCellWithView:sw1 name:@"no1-switch" params:WPLCellParams().margin(MICEdgeInsets(0,0,0,20)).vertAlign(WPLCellAlignmentCENTER)];
-        [_stackPanel addCell:swcell1];
+        let swcell1 = [WPLSwitchCell newCellWithView:sw1 name:@"no1-switch" params:WPLCellParams()];
+        [btnStack addCell:swcell1];
 
-        [_binder createPropertyWithValue:@true withKey:@"StackVisibility"];
-        [_binder bindProperty:@"StackVisibility" withValueOfCell:swcell1 bindingMode:(WPLBindingModeVIEW_TO_SOURCE_WITH_INIT) customActin:nil];
+        let sw2 = [[UISwitch alloc] init];
+        [sw2 sizeToFit];
+        sw2.on = true;
+        let swcell2 = [WPLSwitchCell newCellWithView:sw2 name:@"no2-switch" params:WPLCellParams()];
+        [btnStack addCell:swcell2];
+
+        WPLBinderBuilder bb(_binder);
+        bb
+        .property(NPSw1, false)
+        .property(NPSw2, false)
+        .dependentProperty(DPGridVisibility, ^id(id<IWPLDelegatedDataSource>) {
+            return [self->_binder propertyForKey:NPSw1].value;
+        }, NPSw1, nil)
+        .dependentProperty(DPStackVisibility, ^id(id<IWPLDelegatedDataSource>) {
+            return [self->_binder propertyForKey:NPSw2].value;
+        }, NPSw2, nil)
+        .dependentProperty(DPFrameVisibility, ^id(id<IWPLDelegatedDataSource>) {
+            if(![self->_binder propertyForKey:NPSw1].boolValue && ![self->_binder propertyForKey:NPSw2].boolValue) {
+                return @true;
+            } else {
+                return @false;
+            }
+        }, NPSw1, NPSw2, nil)
+        .bindValue(NPSw1, swcell1, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT)
+        .bindValue(NPSw2, swcell2, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
+        
+//        [_binder createPropertyWithValue:@true withKey:@"StackVisibility"];
+//        [_binder bindProperty:@"StackVisibility" withValueOfCell:swcell1 bindingMode:(WPLBindingModeVIEW_TO_SOURCE_WITH_INIT) customActin:nil];
 
         [self createStackPanelContents];
         [self createGridContents];
+        [self createFrameContents];
         
         [self addSubview:_stackPanel.view];
         
@@ -82,6 +121,23 @@
     
 }
 
+- (void) createFrameContents {
+    let subFrame = [WPLFrame frameWithName:@"subFrame" params:WPLCellParams().requestViewSize(0,0)];
+    [_stackPanel addCell:subFrame];
+    WPLBinderBuilder bb(_binder);
+    bb.bindState(DPFrameVisibility, subFrame, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
+    
+    let v1 = [UIView new];
+    v1.backgroundColor=UIColor.greenColor;
+    let c1 = [WPLCell newCellWithView:v1 name:@"fv1" params:WPLCellParams().requestViewSize(100,100)];
+    [subFrame addCell:c1];
+
+    let v2 = [UIView new];
+    v2.backgroundColor=UIColor.orangeColor;
+    let c2 =[WPLCell newCellWithView:v2 name:@"fv2" params:WPLCellParams().requestViewSize(100,100).margin(50,50,0,0)];
+    [subFrame addCell:c2];
+}
+
 - (void) createGridContents {
     let subGrid = [WPLGrid gridWithName:@"subGrid"
                                  params:WPLGridParams().requestViewSize(MICSize(300,0))
@@ -91,8 +147,10 @@
                       containerDelegate:nil];
     subGrid.view.backgroundColor = UIColor.yellowColor;
     [_stackPanel addCell:subGrid];
-    [_binder bindProperty:@"StackVisibility" withBoolStateOfCell:subGrid actionType:(WPLBoolStateActionTypeVISIBLE_COLLAPSED) negation:true customActin:nil];
-    
+//    [_binder bindProperty:@"StackVisibility" withBoolStateOfCell:subGrid actionType:(WPLBoolStateActionTypeVISIBLE_COLLAPSED) negation:true customActin:nil];
+    WPLBinderBuilder bb(_binder);
+    bb.bindState(DPGridVisibility, subGrid, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
+
     let v1 = [[UIView alloc] init];
     v1.backgroundColor = UIColor.greenColor;
     let vc1 = [WPLCell newCellWithView:v1 name:@"gv1" margin:MICEdgeInsets(0,0,5,0) requestViewSize:MICSize(20,20) hAlignment:(WPLCellAlignmentCENTER) vAlignment:(WPLCellAlignmentCENTER) visibility:(WPLVisibilityVISIBLE)];
@@ -145,7 +203,11 @@
                                         containerDelegate:nil];
     subStackPanel.view.backgroundColor = UIColor.yellowColor;
     [_stackPanel addCell:subStackPanel];
-    [_binder bindProperty:@"StackVisibility" withBoolStateOfCell:subStackPanel actionType:(WPLBoolStateActionTypeVISIBLE_COLLAPSED) negation:false customActin:nil];
+    
+    WPLBinderBuilder bb(_binder);
+    bb.bindState(DPStackVisibility, subStackPanel, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
+//
+//    [_binder bindProperty:@"StackVisibility" withBoolStateOfCell:subStackPanel actionType:(WPLBoolStateActionTypeVISIBLE_COLLAPSED) negation:false customActin:nil];
     
     let tv1 = [[UITextView alloc] init];
     tv1.text = @"Wg";

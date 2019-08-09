@@ -16,6 +16,34 @@
     MICSize _cachedSize;
 }
 
++ (instancetype) frameWithName:(NSString*) name
+                        margin:(UIEdgeInsets) margin
+               requestViewSize:(CGSize) requestViewSize
+                    hAlignment:(WPLCellAlignment)hAlignment
+                    vAlignment:(WPLCellAlignment)vAlignment
+                    visibility:(WPLVisibility)visibility
+             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
+                     superview:(UIView*)superview {
+    let view = [UIView new];
+    if(nil!=superview) {
+        [superview addSubview:view];
+    }
+    return [[WPLFrame alloc] initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
+}
+
++ (instancetype) frameWithName:(NSString*)name
+                        params:(WPLCellParams) params
+             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
+                     superview:(UIView*)superview {
+    return [self frameWithName:name margin:params._margin requestViewSize:params._requestViewSize hAlignment:params._align.horz vAlignment:params._align.vert visibility:params._visibility containerDelegate:containerDelegate superview:superview];
+}
+
++ (instancetype) frameWithName:(NSString*)name
+                        params:(WPLCellParams) params {
+    return [self frameWithName:name params:params containerDelegate:nil superview:nil];
+}
+
+
 - (void) innerLayout:(const MICSize&)fixedSize {
     MICSize cellSize;
     for(id<IWPLCell>cell in self.cells) {

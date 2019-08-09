@@ -119,6 +119,8 @@ static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
 static NSArray<NSNumber*>* s_single_def_auto = @[@(0)];
 static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 
+#pragma mark - Construction
+
 /**
  * WPLCell.initWithView のオーバーライド
  */
@@ -209,6 +211,8 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     return [self gridWithName:name params:params superview:nil containerDelegate:nil];
 }
 
+#pragma mark - Properties
+
 /**
  * requestViewSize プロパティのセッターをオーバーライド
  */
@@ -246,6 +250,8 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     }
 }
 
+#pragma mark - Appending Cell
+
 - (void) addCell:(id<IWPLCell>)cell {
     [self addCell:cell row:0 column:0 rowSpan:1 colSpan:1];
 }
@@ -268,9 +274,9 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     [super addCell:cell];
 }
 
-- (void) addCell:(id<IWPLCell>)cell params:(const WPLGridAddCellParams&) params {
-    [self addCell:cell row:params._row column:params._column rowSpan:params._rowSpan colSpan:params._colSpan];
-}
+//- (void) addCell:(id<IWPLCell>)cell params:(const WPLGridAddCellParams&) params {
+//    [self addCell:cell row:params._row column:params._column rowSpan:params._rowSpan colSpan:params._colSpan];
+//}
 
 
 //- (CGFloat) sumRange:(NSArray<NSNumber*>*) ary from:(NSInteger)from count:(NSInteger)count {
@@ -298,6 +304,8 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 //        [ary addObject:@(0f)];
 //    }
 //}
+
+#pragma mark - Rendering
 
 /**
  * セルマージンを含むセルサイズを計算する
@@ -603,4 +611,5 @@ static inline MICSize positiveSize(const CGSize& size) {
     }
     [super layoutCompleted:finalCellRect];
 }
+
 @end
