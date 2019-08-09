@@ -16,7 +16,7 @@
  * それらの厄介事を、このビューで吸収してあげようという試み。
  */
 @implementation WPLCellHostingView {
-    bool _needsLayout;
+    bool _layoutReserved;
 }
 
 /**
@@ -26,7 +26,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         _containerCell = nil;
-        _needsLayout = true;
+        _layoutReserved = false;
     }
     return self;
 }
@@ -48,11 +48,10 @@
         _containerCell = nil;
     }
     if(containerCell!=nil) {
-        _needsLayout = true;
         _containerCell = containerCell;
         _containerCell.containerDelegate = self;
         [self addSubview:_containerCell.view];
-        [self renderCell];
+        [self reserveRender];
     }
 }
 
@@ -61,7 +60,7 @@
  */
 - (void)setFrame:(CGRect)frame {
     [super setFrame:frame];
-    [self renderCell];
+    [self reserveRender];
 }
 
 #pragma mark - Rendering Utilities
@@ -115,6 +114,15 @@ static inline void move_rect(bool forHorz, MICRect& rect, CGFloat diff) {
 
 #pragma mark - Rendering
 
+- (void) reserveRender {
+    if(!_layoutReserved) {
+        _layoutReserved = true;
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            [self renderCell];
+        }];
+    }
+}
+
 /**
  * コンテナ内の再配置処理
  */
@@ -132,7 +140,7 @@ static inline void move_rect(bool forHorz, MICRect& rect, CGFloat diff) {
     [self renderSubForHorz:false viewRect:viewRect cellSize:cellSize cellRect:cellRect];
     
     [_containerCell layoutCompleted:cellRect];
-    _needsLayout = false;
+    _layoutReserved = false;
 }
 
 /**
@@ -169,8 +177,7 @@ static inline void move_rect(bool forHorz, MICRect& rect, CGFloat diff) {
  * IWPLContainerCellDelegate
  */
 - (void)onChildCellModified:(id<IWPLCell>)cell {
-    _needsLayout = true;
-    [self renderCell];
+    [self reserveRender];
 }
 
 
