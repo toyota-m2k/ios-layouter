@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "WPLContainerDef.h"
 
-@interface WPLSampleView : UIView<IWPLContainerCellDelegate>
+@interface WPLSampleView : UIView	
 
 @end
 

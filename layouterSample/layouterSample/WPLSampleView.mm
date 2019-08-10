@@ -17,9 +17,12 @@
 #import "MICVar.h"
 #import "WPLBinder.h"
 #import "WPLGridSampleViewController.h"
+#import "WPLStackPanelView.h"
+#import "MICLayoutConstraint.h"
 
 @implementation WPLSampleView {
-    WPLStackPanel* _stackPanel;
+//    WPLStackPanel* _stackPanel;
+    WPLStackPanelView* _stackView;
     WPLBinder* _binder;
     
 }
@@ -35,22 +38,29 @@
     self = [super initWithFrame:frame];
     if(self!=nil) {
         _binder = [WPLBinder new];
-        
-        //self.backgroundColor = UIColor.greenColor;
-        _stackPanel = [WPLStackPanel stackPanelWithName:@"rootStackPanel"
-                                                 params:WPLStackPanelParams().align(WPLAlignment(WPLCellAlignmentCENTER)).cellSpacing(20)
-                                              superview:self
-                                      containerDelegate:self];
+
+        _stackView = [WPLStackPanelView stackPanelViewWithName:@"rootPanel"
+                                                           params:WPLStackPanelParams()
+                                                                    .align(WPLAlignment(WPLCellAlignmentCENTER))
+                                                                    .cellSpacing(20)];
+//        _stackPanel = [WPLStackPanel stackPanelWithName:@"rootStackPanel"
+//                                                 params:WPLStackPanelParams().align(WPLAlignment(WPLCellAlignmentCENTER)).cellSpacing(20)
+//                                              superview:self
+//                                      containerDelegate:self];
+        [self addSubview:_stackView];
+        MICLayoutConstraintBuilder(self)
+        .constraintToSafeArea(_stackView)
+        .activate();
 
         let btn1 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         [btn1 setTitle:@"Grid Test" forState:UIControlStateNormal];
         [btn1 addTarget:self action:@selector(changeTestMode:) forControlEvents:(UIControlEventTouchUpInside)];
         [btn1 sizeToFit];
         let btncell1 = [WPLCell newCellWithView:btn1 name:@"modeButton" params:WPLCellParams()];
-        [_stackPanel addCell:btncell1];
+        [_stackView.container addCell:btncell1];
         
         let btnStack = [WPLStackPanel stackPanelWithName:@"switchPanel" params:WPLStackPanelParams().cellSpacing(10).orientation(WPLOrientationHORIZONTAL)];
-        [_stackPanel addCell:btnStack];
+        [_stackView.container addCell:btnStack];
         
         
         let sw1 = [[UISwitch alloc] init];
@@ -91,10 +101,6 @@
         [self createStackPanelContents];
         [self createGridContents];
         [self createFrameContents];
-        
-        [self addSubview:_stackPanel.view];
-        
-        [self onChildCellModified:_stackPanel];
     }
     return self;
 }
@@ -123,7 +129,7 @@
 
 - (void) createFrameContents {
     let subFrame = [WPLFrame frameWithName:@"subFrame" params:WPLCellParams().requestViewSize(0,0)];
-    [_stackPanel addCell:subFrame];
+    [_stackView.container addCell:subFrame];
     WPLBinderBuilder bb(_binder);
     bb.bindState(DPFrameVisibility, subFrame, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
     
@@ -146,7 +152,7 @@
                               superview:nil
                       containerDelegate:nil];
     subGrid.view.backgroundColor = UIColor.yellowColor;
-    [_stackPanel addCell:subGrid];
+    [_stackView.container addCell:subGrid];
 //    [_binder bindProperty:@"StackVisibility" withBoolStateOfCell:subGrid actionType:(WPLBoolStateActionTypeVISIBLE_COLLAPSED) negation:true customActin:nil];
     WPLBinderBuilder bb(_binder);
     bb.bindState(DPGridVisibility, subGrid, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
@@ -202,7 +208,7 @@
                                                 superview:nil
                                         containerDelegate:nil];
     subStackPanel.view.backgroundColor = UIColor.yellowColor;
-    [_stackPanel addCell:subStackPanel];
+    [_stackView.container addCell:subStackPanel];
     
     WPLBinderBuilder bb(_binder);
     bb.bindState(DPStackVisibility, subStackPanel, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
@@ -273,17 +279,11 @@
     // Drawing code
 }
 */
-- (void) onChildCellModified:(id<IWPLCell>) cell {
-    MICSize size = [_stackPanel layout];
-    MICRect rc(MICPoint(), size);
-    rc.moveCenter(MICRect(self.frame).center());
-    cell.view.frame = rc;
-}
 
 - (void)didMoveToSuperview {
     if(self.superview==nil) {
         [_binder dispose];
-        [_stackPanel dispose];
+//        [_stackView.container dispose];
     }
 }
 

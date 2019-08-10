@@ -50,6 +50,7 @@
     if(containerCell!=nil) {
         _containerCell = containerCell;
         _containerCell.containerDelegate = self;
+//        _containerCell.view.translatesAutoresizingMaskIntoConstraints = true;
         [self addSubview:_containerCell.view];
         [self reserveRender];
     }
@@ -59,9 +60,26 @@
  * ビューのサイズ変更を横取りして、コンテナの再配置を実行する。
  */
 - (void)setFrame:(CGRect)frame {
+    MICRect org(self.frame);
     [super setFrame:frame];
-    [self reserveRender];
+    if(org!=frame) {
+        [self reserveRender];
+    }
 }
+
+/**
+ * frameだけではビューサイズの変更を検知できないので、boundsもチェックする。
+ * AutoResizingMask を使う場合は、frameしか呼ばれないし、
+ * AutoLayout(constraints)を使う場合は、boundsしか呼ばれなかった。いろいろ謎。
+ */
+- (void)setBounds:(CGRect)bounds {
+    MICRect org(self.bounds);
+    [super setBounds:bounds];
+    if(org!=bounds) {
+        [self reserveRender];
+    }
+}
+
 
 #pragma mark - Rendering Utilities
 
@@ -127,6 +145,7 @@ static inline void move_rect(bool forHorz, MICRect& rect, CGFloat diff) {
  * コンテナ内の再配置処理
  */
 - (void) renderCell {
+    _layoutReserved = false;
     if(_containerCell==nil) {
         return;
     }
@@ -140,7 +159,6 @@ static inline void move_rect(bool forHorz, MICRect& rect, CGFloat diff) {
     [self renderSubForHorz:false viewRect:viewRect cellSize:cellSize cellRect:cellRect];
     
     [_containerCell layoutCompleted:cellRect];
-    _layoutReserved = false;
 }
 
 /**

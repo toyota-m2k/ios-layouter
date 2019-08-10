@@ -80,6 +80,7 @@
 		841AD86F22FD684D00F9AB7D /* WPLFrameView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD86E22FD684D00F9AB7D /* WPLFrameView.mm */; };
 		841AD87222FD6B8D00F9AB7D /* WPLGridView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD87122FD6B8D00F9AB7D /* WPLGridView.mm */; };
 		841AD87522FD6DA300F9AB7D /* WPLStackPanelView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD87422FD6DA300F9AB7D /* WPLStackPanelView.mm */; };
+		841AD87922FD827500F9AB7D /* MICLayoutConstraint.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD87722FD827500F9AB7D /* MICLayoutConstraint.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -256,6 +257,8 @@
 		841AD87122FD6B8D00F9AB7D /* WPLGridView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridView.mm; sourceTree = "<group>"; };
 		841AD87322FD6DA300F9AB7D /* WPLStackPanelView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLStackPanelView.h; sourceTree = "<group>"; };
 		841AD87422FD6DA300F9AB7D /* WPLStackPanelView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLStackPanelView.mm; sourceTree = "<group>"; };
+		841AD87622FD824F00F9AB7D /* MICLayoutConstraint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MICLayoutConstraint.h; sourceTree = "<group>"; };
+		841AD87722FD827500F9AB7D /* MICLayoutConstraint.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MICLayoutConstraint.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -414,6 +417,8 @@
 				841AD76E22EE93FA00F9AB7D /* MICStringUtil.h */,
 				841AD77C22EE93FA00F9AB7D /* MICCGContext.h */,
 				841AD78322EE93FA00F9AB7D /* MICSpan.h */,
+				841AD87622FD824F00F9AB7D /* MICLayoutConstraint.h */,
+				841AD87722FD827500F9AB7D /* MICLayoutConstraint.mm */,
 			);
 			path = ut;
 			sourceTree = "<group>";
@@ -700,6 +705,7 @@
 			files = (
 				841AD7EB22EE93FA00F9AB7D /* MICUiSwitchingViewMediator.m in Sources */,
 				841AD7D822EE93FA00F9AB7D /* MICUiCellDragSupportEx.mm in Sources */,
+				841AD87922FD827500F9AB7D /* MICLayoutConstraint.mm in Sources */,
 				841AD7D622EE93FA00F9AB7D /* MICUiGridLayout.mm in Sources */,
 				841AD7E722EE93FA00F9AB7D /* MICUiAccordionView.mm in Sources */,
 				841AD86522FC5C4100F9AB7D /* WPLFrame.mm in Sources */,

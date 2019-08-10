@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICAsync.h
 //  AnotherWorld
 //
@@ -14,8 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
  * Awaiterが返す戻り値型
  */
 @protocol IMICAwaiterResult <NSObject>
-@property (nonatomic,readonly) id result;
-@property (nonatomic,readonly) id error;
+@property (nonatomic,readonly,nullable) id result;
+@property (nonatomic,readonly,nullable) id error;
 @end
 
 /**

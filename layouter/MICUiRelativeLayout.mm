@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICUiRelativeLayout.m
 //
 //  親ビューまたは、兄弟ビューとの相対位置によってビューの配置を決定するレイアウタークラス
@@ -875,7 +875,7 @@ static const int RS_ALL = (RS_LEFT|RS_RIGHT|RS_TOP|RS_BOTTOM|RS_WIDTH|RS_HEIGHT)
     }
     
     int remain, chkbefore, chkafter=0;
-    remain = (int)_children.count;
+//    remain = (int)_children.count;
     do {
         remain = (int)_children.count;
         chkbefore = chkafter;

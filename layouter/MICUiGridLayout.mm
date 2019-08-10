@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICUiGridLayout.m
 //
 //  ビューを格子状（タイル状）に並べるGrid型レイアウター
@@ -269,7 +269,7 @@
  * 初期化
  * @param   cellSize セル１個あたりのサイズ
  * @param   growingOrientation 伸長方向
- * @param   fixedCount  固定幅方向のセル数
+ * @param   count  固定幅方向のセル数
  */
 - (id) initWithCellSize:(CGSize)cellSize
    growingOrientation:(MICUiOrientation)growingOrientation
@@ -538,7 +538,7 @@ static void find_next_pos(MICMatrix* matrix, int g, int f, int gw, int fw, int f
             }
         }
     } else {    // homo sized
-        gcount = 0;
+//        gcount = 0;
         int f=0, g=0;
         for(MICUiGridCell* cell in children) {
             if(f>=_fixedSideCount){

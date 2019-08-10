@@ -16,6 +16,7 @@
 #import "MICUiRectUtil.h"
 #import "WPLHostViewController.h"
 #import "WPLCellHostingView.h"
+#import "MICLayoutConstraint.h"
 
 
 @interface WPLGridSampleViewController ()
@@ -46,8 +47,14 @@
     _hostingView = [WPLCellHostingView new];
 //    _hostingView.translatesAutoresizingMaskIntoConstraints = false;
 //    _hostingView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    _hostingView.frame = rc;
+//    _hostingView.frame = rc;
+    _hostingView.translatesAutoresizingMaskIntoConstraints = false;
     [self.view addSubview:_hostingView];
+
+    MICLayoutConstraintBuilder(self.view)
+    .constraintToSafeArea(_hostingView)
+    .activate();
+
     
     let rootContainer = [WPLGrid gridWithName:@"root"
                                        params:WPLGridParams()
@@ -102,10 +109,10 @@
 }
 
 - (void)viewWillLayoutSubviews {
-    MICRect rc(self.view.bounds);
-    MICEdgeInsets sa(self.view.safeAreaInsets);
-    rc -= sa;
-    _hostingView.frame = rc;
+//    MICRect rc(self.view.bounds);
+//    MICEdgeInsets sa(self.view.safeAreaInsets);
+//    rc -= sa;
+//    _hostingView.frame = rc;
 }
 
 //- (void)onChildCellModified:(id<IWPLCell>)cell {
@@ -268,6 +275,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [_binder dispose];
+    [super viewWillDisappear:animated];
 }
 
 - (void) backToMain:(id) _ {

@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICSvgPath.m
 //  AnotherWorld
 //
@@ -657,6 +657,7 @@ public:
             case 'z':
             case 'Z':
                 elem = new SvgCloseElement();
+                break;  // appended on 2019.8.11
             case 'c':
                 relative = true;
             case 'C':
@@ -676,6 +677,7 @@ public:
                 relative = true;
             case 'T':
                 elem = [self createBezierElement:SvgCmdBEZIER_QUADRATIC_SMOOTH relative:relative params:params];
+                break;  // appended on 2019.8.11
             case 'a':
                 relative = true;
             case 'A':

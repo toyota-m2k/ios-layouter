@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICQueue.h
 //  AnotherWorld
 //
@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface MICQueue : NSObject
 
 - (void) enque:(id)v;
@@ -18,5 +16,3 @@ NS_ASSUME_NONNULL_BEGIN
 - (void) removeAll;
 
 @end
-
-NS_ASSUME_NONNULL_END

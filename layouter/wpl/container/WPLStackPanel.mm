@@ -257,7 +257,8 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
 - (CGSize) layoutPrepare:(CGSize) regulatingCellSize {
     MICSize regSize([self sizeWithoutMargin:regulatingCellSize]);
     if(self.needsLayoutChildren) {
-        CGFloat fix = self.orientation==WPLOrientationVERTICAL ? regSize.width : regSize.height;
+        CGFloat req = W(self, self.requestViewSize);
+        CGFloat fix = (req>=0) ? req : W(self, regSize);
         [self innerLayout:fix];
     }
     return [self sizeWithMargin:_cachedSize];

@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICUiLayout.h
 //
 //  レイアウター共通の定義
@@ -60,10 +60,6 @@ typedef enum _micUiPos {
     MICUiPosRIGHT   = 4,          // 右 or 下
     MICUiPosBOTTOM  = 8,          // 右 or 下
 } MICUiPos;
-// 横向き用エイリアス
-#define MICUiAlignExLEFT      MICUiAlignExTOP
-#define MICUiAlignExRIGHT     MICUiAlignExBOTTOM
-
 
 /**
  * 頂点指定
@@ -74,6 +70,35 @@ typedef enum _micUiEdge {
     MICUIEdgeLB,
     MICUIEdgeRB,
 }MICUiEdge;
+
+/**
+ * 位置指定（拡張版）
+ */
+typedef enum _micUiPosEx {
+    // １辺
+    MICUiPosExLEFT = MICUiPosLEFT,
+    MICUiPosExTOP  = MICUiPosTOP,
+    MICUiPosExRIGHT = MICUiPosRIGHT,
+    MICUiPosExBOTTOM = MICUiPosBOTTOM,
+    
+    // 2辺
+    MICUiPosExVERT = MICUiPosLEFT|MICUiPosRIGHT,
+    MICUiPosExHORZ = MICUiPosTOP|MICUiPosBOTTOM,
+    
+    MICUiPosExLT = MICUiPosLEFT|MICUiPosTOP,                    // 左上
+    MICUiPosExRT = MICUiPosRIGHT|MICUiPosTOP,
+    MICUIPosExLB = MICUiPosLEFT|MICUiPosBOTTOM,
+    MICUIPosExRB = MICUiPosRIGHT|MICUiPosBOTTOM,
+
+    // ３辺
+    MICUiPosExUPPER = MICUiPosLEFT|MICUiPosTOP|MICUiPosRIGHT,
+    MICUiPosExLOWER = MICUiPosLEFT|MICUiPosTOP|MICUiPosRIGHT,
+    MICUiPosExLEFTSIDE = MICUiPosTOP|MICUiPosLEFT|MICUiPosBOTTOM,
+    MICUiPosExRIGHTSIDE = MICUiPosTOP|MICUiPosRIGHT|MICUiPosBOTTOM,
+    
+    // All
+    MICUiPosExALL = MICUiPosLEFT|MICUiPosTOP|MICUiPosRIGHT|MICUiPosBOTTOM,
+} MICUiPosEx;
 
 /**
  * 充填方向
