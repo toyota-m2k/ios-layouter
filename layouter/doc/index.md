@@ -1,9 +1,9 @@
 # Index
 
-## [レイアウター(元祖)とレイアウトビュー](/doc/original-layouter.md)
+## [レイアウター(元祖)](original-layouter.md)
 
 最初に作ったレイアウターと、その仲間たち。
-特に、StackLayoutとRelativeLayoutは、製品開発への利用実績が豊富。
+特に、StackLayoutとRelativeLayoutは、実アプリ開発への利用実績が豊富。
 
 ## カスタムビュー
 
@@ -25,4 +25,4 @@ xamlで定義して、コードビハインドにbindingして。
 
 ### マルチスレッド
 
-### 
+### その他
