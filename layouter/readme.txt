@@ -1,71 +1,71 @@
-���C�A�E�^�[�֘A�\�[�X�t�@�C���̍\��
+レイアウター関連ソースファイルの構成
 2015.04.28 M.TOYOTA
 
 layouter/
-	MICUiLayout.h								���C�A�E�^�[�i�r���[�������Ȃ������_�����O���W�b�Ni/f�j�̐錾�E���ʒ�`
-	MICUiBaseLayout.h							���C�A�E�^�[�̋��ʎ���
+	MICUiLayout.h								レイアウター（ビューを持たないレンダリングロジックi/f）の宣言・共通定義
+	MICUiBaseLayout.h							レイアウターの共通実装
 	MICUiBaseLayout.m
-	MICUiStackLayout.h							�X�^�b�N�^���C�A�E�^�[(�c�A�܂��́A�������ɕ��ׂĔz�u�j
+	MICUiStackLayout.h							スタック型レイアウター(縦、または、横向きに並べて配置）
 	MICUiStackLayout.mm
-	MICUiGridLayout.h							�O���b�h�^���C�A�E�^�[�i�i�q��ɔz�u�j
+	MICUiGridLayout.h							グリッド型レイアウター（格子状に配置）
 	MICUiGridLayout.mm
-	MICUiRelativeLayout.h						�e�r���[���΁A�܂��́A�Z��r���[���΂Ŕz�u�iWindows Form�̃C���[�W�j
+	MICUiRelativeLayout.h						親ビュー相対、または、兄弟ビュー相対で配置（Windows Formのイメージ）
 	MICUiRelativeLayout.mm
 
-	MICUiSwitchingViewMediator.h				�����̎q�r���[�̊J��/�\���E��\�����A�r��/�A���Ȃǂ̃��[���ɏ]���Đ؂�ւ���d�|��
+	MICUiSwitchingViewMediator.h				複数の子ビューの開閉/表示・非表示を、排他/連動などのルールに従って切り替える仕掛け
 	MICUiSwitchingViewMediator.m
-	MICUiAccordionCellViewSwicherProc.h			�A�R�[�f�B�I���Z���ŁAMICUiSwitchingViewMediator�̓�����������邽�߂̎����N���X
+	MICUiAccordionCellViewSwicherProc.h			アコーディオンセルで、MICUiSwitchingViewMediatorの動作を実現するための実装クラス
 	MICUiAccordionCellViewSwicherProc.m
-	MICUiVirtualView.h							���C�A�E�^�[�ɕʂ̃��C�A�E�^�[�����q�ɂ��邽�߂̃A�_�v�^�N���X�i�������j
+	MICUiVirtualView.h							レイアウターに別のレイアウターを入れ子にするためのアダプタクラス（未実装）
 	MICUiVirtualView.mm
 
-	view/									���C�A�E�^�[��K�p�����A�f�U�C���Ɉˑ����Ȃ��r���[������
-		MICUiLayoutView.h						���C�A�E�^�[��K�p����r���[�̊��N���X
+	view/									レイアウターを適用した、デザインに依存しないビューを実装
+		MICUiLayoutView.h						レイアウターを適用するビューの基底クラス
 		MICUiLayoutView.m
-		MICUiGridView.h							GridLayout��K�p�����r���[�N���X
+		MICUiGridView.h							GridLayoutを適用したビュークラス
 		MICUiGridView.m
-		MICUiStackView.h						StackLayout��K�p�����r���[�N���X
+		MICUiStackView.h						StackLayoutを適用したビュークラス
 		MICUiStackView.m
-		MICUiAccordionView.h					�A�R�[�f�B�I���r���[�N���X�i�����ɃA�R�[�f�B�I���Z����z�u�j
+		MICUiAccordionView.h					アコーディオンビュークラス（内部にアコーディオンセルを配置）
 		MICUiAccordionView.mm
-		MICUiAccordionCellView.h				�A�R�[�f�B�I���r���[���ɔz�u�����Z���N���X�i���x�������^�b�v�ɂ��J����Ȃǂ������j
+		MICUiAccordionCellView.h				アコーディオンビュー内に配置されるセルクラス（ラベル部分タップによる開閉動作などを実装）
 		MICUiAccordionCellView.mm
-		MICUiTabBarView.h						�^�u����ׂ�o�[�i�����^�u�݂����Ȃ�j�E�E�E�A�R�[�f�B�I���Z���̃��x�����ɔz�u���邱�Ƃ�z��
+		MICUiTabBarView.h						タブを並べるバー（履歴タブみたいなやつ）・・・アコーディオンセルのラベル部に配置することを想定
 		MICUiTabBarView.mm
 
-		designed/							�f�U�C���Ɉˑ�����r���[������
-			MICUiDsDefaults.h					�z�F/�T�C�Y�Ȃǃf�U�C���Ɋւ����`
+		designed/							デザインに依存するビューを実装
+			MICUiDsDefaults.h					配色/サイズなどデザインに関する定義
 			MICUiDsDefaults.m
-			MICUiDsCustomButton.h				�I�[�i�[�h���[�ȃ{�^���̊��N���X
+			MICUiDsCustomButton.h				オーナードローなボタンの基底クラス
 			MICUiDsCustomButton.mm
-			MICUiDsTabButton.h					�^�u�o�[�ɔz�u�����^�u�{�^��
+			MICUiDsTabButton.h					タブバーに配置されるタブボタン
 			MICUiDsTabButton.mm
-			MICUiDsTabView.h					�^�u�o�[�ƃR���e���g�̈悩��\�������J�\�ȃr���[
+			MICUiDsTabView.h					タブバーとコンテント領域から構成される開閉可能なビュー
 			MICUiDsTabView.mm
-			MICUiStatefulResource.h				��Ԉˑ��̔z�F/�A�C�R���Ȃǂ�ێ�����N���X
+			MICUiStatefulResource.h				状態依存の配色/アイコンなどを保持するクラス
 			MICUiStatefulResource.m
-	dd/										���C�A�E�^�[��ł�D&D
-		MICUiCellDragHandler.h					D&D�Ɋւ���C�x���g�̃n���h�����ʎ���
+	dd/										レイアウター上でのD&D
+		MICUiCellDragHandler.h					D&Dに関するイベントのハンドラ共通実装
 		MICUiCellDragHandler.m
-		MICUiCellDragSupport.h					�P�̃R���e�i�r���[�̒������ł�D&D�����񋟂���N���X
+		MICUiCellDragSupport.h					１つのコンテナビューの中だけでのD&D動作を提供するクラス
 		MICUiCellDragSupport.mm
-		MICUiCellDragSupportEx.h				�����̃R���e�i�r���[�ɂ܂�������D&D�����񋟂���N���X�B
+		MICUiCellDragSupportEx.h				複数のコンテナビューにまたがったD&D動作を提供するクラス。
 		MICUiCellDragSupportEx.mm
-		MICUiDragView.h							D&D���̃C�x���g���n���h�����O����I�[�o�[���C�r���[
+		MICUiDragView.h							D&D中のイベントをハンドリングするオーバーレイビュー
 		MICUiDragView.m
 
-	ut/										���[�e�B���e�B�N���X
-		MICUiRectUtil.h							CGRect, CGSize, CGPoint, CGVector, UIEdgeInsets�Ȃǂ̃C�P�ĂȂ��\���̂�C++�̃N���X�Ƀ��b�v���Ē��֗��ɂ����`�Q
-		MICArray.h								�^�C�v�Z�[�t��NSArray��񋟂��悤�Ƃ������|��ȃN���X�BCGRect�̔z��̂ݎ����B
+	ut/										ユーティリティクラス
+		MICUiRectUtil.h							CGRect, CGSize, CGPoint, CGVector, UIEdgeInsetsなどのイケてない構造体をC++のクラスにラップして超便利にする定義群
+		MICArray.h								タイプセーフなNSArrayを提供しようとした企画倒れなクラス。CGRectの配列のみ実装。
 		MICArray.m
-		MICCGContext.h							CGContext, CGImageRef, CGFontRef, CGColorRef, CGPathRef �Ȃǂ̃��\�[�X�̉��������������ƂƂ��ɁA�Ȍ���C++�̋L�@�ň�����悤�ɂ����`�Q
-		MICDelegates.h							C#�̃f���Q�[�g�݂����ɁAadd/remove�ł���R�[���o�b�N�Q����������N���X�i���ۂɎg�������ǂ����o���Ă��Ȃ��j
+		MICCGContext.h							CGContext, CGImageRef, CGFontRef, CGColorRef, CGPathRef などのリソースの解放を自動化するとともに、簡潔なC++の記法で扱えるようにする定義群
+		MICDelegates.h							C#のデリゲートみたいに、add/removeできるコールバック群を実現するクラス（実際に使ったかどうか覚えていない）
 		MICDelegates.m
-		MICImageUtil.h							�摜�ɑ΂��鑀��i�T�C�Y�ύX�A�}�X�N�̐F�ύX�Ȃǁj
+		MICImageUtil.h							画像に対する操作（サイズ変更、マスクの色変更など）
 		MICImageUtil.mm
-		MICMatrix.h								�Q�����z��N���X(x�sy��}�g���b�N�X�j
+		MICMatrix.h								２次元配列クラス(x行y列マトリックス）
 		MICMatrix.m
-		MICSpan.h								�ŏ��l�A�ő�l���Ǘ�����C++�e���v���[�g�N���X + NSRange�����b�v����C++�N���X
-		MICStringUtil.h							NSString�̘A��/Format�Ȃǂ��ȗ�������C++���b�p�N���X
-		MICTree.h								�c���[�^�R���N�V�����N���X
+		MICSpan.h								最小値、最大値を管理するC++テンプレートクラス + NSRangeをラップするC++クラス
+		MICStringUtil.h							NSStringの連結/Formatなどを簡略化するC++ラッパクラス
+		MICTree.h								ツリー型コレクションクラス
 		MICTree.m
