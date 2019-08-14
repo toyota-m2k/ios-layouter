@@ -18,7 +18,7 @@
 #import "WPLBinder.h"
 #import "WPLGridSampleViewController.h"
 #import "WPLStackPanelView.h"
-#import "MICLayoutConstraint.h"
+#import "MICAutoLayoutBuilder.h"
 
 @implementation WPLSampleView {
 //    WPLStackPanel* _stackPanel;
@@ -48,8 +48,8 @@
 //                                              superview:self
 //                                      containerDelegate:self];
         [self addSubview:_stackView];
-        MICLayoutConstraintBuilder(self)
-        .constraintToSafeArea(_stackView)
+        MICAutoLayoutBuilder(self)
+        .fitToSafeArea(_stackView)
         .activate();
 
         let btn1 = [UIButton buttonWithType:UIButtonTypeRoundedRect];

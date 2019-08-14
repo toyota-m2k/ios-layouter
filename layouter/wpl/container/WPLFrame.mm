@@ -120,8 +120,8 @@ static inline MICSize positiveSize(const CGSize& size) {
         return;
     }
     MICSize viewSize = [self sizeWithoutMargin:finalCellRect.size];
-    if(  (viewSize.width  == _cachedSize.width  && self.requestViewSize.width  == 0)
-       ||(viewSize.height == _cachedSize.height && self.requestViewSize.height == 0) ) {
+    if(  (viewSize.width  != _cachedSize.width  && self.requestViewSize.width < 0 /* stretch */)
+       ||(viewSize.height != _cachedSize.height && self.requestViewSize.height < 0 /* stretch */) ) {
         // STRETCH の場合に、与えられたサイズを使って配置を再計算する
         [self innerLayout:viewSize];
     }

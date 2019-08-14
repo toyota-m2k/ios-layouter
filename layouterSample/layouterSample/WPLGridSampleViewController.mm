@@ -16,7 +16,7 @@
 #import "MICUiRectUtil.h"
 #import "WPLHostViewController.h"
 #import "WPLCellHostingView.h"
-#import "MICLayoutConstraint.h"
+#import "MICAutoLayoutBuilder.h"
 
 
 @interface WPLGridSampleViewController ()
@@ -51,8 +51,8 @@
     _hostingView.translatesAutoresizingMaskIntoConstraints = false;
     [self.view addSubview:_hostingView];
 
-    MICLayoutConstraintBuilder(self.view)
-    .constraintToSafeArea(_hostingView)
+    MICAutoLayoutBuilder(self.view)
+    .fitToSafeArea(_hostingView)
     .activate();
 
     

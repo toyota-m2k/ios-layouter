@@ -9,7 +9,7 @@
 #import "ViewController.h"
 #import "WPLSampleView.h"
 #import "MICVar.h"
-#import "MICLayoutConstraint.h"
+#import "MICAutoLayoutBuilder.h"
 
 @interface ViewController ()
 @end
@@ -23,8 +23,8 @@
     let view = [[WPLSampleView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:view];
     
-    MICLayoutConstraintBuilder(self.view)
-    .constraintToSafeArea(view)
+    MICAutoLayoutBuilder(self.view)
+    .fitToSafeArea(view)
     .activate();
 }
 
