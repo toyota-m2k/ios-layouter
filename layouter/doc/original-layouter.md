@@ -85,10 +85,10 @@
 
 D&Dサポーターには、次の２種類が用意されている。
 
-- CellDragSupport
+- MICCellDragSupport
     １つのコンテナビュー内でのD&Dをサポート
     
-- CellDragSupporEx
+- MICCellDragSupporEx
     複数の（ネストする）コンテナビューにまたがるD&Dをサポート
 
 コンテナビューとして、UIScrollViewを使用した場合は、ドラッグ中の自動スクロールにも対応可能で、StackView, GridView は、デフォルトで、CellDragSupportによるアイテムのD&D（配置変更）をサポートしている。

@@ -824,6 +824,9 @@ public:
     }
 
 #pragma mark - Drawing Text
+    /**
+     * CTLineDraw() でテキストを描画する位置
+     */
     CGPoint getTextPosition() {
         return CGContextGetTextPosition(_res);
     }
@@ -859,6 +862,8 @@ public:
     void setTextDrawingMode(CGTextDrawingMode mode) {
         CGContextSetTextDrawingMode(_res, mode);
     }
+
+    void textLineDraw(
 
 #pragma mark - Affine transformation
     
@@ -1003,24 +1008,29 @@ public:
     }
     
 
-    void scale(CGFloat scaleX, CGFloat scaleY) {
+    MICCGAffinTransform& scale(CGFloat scaleX, CGFloat scaleY) {
         transform = CGAffineTransformScale(transform, scaleX, scaleY);
+        return *this;
     }
     
-    void rotate(CGFloat rotate) {
+    MICCGAffinTransform& rotate(CGFloat rotate) {
         transform = CGAffineTransformRotate(transform, rotate);
+        return *this;
     }
     
-    void transrate(CGFloat x, CGFloat y) {
+    MICCGAffinTransform& transrate(CGFloat x, CGFloat y) {
         transform = CGAffineTransformTranslate(transform, x, y);
+        return *this;
     }
     
-    void invert() {
+    MICCGAffinTransform& invert() {
         transform = CGAffineTransformInvert(transform);
+        return *this;
     }
     
-    void concat(const CGAffineTransform& src) {
+    MICCGAffinTransform& concat(const CGAffineTransform& src) {
         transform = CGAffineTransformConcat(transform, src);
+        return *this;
     }
     
     bool operator == (const CGAffineTransform& src) {

@@ -1,28 +1,45 @@
-# Index
+# Contents
 
 ## [レイアウター(元祖)](original-layouter.md)
 
-最初に作ったレイアウターと、その仲間たち。
-特に、StackLayoutとRelativeLayoutは、実アプリ開発への利用実績が豊富。
+はじめての iOSプログラミングの例題として作った子ビューの配置を自動化するレイアウター(GridLayout,StackLayout,RelativeLayout)。
 
-## カスタムビュー
+スクロールやD&Dによる入れ替えなどもサポートしているが、単なるレイアウトに使うにはオーバースペックなので、
+今後は、wp-layouter (Grid/StackPanel) に移行していく予定。
+また、RelativeLayout相当のレンダリングには、AutoLayoutベースの MICAutoLayouBuilder も使える（こっちのほうが使いやすい）。
 
-簡単にカスタマイズできるボタンたち。
-iOSのボタンカスタマイズは、とにかく面倒なので。
+## [カスタムビュー](custom-view.md)
 
-## WPL ... WPf Layouter
+簡単にカスタマイズできるボタンたち。<br>
+iOSのボタンカスタマイズは、とにかく面倒なので。SVG Pathをアイコンとして使うことも可能。
 
-そうはいっても、Windows の WPF が好きだな。
-xamlで定義して、コードビハインドにbindingして。
+## [WPL == WPf Layouter](wp-layouter.md)
 
-## ユーティリティ
+Windows の WPF をリスペクトして実装。<br>
+コンテナとして、よく使う Grid, StackPanel を実装。
+UIView のプロパティと、Observableなデータをバインディングすることが可能。
 
-### 矩形・サイズ
+### [CGRect, CGSize, ...](rect-size.md)
 
-### グラフィックス
+CGRectとか、CGSizeとか、初期化するだけでも面倒じゃない？
+これを、C++ で書いたら、めっちゃ便利になったんですけど。
 
-### コレクション
+### [Core Graphics サポート](graphics.md)
 
-### マルチスレッド
+CGContextRefとかCGImageRefとかも、C++で。<br>
+薄いラッパーだけど、可読性が断然違う。
 
-### その他
+### [SVG Path](svg.md)
+さよならPNG。SVG Path が Objective-Cで扱える。
+
+### [コレクション](collection.md)
+
+SortedArray, Queue, Matrix, Tree, ...<br>
+
+### [マルチスレッド](threading.md)
+
+Javascript の Promise にインスパイヤーされた Acom クラスを中心に、マルチスレッド化やスレッド間同期を手軽に実行するための仕掛けを提供。
+
+### [その他](other.md)
+
+セレクタの実行とか、KeyValue Ovserver の扱いとか、iOS固有の悩みを解消。
