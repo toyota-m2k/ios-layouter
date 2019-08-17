@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICUiLayoutView.h
 //
 //  レイアウター（MICUiLayoutProtocolに準拠するオブジェクト）を内包するスクロールビューの共通実装
@@ -65,6 +65,12 @@
  * サブクラスで、別のサポータを使いたい場合などにオーバーライドする。
  */
 - (void) prepareDragSupporter;
+
+/**
+ * [PROTECTED] ビューのサイズが変化した時に呼び出される
+ */
+- (void) onViewSizeChanged;
+
 
 // Note:
 //

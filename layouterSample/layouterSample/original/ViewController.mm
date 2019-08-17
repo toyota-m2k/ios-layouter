@@ -1,15 +1,13 @@
 //
 //  ViewController.m
-//  layouterSample
+//  DTable
 //
-//  Created by Mitsuki Toyota on 2019/07/29.
-//  Copyright © 2019 Mitsuki Toyota. All rights reserved.
+//  Created by 豊田 光樹 on 2014/10/15.
+//  Copyright (c) 2014年 豊田 光樹. All rights reserved.
 //
 
 #import "ViewController.h"
-#import "MICVar.h"
-#import "MICAutoLayoutBuilder.h"
-#import "MICUiStackLayout.h"
+#import "MMJUiStackLayout.h"
 #import "GridViewController.h"
 #import "StackViewController.h"
 #import "AccordionCellViewController.h"
@@ -17,20 +15,21 @@
 #import "ExDDViewController.h"
 #import "TabBarViewController.h"
 #import "RelativeViewController.h"
+#import "NoteDemoViewController.h"
 #import "TabViewController.h"
-#import "MICUiRectUtil.h"
-#import "MICUiStackView.h"
+#import "MMJUiRectUtil.h"
+#import "MMJUiStackView.h"
 #import "CollectionViewController.h"
-#import "WPLBindViewController.h"
 
-@interface ViewController ()
+@interface ViewController () {
+//    MMJUiStackLayout* _layouter;
+    MMJUiStackView* _stackView;
+}
 @end
 
-@implementation ViewController {
-//    MICUiStackView* _stackView;
-}
-
 #define MARGIN_VERT 20
+
+@implementation ViewController
 
 typedef enum _CMD{
     CMDStackLayout,
@@ -47,94 +46,90 @@ typedef enum _CMD{
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    let rootView = [UIView new];
-    [self.view addSubview:rootView];
-    MICAutoLayoutBuilder lb(self.view);
-    lb.fitToSafeArea(rootView);
+    // Do any additional setup after loading the view.
     
-    let stackView = [[MICUiStackView alloc] init];
-    MICUiStackLayout* layouter = stackView.stackLayout;
+    _stackView = [[MMJUiStackView alloc] init];
+    MMJUiStackLayout* layouter = _stackView.stackLayout;
     
-    //    layouter = [[MICUiStackLayout alloc] initWithOrientation:MICUiVertical alignment:MICUiAlignExCENTER];
-    layouter.orientation = MICUiVertical;
-    layouter.cellAlignment = MICUiAlignExCENTER;
+//    layouter = [[MMJUiStackLayout alloc] initWithOrientation:MMJUiVertical alignment:MMJUiAlignExCENTER];
+    layouter.orientation = MMJUiVertical;
+    layouter.cellAlignment = MMJUiAlignExCENTER;
     layouter.fixedSideSize = self.view.frame.size.width;
     layouter.cellSpacing = 15;
     
     
     UIButton* btn;
+
+    btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    btn.frame = CGRectMake(0, 0, 200, 50);
+    btn.tag = CMDCollectionViewTest;
+    [btn setTitle:@"CollectionView Test" forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(onCommand:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btn];
+    [layouter addChild:btn];
     
-//    btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    btn.frame = CGRectMake(0, 0, 200, 50);
-//    btn.tag = CMDCollectionViewTest;
-//    [btn setTitle:@"CollectionView Test" forState:UIControlStateNormal];
-//    [btn addTarget:self action:@selector(onCommand:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:btn];
-//    [layouter addChild:btn];
-//
-//
-//    btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    btn.frame = CGRectMake(0, 0, 200, 50);
-//    btn.tag = CMDNoteDemo;
-//    [btn setTitle:@"Note Demo" forState:UIControlStateNormal];
-//    [btn addTarget:self action:@selector(onCommand:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:btn];
-//    [layouter addChild:btn];
     
     btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    btn.frame = MICRect(200, 50);
+    btn.frame = CGRectMake(0, 0, 200, 50);
+    btn.tag = CMDNoteDemo;
+    [btn setTitle:@"Note Demo" forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(onCommand:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btn];
+    [layouter addChild:btn];
+    
+    btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    btn.frame = CGRectMake(0, 0, 200, 50);
     btn.tag = CMDStackLayout;
-    //    btn.backgroundColor = [UIColor redColor];
+//    btn.backgroundColor = [UIColor redColor];
     [btn setTitle:@"Stack Layout" forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(onCommand:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btn];
     [layouter addChild:btn];
     
     btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    btn.frame = MICRect(200, 50);
+    btn.frame = CGRectMake(0, 0, 200, 50);
     btn.tag = CMDGridLayout;
-    //    btn.backgroundColor = [UIColor blueColor];
+//    btn.backgroundColor = [UIColor blueColor];
     [btn setTitle:@"Grid Layout" forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(onCommand:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btn];
     [layouter addChild:btn];
-    
+
     btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    btn.frame = MICRect(200, 50);
+    btn.frame = CGRectMake(0, 0, 200, 50);
     btn.tag = CMDAccordionCell;
     //    btn.backgroundColor = [UIColor blueColor];
     [btn setTitle:@"Accordion Cell" forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(onCommand:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btn];
     [layouter addChild:btn];
-    
+
     btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    btn.frame = MICRect(200, 50);
+    btn.frame = CGRectMake(0, 0, 200, 50);
     btn.tag = CMDAccordion;
     [btn setTitle:@"Accordion" forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(onCommand:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btn];
     [layouter addChild:btn];
-    
+
     btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    btn.frame = MICRect(200, 50);
+    btn.frame = CGRectMake(0, 0, 200, 50);
     btn.tag = CMDAccordionWithGridView;
     [btn setTitle:@"Accordion with GridView" forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(onCommand:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btn];
     [layouter addChild:btn];
-    
+
     btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    btn.frame = MICRect(200, 50);
+    btn.frame = CGRectMake(0, 0, 200, 50);
     btn.tag = CMDTabBarView;
     [btn setTitle:@"Tab Bar View" forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(onCommand:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btn];
     [layouter addChild:btn];
-    
+
     btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    btn.frame = MICRect(200, 50);
+    btn.frame = CGRectMake(0, 0, 200, 50);
     btn.tag = CMDTabView;
     [btn setTitle:@"Tab View" forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(onCommand:) forControlEvents:UIControlEventTouchUpInside];
@@ -142,7 +137,7 @@ typedef enum _CMD{
     [layouter addChild:btn];
     
     btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    btn.frame = MICRect(200, 50);
+    btn.frame = CGRectMake(0, 0, 200, 50);
     btn.tag = CMDRelativeLayout;
     [btn setTitle:@"Relative Layout" forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(onCommand:) forControlEvents:UIControlEventTouchUpInside];
@@ -153,34 +148,33 @@ typedef enum _CMD{
     
     
     CGSize size = [layouter getSize];
-//    CGRect frame = self.view.bounds;
-//
-//    CGFloat m = (frame.size.height - size.height)/2;
-//    if(m<MARGIN_VERT) {
-//        m = MARGIN_VERT;
-//    }
-//    stackView.frame = MICRect(frame) - MICEdgeInsets(0,m,0,m);
-    stackView.contentSize = size;
-    RALBuilder rb(rootView);
-    rb.addView(stackView, RALParams()
-                                .left().center(nil)
-                                .horz().fixed(size.width)
-                                .top().parent(10)
-                                .bottom().parent(10)
-                                .vert().free());
+    CGRect frame = self.view.bounds;
     
+    CGFloat m = (frame.size.height - size.height)/2;
+    if(m<MARGIN_VERT) {
+        m = MARGIN_VERT;
+    }
+    _stackView.frame = MMJRect(frame) - MMJEdgeInsets(0,m,0,m);
+    [_stackView updateLayout:false];
+    
+    [self.view addSubview:_stackView];
 
-    [stackView updateLayout:false];
+//    _layouter.marginTop = m;
+//    _layouter.marginBottom = m;
+//    m = (frame.size.width - size.width)/2;
+//    _layouter.marginLeft = m;
+//    _layouter.marginRight = m;
+//    
+//    [_layouter updateLayout:false onCompleted:nil];
     
-//    [self.view addSubview:stackView];
 
 }
 
 - (void) onCommand:(id)sender {
     switch( [sender tag]) {
-//        case CMDNoteDemo:
-//            [self navigateNoteDemo];
-//            break;
+        case CMDNoteDemo:
+            [self navigateNoteDemo];
+            break;
         case CMDStackLayout:
             [self navigateStackLayoutPage];
             break;
@@ -205,8 +199,8 @@ typedef enum _CMD{
         case CMDTabView:
             [self navigateTabView];
             break;
-//        case CMDCollectionViewTest:
-//            [self navigateCollectionViewTest];
+        case CMDCollectionViewTest:
+            [self navigateCollectionViewTest];
         default:
             break;
     }
@@ -252,15 +246,15 @@ typedef enum _CMD{
     [self presentViewController:controller animated:true completion:nil];
 }
 
-//- (void)navigateNoteDemo {
-//    NoteDemoViewController* controller = [[NoteDemoViewController alloc] init];
-//    [self presentViewController:controller animated:true completion:nil];
-//}
-//
-//- (void)navigateCollectionViewTest {
-//    CollectionViewController* controller = [[CollectionViewController alloc] init];
-//    [self presentViewController:controller animated:true completion:nil];
-//}
+- (void)navigateNoteDemo {
+    NoteDemoViewController* controller = [[NoteDemoViewController alloc] init];
+    [self presentViewController:controller animated:true completion:nil];
+}
+
+- (void)navigateCollectionViewTest {
+    CollectionViewController* controller = [[CollectionViewController alloc] init];
+    [self presentViewController:controller animated:true completion:nil];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -268,52 +262,51 @@ typedef enum _CMD{
 }
 
 
-//- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
-//    return true;
-//}
-//
-//- (BOOL)shouldAutorotate {
-//    return true;
-//}
-//
-//- (NSUInteger)supportedInterfaceOrientations {
-//    return UIInterfaceOrientationMaskAll;
-//}
-//
-//- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-//    MICSize bounds = self.view.bounds.size;
-//    CGSize contents = [_stackView.stackLayout getContentRect].size;
-//
-//    if(UIInterfaceOrientationIsLandscape(self.interfaceOrientation) && UIInterfaceOrientationIsPortrait(toInterfaceOrientation)) {
-//        // landscape --> portrait
-//        bounds.transpose();
-//    } else if( UIInterfaceOrientationIsPortrait(self.interfaceOrientation) && UIInterfaceOrientationIsLandscape(toInterfaceOrientation)) {
-//        // portrait --> landscape;
-//        bounds.transpose();
-//    } else {
-//    }
-//
-//    CGFloat m = (bounds.height - contents.height)/2;
-//    if( m<MARGIN_VERT) {
-//        m = MARGIN_VERT;
-//    }
-//
-//    _stackView.frame = self.view.bounds - MICEdgeInsets(0,m,0,0);
-//    _stackView.stackLayout.fixedSideSize = bounds.width;
-//    [_stackView updateLayout:true];
-//
-//    //    _layouter.marginTop = m;
-//    //    _layouter.marginBottom = m;
-//    //    _layouter.fixedSideSize = bounds.width;
-//    //    m = (frame.size.width - size.width)/2;
-//    //    _layouter.marginLeft = m;
-//    //    _layouter.marginRight = m;
-//
-//    //    [_layouter updateLayout:true onCompleted:nil];
-//}
-//
-//- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-//}
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
+    return true;
+}
 
+- (BOOL)shouldAutorotate {
+    return true;
+}
+
+- (NSUInteger)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskAll;
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    MMJSize bounds = self.view.bounds.size;
+    CGSize contents = [_stackView.stackLayout getContentRect].size;
+    
+    if(UIInterfaceOrientationIsLandscape(self.interfaceOrientation) && UIInterfaceOrientationIsPortrait(toInterfaceOrientation)) {
+        // landscape --> portrait
+        bounds.transpose();
+    } else if( UIInterfaceOrientationIsPortrait(self.interfaceOrientation) && UIInterfaceOrientationIsLandscape(toInterfaceOrientation)) {
+        // portrait --> landscape;
+        bounds.transpose();
+    } else {
+    }
+    
+    CGFloat m = (bounds.height - contents.height)/2;
+    if( m<MARGIN_VERT) {
+        m = MARGIN_VERT;
+    }
+    
+    _stackView.frame = self.view.bounds - MMJEdgeInsets(0,m,0,0);
+    _stackView.stackLayout.fixedSideSize = bounds.width;
+    [_stackView updateLayout:true];
+    
+//    _layouter.marginTop = m;
+//    _layouter.marginBottom = m;
+//    _layouter.fixedSideSize = bounds.width;
+    //    m = (frame.size.width - size.width)/2;
+    //    _layouter.marginLeft = m;
+    //    _layouter.marginRight = m;
+    
+//    [_layouter updateLayout:true onCompleted:nil];
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+}
 
 @end

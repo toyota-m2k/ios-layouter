@@ -23,11 +23,11 @@ public:
     ~MICString() {
         _str = nil;
     }
-//    MICString(NSString* format, ...) {
-//        va_list arg;
-//        va_start(arg, format);
-//        _str = [[NSString alloc] initWithFormat:format arguments:arg];
-//    }
+    MICString(NSString* format, ...) {
+        va_list arg;
+        va_start(arg, format);
+        _str = [[NSString alloc] initWithFormat:format arguments:arg];
+    }
     
     MICString& append(NSString* src) {
         _str = [_str stringByAppendingString:src];

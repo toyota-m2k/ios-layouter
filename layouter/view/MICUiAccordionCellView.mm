@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICUiAccordionCellView.m
 //
 //  ラベルタップで折りたたみ可能なビュー
@@ -666,12 +666,14 @@ static bool isPositionLeft(int flags) {
         if(!_frameObserverEnabled) {
             _frameObserverEnabled = true;
             [self addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+            [self addObserver:self forKeyPath:@"bounds" options:NSKeyValueObservingOptionNew context:nil];
         }
     } else {
         // デタッチされる
         if(_frameObserverEnabled) {
             _frameObserverEnabled = false;
             [self removeObserver:self forKeyPath:@"frame"];
+            [self removeObserver:self forKeyPath:@"bounds"];
         }
     }
     //NSLog(@"did move to superview: %@", [self.superview description]);
@@ -706,12 +708,11 @@ static bool isPositionLeft(int flags) {
                 [self updateLayout];
             }
         }
-    } else if( [keyPath isEqualToString:@"frame"]) {
+    } else if( [keyPath isEqualToString:@"frame"]||[keyPath isEqualToString:@"bounds"]) {
         if(!_foldingStateChanging && _viewSize != self.frame.size ) {
             _needsCalcLayout = true;
             [self updateLayout];
         }
-        
     }
 }
 

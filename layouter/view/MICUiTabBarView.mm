@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICUiTabView.m
 //
 //  タブ（ボタンなど）を並べるタブバービュークラス
@@ -9,6 +9,7 @@
 
 #import "MICUiTabBarView.h"
 #import "MICUiRectUtil.h"
+#import "MICKeyValueObserver.h"
 
 @interface FuncButton : NSObject
 @property UIView* view;
@@ -41,6 +42,9 @@
     
     bool _needsCalcLayout;                  ///< 配置再計算フラグ
     bool _needsUpdateFuncButtons;
+    
+    MICSize _prevSize;
+    MICKeyValueObserver* _observers;
 }
 
 @end
@@ -69,6 +73,7 @@
         _funcButtons = [[NSMutableArray alloc] init];
         _needsUpdateFuncButtons = false;
         _needsCalcLayout = false;
+        _observers = [[MICKeyValueObserver alloc] initWithActor:self];
     }
     return self;
 }
@@ -106,23 +111,37 @@
 - (void)didMoveToSuperview {
     if(nil!=self.superview) {
         // アタッチされる
-        [self addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+        [_observers add:@"frame" listener:self handler:@selector(viewSizeChanged:target:)];
+        [_observers add:@"bounds" listener:self handler:@selector(viewSizeChanged:target:)];
+//        [self addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+//        [self addObserver:self forKeyPath:@"bounds" options:NSKeyValueObservingOptionNew context:nil];
     } else {
         // デタッチされる
-        [self removeObserver:self forKeyPath:@"frame"];
+        [_observers removeAll];
+//        [self removeObserver:self forKeyPath:@"frame"];
+//        [self removeObserver:self forKeyPath:@"bounds"];
     }
     //NSLog(@"did move to superview: %@", [self.superview description]);
 }
 
+- (void) viewSizeChanged:(id<IMICKeyValueObserverItem>)item target:(id)target {
+    if(_prevSize!=self.bounds.size) {
+        _needsCalcLayout = true;
+    }
+    [self updateLayout];
+}
+         
 /**
  * ビューのサイズ変更監視
  */
-- (void)didChangeValueForKey:(NSString *)key {
-    if([key isEqualToString:@"frame"]) {
-        _needsCalcLayout = true;
-        [self updateLayout];
-    }
-}
+//- (void)didChangeValueForKey:(NSString *)key {
+//    if([key isEqualToString:@"frame"]||[key isEqualToString:@"bounds"]) {
+//        if(_prevSize!=self.bounds.size) {
+//            _needsCalcLayout = true;
+//        }
+//        [self updateLayout];
+//    }
+//}
 
 /**
  * タブバーの左側にファンクションボタンを追加する。

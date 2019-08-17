@@ -38,7 +38,7 @@ public:
         _margin = v;
         return *this;
     }
-    WPLCellParams& margin(CGFloat left, CGFloat top, CGFloat right, CGFloat bottom) {
+    WPLStackPanelParams& margin(CGFloat left, CGFloat top, CGFloat right, CGFloat bottom) {
         _margin = MICEdgeInsets(left, top, right, bottom);
         return *this;
     }

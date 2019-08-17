@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICCGContext.h
 //  LayoutDemo
 //
@@ -862,8 +862,6 @@ public:
     void setTextDrawingMode(CGTextDrawingMode mode) {
         CGContextSetTextDrawingMode(_res, mode);
     }
-
-    void textLineDraw(
 
 #pragma mark - Affine transformation
     
