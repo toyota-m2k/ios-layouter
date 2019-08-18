@@ -2,6 +2,16 @@
 //  TabViewController.m
 //  LayoutDemo
 //
+// ４つの　MICUiDsTabView (TabBar+BodyView) を、MICUiRelativeLayoutInfo で画面の上下左右に配置し、
+// MICUiSwitchingViewMediator を使って、それらの開閉を制御するデモ。
+//
+// 選択されているタブを、もう一度タップすると、タブのボディが開閉する
+//
+// 設定しているルール
+//  - 上のタブボディと、下のタブボディは、どちらか片方しか開かない。
+//  - 左右のタブボディは連動して開く
+//  - 上のタブボディが閉じると、左右のタブボディが開く（左右のタブボディが閉じると、上のタブボディが開く）
+//
 //  Created by M.TOYOTA on 2014/12/17.
 //  Copyright (c) 2015年 toyota-m2k. All rights reserved.
 //

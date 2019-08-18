@@ -15,21 +15,10 @@
 @end
 
 @implementation WPLBindViewController {
-    UIViewController* _prev;
 }
 
 - (void) backToPrev:(id)_ {
-    if(_prev!=nil) {
-        [_prev dismissViewControllerAnimated:false completion:nil];
-    }
-}
-
-- (instancetype) initWithPrev:(UIViewController*) prev {
-    self = [super init];
-    if(nil!=self) {
-        _prev = prev;
-    }
-    return self;
+    [self dismissViewControllerAnimated:false completion:nil];
 }
 
 - (void)viewDidLoad {

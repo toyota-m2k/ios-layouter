@@ -1,6 +1,10 @@
 //
 //  StackViewController.m
-//  DTable
+//
+//  MICStackLayout, MICStackView のデモ
+//  - ビューを横幅いっぱいに伸ばして(MICUiAlignExFILL)、縦に並べる(MICUiVertical)
+//  - 縦方向にスクロール可能
+//  - 各セル（縦に並んだビュー）を長押しすると、編集モードに入り、D&Dで並べ替え可能
 //
 //  Created by M.TOYOTA on 2014/10/24.
 //  Copyright (c) 2015年 toyota-m2k. All rights reserved.

@@ -66,7 +66,7 @@
 
         let btn2 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         [btn2 setTitle:@"Back" forState:UIControlStateNormal];
-        [btn2 addTarget:self action:@selector(changeTestMode:) forControlEvents:(UIControlEventTouchUpInside)];
+        [btn2 addTarget:self action:@selector(backToPrev:) forControlEvents:(UIControlEventTouchUpInside)];
         [btn2 sizeToFit];
         let btncell2 = [WPLCell newCellWithView:btn2 name:@"backButton" params:WPLCellParams()];
         [selectionPanel addCell:btncell2];

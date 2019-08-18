@@ -1,6 +1,14 @@
 //
-//  AccordionViewController.m
-//  DTable
+//  AccordionCekkViewController.m
+//
+//  MICUiAccordionCellView  ラベル(tab)タップで折りたたみ可能なビュー のデモ
+//  - MICUiAccordionCellView のラベルには　MICUiTabBarView（タブ耳ボタンを並べるビュー）を配置
+//  - MICUiAccordionCellView のボディには、MICUiGridLayout を配置
+//  - 選択中のタブをもう一度タップすると、ボディが開閉する。
+//  - タブの選択によるボディの内容の切り替えは実装していない。（タブボタンのタップイベントで表示内容を変更する実装を書けば対応可能）
+//
+//  MICUiAccordionCellView は、タブ耳の位置（上下左右）、開閉方向（上から下、下から上、右から左、左から右）の組み合わせによって動作が異なる
+//  このビューコントローラーを起動するたびに、このモードの組み合わせを変えて動作する。
 //
 //  Created by M.TOYOTA on 2014/10/29.
 //  Copyright (c) 2015年 toyota-m2k. All rights reserved.
@@ -24,7 +32,7 @@
 
 #define LABEL_HEIGHT 20
 #define LABEL_MARGIN 5
-static int testMode = 3;
+static int testMode = 1;
 
 - (void) prevTab:(id)sender {
     [_tabview scrollPrev];
@@ -110,8 +118,8 @@ static int testMode = 3;
             ac.bodyMargin = MICEdgeInsets(LABEL_MARGIN,LABEL_MARGIN,0,LABEL_MARGIN);
             break;
     }
-//    testMode++;
-    testMode = (testMode==3) ? 5 : 3;
+    testMode++;
+//    testMode = (testMode==3) ? 5 : 3;
 
     UIColor* colors[] = {
         //    [UIColor blackColor],      // 0.0 white

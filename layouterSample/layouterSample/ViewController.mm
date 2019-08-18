@@ -22,6 +22,7 @@
 #import "MICUiStackView.h"
 #import "CollectionViewController.h"
 #import "WPLBindViewController.h"
+#import "WPLSampleViewController.h"
 
 @interface ViewController ()
 @end
@@ -43,6 +44,7 @@ typedef enum _CMD{
     CMDTabView,
     CMDNoteDemo,
     CMDCollectionViewTest,
+    CMDWPLTest,
 } CMD;
 
 - (void)viewDidLoad {
@@ -149,7 +151,14 @@ typedef enum _CMD{
     [self.view addSubview:btn];
     [layouter addChild:btn];
     
-    
+    btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    btn.frame = MICRect(200, 50);
+    btn.tag = CMDWPLTest;
+    [btn setTitle:@"WPL Sample" forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(onCommand:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btn];
+    [layouter addChild:btn];
+
     
     
     CGSize size = [layouter getSize];
@@ -207,6 +216,8 @@ typedef enum _CMD{
             break;
 //        case CMDCollectionViewTest:
 //            [self navigateCollectionViewTest];
+        case CMDWPLTest:
+            [self navigateWPLPage];
         default:
             break;
     }
@@ -249,6 +260,11 @@ typedef enum _CMD{
 
 - (void)navigateRelativeLayoutPage {
     RelativeViewController* controller = [[RelativeViewController alloc] init];
+    [self presentViewController:controller animated:true completion:nil];
+}
+
+- (void) navigateWPLPage {
+    let controller = [[WPLSampleViewController alloc] init];
     [self presentViewController:controller animated:true completion:nil];
 }
 

@@ -1,78 +1,48 @@
 //
-//  WPLCellHostingView.m
-//  WP Layouter
+//  WPLCellHostingHelper.m
+//  layouterSample
 //
-//  Created by Mitsuki Toyota on 2019/08/08.
+//  Created by Mitsuki Toyota on 2019/08/18.
 //  Copyright © 2019 Mitsuki Toyota. All rights reserved.
 //
 
-#import "WPLCellHostingView.h"
 #import "WPLCellHostingHelper.h"
 #import "MICUiRectUtil.h"
 #import "MICVar.h"
+#import "MICKeyValueObserver.h"
 
-#if true
-
-@implementation WPLCellHostingView {
-    WPLCellHostingHelper* _hosting;
-}
-
-/**
- * 初期化 (UIViewの初期化と同じ）
- */
-- (instancetype)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-        _hosting = [[WPLCellHostingHelper alloc] initWithView:self];
-    }
-    return self;
-}
-
-- (instancetype)init {
-    return [self initWithFrame:MICRect::zero()];
-}
-
-
-/**
- * containerCellプロパティ (setter)
- * コンテナーセルをアタッチする。
- */
-- (void)setContainerCell:(id<IWPLContainerCell>)containerCell {
-    _hosting.containerCell = containerCell;
-}
-- (id<IWPLContainerCell>) containerCell {
-    return _hosting.containerCell;
-}
-
-@end
-
-#else
-/**
- * セルをホスティングするビュー
- * WPLContainerCell (Grid/StackPanel)を直接操作するのは、リサイズ時の再配置などの実装が結構、面倒なので、
- * それらの厄介事を、このビューで吸収してあげようという試み。
- */
-@implementation WPLCellHostingView {
+@implementation WPLCellHostingHelper {
+    UIView* __weak _view;
     bool _layoutReserved;
+    MICKeyValueObserver* _observer;
 }
 
-/**
- * 初期化 (UIViewの初期化と同じ）
- */
-- (instancetype)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-        _containerCell = nil;
+- (instancetype) initWithView:(UIView*) view {
+    self = [super init];
+    if(nil!=self) {
+        _view = view;
         _layoutReserved = false;
+        _observer = [[MICKeyValueObserver alloc] initWithActor:view];
+        [_observer add:@"frame" listener:self handler:@selector(sizePropertyChanged:target:)];
+        [_observer add:@"bounds" listener:self handler:@selector(sizePropertyChanged:target:)];
     }
     return self;
 }
 
-- (instancetype)init {
-    return [self initWithFrame:MICRect::zero()];
+- (void) sizePropertyChanged:(id<IMICKeyValueObserverItem>) info target:(id)target {
+    [self reserveRender];
 }
 
-#pragma mark - Properties
+- (void)dealloc {
+    [self dispose];
+}
+
+- (void) dispose {
+    if(nil!=_observer) {
+        [_observer dispose];
+        _observer = nil;
+    }
+}
 
 /**
  * containerCellプロパティ (setter)
@@ -87,36 +57,10 @@
     if(containerCell!=nil) {
         _containerCell = containerCell;
         _containerCell.containerDelegate = self;
-//        _containerCell.view.translatesAutoresizingMaskIntoConstraints = true;
-        [self addSubview:_containerCell.view];
+        [_view addSubview:_containerCell.view];
         [self reserveRender];
     }
 }
-
-/**
- * ビューのサイズ変更を横取りして、コンテナの再配置を実行する。
- */
-- (void)setFrame:(CGRect)frame {
-    MICRect org(self.frame);
-    [super setFrame:frame];
-    if(org!=frame) {
-        [self reserveRender];
-    }
-}
-
-/**
- * frameだけではビューサイズの変更を検知できないので、boundsもチェックする。
- * AutoResizingMask を使う場合は、frameしか呼ばれないし、
- * AutoLayout(constraints)を使う場合は、boundsしか呼ばれなかった。いろいろ謎。
- */
-- (void)setBounds:(CGRect)bounds {
-    MICRect org(self.bounds);
-    [super setBounds:bounds];
-    if(org!=bounds) {
-        [self reserveRender];
-    }
-}
-
 
 #pragma mark - Rendering Utilities
 
@@ -186,7 +130,7 @@ static inline void move_rect(bool forHorz, MICRect& rect, CGFloat diff) {
     if(_containerCell==nil) {
         return;
     }
-    MICRect viewRect(self.bounds);
+    MICRect viewRect(_view.bounds);
     if(viewRect.isEmpty()) {
         return;
     }
@@ -196,6 +140,9 @@ static inline void move_rect(bool forHorz, MICRect& rect, CGFloat diff) {
     [self renderSubForHorz:false viewRect:viewRect cellSize:cellSize cellRect:cellRect];
     
     [_containerCell layoutCompleted:cellRect];
+    if([_view isKindOfClass:UIScrollView.class]) {
+        ((UIScrollView*)_view).contentSize = _containerCell.view.frame.size;
+    }
 }
 
 /**
@@ -234,7 +181,6 @@ static inline void move_rect(bool forHorz, MICRect& rect, CGFloat diff) {
 - (void)onChildCellModified:(id<IWPLCell>)cell {
     [self reserveRender];
 }
+
+
 @end
-
-#endif
-

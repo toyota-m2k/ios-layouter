@@ -1,6 +1,9 @@
 //
 //  TabBarViewController.m
 //
+//  タブ（耳）を並べて配置することができるMICUiTabVarView のサンプル実装
+//  タブの追加削除、＜＞ボタンでのタブのスクロールが可能。
+//
 //  Created by M.TOYOTA on 2014/11/21.
 //  Copyright (c) 2015年 toyota-m2k. All rights reserved.
 //

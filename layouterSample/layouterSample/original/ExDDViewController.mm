@@ -1,6 +1,15 @@
 //
 //  ExDDViewController.m
-//  DTable
+//
+//  MICUiAccordionView (MICUiAccordionCellView を縦、または、横に並べて配置するビュー）で、AccordionCellView のボディに、
+//  MICUiGridViewを配置するデモ
+//      複数のMICUiAccordionCellViewを縦に並べる
+//      各UMICUiAccordionCellViewのボディには、MICUiGridViewを設定
+//      各セルの長押しで編集モードに入り、D&Dで（AccordionCellViewの境界を超えて）並べかえ可能
+//
+//  AccordingViewController との違いは、ボディに、GridLayout ではなく、GridViewを配置した点。
+//  これにより、AccordionCellView毎に内部をスクロールできるようになっている。
+//  MICUiAccordionViewはCellDragSupportEx をサポートするので、コンテナ（GridView)境界を超えてD&D可能。
 //
 //  Created by M.TOYOTA on 2014/11/07.
 //  Copyright (c) 2015年 toyota-m2k. All rights reserved.

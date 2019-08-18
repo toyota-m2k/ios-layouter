@@ -1,6 +1,12 @@
 //
 //  GridViewController.m
-//  DTable
+//
+//  MICGridLayout / MICUiGridView のデモ
+//    20x20pxのサイズを１ユニットとし、横方向を固定サイズ（２０x４x３）、縦方向をフリー（セルの追加によって伸長）とするグリッド
+//    このグリッド上に、各種サイズのセルを配置
+//    セルを長押しすると、編集モードに入り、D&Dで並べ替え可能。
+//    AccordionViewのような動作を実装しているが、MICUiAccordionViewは使わず、ボタンをMICUiGlStyleSEPARATOR属性付きセルとして配置することで開閉を実装。
+//    （MICUiGlStyleSEPARATOR属性をつけたセルは、D&Dによる移動対象にならない）
 //
 //  Created by M.TOYOTA on 2014/10/24.
 //  Copyright (c) 2015年 toyota-m2k. All rights reserved.

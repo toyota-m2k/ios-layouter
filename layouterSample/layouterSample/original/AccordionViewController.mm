@@ -1,6 +1,10 @@
 //
 //  AccrodionViewController.m
-//  DTable
+//
+//  MICUiAccordionView (MICUiAccordionCellView を縦、または、横に並べて配置するビュー）のデモ
+//      複数のMICUiAccordionCellViewを縦に並べる
+//      各UMICUiAccordionCellViewのボディには、MICUiGridLayoutを設定
+//      各セルの長押しで編集モードに入り、D&Dで（AccordionCellViewの境界を超えて）並べかえ可能
 //
 //  Created by M.TOYOTA on 2014/11/04.
 //  Copyright (c) 2015年 toyota-m2k. All rights reserved.
