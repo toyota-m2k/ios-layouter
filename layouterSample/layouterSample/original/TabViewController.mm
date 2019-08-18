@@ -36,35 +36,39 @@
 
     self.view.backgroundColor = UIColor.whiteColor;
     
-//    let rootView = [UIView new];
-//    [self.view addSubview:rootView];
-//    MICAutoLayoutBuilder lb(self.view);
-//    lb.fitToSafeArea(rootView);
-//
-//    rootView.backgroundColor = UIColor.whiteColor;
+    let rootView = [UIView new];
+    [self.view addSubview:rootView];
+    MICAutoLayoutBuilder lb(self.view);
+    lb.fitToSafeArea(rootView);
 
 //    _changing = false;
     
+    _swicherProc = [[MICUiAccordionCellViewSwicherProc alloc] init];
+    
+    MICSize contentSize = self.view.frame.size;
+//    contentSize.height -= 100;
+    _mainLayouter = [[MICUiRelativeLayout alloc] init];
+    _mainLayouter.overallSize = contentSize;
+    _mainLayouter.parentView = rootView;
+//    _mainLayouter.marginTop = 50;
+//    _mainLayouter.marginBottom = 50;
+
     let back = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     MICRect bkrc = MICRect(200, 50);
-    bkrc.moveCenter(MICRect(self.view.bounds).center());
     back.frame = bkrc;
     back.backgroundColor = [UIColor blackColor];
     [back setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [back setTitle:@"Back" forState:UIControlStateNormal];
     [back addTarget:self action:@selector(goBack:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:back];
-    
-    _swicherProc = [[MICUiAccordionCellViewSwicherProc alloc] init];
-    
-    MICSize contentSize = self.view.frame.size;
-    contentSize.height -= 100;
-    _mainLayouter = [[MICUiRelativeLayout alloc] init];
-    _mainLayouter.overallSize = contentSize;
-    _mainLayouter.parentView = self.view;
-    _mainLayouter.marginTop = 50;
-    _mainLayouter.marginBottom = 50;
-    
+    [_mainLayouter addChild:back
+                    andInfo:[[MICUiRelativeLayoutInfo alloc] initWithHorz:[MICUiRelativeLayoutScalingInfo newScalingNoSize]
+                                                                     left:[MICUiRelativeLayoutAttachInfo newAttachCenter]
+                                                                    right:[MICUiRelativeLayoutAttachInfo newAttachCenter]
+                                                                     vert:[MICUiRelativeLayoutScalingInfo newScalingNoSize]
+                                                                      top:[MICUiRelativeLayoutAttachInfo newAttachCenter]
+                                                                   bottom:[MICUiRelativeLayoutAttachInfo newAttachCenter]]];
+
+
     
     
 //    MICUiStatefulResource* colors = [[MICUiStatefulResource alloc] initWithDictionary:@{
@@ -81,14 +85,14 @@
 //                                                                                        MICUiStatefulBorderColorNORMAL: [UIColor whiteColor],
 //                                                                                        }];
     
-    MICRect rcBounds = self.view.bounds;
-    MICRect rcTab;
+//    MICRect rcBounds = self.view.bounds;
+//    MICRect rcTab;
     int tabid = 0;
     NSString *tabname;
 
-    rcTab = rcBounds;
-    rcTab.deflate(TAB_HEIGHT, rcBounds.height()*2/3, TAB_HEIGHT, 0);
-    _bottomTab = [[MICUiDsTabView alloc] initWithFrame:rcTab];
+//    rcTab = rcBounds;
+//    rcTab.deflate(TAB_HEIGHT, MIN(rcBounds.height(),rcBounds.width())*2/3, TAB_HEIGHT, 0);
+    _bottomTab = [[MICUiDsTabView alloc] initWithFrame:MICRect(0,200)];
     _bottomTab.labelAlignment = MICUiAlignExFILL;
     _bottomTab.orientation = MICUiVertical;
     _bottomTab.labelPos = MICUiPosBOTTOM|MICUiPosRIGHT;
@@ -118,9 +122,9 @@
     
     
     
-    rcTab = rcBounds;
-    rcTab.deflate(TAB_HEIGHT, rcBounds.height()*2/3, TAB_HEIGHT, 0);
-    _topTab = [[MICUiDsTabView alloc] initWithFrame:rcTab];
+//    rcTab = rcBounds;
+//    rcTab.deflate(TAB_HEIGHT, rcBounds.height()*2/3, TAB_HEIGHT, 0);
+    _topTab = [[MICUiDsTabView alloc] initWithFrame:MICRect(0,200)];
     _topTab.labelAlignment = MICUiAlignExFILL;
     _topTab.orientation = MICUiVertical;
     _topTab.labelPos = MICUiPosTOP|MICUiPosLEFT;
@@ -147,9 +151,9 @@
                                                                    bottom:[MICUiRelativeLayoutAttachInfo newAttachFree]]];
 
     
-    rcTab = rcBounds;
-    rcTab.size.width = rcBounds.width()/3;
-    _leftTab = [[MICUiDsTabView alloc] initWithFrame:rcTab];
+//    rcTab = rcBounds;
+//    rcTab.size.width = rcBounds.width()/3;
+    _leftTab = [[MICUiDsTabView alloc] initWithFrame:MICRect(150,0)];
     _leftTab.labelAlignment = MICUiAlignExFILL;
     _leftTab.orientation = MICUiHorizontal;
     _leftTab.labelPos = MICUiPosTOP|MICUiPosLEFT;
@@ -182,9 +186,9 @@
     
     
     
-    rcTab = rcBounds;
-    rcTab.size.width = rcBounds.width()/3;
-    _rightTab = [[MICUiDsTabView alloc] initWithFrame:rcTab];
+//    rcTab = rcBounds;
+//    rcTab.size.width = rcBounds.width()/3;
+    _rightTab = [[MICUiDsTabView alloc] initWithFrame:MICRect(150,0)];
     _rightTab.labelAlignment = MICUiAlignExFILL;
     _rightTab.orientation = MICUiHorizontal;
     _rightTab.labelPos = MICUiPosBOTTOM|MICUiPosRIGHT;
@@ -237,15 +241,15 @@
     [_topTab.tabBar beginCustomizingWithLongPress:true endWithTap:true];
     [_leftTab.tabBar beginCustomizingWithLongPress:true endWithTap:true];
     
-//    _observer = [[MICKeyValueObserver alloc] initWithActor:rootView];
-//    [_observer add:@"frame" listener:self handler:@selector(onViewSizeChanged:target:)];
-//    [_observer add:@"bounds" listener:self handler:@selector(onViewSizeChanged:target:)];
+    _observer = [[MICKeyValueObserver alloc] initWithActor:rootView];
+    [_observer add:@"frame" listener:self handler:@selector(onViewSizePropertyChanged:target:)];
+    [_observer add:@"bounds" listener:self handler:@selector(onViewSizePropertyChanged:target:)];
 }
 
-//- (void) onViewSizeChanged:(id<IMICKeyValueObserverItem>)info target:(id)target {
-//    _mainLayouter.overallSize = ((UIView*)target).bounds.size;
-//    [_mainLayouter updateLayout:true onCompleted:nil];
-//}
+- (void) onViewSizePropertyChanged:(id<IMICKeyValueObserverItem>)info target:(id)target {
+    _mainLayouter.overallSize = ((UIView*)target).bounds.size;
+    [_mainLayouter updateLayout:true onCompleted:nil];
+}
 
 - (void) goBack:(id)sender {
     [self dismissViewControllerAnimated:true completion:nil];
