@@ -31,7 +31,8 @@
  * @param key       キー（＝監視するプロパティ名）
  * @param listener  プロパティ変更イベントを受け取るオブジェクト
  * @param handler   イベントハンドラー
- *                  　(void) handler:(id)target change:(NSDictionary *)change context:(void*)context
+ * handlerの型
+ *  - (void) handler:(id<IMICKeyValueObserverItem>) info target:(id)target;
  */
 - (instancetype) initForKey:(NSString*)key listener:(id)listener handler:(SEL)handler {
     self = [super init];
@@ -127,9 +128,10 @@
  * @param key       キー（＝監視するプロパティ名）
  * @param listener  プロパティ変更イベントを受け取るオブジェクト
  * @param handler   イベントハンドラー
- *                  　(void) handler:(id)target change:(NSDictionary *)change context:(void*)context
  * @param options   オブザーバー登録時のオプション
  * @param context   オブザーバー登録時に渡すコンテキスト(nil可)
+ * handlerの型
+ *  - (void) handler:(id<IMICKeyValueObserverItem>) info target:(id)target;
  */
 - (void) add:(NSString*)key listener:(id)listener handler:(SEL)handler options:(NSKeyValueObservingOptions)options context:(void*)context {
     [self addItem:[[MICObserverItem alloc] initForKey:key listener:listener handler:handler] forKey:key options:options context:context];
@@ -142,7 +144,8 @@
  * @param key       キー（＝監視するプロパティ名）
  * @param listener  プロパティ変更イベントを受け取るオブジェクト
  * @param handler   イベントハンドラー
- *                  　(void) handler:(id)target change:(NSDictionary *)change context:(void*)context
+ * handlerの型
+ *  - (void) handler:(id<IMICKeyValueObserverItem>) info target:(id)target;
  */
 - (void) add:(NSString*)key listener:(id)listener handler:(SEL)handler {
     [self add:key listener:listener handler:handler options:NSKeyValueObservingOptionNew context:nil];

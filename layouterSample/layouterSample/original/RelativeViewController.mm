@@ -10,10 +10,14 @@
 #import "MICUiRelativeLayout.h"
 #import "MICUiRectUtil.h"
 #import "MICUiCellDragSupport.h"
+#import "MICVar.h"
+#import "MICAutoLayoutBuilder.h"
+#import "MICKeyValueObserver.h"
 
 @interface RelativeViewController () {
     MICUiRelativeLayout* _layout;
     MICUiCellDragSupport* _dragger;
+    MICKeyValueObserver* _observer;
 }
 
 @end
@@ -43,6 +47,11 @@ static int currentIndex = 0;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    let rootView = [UIView new];
+    [self.view addSubview:rootView];
+    MICAutoLayoutBuilder lb(self.view);
+    lb.fitToSafeArea(rootView);
+
     UIButton* back;
     back = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     back.frame = CGRectMake(10, 20, 200, 50);
@@ -58,7 +67,7 @@ static int currentIndex = 0;
     _layout.overallSize = rc.size;
     _layout.marginTop = 100;
     _layout.marginLeft = 10;
-    _layout.parentView = self.view;
+    _layout.parentView = rootView;
     
     _dragger = [[MICUiCellDragSupport alloc] init];
     _dragger.layouter = _layout;
@@ -137,10 +146,20 @@ static int currentIndex = 0;
                                                                 top:[MICUiRelativeLayoutAttachInfo newAttachFree]
                                                              bottom:[MICUiRelativeLayoutAttachInfo newAttachFitTo:label4 inDistance:0]]];
 //    [_dragger enableDragEventHandlerOnChildView:label5];
-    [_layout updateLayout:false onCompleted:nil];
+    //[_layout updateLayout:false onCompleted:nil];
     
     self.view.backgroundColor = [UIColor whiteColor];
     [_dragger beginCustomizingWithLongPress:true endWithTap:true];
+    
+    
+    _observer = [[MICKeyValueObserver alloc] initWithActor:rootView];
+    [_observer add:@"frame" listener:self handler:@selector(onViewSizePropertyChanged:target:)];
+    [_observer add:@"bounds" listener:self handler:@selector(onViewSizePropertyChanged:target:)];
+}
+
+- (void) onViewSizePropertyChanged:(id<IMICKeyValueObserverItem>) info target:(id)target {
+        _layout.overallSize = ((UIView*)target).bounds.size;
+        [_layout updateLayout:true onCompleted:nil];
 }
 
 - (void) goBack:(id)sender {

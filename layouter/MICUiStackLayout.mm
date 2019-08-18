@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICStackLayout.m
 //
 //  ビューを縦または横方向に並べて配置するスタック型レイアウタークラス
@@ -89,6 +89,7 @@
         _cellAlignment = align;
         _orientation = orientation;
         _fixedSideSize = -1;
+        _fitGrowingSideSize = -1;
         _contentSize = CGSizeZero;
     }
     return self;
@@ -103,6 +104,9 @@
  * セル間隔
  */
 - (void)setCellSpacing:(CGFloat)spacing {
+    if(spacing<0) {
+        spacing = 0;
+    }
     CHK_SET(_cellSpacing, spacing);
 }
 

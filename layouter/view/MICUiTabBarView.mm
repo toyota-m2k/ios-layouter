@@ -149,6 +149,7 @@
 - (void)addLeftFuncButton:(UIView *)button function:(MICUiTabBarFuncButton)func {
     [_funcButtons addObject:[[FuncButton alloc] initWithView:button forFunc:func toRight:false]];
     [self addSubview:button];
+    [_barLayout insertChild:button before:_bar];
     _needsCalcLayout = true;
     _needsUpdateFuncButtons = true;
 }
@@ -159,6 +160,7 @@
 - (void)addRightFuncButton:(UIView *)button function:(MICUiTabBarFuncButton)func {
     [_funcButtons addObject:[[FuncButton alloc] initWithView:button forFunc:func toRight:true]];
     [self addSubview:button];
+    [_barLayout addChild:button];
     _needsCalcLayout = true;
     _needsUpdateFuncButtons = true;
 }
@@ -170,7 +172,7 @@
 - (void) addTab:(UIView*)tab updateView:(bool)update {
     [_bar addChild:tab];
     if( update){
-        [_bar updateLayout:false];
+        [self updateBarLayout];
     }
 }
 
@@ -181,7 +183,7 @@
 - (void) insertTab:(UIView*)tab beforeSibling:(UIView*)sibling updateView:(bool)update {
     [_bar insertChild:tab beforeSibling:sibling];
     if( update){
-        [_bar updateLayout:false];
+        [self updateBarLayout];
     }
 }
 
@@ -192,7 +194,7 @@
 - (void) removeTab:(UIView*)tab updateView:(bool)update {
     [_bar removeChild:tab];
     if( update){
-        [_bar updateLayout:false];
+        [self updateBarLayout];
     }
 }
 
@@ -291,7 +293,12 @@
         [self calcLayout];
     }
     [_barLayout updateLayout:false onCompleted:nil];
+    [self updateBarLayout];
+}
+
+- (void) updateBarLayout {
     [_bar updateLayout:false];
+    [self updateButtonState];
 }
 
 /**
@@ -332,17 +339,17 @@
  *  非表示のボタンをレイアウターから除外し、表示するボタンだけをレイアウターに登録する。
  */
 - (void)updateFuncButtons {
-    [_barLayout removeAllChildren];
-    [_barLayout addChild:_bar];
-    for(FuncButton* btn in _funcButtons) {
-        if(!btn.view.hidden) {
-            if(!btn.right) {
-                [_barLayout insertChild:btn.view before:_bar];
-            } else {
-                [_barLayout addChild:btn.view];
-            }
-        }
-    }
+//    [_barLayout removeAllChildren];
+//    [_barLayout addChild:_bar];
+//    for(FuncButton* btn in _funcButtons) {
+//        if(!btn.view.hidden) {
+//            if(!btn.right) {
+//                [_barLayout insertChild:btn.view before:_bar];
+//            } else {
+//                [_barLayout addChild:btn.view];
+//            }
+//        }
+//    }
     _needsUpdateFuncButtons = false;
 }
 

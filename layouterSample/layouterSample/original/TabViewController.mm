@@ -34,10 +34,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    let rootView = [UIView new];
-    [self.view addSubview:rootView];
-    MICAutoLayoutBuilder lb(self.view);
-    lb.fitToSafeArea(rootView);
+    self.view.backgroundColor = UIColor.whiteColor;
+    
+//    let rootView = [UIView new];
+//    [self.view addSubview:rootView];
+//    MICAutoLayoutBuilder lb(self.view);
+//    lb.fitToSafeArea(rootView);
+//
+//    rootView.backgroundColor = UIColor.whiteColor;
 
 //    _changing = false;
     
@@ -45,11 +49,11 @@
     MICRect bkrc = MICRect(200, 50);
     bkrc.moveCenter(MICRect(self.view.bounds).center());
     back.frame = bkrc;
-    back.backgroundColor = [UIColor whiteColor];
-    [back setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    back.backgroundColor = [UIColor blackColor];
+    [back setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [back setTitle:@"Back" forState:UIControlStateNormal];
     [back addTarget:self action:@selector(goBack:) forControlEvents:UIControlEventTouchUpInside];
-    [rootView addSubview:back];
+    [self.view addSubview:back];
     
     _swicherProc = [[MICUiAccordionCellViewSwicherProc alloc] init];
     
@@ -57,7 +61,7 @@
     contentSize.height -= 100;
     _mainLayouter = [[MICUiRelativeLayout alloc] init];
     _mainLayouter.overallSize = contentSize;
-    _mainLayouter.parentView = rootView;
+    _mainLayouter.parentView = self.view;
     _mainLayouter.marginTop = 50;
     _mainLayouter.marginBottom = 50;
     
@@ -93,7 +97,7 @@
     _bottomTab.tabHeight = 20;
     _bottomTab.tabWidth = 0;
     _bottomTab.contentMargin = MICEdgeInsets(10,0,10,0);
-    _bottomTab.backgroundColor = MICCOLOR_PANEL_FACE;
+    _bottomTab.backgroundColor = UIColor.purpleColor;
     _bottomTab.accordionDelegate = _swicherProc;
     
 
@@ -125,7 +129,7 @@
     _topTab.tabHeight = 20;
     _topTab.tabWidth = 0;
     _topTab.contentMargin = MICEdgeInsets(10,0,10,0);
-    _topTab.backgroundColor = MICCOLOR_PANEL_FACE;
+    _topTab.backgroundColor = UIColor.cyanColor;
     _topTab.accordionDelegate = _swicherProc;
     
     
@@ -233,15 +237,15 @@
     [_topTab.tabBar beginCustomizingWithLongPress:true endWithTap:true];
     [_leftTab.tabBar beginCustomizingWithLongPress:true endWithTap:true];
     
-    _observer = [[MICKeyValueObserver alloc] initWithActor:rootView];
-    [_observer add:@"frame" listener:self handler:@selector(onViewSizeChanged:target:)];
-    [_observer add:@"bounds" listener:self handler:@selector(onViewSizeChanged:target:)];
+//    _observer = [[MICKeyValueObserver alloc] initWithActor:rootView];
+//    [_observer add:@"frame" listener:self handler:@selector(onViewSizeChanged:target:)];
+//    [_observer add:@"bounds" listener:self handler:@selector(onViewSizeChanged:target:)];
 }
 
-- (void) onViewSizeChanged:(id<IMICKeyValueObserverItem>)info target:(id)target {
-    _mainLayouter.overallSize = ((UIView*)target).bounds.size;
-    [_mainLayouter updateLayout:true onCompleted:nil];
-}
+//- (void) onViewSizeChanged:(id<IMICKeyValueObserverItem>)info target:(id)target {
+//    _mainLayouter.overallSize = ((UIView*)target).bounds.size;
+//    [_mainLayouter updateLayout:true onCompleted:nil];
+//}
 
 - (void) goBack:(id)sender {
     [self dismissViewControllerAnimated:true completion:nil];
