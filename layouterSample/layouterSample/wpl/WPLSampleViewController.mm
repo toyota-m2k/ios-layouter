@@ -13,6 +13,7 @@
 #import "WPLStackPanelView.h"
 #import "WPLBindViewController.h"
 #import "WPLStackPanelSampleViewController.h"
+#import "WPLGridSampleViewController.h"
 
 @interface WPLSampleViewController ()
 
@@ -90,6 +91,8 @@ enum {
             controller = [[WPLStackPanelSampleViewController alloc] init];
             break;
         case CMDGridPanel:
+            controller = [[WPLGridSampleViewController alloc] init];
+            break;
         case CMDOtherTest:
             controller = [[WPLBindViewController alloc] init];
             break;
