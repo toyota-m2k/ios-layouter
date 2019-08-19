@@ -46,6 +46,7 @@
 
 - (void) attach {
     if(_observer==nil && _view!=nil) {
+        [self renderCell];
         _observer = [[MICKeyValueObserver alloc] initWithActor:_view];
         [_observer add:@"frame" listener:self handler:@selector(sizePropertyChanged:target:)];
         [_observer add:@"bounds" listener:self handler:@selector(sizePropertyChanged:target:)];
@@ -160,6 +161,7 @@ static inline void set_origin(bool forHorz, MICRect& rect, CGFloat pos=0) {
     if(!_layoutReserved) {
         _layoutReserved = true;
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            self->_layoutReserved = false;
             [self renderCell];
         }];
     }
@@ -169,7 +171,6 @@ static inline void set_origin(bool forHorz, MICRect& rect, CGFloat pos=0) {
  * コンテナ内の再配置処理
  */
 - (void) renderCell {
-    _layoutReserved = false;
     if(_containerCell==nil) {
         return;
     }

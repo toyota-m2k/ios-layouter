@@ -257,6 +257,7 @@
         }
     }
     [(WPLGrid*) _hostingView.containerCell addCell:rootGrid row:1 column:0];
+    [_hostingView render];
 }
 
 - (void) execTest5:(id)_ {

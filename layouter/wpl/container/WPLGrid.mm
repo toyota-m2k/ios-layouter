@@ -483,6 +483,7 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     }
     if(expansion) {
         // 指定比率になるよう、もう一度、pass3 を実行する
+        // 課題：２つ以上の（異なる範囲を持つ）colSpan/rowSpanのセルが、それぞれ拡張されるとき、必要な拡張量以上に大きくなってしまう。（いまのところ制限事項）
         [self pass3_calcStretchedCellForCol:forCol sizes:sizes fix:fix];
     }
 }
