@@ -78,7 +78,7 @@
 		841AD87222FD6B8D00F9AB7D /* WPLGridView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD87122FD6B8D00F9AB7D /* WPLGridView.mm */; };
 		841AD87522FD6DA300F9AB7D /* WPLStackPanelView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD87422FD6DA300F9AB7D /* WPLStackPanelView.mm */; };
 		841AD87922FD827500F9AB7D /* MICAutoLayoutBuilder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD87722FD827500F9AB7D /* MICAutoLayoutBuilder.mm */; };
-		841AD8882306434F00F9AB7D /* WPLGridSampleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8802306434F00F9AB7D /* WPLGridSampleViewController.mm */; };
+		841AD8882306434F00F9AB7D /* WPLGridTestViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8802306434F00F9AB7D /* WPLGridTestViewController.mm */; };
 		841AD8892306434F00F9AB7D /* WPLSampleView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8822306434F00F9AB7D /* WPLSampleView.mm */; };
 		841AD88A2306434F00F9AB7D /* WPLHostViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8832306434F00F9AB7D /* WPLHostViewController.mm */; };
 		841AD88B2306434F00F9AB7D /* WPLConstraintController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8842306434F00F9AB7D /* WPLConstraintController.mm */; };
@@ -96,6 +96,9 @@
 		841AD8B2230963D500F9AB7D /* WPLCellHostingScrollView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8B1230963D500F9AB7D /* WPLCellHostingScrollView.mm */; };
 		841AD8B52309800300F9AB7D /* WPLCellHostingHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8B42309800300F9AB7D /* WPLCellHostingHelper.mm */; };
 		841AD8B82309A88E00F9AB7D /* WPLStackPanelScrollView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8B72309A88E00F9AB7D /* WPLStackPanelScrollView.mm */; };
+		841AD8BB230A3CF200F9AB7D /* WPLStackPanelSampleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8BA230A3CF200F9AB7D /* WPLStackPanelSampleViewController.mm */; };
+		841AD8BE230A704A00F9AB7D /* WPLGridSampleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8BD230A704A00F9AB7D /* WPLGridSampleViewController.mm */; };
+		841AD8C1230A71E300F9AB7D /* WPLGridScrollView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8C0230A71E300F9AB7D /* WPLGridScrollView.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -268,8 +271,8 @@
 		841AD87422FD6DA300F9AB7D /* WPLStackPanelView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLStackPanelView.mm; sourceTree = "<group>"; };
 		841AD87622FD824F00F9AB7D /* MICAutoLayoutBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MICAutoLayoutBuilder.h; sourceTree = "<group>"; };
 		841AD87722FD827500F9AB7D /* MICAutoLayoutBuilder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MICAutoLayoutBuilder.mm; sourceTree = "<group>"; };
-		841AD8802306434F00F9AB7D /* WPLGridSampleViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridSampleViewController.mm; sourceTree = "<group>"; };
-		841AD8812306434F00F9AB7D /* WPLGridSampleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLGridSampleViewController.h; sourceTree = "<group>"; };
+		841AD8802306434F00F9AB7D /* WPLGridTestViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridTestViewController.mm; sourceTree = "<group>"; };
+		841AD8812306434F00F9AB7D /* WPLGridTestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLGridTestViewController.h; sourceTree = "<group>"; };
 		841AD8822306434F00F9AB7D /* WPLSampleView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLSampleView.mm; sourceTree = "<group>"; };
 		841AD8832306434F00F9AB7D /* WPLHostViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLHostViewController.mm; sourceTree = "<group>"; };
 		841AD8842306434F00F9AB7D /* WPLConstraintController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLConstraintController.mm; sourceTree = "<group>"; };
@@ -304,6 +307,12 @@
 		841AD8B42309800300F9AB7D /* WPLCellHostingHelper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLCellHostingHelper.mm; sourceTree = "<group>"; };
 		841AD8B62309A88E00F9AB7D /* WPLStackPanelScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLStackPanelScrollView.h; sourceTree = "<group>"; };
 		841AD8B72309A88E00F9AB7D /* WPLStackPanelScrollView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLStackPanelScrollView.mm; sourceTree = "<group>"; };
+		841AD8B9230A3CF200F9AB7D /* WPLStackPanelSampleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLStackPanelSampleViewController.h; sourceTree = "<group>"; };
+		841AD8BA230A3CF200F9AB7D /* WPLStackPanelSampleViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLStackPanelSampleViewController.mm; sourceTree = "<group>"; };
+		841AD8BC230A704A00F9AB7D /* WPLGridSampleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGridSampleViewController.h; sourceTree = "<group>"; };
+		841AD8BD230A704A00F9AB7D /* WPLGridSampleViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridSampleViewController.mm; sourceTree = "<group>"; };
+		841AD8BF230A71E300F9AB7D /* WPLGridScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGridScrollView.h; sourceTree = "<group>"; };
+		841AD8C0230A71E300F9AB7D /* WPLGridScrollView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridScrollView.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -610,6 +619,8 @@
 				841AD86E22FD684D00F9AB7D /* WPLFrameView.mm */,
 				841AD87022FD6B8D00F9AB7D /* WPLGridView.h */,
 				841AD87122FD6B8D00F9AB7D /* WPLGridView.mm */,
+				841AD8BF230A71E300F9AB7D /* WPLGridScrollView.h */,
+				841AD8C0230A71E300F9AB7D /* WPLGridScrollView.mm */,
 				841AD87322FD6DA300F9AB7D /* WPLStackPanelView.h */,
 				841AD87422FD6DA300F9AB7D /* WPLStackPanelView.mm */,
 				841AD8B62309A88E00F9AB7D /* WPLStackPanelScrollView.h */,
@@ -646,18 +657,22 @@
 		841AD87F230642D600F9AB7D /* wpl */ = {
 			isa = PBXGroup;
 			children = (
+				841AD8AD230944A000F9AB7D /* WPLSampleViewController.h */,
+				841AD8AE230944A000F9AB7D /* WPLSampleViewController.mm */,
 				841AD88C2306439B00F9AB7D /* WPLBindViewController.h */,
 				841AD88D2306439B00F9AB7D /* WPLBindViewController.mm */,
 				841AD8852306434F00F9AB7D /* WPLConstraintController.h */,
 				841AD8842306434F00F9AB7D /* WPLConstraintController.mm */,
-				841AD8812306434F00F9AB7D /* WPLGridSampleViewController.h */,
-				841AD8802306434F00F9AB7D /* WPLGridSampleViewController.mm */,
+				841AD8812306434F00F9AB7D /* WPLGridTestViewController.h */,
+				841AD8802306434F00F9AB7D /* WPLGridTestViewController.mm */,
 				841AD8872306434F00F9AB7D /* WPLHostViewController.h */,
 				841AD8832306434F00F9AB7D /* WPLHostViewController.mm */,
 				841AD8862306434F00F9AB7D /* WPLSampleView.h */,
 				841AD8822306434F00F9AB7D /* WPLSampleView.mm */,
-				841AD8AD230944A000F9AB7D /* WPLSampleViewController.h */,
-				841AD8AE230944A000F9AB7D /* WPLSampleViewController.mm */,
+				841AD8B9230A3CF200F9AB7D /* WPLStackPanelSampleViewController.h */,
+				841AD8BA230A3CF200F9AB7D /* WPLStackPanelSampleViewController.mm */,
+				841AD8BC230A704A00F9AB7D /* WPLGridSampleViewController.h */,
+				841AD8BD230A704A00F9AB7D /* WPLGridSampleViewController.mm */,
 			);
 			path = wpl;
 			sourceTree = "<group>";
@@ -794,8 +809,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				841AD8882306434F00F9AB7D /* WPLGridSampleViewController.mm in Sources */,
+				841AD8882306434F00F9AB7D /* WPLGridTestViewController.mm in Sources */,
 				841AD7EB22EE93FA00F9AB7D /* MICUiSwitchingViewMediator.m in Sources */,
+				841AD8BB230A3CF200F9AB7D /* WPLStackPanelSampleViewController.mm in Sources */,
 				841AD7D822EE93FA00F9AB7D /* MICUiCellDragSupportEx.mm in Sources */,
 				841AD87922FD827500F9AB7D /* MICAutoLayoutBuilder.mm in Sources */,
 				841AD7D622EE93FA00F9AB7D /* MICUiGridLayout.mm in Sources */,
@@ -834,6 +850,7 @@
 				841AD83D22F52AEE00F9AB7D /* WPLCell.mm in Sources */,
 				841AD7E922EE93FA00F9AB7D /* MICUiAccordionCellView.mm in Sources */,
 				841AD8892306434F00F9AB7D /* WPLSampleView.mm in Sources */,
+				841AD8C1230A71E300F9AB7D /* WPLGridScrollView.mm in Sources */,
 				841AD7DA22EE93FA00F9AB7D /* MICUiDragView.m in Sources */,
 				841AD7D522EE93FA00F9AB7D /* MICUiAccordionCellViewSwicherProc.m in Sources */,
 				841AD88B2306434F00F9AB7D /* WPLConstraintController.mm in Sources */,
@@ -845,6 +862,7 @@
 				841AD8B2230963D500F9AB7D /* WPLCellHostingScrollView.mm in Sources */,
 				841AD8B82309A88E00F9AB7D /* WPLStackPanelScrollView.mm in Sources */,
 				841AD7CF22EE93FA00F9AB7D /* MICAsync.m in Sources */,
+				841AD8BE230A704A00F9AB7D /* WPLGridSampleViewController.mm in Sources */,
 				841AD7D322EE93FA00F9AB7D /* MICMatrix.m in Sources */,
 				841AD7E322EE93FA00F9AB7D /* MICUiStatefulResource.m in Sources */,
 				841AD7CB22EE93FA00F9AB7D /* MICQueue.m in Sources */,

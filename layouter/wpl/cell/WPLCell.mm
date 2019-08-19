@@ -2,8 +2,8 @@
 //  WPLCell.m
 //  layouterSample
 //
-//  Created by Mitsuki Toyota on 2019/08/02.
-//  Copyright © 2019 Mitsuki Toyota. All rights reserved.
+//  Created by toyota-m2k on 2019/08/02.
+//  Copyright © 2019 toyota-m2k. All rights reserved.
 //
 
 #import "WPLCell.h"

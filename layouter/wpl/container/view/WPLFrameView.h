@@ -1,9 +1,10 @@
 //
 //  WPLFrameView.h
 //  WP Layouter
+//  WP Layouter のルートコンテナとしての機能を持った、WPLFrameをホスティングするビュークラス
 //
-//  Created by Mitsuki Toyota on 2019/08/09.
-//  Copyright © 2019 Mitsuki Toyota. All rights reserved.
+//  Created by toyota-m2k on 2019/08/09.
+//  Copyright © 2019 toyota-m2k. All rights reserved.
 //
 
 #import "WPLCellHostingView.h"

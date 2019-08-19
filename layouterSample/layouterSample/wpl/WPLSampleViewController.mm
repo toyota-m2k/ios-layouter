@@ -2,8 +2,8 @@
 //  WPLSampleViewController.m
 //  layouterSample
 //
-//  Created by Mitsuki Toyota on 2019/08/18.
-//  Copyright © 2019 Mitsuki Toyota. All rights reserved.
+//  Created by toyota-m2k on 2019/08/18.
+//  Copyright © 2019 toyota-m2k. All rights reserved.
 //
 
 #import "WPLSampleViewController.h"
@@ -12,6 +12,7 @@
 #import "MICVar.h"
 #import "WPLStackPanelView.h"
 #import "WPLBindViewController.h"
+#import "WPLStackPanelSampleViewController.h"
 
 @interface WPLSampleViewController ()
 
@@ -86,6 +87,8 @@ enum {
     UIViewController* controller = nil;
     switch( [sender tag]) {
         case CMDStackPanel:
+            controller = [[WPLStackPanelSampleViewController alloc] init];
+            break;
         case CMDGridPanel:
         case CMDOtherTest:
             controller = [[WPLBindViewController alloc] init];

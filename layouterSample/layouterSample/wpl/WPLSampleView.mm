@@ -2,8 +2,8 @@
 //  WPLSampleView.m
 //  layouterSample
 //
-//  Created by Mitsuki Toyota on 2019/08/03.
-//  Copyright © 2019 Mitsuki Toyota. All rights reserved.
+//  Created by toyota-m2k on 2019/08/03.
+//  Copyright © 2019 toyota-m2k. All rights reserved.
 //
 
 #import "WPLSampleView.h"
@@ -16,7 +16,7 @@
 #import "WPLObservableMutableData.h"
 #import "MICVar.h"
 #import "WPLBinder.h"
-#import "WPLGridSampleViewController.h"
+#import "WPLGridTestViewController.h"
 #import "WPLStackPanelView.h"
 #import "MICAutoLayoutBuilder.h"
 #import "WPLBindViewController.h"
@@ -138,7 +138,7 @@
     let viewController = self.presentViewController;
     if(nil!=viewController) {
 //        [viewController presentationController]
-        let vc = [[WPLGridSampleViewController alloc] initWithMain:viewController];
+        let vc = [[WPLGridTestViewController alloc] init];
         // [vc present]
         
         [viewController presentViewController:vc animated:true completion:nil];

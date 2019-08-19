@@ -2,8 +2,8 @@
 //  WPLCellHostingHelper.m
 //  layouterSample
 //
-//  Created by Mitsuki Toyota on 2019/08/18.
-//  Copyright © 2019 Mitsuki Toyota. All rights reserved.
+//  Created by toyota-m2k on 2019/08/18.
+//  Copyright © 2019 toyota-m2k. All rights reserved.
 //
 
 #import "WPLCellHostingHelper.h"
@@ -15,18 +15,48 @@
     UIView* __weak _view;
     bool _layoutReserved;
     MICKeyValueObserver* _observer;
+    WPLBinder* _binder;
+}
+
+- (WPLBinder*) binder {
+    if(nil==_binder) {
+        _binder = [WPLBinder new];
+    }
+    return _binder;
 }
 
 - (instancetype) initWithView:(UIView*) view {
+    return [self initWithView:view container:nil];
+}
+
+- (instancetype) initWithView:(UIView*) view container:(id<IWPLContainerCell>)container {
     self = [super init];
     if(nil!=self) {
         _view = view;
         _layoutReserved = false;
-        _observer = [[MICKeyValueObserver alloc] initWithActor:view];
+        _observer = nil;
+        _containerCell = nil;
+        _binder = nil;
+        if(nil!=container) {
+            self.containerCell = container;
+        }
+    }
+    return self;
+}
+
+- (void) attach {
+    if(_observer==nil && _view!=nil) {
+        _observer = [[MICKeyValueObserver alloc] initWithActor:_view];
         [_observer add:@"frame" listener:self handler:@selector(sizePropertyChanged:target:)];
         [_observer add:@"bounds" listener:self handler:@selector(sizePropertyChanged:target:)];
     }
-    return self;
+}
+
+- (void) detach {
+    if(_observer!=nil) {
+        [_observer dispose];
+        _observer = nil;
+    }
 }
 
 - (void) sizePropertyChanged:(id<IMICKeyValueObserverItem>) info target:(id)target {
@@ -38,9 +68,14 @@
 }
 
 - (void) dispose {
-    if(nil!=_observer) {
-        [_observer dispose];
-        _observer = nil;
+    [self detach];
+    if(_containerCell!=nil) {
+        [_containerCell dispose];
+        _containerCell = nil;
+    }
+    if(_binder!=nil) {
+        [_binder dispose];
+        _binder = nil;
     }
 }
 
@@ -111,6 +146,14 @@ static inline void move_rect(bool forHorz, MICRect& rect, CGFloat diff) {
     }
 }
 
+static inline void set_origin(bool forHorz, MICRect& rect, CGFloat pos=0) {
+    if(forHorz) {
+        rect.moveLeft(pos);
+    } else {
+        rect.moveTop(pos);
+    }
+}
+
 #pragma mark - Rendering
 
 - (void) reserveRender {
@@ -130,7 +173,7 @@ static inline void move_rect(bool forHorz, MICRect& rect, CGFloat diff) {
     if(_containerCell==nil) {
         return;
     }
-    MICRect viewRect(_view.bounds);
+    MICRect viewRect(_view.frame.size);
     if(viewRect.isEmpty()) {
         return;
     }
@@ -140,9 +183,18 @@ static inline void move_rect(bool forHorz, MICRect& rect, CGFloat diff) {
     [self renderSubForHorz:false viewRect:viewRect cellSize:cellSize cellRect:cellRect];
     
     [_containerCell layoutCompleted:cellRect];
+    MICRect contentRect = _containerCell.view.frame;
     if([_view isKindOfClass:UIScrollView.class]) {
-        ((UIScrollView*)_view).contentSize = _containerCell.view.frame.size;
+        ((UIScrollView*)_view).contentSize = contentRect.size;
     }
+    
+    if(contentRect!=viewRect) {
+        [self alignContainerCellForHorz:true contentRect:contentRect viewRect:viewRect];
+        [self alignContainerCellForHorz:false contentRect:contentRect viewRect:viewRect];
+        _containerCell.view.frame = contentRect;
+    }
+    
+    
 }
 
 /**
@@ -166,6 +218,29 @@ static inline void move_rect(bool forHorz, MICRect& rect, CGFloat diff) {
         case WPLCellAlignmentCENTER:
             set_size(forHorz, cellRect, get_size(forHorz, cellSize));
             move_rect(forHorz, cellRect, diff_point(forHorz, cellRect.center(), viewRect.center()));
+            break;
+        default:
+            break;
+    }
+}
+
+- (void) alignContainerCellForHorz:(bool)forHorz contentRect:(MICRect&) contentRect viewRect:(const MICRect&) viewRect {
+    CGFloat cs = get_size(forHorz, contentRect.size);
+    CGFloat vs = get_size(forHorz, viewRect.size);
+    if(cs>=vs) {
+        set_origin(forHorz, contentRect);
+        return;
+    }
+    
+    switch([self align:forHorz]) {
+        case WPLCellAlignmentSTART:
+            move_rect(forHorz, contentRect, diff_point(forHorz, contentRect.LT(), viewRect.LT()));
+            break;
+        case WPLCellAlignmentEND:
+            move_rect(forHorz, contentRect, diff_point(forHorz, contentRect.RB(), viewRect.RB()));
+            break;
+        case WPLCellAlignmentCENTER:
+            move_rect(forHorz, contentRect, diff_point(forHorz, contentRect.center(), viewRect.center()));
             break;
         default:
             break;

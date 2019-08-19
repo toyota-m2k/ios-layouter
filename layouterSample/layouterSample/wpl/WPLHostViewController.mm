@@ -2,8 +2,8 @@
 //  WPLHostViewController.m
 //  layouterSample
 //
-//  Created by Mitsuki Toyota on 2019/08/08.
-//  Copyright © 2019 Mitsuki Toyota. All rights reserved.
+//  Created by toyota-m2k on 2019/08/08.
+//  Copyright © 2019 toyota-m2k. All rights reserved.
 //
 
 #import "WPLHostViewController.h"
@@ -122,13 +122,11 @@
 }
 
 - (void) backToPrev:(id)_ {
-    if(_prev!=nil) {
-        [_prev dismissViewControllerAnimated:false completion:nil];
-    }
+    [self dismissViewControllerAnimated:false completion:nil];
 }
 
 - (void)goAhead:(id)_ {
-    let vc = [[WPLConstraintController alloc] initWithPrev:self];
+    let vc = [[WPLConstraintController alloc] init];
     [self presentViewController:vc animated:true completion:nil];
 }
 

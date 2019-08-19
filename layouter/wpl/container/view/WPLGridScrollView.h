@@ -1,16 +1,17 @@
 //
-//  WPLGridView.h
+//  WPLGridScrollView.h
 //  WP Layouter
-//  WP Layouter のルートコンテナとしての機能を持った、WPLGridをホスティングするビュークラス
+//  WP Layouter のルートコンテナとしての機能を持った、WPLGridをホスティングするスクロールビュークラス
 //
-//  Created by toyota-m2k on 2019/08/09.
+//  Created by toyota-m2k on 2019/08/19.
 //  Copyright © 2019 toyota-m2k. All rights reserved.
 //
 
-#import "WPLCellHostingView.h"
+#import "WPLCellHostingScrollView.h"
 #import "WPLGrid.h"
 
-@interface WPLGridView : WPLCellHostingView
+@interface WPLGridScrollView : WPLCellHostingScrollView
+
 /**
  * ルートコンテナセルを取得
  * (WPLFrame*) o.containerCell

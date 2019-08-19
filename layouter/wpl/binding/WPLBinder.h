@@ -7,8 +7,8 @@
 //  Cell/ObservableData/Binding は、もう少し柔軟な操作が可能だが、柔軟性を多少犠牲にして（例えばプロパティはすべて文字列の名前をつけてアクセスする、とか）、
 //  できるだけ簡潔に利用できるようにすることを目指したクラス。
 //
-//  Created by Mitsuki Toyota on 2019/08/04.
-//  Copyright © 2019 Mitsuki Toyota. All rights reserved.
+//  Created by toyota-m2k on 2019/08/04.
+//  Copyright © 2019 toyota-m2k. All rights reserved.
 //
 
 #import "WPLBindingDef.h"

@@ -1,16 +1,16 @@
 //
-//  WPLGridView.m
+//  WPLGridScrollView.m
 //  WP Layouter
-//  WP Layouter のルートコンテナとしての機能を持った、WPLGridをホスティングするビュークラス
+//  WP Layouter のルートコンテナとしての機能を持った、WPLGridをホスティングするスクロールビュークラス
 //
-//  Created by toyota-m2k on 2019/08/09.
+//  Created by toyota-m2k on 2019/08/19.
 //  Copyright © 2019 toyota-m2k. All rights reserved.
 //
 
-#import "WPLGridView.h"
+#import "WPLGridScrollView.h"
 #import "MICVar.h"
 
-@implementation WPLGridView
+@implementation WPLGridScrollView
 
 - (WPLGrid*) container {
     let s = self.containerCell;
@@ -21,9 +21,9 @@
     self.containerCell = v;
 }
 
-+ (WPLGridView *) gridViewWithName:(NSString *)name
++ (instancetype) gridViewWithName:(NSString *)name
                             params:(WPLGridParams)params {
-    let view = [WPLGridView new];
+    let view = [WPLGridScrollView new];
     view.container = [WPLGrid gridWithName:name params:params];
     return view;
 }

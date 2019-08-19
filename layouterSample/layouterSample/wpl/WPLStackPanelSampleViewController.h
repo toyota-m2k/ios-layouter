@@ -1,5 +1,5 @@
 //
-//  WPLGridSampleViewController.h
+//  WPLStackPanelSampleViewController.h
 //  layouterSample
 //
 //  Created by toyota-m2k on 2019/08/19.
@@ -8,10 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-NS_ASSUME_NONNULL_BEGIN
 
-@interface WPLGridSampleViewController : UIViewController
+@interface WPLStackPanelSampleViewController : UIViewController
 
 @end
 
-NS_ASSUME_NONNULL_END
