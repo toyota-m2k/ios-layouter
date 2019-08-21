@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICUiDsSvgIconButton.h
 //  Anytime
 //
@@ -40,6 +40,7 @@
 
 @property (nonatomic,readwrite) CGSize iconSize;
 @property (nonatomic,readwrite) CGSize viewboxSize;
+@property (nonatomic,readwrite) bool stretchIcon;       // true: frame.height に合わせてアイコンを拡大する / false: iconSize に従って描画（デフォルト）
 
 - (instancetype) initWithFrame:(CGRect) frame iconSize:(CGSize)iconSize pathViewboxSize:(CGSize)viewboxSize;
 

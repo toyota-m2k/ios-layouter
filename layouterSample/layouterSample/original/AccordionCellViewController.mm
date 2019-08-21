@@ -21,6 +21,7 @@
 #import "MICUiTabBarView.h"
 #import "MICVar.h"
 #import "MICAutoLayoutBuilder.h"
+#import "MICUiDsTabView.h"
 
 @interface AccordionCellViewController ()
 
@@ -156,22 +157,28 @@ static int testMode = 1;
     MICUiTabBarView* tabview = [[MICUiTabBarView alloc] init];
     _tabview = tabview;
     
-    UIButton* prev = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [prev setTitle:@"<" forState:UIControlStateNormal];
-    prev.frame = MICRect::XYWH(0,400,30,30);
-    prev.backgroundColor = [UIColor grayColor];
-    [prev setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    
-    UIButton* next = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [next setTitle:@">" forState:UIControlStateNormal];
-    next.frame = MICRect::XYWH(50,400,30,30);
-    next.backgroundColor = [UIColor grayColor];
-    [next setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    
+//    UIButton* prev = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+//    [prev setTitle:@"<" forState:UIControlStateNormal];
+//    prev.frame = MICRect::XYWH(0,400,30,30);
+//    prev.backgroundColor = [UIColor grayColor];
+//    [prev setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+//
+//    UIButton* next = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+//    [next setTitle:@">" forState:UIControlStateNormal];
+//    next.frame = MICRect::XYWH(50,400,30,30);
+//    next.backgroundColor = [UIColor grayColor];
+//    [next setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+//
+//    [prev addTarget:self action:@selector(prevTab:) forControlEvents:UIControlEventTouchUpInside];
+//    [next addTarget:self action:@selector(nextTab:) forControlEvents:UIControlEventTouchUpInside];
+
+    let prev = [MICUiDsTabView createArrowButton:false];
+    [prev setTarget:self action:@selector(prevTab:)];
+    let next = [MICUiDsTabView createArrowButton:true];
+    [next setTarget:self action:@selector(nextTab:)];
+
     [tabview addLeftFuncButton:prev function:MICUiTabBarFuncButtonSCROLL_PREV];
     [tabview addRightFuncButton:next function:MICUiTabBarFuncButtonSCROLL_NEXT];
-    [prev addTarget:self action:@selector(prevTab:) forControlEvents:UIControlEventTouchUpInside];
-    [next addTarget:self action:@selector(nextTab:) forControlEvents:UIControlEventTouchUpInside];
     
     //    [self.view addSubview:prev];
     //    [self.view addSubview:next];

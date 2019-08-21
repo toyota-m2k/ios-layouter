@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICUiDsSvgIconButton.m
 //  Anytime
 //
@@ -29,6 +29,7 @@
         self.backgroundColor = UIColor.clearColor;
         _viewboxSize = viewboxSize;
         _iconSize = iconSize;
+        _stretchIcon = false;
         _svgPathNormal = nil;
         _svgPathActivated = nil;
         _svgPathSelected = nil;
@@ -101,12 +102,19 @@
     return [self getIconColorForState:self.buttonState];
 }
 
-- (CGRect) calcIconRect {
-    MICRect rc(_iconSize);
-    MICPoint center(self.contentMargin.left+_iconSize.width/2, rc.center().y);
-    rc.moveCenter(center);
-    return rc;
-}
+//- (CGRect) calcIconRect {
+//    MICRect rcContent(self.bounds);
+//    MICSize iconSize(_iconSize);
+//    if(_stretchIcon) {
+//        CGFloat h = MAX(rcContent.height(), 0);
+//        h = MAX(h-MICEdgeInsets(self.contentMargin).dh(), 0);
+//        iconSize = MICSize(h);
+//    }
+//    MICRect rc(iconSize);
+//    MICPoint center(rcContent.left()+self.contentMargin.left+iconSize.width/2, rcContent.center().y);
+//    rc.moveCenter(center);
+//    return rc;
+//}
 
 - (CGSize) calcPlausibleButtonSizeFotHeight:(CGFloat)height forState:(MICUiViewState)state {
     MICEdgeInsets margin(self.contentMargin);
@@ -130,18 +138,49 @@
     self.frame = MICRect(self.frame.origin, [self calcPlausibleButtonSizeFotHeight:0 forState:MICUiViewStateNORMAL]);
 }
 
+/**
+ * icon（UIImage)の代わりに、SvgPathを扱うように、getContentRect をオーバーライド
+ * 親クラスのgetContentRectとの違い：
+ *  - icon引数は無視（nilが渡ってくる）
+ *  - アイコンなし（テキストのみ）のパターンは存在しない前提（SvgIconButtonを使う意味がないので）
+ *  - コンストラクタで指定されたアイコンサイズよりビューが大きい時、拡大描画可能(stretchIconプロパティがtrueの場合のみ）
+ */
 - (void)getContentRect:(UIImage*)icon iconRect:(CGRect*)prcIcon textRect:(CGRect*)prcText {
     MICRect rcBounds = self.bounds;
     MICRect rcContent = rcBounds;
     rcContent.deflate(self.contentMargin);
     
-    MICRect rcIcon([self calcIconRect]);
+    *prcText = CGRectNull;
+    *prcIcon = CGRectNull;
+
+    MICRect rcIcon(rcContent.origin, _iconSize);
+    if(rcIcon.height()>rcBounds.height()) {
+        // アイコンが大きい→要縮小
+        CGFloat r = rcContent.height() / rcIcon.height();
+        rcIcon.size.width *= r;
+        rcIcon.size.height = rcContent.height();
+    } else {
+        // アイコンが小さい
+        if(_stretchIcon) {
+            // アイコンを拡大
+            CGFloat r = rcContent.height() / rcIcon.height();
+            rcIcon.size.width *= r;
+            rcIcon.size.height = rcContent.height();
+        } else {
+            // 拡大しない場合は縦方向センタリング
+            rcIcon.moveToVCenterOfOuterRect(rcContent);
+        }
+    }
+    if(nil==self.text) {
+        // only icon --> アイコンを横方向にセンタリング
+        rcIcon.moveToHCenterOfOuterRect(rcContent);
+    } else {
+        // text & icon
+        MICRect rcText = rcContent;
+        rcText.setLeft( rcIcon.right()+self.iconTextMargin);
+        *prcText = rcText;
+    }
     *prcIcon = rcIcon;
-    
-    // text & icon
-    MICRect rcText = rcContent;
-    rcText.setLeft( rcIcon.right()+self.iconTextMargin);
-    *prcText = rcText;
 }
 
 

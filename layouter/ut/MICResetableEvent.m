@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICResetableEvent.m
 //  Anytime
 //
@@ -18,6 +18,10 @@
 
 + (instancetype)create:(bool)initialSignaled {
     return [[MICAutoResetEvent alloc] initSignaled:initialSignaled];
+}
+
+- (instancetype) init {
+    return [self initSignaled:false];
 }
 
 - (instancetype) initSignaled:(bool)signaled {

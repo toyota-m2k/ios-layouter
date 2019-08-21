@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICResetableEvent.h
 //  Anytime
 //
