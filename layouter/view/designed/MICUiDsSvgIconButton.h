@@ -1,6 +1,5 @@
 //
 //  MICUiDsSvgIconButton.h
-//  Anytime
 //
 //  Created by @toyota-m2k on 2019/03/15.
 //  Copyright  2019年 @toyota-m2k Corporation. All rights reserved.

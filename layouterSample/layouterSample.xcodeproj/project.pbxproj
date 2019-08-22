@@ -99,6 +99,7 @@
 		841AD8BB230A3CF200F9AB7D /* WPLStackPanelSampleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8BA230A3CF200F9AB7D /* WPLStackPanelSampleViewController.mm */; };
 		841AD8BE230A704A00F9AB7D /* WPLGridSampleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8BD230A704A00F9AB7D /* WPLGridSampleViewController.mm */; };
 		841AD8C1230A71E300F9AB7D /* WPLGridScrollView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8C0230A71E300F9AB7D /* WPLGridScrollView.mm */; };
+		845B5AB8230D50A00055A98A /* acomTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 845B5AB7230D50A00055A98A /* acomTests.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -313,6 +314,7 @@
 		841AD8BD230A704A00F9AB7D /* WPLGridSampleViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridSampleViewController.mm; sourceTree = "<group>"; };
 		841AD8BF230A71E300F9AB7D /* WPLGridScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGridScrollView.h; sourceTree = "<group>"; };
 		841AD8C0230A71E300F9AB7D /* WPLGridScrollView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridScrollView.mm; sourceTree = "<group>"; };
+		845B5AB7230D50A00055A98A /* acomTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = acomTests.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -385,6 +387,7 @@
 				841AD74D22EE93AE00F9AB7D /* layouterSampleTests.m */,
 				841AD74F22EE93AE00F9AB7D /* Info.plist */,
 				841AD85B22FB203700F9AB7D /* bindingTests.mm */,
+				845B5AB7230D50A00055A98A /* acomTests.mm */,
 			);
 			path = layouterSampleTests;
 			sourceTree = "<group>";
@@ -900,6 +903,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				845B5AB8230D50A00055A98A /* acomTests.mm in Sources */,
 				841AD84A22F53C4E00F9AB7D /* layouterSampleTests.m in Sources */,
 				841AD85C22FB203700F9AB7D /* bindingTests.mm in Sources */,
 			);
