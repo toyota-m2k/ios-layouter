@@ -15,7 +15,7 @@
 
 @implementation MICUiDsCustomButton
 
-#pragma mark - Initialize	
+#pragma mark - Initialize
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
