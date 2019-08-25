@@ -47,7 +47,7 @@ MICAutoLayoutBuilder::anchorConstraint(NSLayoutAnchor* anchor, NSLayoutAnchor* r
 
 MICAutoLayoutBuilder&
 MICAutoLayoutBuilder::fitToSafeArea(UIView* target, MICUiPosEx pos, const UIEdgeInsets& margin, int relativity) {
-    if(@available(ios 9.0,*)) {
+    if(@available(ios 11.0,*)) {
         target.translatesAutoresizingMaskIntoConstraints = false;
         if((pos&MICUiPosLEFT)!=0) {
             anchorConstraint(target.leftAnchor, _parentView.safeAreaLayoutGuide.leftAnchor, margin.left, relativity);
