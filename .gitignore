@@ -2,6 +2,7 @@
 *.swp
 *.xcuserstate
 *.xccheckout
+*.xcsettings
 *.pbxuser
 xcuserdata
 .vscode/c_cpp_properties.json
