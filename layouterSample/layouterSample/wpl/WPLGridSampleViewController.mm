@@ -97,7 +97,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     let sw1 = [UISwitch new];
     [sw1 sizeToFit];
     cell = [WPLSwitchCell newCellWithView:sw1 name:@"A-switch" params:WPLCellParams().horzAlign(WPLCellAlignmentSTART)];
-    bb.bindValue(PROP_GRID_A_VISIBLE, cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
+    bb.bind(PROP_GRID_A_VISIBLE, cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
     [gs.container addCell:cell row:row column:1];
 
 #if false
@@ -148,7 +148,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
         }
     }
     [gs.container addCell:g1 row:row column:0 rowSpan:1 colSpan:3];
-    bb.bindState(PROP_GRID_A_VISIBLE, g1, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
+    bb.bind(PROP_GRID_A_VISIBLE, g1, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
 
     // Row-3
     row++;
@@ -160,7 +160,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     let sw2 = [UISwitch new];
     [sw2 sizeToFit];
     cell = [WPLSwitchCell newCellWithView:sw2 name:@"B-switch" params:WPLCellParams().horzAlign(WPLCellAlignmentSTART)];
-    bb.bindValue(PROP_GRID_B_VISIBLE, cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
+    bb.bind(PROP_GRID_B_VISIBLE, cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
     [gs.container addCell:cell row:row column:1];
 
 
@@ -187,7 +187,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     
     
     [gs.container addCell:g2 row:row column:0 rowSpan:1 colSpan:3];
-    bb.bindState(PROP_GRID_B_VISIBLE, g2, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
+    bb.bind(PROP_GRID_B_VISIBLE, g2, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
 
 
 
@@ -201,7 +201,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     let sw3 = [UISwitch new];
     [sw3 sizeToFit];
     cell = [WPLSwitchCell newCellWithView:sw3 name:@"C-switch" params:WPLCellParams()];
-    bb.bindValue(PROP_GRID_C_VISIBLE, cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
+    bb.bind(PROP_GRID_C_VISIBLE, cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
     [gs.container addCell:cell row:row column:1];
     
     // Row-6
@@ -225,7 +225,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
         }
     }
     [gs.container addCell:g3 row:row column:0 rowSpan:1 colSpan:3];
-    bb.bindState(PROP_GRID_C_VISIBLE, g3, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
+    bb.bind(PROP_GRID_C_VISIBLE, g3, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
 #endif
     
 #if false
@@ -254,7 +254,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     let sw4 = [UISwitch new];
     [sw4 sizeToFit];
     cell = [WPLSwitchCell newCellWithView:sw4 name:@"D-switch" params:WPLCellParams()];
-    bb.bindValue(PROP_GRID_D_VISIBLE, cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
+    bb.bind(PROP_GRID_D_VISIBLE, cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
     [gs.container addCell:cell row:row column:1];
 
     row++;
@@ -310,7 +310,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     [g4 addCell:[WPLCell newCellWithView:view name:@"" params:WPLCellParams().requestViewSize(0,-1)] row:3 column:4 rowSpan:2 colSpan:1];
 
     [gs.container addCell:g4 row:row column:0 rowSpan:1 colSpan:3];
-    bb.bindState(PROP_GRID_D_VISIBLE, g4, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
+    bb.bind(PROP_GRID_D_VISIBLE, g4, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
 
 }
 

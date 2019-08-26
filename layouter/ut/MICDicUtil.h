@@ -9,6 +9,8 @@
 #ifndef MICDicUtil_h
 #define MICDicUtil_h
 
+#if defined(__cplusplus)
+
 static inline id exorcizeNSNull(id v) {
     return (v!=[NSNull null])?v:nil;
 }
@@ -42,16 +44,19 @@ static inline bool dic_bool(NSDictionary* dic, id key, bool defval) {
     return (nil!=r && [r respondsToSelector:@selector(boolValue)]) ? [r boolValue] : defval;
 }
 
-static inline CGFloat dic_float(NSDictionary* dic, id key, CGFloat defval) {
-    id r = dic_obj(dic,key);
+static inline CGFloat number_to_cgfloat(id r, CGFloat defVal=0) {
 #if CGFLOAT_IS_DOUBLE
-    return (nil!=r && [r respondsToSelector:@selector(doubleValue)]) ? [r doubleValue] : defval;
+    return (nil!=r && [r respondsToSelector:@selector(doubleValue)]) ? [r doubleValue] : defVal;
 #else
-    return (nil!=r && [r respondsToSelector:@selector(floatValue)]) ? [r floatValue] : defval;
+    return (nil!=r && [r respondsToSelector:@selector(floatValue)]) ? [r floatValue] : defVal;
 #endif
 }
 
-#if defined(__cplusplus)
+static inline CGFloat dic_float(NSDictionary* dic, id key, CGFloat defVal=0) {
+    id r = dic_obj(dic,key);
+    return number_to_cgfloat(r,defVal);
+}
+
 class MICMap {
 private:
     NSDictionary* _dic;

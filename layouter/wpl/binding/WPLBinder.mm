@@ -9,6 +9,7 @@
 #import "WPLBinder.h"
 #import "WPLValueBinding.h"
 #import "WPLBoolStateBinding.h"
+#import "WPLPropBinding.h"
 #import "WPLObservableMutableData.h"
 #import "WPLDelegatedObservableData.h"
 #import "MICVar.h"
@@ -207,6 +208,28 @@
         return nil;
     }
     let binding = [[WPLBoolStateBinding alloc] initWithCell:cell source:prop customAction:customAction actionType:actionType negation:negation];
+    [self addBinding:binding];
+    return binding;
+}
+
+/**
+ * セルの値とプロパティのバインディングを作成して登録
+ * @param propKey   バインドするプロパティを識別するキー（必ず登録済みのものを指定）
+ * @param cell      バインドするセル
+ * @param propType  view のどのプロパティとバインドするか？
+ * @param customAction  プロパティ、または、セルの値が変更されたときのコールバック関数（nil可）
+ * @return 作成された binding インスタンス
+ */
+- (id<IWPLBinding>) bindProperty:(id)propKey
+                        withCell:(id<IWPLCell>)cell
+                        propType:(WPLPropType)propType
+                     customActin:(WPLBindingCustomAction)customAction {
+    let prop = [self propertyForKey:propKey];
+    if(nil==prop) {
+        NSAssert(false, @"no property %@", [propKey description]);
+        return nil;
+    }
+    let binding = [[WPLPropBinding alloc] initWithCell:cell source:prop propType:propType customAction:customAction];
     [self addBinding:binding];
     return binding;
 }

@@ -122,6 +122,19 @@
 
 
 /**
+ * セルの値とプロパティのバインディングを作成して登録
+ * @param propKey   バインドするプロパティを識別するキー（必ず登録済みのものを指定）
+ * @param cell      バインドするセル
+ * @param propType  view のどのプロパティとバインドするか？
+ * @param customAction  プロパティ、または、セルの値が変更されたときのコールバック関数（nil可）
+ * @return 作成された binding インスタンス
+ */
+- (id<IWPLBinding>) bindProperty:(id)propKey
+                        withCell:(id<IWPLCell>)cell
+                        propType:(WPLPropType)propType
+                     customActin:(WPLBindingCustomAction)customAction;
+
+/**
  * 特殊なバインドを作成　（SOURCE to VIEWのみ）
  * バインドの内容は、customAction に記述する。
  * （ソースが変更されると、customAction が呼び出されるので、そこでなんでも好きなことをするのだ）
@@ -192,13 +205,27 @@ public:
         return *this;
     }
     
-    WPLBinderBuilder& bindValue(NSString* name, id<IWPLCell> cell, WPLBindingMode mode=WPLBindingModeSOURCE_TO_VIEW, WPLBindingCustomAction customAction=nil) {
+    /**
+     * bind to value of cell
+     */
+    WPLBinderBuilder& bind(NSString* name, id<IWPLCell> cell, WPLBindingMode mode=WPLBindingModeSOURCE_TO_VIEW, WPLBindingCustomAction customAction=nil) {
         [_binder bindProperty:name withValueOfCell:cell bindingMode:mode customActin:customAction];
         return *this;
     }
     
-    WPLBinderBuilder& bindState(NSString* name, id<IWPLCell> cell, WPLBoolStateActionType actionType, bool negation, WPLBindingCustomAction customAction=nil ) {
+    /**
+     * bind to bool state of cell
+     */
+    WPLBinderBuilder& bind(NSString* name, id<IWPLCell> cell, WPLBoolStateActionType actionType, bool negation=false, WPLBindingCustomAction customAction=nil ) {
         [_binder bindProperty:name withBoolStateOfCell:cell actionType:actionType negation:negation customActin:customAction];
+        return *this;
+    }
+
+    /**
+     * bind to view property directly
+     */
+    WPLBinderBuilder& bind(NSString* name, id<IWPLCell> cell, WPLPropType propType, WPLBindingCustomAction customAction=nil ) {
+        [_binder bindProperty:name withCell:cell propType:propType customActin:customAction];
         return *this;
     }
     

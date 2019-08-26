@@ -65,8 +65,22 @@ typedef enum _WPLBoolStateActionType {
 /**
  * Bool型ソースとViewの状態（visibility, enabled, readonly)のBindingを実現するための i/f
  */
-@protocol IWPLBoolStateBinding <IWPLBinding>
-    @property (nonatomic, readonly) WPLBoolStateActionType actionType;
-    @property (nonatomic, readonly) bool negation;
-@end
+//@protocol IWPLBoolStateBinding <IWPLBinding>
+//    @property (nonatomic, readonly) WPLBoolStateActionType actionType;
+//    @property (nonatomic, readonly) bool negation;
+//@end
+
+/**
+ *  
+ */
+typedef enum _WPLPropType {
+    WPLPropTypeALPHA,
+    WPLPropTypeBG_COLOR,
+    WPLPropTypeFG_COLOR,
+    WPLPropTypeTEXT,
+} WPLPropType;
+
+//@protocol IWPLPropBinding <IWPLBinding>
+//@property (nonatomic, readonly) WPLPropertyType propType;
+//@end
 
