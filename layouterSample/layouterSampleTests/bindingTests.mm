@@ -227,16 +227,16 @@ static inline NSString* label_braced_string(NSString* a, NSString* s) {
         let bc = [binder propertyForKey:@"(BC)String"].stringValue;
         return label_braced_string(a, bc);
     }, @"(BC)String", @"AString", nil)
-    .bindValue(@"AString",cellA, WPLBindingModeTWO_WAY)
-    .bindValue(@"BBool", cellB, WPLBindingModeTWO_WAY)
-    .bindValue(@"CInt", cellC, WPLBindingModeTWO_WAY)
-    .bindValue(@"DFloat", cellD, WPLBindingModeTWO_WAY)
-    .bindValue(@"(BC)String", cellBC, WPLBindingModeTWO_WAY)
-    .bindValue(@"Nest", cellNest, WPLBindingModeTWO_WAY)
-    .bindValue(@"NestA", cellNestA, WPLBindingModeTWO_WAY)
-    .bindState(@"BBool", cellA, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false)
-    .bindState(@"BBool", cellB, WPLBoolStateActionTypeENABLED, false)
-    .bindState(@"BBool", cellC, WPLBoolStateActionTypeREADONLY, true)
+    .bind(@"AString",cellA, WPLBindingModeTWO_WAY)
+    .bind(@"BBool", cellB, WPLBindingModeTWO_WAY)
+    .bind(@"CInt", cellC, WPLBindingModeTWO_WAY)
+    .bind(@"DFloat", cellD, WPLBindingModeTWO_WAY)
+    .bind(@"(BC)String", cellBC, WPLBindingModeTWO_WAY)
+    .bind(@"Nest", cellNest, WPLBindingModeTWO_WAY)
+    .bind(@"NestA", cellNestA, WPLBindingModeTWO_WAY)
+    .bind(@"BBool", cellA, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false)
+    .bind(@"BBool", cellB, WPLBoolStateActionTypeENABLED, false)
+    .bind(@"BBool", cellC, WPLBoolStateActionTypeREADONLY, true)
     .bindCustom(@"CInt", cellBC, ^(id<IWPLBinding> sender, bool fromView) {
         sender.cell.enabled = sender.source.intValue > 0;
     });

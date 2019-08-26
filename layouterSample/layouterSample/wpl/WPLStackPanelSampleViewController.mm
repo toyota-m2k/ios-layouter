@@ -87,7 +87,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     [sw1 sizeToFit];
     sw1.on = true;
     cell = [WPLSwitchCell newCellWithView:sw1 name:@"no1-switch" params:WPLCellParams()];
-    bb.bindValue(PROP_HORZ_STACK_VISIBLE, cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
+    bb.bind(PROP_HORZ_STACK_VISIBLE, cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
     [ts1 addCell:cell];
 
     label = [UILabel new];
@@ -108,7 +108,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     }
     [ss.container addCell:s1];
     // Switch on/off でこのスタックパネルの表示・非表示を切り替える
-    bb.bindState(PROP_HORZ_STACK_VISIBLE, s1, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
+    bb.bind(PROP_HORZ_STACK_VISIBLE, s1, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
 
     //---- 縦並びのスタックパネル ----
 
@@ -124,7 +124,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     let sw2 = [UISwitch new];
     [sw2 sizeToFit];
     cell = [WPLSwitchCell newCellWithView:sw2 name:@"no2-switch" params:WPLCellParams()];
-    bb.bindValue(PROP_VERT_STACK_VISIBLE, cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
+    bb.bind(PROP_VERT_STACK_VISIBLE, cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
     [ts2 addCell:cell];
 
     
@@ -149,7 +149,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     }
     [ss.container addCell:s2];
     // Switch on/off でこのスタックパネルの表示・非表示を切り替える
-    bb.bindState(PROP_VERT_STACK_VISIBLE, s2, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
+    bb.bind(PROP_VERT_STACK_VISIBLE, s2, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
 }
 
 - (void) goBack:(id)sender {

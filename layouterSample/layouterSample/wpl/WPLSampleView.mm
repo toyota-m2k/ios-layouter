@@ -104,8 +104,8 @@
                 return @false;
             }
         }, NPSw1, NPSw2, nil)
-        .bindValue(NPSw1, swcell1, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT)
-        .bindValue(NPSw2, swcell2, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
+        .bind(NPSw1, swcell1, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT)
+        .bind(NPSw2, swcell2, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
         
 //        [_binder createPropertyWithValue:@true withKey:@"StackVisibility"];
 //        [_binder bindProperty:@"StackVisibility" withValueOfCell:swcell1 bindingMode:(WPLBindingModeVIEW_TO_SOURCE_WITH_INIT) customActin:nil];
@@ -150,7 +150,7 @@
     let subFrame = [WPLFrame frameWithName:@"subFrame" params:WPLCellParams().requestViewSize(0,0)];
     [_stackView.container addCell:subFrame];
     WPLBinderBuilder bb(_binder);
-    bb.bindState(DPFrameVisibility, subFrame, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
+    bb.bind(DPFrameVisibility, subFrame, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
     
     let v1 = [UIView new];
     v1.backgroundColor=UIColor.greenColor;
@@ -174,7 +174,7 @@
     [_stackView.container addCell:subGrid];
 //    [_binder bindProperty:@"StackVisibility" withBoolStateOfCell:subGrid actionType:(WPLBoolStateActionTypeVISIBLE_COLLAPSED) negation:true customActin:nil];
     WPLBinderBuilder bb(_binder);
-    bb.bindState(DPGridVisibility, subGrid, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
+    bb.bind(DPGridVisibility, subGrid, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
 
     let v1 = [[UIView alloc] init];
     v1.backgroundColor = UIColor.greenColor;
@@ -230,7 +230,7 @@
     [_stackView.container addCell:subStackPanel];
     
     WPLBinderBuilder bb(_binder);
-    bb.bindState(DPStackVisibility, subStackPanel, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
+    bb.bind(DPStackVisibility, subStackPanel, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
 //
 //    [_binder bindProperty:@"StackVisibility" withBoolStateOfCell:subStackPanel actionType:(WPLBoolStateActionTypeVISIBLE_COLLAPSED) negation:false customActin:nil];
     

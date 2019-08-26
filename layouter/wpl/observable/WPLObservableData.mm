@@ -8,6 +8,7 @@
 
 #import "WPLObservableData.h"
 #import "MICVar.h"
+#import "MICDicUtil.h"
 
 /**
  * IWPLObservableData の基本実装
@@ -55,7 +56,7 @@
 
 - (CGFloat) floatValue {
     id v = self.value;
-    return [v isKindOfClass:NSNumber.class] ? [(NSNumber*)v doubleValue] : 0;
+    return number_to_cgfloat(v);
 }
 
 - (bool) boolValue {

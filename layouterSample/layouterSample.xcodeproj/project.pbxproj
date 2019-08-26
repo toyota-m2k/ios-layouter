@@ -100,6 +100,7 @@
 		841AD8BE230A704A00F9AB7D /* WPLGridSampleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8BD230A704A00F9AB7D /* WPLGridSampleViewController.mm */; };
 		841AD8C1230A71E300F9AB7D /* WPLGridScrollView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8C0230A71E300F9AB7D /* WPLGridScrollView.mm */; };
 		845B5AB8230D50A00055A98A /* acomTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 845B5AB7230D50A00055A98A /* acomTests.mm */; };
+		847AFEA22313A506004809EB /* WPLPropBinding.mm in Sources */ = {isa = PBXBuildFile; fileRef = 847AFEA12313A506004809EB /* WPLPropBinding.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -315,6 +316,8 @@
 		841AD8BF230A71E300F9AB7D /* WPLGridScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGridScrollView.h; sourceTree = "<group>"; };
 		841AD8C0230A71E300F9AB7D /* WPLGridScrollView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridScrollView.mm; sourceTree = "<group>"; };
 		845B5AB7230D50A00055A98A /* acomTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = acomTests.mm; sourceTree = "<group>"; };
+		847AFEA02313A506004809EB /* WPLPropBinding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLPropBinding.h; sourceTree = "<group>"; };
+		847AFEA12313A506004809EB /* WPLPropBinding.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLPropBinding.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -555,6 +558,8 @@
 				841AD81F22F52AEE00F9AB7D /* WPLValueBinding.mm */,
 				841AD82022F52AEE00F9AB7D /* WPLBoolStateBinding.h */,
 				841AD82122F52AEE00F9AB7D /* WPLBoolStateBinding.mm */,
+				847AFEA02313A506004809EB /* WPLPropBinding.h */,
+				847AFEA12313A506004809EB /* WPLPropBinding.mm */,
 				841AD85122F6722C00F9AB7D /* WPLBinder.h */,
 				841AD85222F6722C00F9AB7D /* WPLBinder.mm */,
 			);
@@ -880,6 +885,7 @@
 				841AD7CE22EE93FA00F9AB7D /* MICSvgPath.mm in Sources */,
 				841AD85622F7BD7D00F9AB7D /* WPLGenericBinding.m in Sources */,
 				841AD83F22F52AEE00F9AB7D /* WPLValueCell.mm in Sources */,
+				847AFEA22313A506004809EB /* WPLPropBinding.mm in Sources */,
 				841AD8B52309800300F9AB7D /* WPLCellHostingHelper.mm in Sources */,
 				841AD7E022EE93FA00F9AB7D /* MICUiDsSvgIconButton.mm in Sources */,
 				841AD7E522EE93FA00F9AB7D /* MICUiLayoutView.m in Sources */,
