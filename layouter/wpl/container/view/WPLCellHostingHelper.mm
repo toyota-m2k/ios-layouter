@@ -14,8 +14,10 @@
 @implementation WPLCellHostingHelper {
     UIView* __weak _view;
     bool _layoutReserved;
+    bool _disableLayout;
     MICKeyValueObserver* _observer;
     WPLBinder* _binder;
+    CGFloat _animationDuration;
 }
 
 - (WPLBinder*) binder {
@@ -34,9 +36,11 @@
     if(nil!=self) {
         _view = view;
         _layoutReserved = false;
+        _disableLayout = false;
         _observer = nil;
         _containerCell = nil;
         _binder = nil;
+        _animationDuration = 0;
         if(nil!=container) {
             self.containerCell = container;
         }
@@ -157,13 +161,23 @@ static inline void set_origin(bool forHorz, MICRect& rect, CGFloat pos=0) {
 
 #pragma mark - Rendering
 
+- (void) enableLayout:(bool)sw {
+    _disableLayout = !sw;
+    if(sw && _layoutReserved) {
+        _layoutReserved = false;
+        [self reserveRender];
+    }
+}
+
 - (void) reserveRender {
     if(!_layoutReserved) {
         _layoutReserved = true;
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            self->_layoutReserved = false;
-            [self renderCell];
-        }];
+        if(!_disableLayout) {
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                self->_layoutReserved = false;
+                [self renderCell];
+            }];
+        }
     }
 }
 
@@ -258,5 +272,10 @@ static inline void set_origin(bool forHorz, MICRect& rect, CGFloat pos=0) {
     [self reserveRender];
 }
 
-
+- (CGFloat)animationDuration {
+    return _animationDuration;
+}
+- (void)setAnimationDuration:(CGFloat)animationDuration {
+    _animationDuration = animationDuration;
+}
 @end

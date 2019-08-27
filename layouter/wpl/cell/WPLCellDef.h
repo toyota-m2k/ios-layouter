@@ -38,6 +38,7 @@ typedef enum _WPLVisibility {
  */
 @protocol IWPLContainerCellDelegate
     - (void) onChildCellModified:(id<IWPLCell>) cell;
+    @property (nonatomic,readonly) CGFloat animationDuration;
 @end
 
 /**

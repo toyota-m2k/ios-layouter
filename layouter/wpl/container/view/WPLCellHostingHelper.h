@@ -13,10 +13,15 @@
 @interface WPLCellHostingHelper : NSObject <IWPLContainerCellDelegate>
 
 /**
- * ルートコンテナ
+ * ホスティングするセルツリーのルートコンテナセル
  */
 @property (nonatomic) id<IWPLContainerCell> containerCell;
 
+/**
+ * セルとのバインディングを保持するバインダーインスタンス
+ * バインディングは、セルツリーの管理とは別枠なので、このクラスに持たせる必然性はないが、
+ * どこかに持たせるなら、ルートセルと一緒に持っておくのが、disposeの都合上も便利そうだったので。
+ */
 @property (nonatomic,readonly) WPLBinder* binder;
 
 /**
@@ -46,6 +51,18 @@
  *  配置の更新が実行される前に、子セルが一瞬見えてしまってブサイクなことがあるので、その場合は、addCell後に、明示的にこのメソッドを呼ぶことで回避できる（かも）。
  */
 - (void) renderCell;
+
+/**
+ * セル移動時のアニメーションのDuration
+ *  <=0: アニメーションしない
+ *  >0: Duration
+ */
+@property (nonatomic) CGFloat animationDuration;
+
+/**
+ * セルの自動配置を一時停止・再開する
+ */
+- (void) enableLayout:(bool)sw;
 
 @end
 

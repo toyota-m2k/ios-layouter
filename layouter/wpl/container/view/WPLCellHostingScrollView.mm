@@ -13,12 +13,15 @@
 
 @implementation WPLCellHostingScrollView {
     WPLCellHostingHelper* _hosting;
+    CGFloat _animBup;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame container:(id<IWPLContainerCell>) containerCell {
     self = [super initWithFrame:frame];
     if (self) {
         _hosting = [[WPLCellHostingHelper alloc] initWithView:self container:containerCell];
+        self.delegate = self;
+        _animBup = 0;
     }
     return self;
 }
@@ -68,6 +71,43 @@
 
 - (WPLBinder *)binder {
     return _hosting.binder;
+}
+
+- (CGFloat)animationDuration {
+    return _hosting.animationDuration;
+}
+
+- (void)setAnimationDuration:(CGFloat)animationDuration {
+    _hosting.animationDuration = animationDuration;
+}
+
+/**
+ * デフォルトのDuration(0.15)でアニメーションの有効・無効を切り替える
+ */
+- (void) enableAnimation:(bool)sw {
+    if(sw) {
+        self.animationDuration = 0.15;
+    } else {
+        self.animationDuration = 0;
+    }
+}
+
+// UIScrollView の中にStackPanel/Grid をホスティングする場合、
+// スクロール操作で、bounds が変化し、（KVO経由で）そのたびに、rendering が呼び出される。
+// Animationが無効の場合は、見た目上、なんともないが、Animationを有効にしていると、表示ががちょんがちょんになってしまう。
+// これを回避するため、スクロール中のレンダリングを禁止し、且つ、アニメーションも止めておく。
+
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    _animBup = self.animationDuration;
+    self.animationDuration = 0;
+    [_hosting enableLayout:false];
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self->_hosting enableLayout:true];
+    [NSOperationQueue.mainQueue addOperationWithBlock:^{
+        self.animationDuration = self->_animBup;
+    }];
 }
 
 @end

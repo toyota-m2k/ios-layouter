@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICSpan
 //  最大値/最小値を管理するクラス
 //
@@ -14,7 +14,7 @@
  * 最大値/最小値を管理するクラス
  */
 template<typename T> class MICSpan {
-private:
+protected:
     T _min;           ///< 最小値
     T _max;           ///< 最大値
 
@@ -31,13 +31,13 @@ public:
     MICSpan<T>(T min, T max) {
         set(min,max);
     }
-    /**
-     * コピーコンストラクタ
-     */
-    MICSpan<T>(const MICSpan<T>& s) {
-        _min = s._min;
-        _max = s._max;
-    }
+//    /**
+//     * コピーコンストラクタ
+//     */
+//    MICSpan<T>(const MICSpan<T>& s) {
+//        _min = s._min;
+//        _max = s._max;
+//    }
     /**
      * 最小値を取得
      */
@@ -113,6 +113,19 @@ public:
     }
     
     /**
+     * 与えられた値で、min/max 値を更新する。
+     */
+    MICSpan<T>& update(T v) {
+        if(v < _min) {
+            _min = v;
+        }
+        if(_max<v) {
+            _max = v;
+        }
+        return *this;
+    }
+    
+    /**
      * 与えられた値を、最大値／最小値の範囲でクリップして返す。
      * @param v 入力
      * @return 引数vをSpanの範囲でクリップした値
@@ -154,10 +167,44 @@ public:
     }
 };
 
-typedef MICSpan<CGFloat> MICSpanF;
-typedef MICSpan<int> MICSpanI;
-typedef MICSpan<NSUInteger> MICSpanU;
+/**
+ * CGFloat の min/max 管理
+ */
+class MICSpanF : public MICSpan<CGFloat> {
+public:
+    /** 空の範囲のインスタンスを作成：update()して、spanを構築していくことを想定 */
+    MICSpanF() {_min=CGFLOAT_MAX;_max=CGFLOAT_MIN; }
+    /** 有効な範囲を指定してインスタンスを作成 */
+    MICSpanF(CGFloat min, CGFloat max):MICSpan<CGFloat>(min,max) {}
+    /** コピーコンストラクタ */
+    MICSpanF(const MICSpanF& src):MICSpan<CGFloat>(src.min(), src.max()) {}
+};
 
+/**
+ * NSInteger の min/max 管理
+ */
+class MICSpanI : public MICSpan<NSInteger> {
+public:
+    /** 空の範囲のインスタンスを作成：update()して、spanを構築していくことを想定 */
+    MICSpanI() {_min=NSIntegerMax;_max=NSIntegerMin; }
+    /** 有効な範囲を指定してインスタンスを作成 */
+    MICSpanI(NSInteger min, NSInteger max):MICSpan<NSInteger>(min,max) {}
+    /** コピーコンストラクタ */
+    MICSpanI(const MICSpanI& src):MICSpan<NSInteger>(src.min(), src.max()) {}
+};
+
+/**
+ * NSUInteger の min/max 管理
+ */
+class MICSpanU : public MICSpan<NSUInteger> {
+public:
+    /** 空の範囲のインスタンスを作成：update()して、spanを構築していくことを想定 */
+    MICSpanU() {_min=NSUIntegerMax; _max=0; }
+    /** 有効な範囲を指定してインスタンスを作成 */
+    MICSpanU(NSUInteger min, NSUInteger max):MICSpan<NSUInteger>(min,max) {}
+    /** コピーコンストラクタ */
+    MICSpanU(const MICSpanU& src):MICSpan<NSUInteger>(src.min(), src.max()) {}
+};
 
 /**
  * NSRangeのラッパ。

@@ -57,6 +57,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
                                                         .orientation(WPLOrientationVERTICAL)];
     
     [self.view addSubview:ss];
+    ss.animationDuration = 0.15;
     
     MICAutoLayoutBuilder(self.view)
     .fitToSafeArea(ss, MICUiPosExALL)

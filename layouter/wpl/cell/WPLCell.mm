@@ -23,6 +23,22 @@
 @synthesize containerDelegate = _containerDelegate, name = _name, extension = _extension, view = _view;
 
 /**
+ * セル移動時のアニメーションのDuration
+ *  0: アニメーションしない
+ *  -1: 親から継承
+ *  >0: Duration
+ */
+- (CGFloat) animationDuration {
+    if(_animationDuration>=0) {
+        return _animationDuration;
+    }
+    if(self.containerDelegate!=nil) {
+        return self.containerDelegate.animationDuration;
+    }
+    return 0;
+}
+
+/**
  * 完全な初期化
  */
 - (instancetype) initWithView:(UIView*)view
@@ -45,6 +61,7 @@
         _extension = nil;
         _visibility = visibility;
         view.hidden = (_visibility != WPLVisibilityVISIBLE);
+        _animationDuration = -1;
         [self updateViewSizeOnRequested];
         _needsLayout = true;
     }
@@ -319,7 +336,7 @@
         return;
     }
     MICRect finRect([self rectWithoutMargin:finalCellRect]);
-    var viewRect = MICRect(finRect);
+    MICRect viewRect(finRect);
     if(self.requestViewSize.width>=0) { // !stretch
         if(self.requestViewSize.width>0) {
             viewRect.size.width = self.requestViewSize.width;
@@ -348,7 +365,15 @@
             }
         }
     }
-    self.view.frame = viewRect;
+    MICRect orgFrame(self.view.frame);
+    if(viewRect!=orgFrame) {
+        CGFloat animDuration = self.animationDuration;
+        if(animDuration>0) {
+            [UIView animateWithDuration:animDuration delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{self.view.frame=viewRect;} completion:nil];
+        } else {
+            self.view.frame = viewRect;
+        }
+    }
 }
 
 

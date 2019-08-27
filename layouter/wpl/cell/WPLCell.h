@@ -112,6 +112,15 @@ public:
 
 @interface WPLCell : NSObject<IWPLCell>
 
+/**
+ * セル移動時のアニメーションのDuration
+ *  0: アニメーションしない
+ *  -1: 親から継承
+ *  >0: Duration
+ */
+@property (nonatomic) CGFloat animationDuration;
+
+
 - (instancetype) initWithView:(UIView*)view
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin

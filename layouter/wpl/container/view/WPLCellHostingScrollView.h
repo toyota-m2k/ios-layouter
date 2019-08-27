@@ -10,11 +10,36 @@
 #import "WPLContainerDef.h"
 #import "WPLBinder.h"
 
-@interface WPLCellHostingScrollView : UIScrollView
+@interface WPLCellHostingScrollView : UIScrollView<UIScrollViewDelegate>
 
+/**
+ * ホスティングするセルツリーのルートコンテナセル
+ * （実体は、WPLCellHostingHelperが持っている）
+ */
 @property (nonatomic) id<IWPLContainerCell> containerCell;
+
+/**
+ * セルとのバインディングを保持するバインダーインスタンス
+ * （実体は、WPLCellHostingHelperが持っている）
+ */
 @property (nonatomic,readonly) WPLBinder* binder;
 
+/**
+ * セル移動時のアニメーションのDuration
+ *  <=0: アニメーションしない
+ *  >0: Duration
+ * （実体は、WPLCellHostingHelperが持っている）
+ */
+@property (nonatomic) CGFloat animationDuration;
+
+/**
+ * デフォルトのDuration(0.15)でアニメーションの有効・無効を切り替える
+ */
+- (void) enableAnimation:(bool)sw;
+
+/**
+ * 初期化
+ */
 - (instancetype)initWithFrame:(CGRect)frame container:(id<IWPLContainerCell>) containerCell;
 
 /**
