@@ -207,6 +207,19 @@ public:
 };
 
 /**
+ * NSInteger の min/max 管理
+ */
+class MICSpanInt : public MICSpan<int> {
+public:
+    /** 空の範囲のインスタンスを作成：update()して、spanを構築していくことを想定 */
+    MICSpanInt() {_min=INT_MAX;_max=INT_MIN; }
+    /** 有効な範囲を指定してインスタンスを作成 */
+    MICSpanInt(int min, int max):MICSpan<int>(min,max) {}
+    /** コピーコンストラクタ */
+    MICSpanInt(const MICSpanInt& src):MICSpan<int>(src.min(), src.max()) {}
+};
+
+/**
  * NSRangeのラッパ。
  */
 class MICRange : public NSRange {

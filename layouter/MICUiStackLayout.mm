@@ -307,7 +307,7 @@
         //MICSpanI span(0,(int)_children.count-1);
         int i = [self indexOfCell:cell];
 //        int j = span.limit(i + ((downward)?1:-1));
-        int j = MICSpanI::limit(0, (int)_children.count-1, i + ((downward)?1:-1));
+        int j = MICSpanInt::limit(0, (int)_children.count-1, i + ((downward)?1:-1));
         if( i!=j) {
             MICRect r = ((MICUiStackCell*)_children[j]).bounds;
             if(_orientation==MICUiHorizontal) {
