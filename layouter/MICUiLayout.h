@@ -60,6 +60,10 @@ typedef enum _micUiPos {
     MICUiPosRIGHT   = 4,          // 右 or 下
     MICUiPosBOTTOM  = 8,          // 右 or 下
 } MICUiPos;
+// 横向き用エイリアス
+#define MICUiAlignExLEFT      MICUiAlignExTOP
+#define MICUiAlignExRIGHT     MICUiAlignExBOTTOM
+
 
 /**
  * 頂点指定

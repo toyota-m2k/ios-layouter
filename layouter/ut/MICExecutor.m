@@ -1,6 +1,5 @@
-﻿//
+//
 //  MICExecutor.m
-//  Anytime
 //
 //  Created by @toyota-m2k on 2018/12/01.
 //  Copyright  2018年 @toyota-m2k Corporation. All rights reserved.

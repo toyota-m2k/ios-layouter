@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICUiDsTabView.m
 //
 //  タブビュー（タブ耳と切り替わるボディビューから構成されるビュー）クラス
@@ -11,6 +11,10 @@
 #import "MICUiRectUtil.h"
 #import "MICUiDsTabButton.h"
 #import "MICUiDsDefaults.h"
+#import "MICUiDsSvgIconButton.h"
+#import "MICVar.h"
+#import "MICUiRectUtil.h"
+#import "MICUiColorUtil.h"
 
 #define DEF_TABBAR_HEIGHT 30
 
@@ -46,23 +50,29 @@
         MICUiTabBarView* tabbar = [[MICUiTabBarView alloc] initWithFrame:rcTabbar];
         tabbar.bar.stackLayout.cellSpacing = -_borderWidth;
         tabbar.backgroundColor = MICCOLOR_TAB_BACKGROUND;
-        
-        UIButton* prev = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [prev setTitle:@"<" forState:UIControlStateNormal];
-        prev.frame = MICRect::XYWH(0,400,30,30);
-        prev.backgroundColor = [UIColor grayColor];
-        [prev setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        
-        UIButton* next = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [next setTitle:@">" forState:UIControlStateNormal];
-        next.frame = MICRect::XYWH(50,400,30,30);
-        next.backgroundColor = [UIColor grayColor];
-        [next setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        
+
+        let prev = [self.class createArrowButton:false];
+        [prev setTarget:self action:@selector(prevTab:)];
+        let next = [self.class createArrowButton:true];
+        [next setTarget:self action:@selector(nextTab:)];
+
+//        UIButton* prev = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+//        [prev setTitle:@"<" forState:UIControlStateNormal];
+//        prev.frame = MICRect::XYWH(0,400,30,30);
+//        prev.backgroundColor = [UIColor grayColor];
+//        [prev setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+//
+//        UIButton* next = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+//        [next setTitle:@">" forState:UIControlStateNormal];
+//        next.frame = MICRect::XYWH(50,400,30,30);
+//        next.backgroundColor = [UIColor grayColor];
+//        [next setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+
+//        [prev addTarget:self action:@selector(prevTab:) forControlEvents:UIControlEventTouchUpInside];
+//        [next addTarget:self action:@selector(nextTab:) forControlEvents:UIControlEventTouchUpInside];
+
         [tabbar addLeftFuncButton:prev function:MICUiTabBarFuncButtonSCROLL_PREV];
         [tabbar addRightFuncButton:next function:MICUiTabBarFuncButtonSCROLL_NEXT];
-        [prev addTarget:self action:@selector(prevTab:) forControlEvents:UIControlEventTouchUpInside];
-        [next addTarget:self action:@selector(nextTab:) forControlEvents:UIControlEventTouchUpInside];
         
         [self setLabelView:tabbar];
     }
@@ -233,4 +243,26 @@
     }
 }
 
+#define SVG_PATH_NEXT   @"M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"
+#define SVG_PATH_PREV   @"M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"
+
+/**
+ * 矢印ボタンを作成
+ */
++ (MICUiDsSvgIconButton*) createArrowButton:(bool) next {
+    MICSize iconSize(MICSize(24,24));
+    MICSize viewboxSize(24,24);
+
+    let btn = [[MICUiDsSvgIconButton alloc] initWithFrame:MICRect(iconSize) iconSize:iconSize pathViewboxSize:viewboxSize];
+    btn.colorResources = [[MICUiStatefulResource alloc] initWithDictionary:
+                                @{
+                                  MICUiStatefulSvgPathNORMAL: next ? SVG_PATH_NEXT : SVG_PATH_PREV,
+                                  MICUiStatefulBgColorNORMAL: UIColor.darkGrayColor,
+                                  MICUiStatefulFgColorNORMAL: UIColor.whiteColor,
+                                  MICUiStatefulFgColorACTIVATED: MICUiColorRGB256(0,122,255),
+                                  MICUiStatefulFgColorDISABLED: UIColor.grayColor,
+                                }];
+    btn.stretchIcon = true;
+    return btn;
+}
 @end

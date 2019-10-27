@@ -16,7 +16,7 @@ iOSのボタンカスタマイズは、とにかく面倒なので。SVG Pathを
 ## [WPL == WPf Layouter](wp-layouter.md)
 
 Windows の WPF をリスペクトして実装。<br>
-コンテナとして、よく使う Grid, StackPanel を実装。
+コンテナとして、よく使う Grid, StackPanel を実装。<br>
 UIView のプロパティと、Observableなデータをバインディングすることが可能。
 
 ### [CGRect, CGSize, ...](rect-size.md)
@@ -27,10 +27,11 @@ CGRectとか、CGSizeとか、初期化するだけでも面倒じゃない？
 ### [Core Graphics サポート](graphics.md)
 
 CGContextRefとかCGImageRefとかも、C++で。<br>
-薄いラッパーだけど、可読性が断然違う。
+薄いラッパーだけど、releaseが自動化されるし、なにより可読性が断然違う。
 
 ### [SVG Path](svg.md)
 さよならPNG。SVG Path が Objective-Cで扱える。
+これでようやく、iOS,Android,Win でアイコンリソースを共通化できる。
 
 ### [コレクション](collection.md)
 

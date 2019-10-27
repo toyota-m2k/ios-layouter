@@ -2,11 +2,11 @@
 //  WPLGridSampleViewController.m
 //  layouterSample
 //
-//  Created by Mitsuki Toyota on 2019/08/05.
-//  Copyright © 2019 Mitsuki Toyota. All rights reserved.
+//  Created by toyota-m2k on 2019/08/05.
+//  Copyright © 2019 toyota-m2k. All rights reserved.
 //
 
-#import "WPLGridSampleViewController.h"
+#import "WPLGridTestViewController.h"
 #import "WPLContainersL.h"
 #import "WPLGrid.h"
 #import "WPLStackPanel.h"
@@ -19,22 +19,13 @@
 #import "MICAutoLayoutBuilder.h"
 
 
-@interface WPLGridSampleViewController ()
+@interface WPLGridTestViewController ()
 
 @end
 
-@implementation WPLGridSampleViewController {
-    UIViewController* _mainVC;
+@implementation WPLGridTestViewController {
     WPLBinder* _binder;
     WPLCellHostingView* _hostingView;
-}
-
-- (instancetype) initWithMain:(UIViewController*)main {
-    self = [super init];
-    if(nil!=self) {
-        _mainVC = main;
-    }
-    return self;
 }
 
 - (void)viewDidLoad {
@@ -266,10 +257,11 @@
         }
     }
     [(WPLGrid*) _hostingView.containerCell addCell:rootGrid row:1 column:0];
+    [_hostingView render];
 }
 
 - (void) execTest5:(id)_ {
-    let vc = [[WPLHostViewController alloc] initWithPrev:self];
+    let vc = [[WPLHostViewController alloc] init];
     [self presentViewController:vc animated:true completion:nil];
 }
 
@@ -279,7 +271,7 @@
 }
 
 - (void) backToMain:(id) _ {
-    [_mainVC dismissViewControllerAnimated:true completion:nil];
+    [self dismissViewControllerAnimated:true completion:nil];
     
 }
 

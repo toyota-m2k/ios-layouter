@@ -2,8 +2,8 @@
 //  WPLSampleView.m
 //  layouterSample
 //
-//  Created by Mitsuki Toyota on 2019/08/03.
-//  Copyright © 2019 Mitsuki Toyota. All rights reserved.
+//  Created by toyota-m2k on 2019/08/03.
+//  Copyright © 2019 toyota-m2k. All rights reserved.
 //
 
 #import "WPLSampleView.h"
@@ -16,9 +16,10 @@
 #import "WPLObservableMutableData.h"
 #import "MICVar.h"
 #import "WPLBinder.h"
-#import "WPLGridSampleViewController.h"
+#import "WPLGridTestViewController.h"
 #import "WPLStackPanelView.h"
 #import "MICAutoLayoutBuilder.h"
+#import "WPLBindViewController.h"
 
 @implementation WPLSampleView {
 //    WPLStackPanel* _stackPanel;
@@ -52,13 +53,24 @@
         .fitToSafeArea(_stackView)
         .activate();
 
+        let selectionPanel = [WPLStackPanel stackPanelWithName:@"selectionPanel" params:WPLStackPanelParams().cellSpacing(10).orientation(WPLOrientationHORIZONTAL).margin(0,0,0,20)];
+        [_stackView.container addCell:selectionPanel];
+        
+        
         let btn1 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [btn1 setTitle:@"Grid Test" forState:UIControlStateNormal];
+        [btn1 setTitle:@"Next Test" forState:UIControlStateNormal];
         [btn1 addTarget:self action:@selector(changeTestMode:) forControlEvents:(UIControlEventTouchUpInside)];
         [btn1 sizeToFit];
         let btncell1 = [WPLCell newCellWithView:btn1 name:@"modeButton" params:WPLCellParams()];
-        [_stackView.container addCell:btncell1];
-        
+        [selectionPanel addCell:btncell1];
+
+        let btn2 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [btn2 setTitle:@"Back" forState:UIControlStateNormal];
+        [btn2 addTarget:self action:@selector(backToPrev:) forControlEvents:(UIControlEventTouchUpInside)];
+        [btn2 sizeToFit];
+        let btncell2 = [WPLCell newCellWithView:btn2 name:@"backButton" params:WPLCellParams()];
+        [selectionPanel addCell:btncell2];
+
         let btnStack = [WPLStackPanel stackPanelWithName:@"switchPanel" params:WPLStackPanelParams().cellSpacing(10).orientation(WPLOrientationHORIZONTAL)];
         [_stackView.container addCell:btnStack];
         
@@ -115,11 +127,18 @@
     return nil;
 }
 
+- (void) backToPrev:(id) _ {
+    let vc = self.presentViewController;
+    if([vc isKindOfClass:WPLBindViewController.class]) {
+        [(WPLBindViewController*)vc backToPrev:nil];
+    }
+}
+
 - (void) changeTestMode:(id)_ {
     let viewController = self.presentViewController;
     if(nil!=viewController) {
 //        [viewController presentationController]
-        let vc = [[WPLGridSampleViewController alloc] initWithMain:viewController];
+        let vc = [[WPLGridTestViewController alloc] init];
         // [vc present]
         
         [viewController presentViewController:vc animated:true completion:nil];

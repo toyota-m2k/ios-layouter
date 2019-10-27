@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICAcom.m
 //  AnotherWorld
 //
@@ -36,7 +36,7 @@
 @end
 
 @interface MICAcomParallel : MICAcomResolverBase<IMICAcom>
-+ (instancetype) create:(NSArray*)tasks race:(bool)race sequential:(bool)seq;
++ (instancetype) create:(NSArray<MICPromise>*)tasks race:(bool)race sequential:(bool)seq;
 @end
 
 @interface MICAcomResolve : NSObject<IMICAcom> {
@@ -115,13 +115,13 @@ static NSOperationQueue* sExecutor = nil;
         _anyway = ^id<IMICAcomChain> (void (^action)(_Nullable id param)) {
             return [me addAnywayNode:action];
         };
-        _all = ^id<IMICAcomChain> (NSArray* tasks) {
+        _all = ^id<IMICAcomChain> (NSArray<MICPromise>* tasks) {
             return [me addParallelNode:tasks race:false sequential:false];
         };
-        _race  = ^id<IMICAcomChain> (NSArray* tasks) {
+        _race  = ^id<IMICAcomChain> (NSArray<MICPromise>* tasks) {
             return [me addParallelNode:tasks race:true sequential:false];
         };
-        _seq  = ^id<IMICAcomChain> (NSArray* tasks) {
+        _seq  = ^id<IMICAcomChain> (NSArray<MICPromise>* tasks) {
             return [me addParallelNode:tasks race:true sequential:true];
         };
 
@@ -167,11 +167,14 @@ static NSOperationQueue* sExecutor = nil;
     [_taskQueue enque:[MICAcomWithAnywayHandler create:action]];
     return self;
 }
-- (MICAcom*) addParallelNode:(NSArray*) tasks race:(bool)race sequential:(bool)seq{
+- (MICAcom*) addParallelNode:(NSArray<MICPromise>*) tasks race:(bool)race sequential:(bool)seq{
     [_taskQueue enque:[MICAcomParallel create:tasks race:race sequential:seq]];
     return self;
 }
 
+/**
+ * スレッドを起こして、タスクの実行を開始
+ */
 - (void)executeBackground:(nullable id)chainedResult acomix:(nullable id<IMICAcomResolver>)acomix {
     if(_burning) {
         if(nil!=acomix) {
@@ -189,10 +192,18 @@ static NSOperationQueue* sExecutor = nil;
     }];
 }
 
+/**
+ * スレッドを起こして、タスクの実行を開始（ルートタスク用：acimix==nil）
+ * ignite()の中の人
+ */
 - (void)executeBackground {
     [self executeBackground:nil acomix:nil];
 }
 
+/**
+ * カレントスレッドでタスクを開始
+ * （必ずサブスレッドから実行すること）
+ */
 - (void)execute:(bool)resolving chainResult:(nullable id)result acomix:(nullable MICAcomix)acomix {
     [MICAsync assertSubThread];
     
@@ -210,6 +221,9 @@ static NSOperationQueue* sExecutor = nil;
     [self beginToDrive];
 }
 
+/**
+ * タスクの実行開始
+ */
 - (void) beginToDrive {
     while( _taskQueue.count > 0) {
         id<IMICAcom> task = [_taskQueue deque];
@@ -274,14 +288,28 @@ static NSOperationQueue* sExecutor = nil;
     return [MICAcomReject createWithError:param];
 }
 
+/**
+ * コールバック型のAPIを、Acom/Promiseとして利用するための仕掛け
+ * MICAcom.promise.then_(...) と同じ効果が得られるが、単にMICPromise型の戻り値を返すAPIを作るときは、Acomインスタンスを１つ節約できる。
+ */
 + (MICPromise)action:(void (^)(id _Nullable, MICAcomix _Nonnull))action {
     return [MICAcomWithRawAction create:action];
 }
 
+/**
+ * 単に executeBackgroundを呼ぶだけなのだが、BEGIN/END_PROMISTIC_ASYNC マクロで使っている。
+ * 直接、ignite()やexecuteBackgroundを呼び出してもよいが、
+ * これらのマクロを使うことにより、バックグラウンド呼び出しの起点を明確化するようにしている。
+ */
 + (void) beginAsync:(id<IMICAcomFlammable>) promise {
     [promise executeBackground];
 }
 
+#pragma mark - Awaiter
+
+/**
+ * Awaiterを取得　（IMICAwaitable の実装）
+ */
 - (nonnull id<IMICAwaiter>)awaiter {
     let task = [MICTaskAwaiter new];
     self
@@ -292,15 +320,29 @@ static NSOperationQueue* sExecutor = nil;
     .failed(^(id error) {
         [task setError:(nil!=error)?error:@"something wrong"];
     });
-    
-    if(NSThread.isMainThread) {
+
+    [self launch:false];
+    return task;
+}
+
+/**
+ * スレッドを考慮して、実行を開始する
+ *  - 呼び出しスレッドがメインスレッドなら、サブスレッドを起こして、タスクを実行
+ *  - 呼び出しスレッドがサブスレッドなら、
+ *      - forceThread == true : サブスレッドを起こしてタスクを実行
+ *      - forceThread == false: カレントスレッドでタスクを実行（同期的に実行される：タスク終了まで呼び出しスレッドを占有する）
+ */
+- (void) launch:(bool) forceThread {
+    if(forceThread || NSThread.isMainThread) {
         self.ignite();
     } else {
         [self execute:true chainResult:nil acomix:nil];
     }
-    return task;
 }
 
+/**
+ * awaiter をタスクとしてラップした、Promiseインスタンスを作成
+ */
 + (id<IMICAcom>)promiseWithAwaiter:(MICAwaiter)awaiter {
     return [MICAsyncAwaiterAcom promise:awaiter];
 }
@@ -483,7 +525,7 @@ static NSOperationQueue* sExecutor = nil;
 #pragma mark - IMICAcom: 並列処理用
 
 @implementation MICAcomParallel {
-    NSArray* _aryPromise;
+    NSArray<MICPromise>* _aryPromise;
     bool _race;
     bool _seq;
     MICAcomix _ownerAcomix;
@@ -497,7 +539,7 @@ static NSOperationQueue* sExecutor = nil;
     return _succeeded + _failed == _aryPromise.count;
 }
 
-- (instancetype)initWithTasks:(NSArray*)aryPromise race:(bool)race sequencial:(bool)seq {
+- (instancetype)initWithTasks:(NSArray<MICPromise>*)aryPromise race:(bool)race sequencial:(bool)seq {
     self = [super init];
     if(nil!=self) {
         _aryPromise = aryPromise;
@@ -514,7 +556,7 @@ static NSOperationQueue* sExecutor = nil;
     return self;
 }
 
-+ (instancetype)create:(NSArray *)tasks race:(bool)race sequential:(bool)seq {
++ (instancetype)create:(NSArray<MICPromise> *)tasks race:(bool)race sequential:(bool)seq {
     return [[MICAcomParallel alloc] initWithTasks:tasks race:race sequencial:seq];
 }
 

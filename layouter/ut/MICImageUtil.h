@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICImageUtil.h
 //
 //  すでにあるのかもしれないし、ないかもしれない、あったとしても、どこにあるかわからない、そんなUIImageに対する操作を実装するクラス。
@@ -27,7 +27,7 @@
 + (UIImage*) image:(UIImage*)maskImage setColor:(UIColor*)color resizeTo:(CGSize)size;
 
 /**
- * 塗りつぶし用の淡色画像を生成
+ * 塗りつぶし用の単色画像を生成
  */
 + (UIImage*) imageWithColor:(UIColor*)color;
 

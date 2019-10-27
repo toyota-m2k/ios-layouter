@@ -2,8 +2,8 @@
 //  WPLCell.m
 //  layouterSample
 //
-//  Created by Mitsuki Toyota on 2019/08/02.
-//  Copyright © 2019 Mitsuki Toyota. All rights reserved.
+//  Created by toyota-m2k on 2019/08/02.
+//  Copyright © 2019 toyota-m2k. All rights reserved.
 //
 
 #import "WPLCell.h"
@@ -272,6 +272,7 @@
  *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしない
  *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない (regulatingCellSize の stretch 指定は無視する)
  *        負値(stretch)            ○ 正値 (fixed)               regulatingCellSize にリサイズ
+ *        負値(stretch)              負値 (stretch)             ここではゼロを返し、layoutCompletedでの親コンテナによる指示に従う
  * @return  セルサイズ（マージンを含む
  */
 - (CGSize) layoutPrepare:(CGSize) regulatingCellSize {
@@ -281,13 +282,18 @@
     if(size.width<=0) {
         if(regSize.width>0) {
             size.width = regSize.width;
+        } else if(regSize.width<0 && size.width<0){
+            size.width = 0;
         } else {
             size.width = self.view.frame.size.width;
         }
     }
+    // height
     if(size.height<=0) {
         if(regSize.height>0) {
             size.height = regSize.height;
+        } else if(regSize.height<0 && size.height<0){
+            size.height = 0;
         } else {
             size.height = self.view.frame.size.height;
         }

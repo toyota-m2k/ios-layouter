@@ -2,8 +2,8 @@
 //  WPLGrid.m
 //  WP Layouter
 //
-//  Created by Mitsuki Toyota on 2019/08/03.
-//  Copyright © 2019 Mitsuki Toyota. All rights reserved.
+//  Created by toyota-m2k on 2019/08/03.
+//  Copyright © 2019 toyota-m2k. All rights reserved.
 //
 
 #import "WPLGrid.h"
@@ -440,6 +440,7 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 * この場合は、指定比率になるよう、もう一度、pass3 を実行する。
 */
 - (void) pass4_calcSpannedCellsForCol:(bool)forCol sizes:(NSMutableArray<NSNumber*>*) sizes fix:(CGFloat)fix {
+    let defs = (forCol) ? _colDefs : _rowDefs;
     bool expansion = false;
     for(id<IWPLCell> c in self.cells) {
         if(c.visibility == WPLVisibilityCOLLAPSED) {
@@ -449,19 +450,40 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
         NSInteger span = [ex spanForCol:forCol];
         if(span>1) {
             NSInteger pos = [ex posForCol:forCol];
-            CGFloat ss = sumRange(sizes, pos, span);
-            CGFloat sa = [ex sSizeForCol:forCol];
+            CGFloat ss = sumRange(sizes, pos, span);    // Span範囲の各セルの合計サイズ
+            CGFloat sa = [ex sSizeForCol:forCol];       // spannedセルの最小要求サイズ
             if (ss > 0 && ss < sa) {
                 if (fix <= 0) {
+                    // spannedセルの要求サイズが、他のセルから計算されたセルサイズ合計より小さいため、拡張が必要
                     expansion = true;
+                    
+                    // もし、stretched なセルがあれば、優先的に拡張する
+                    CGFloat stretchable = 0;
                     for (NSInteger i = 0 ; i<span; i++) {
-                        SET_FLOAT(sizes, pos+i, GET_FLOAT(sizes,i) * sa/ss);
+                        if(GET_FLOAT(defs,pos+i)<0) {
+                            stretchable += GET_FLOAT(sizes, pos+1);
+                        }
+                    }
+                    if(stretchable<=0) {
+                        // stretchedなセルがなかったら、すべてのセルを比率で拡張
+                        for (NSInteger i = 0 ; i<span; i++) {
+                            SET_FLOAT(sizes, pos+i, GET_FLOAT(sizes,i) * sa/ss);
+                        }
+                    } else {
+                        // stretchedなセルがあれば、それらを比率で拡張
+                        for (NSInteger i = 0 ; i<span; i++) {
+                            if(GET_FLOAT(defs,pos+i)<0) {
+                                SET_FLOAT(sizes, pos+i, GET_FLOAT(sizes,i) * (1+(sa-ss)/stretchable));
+                            }
+                        }
                     }
                 }
             }
         }
     }
     if(expansion) {
+        // 指定比率になるよう、もう一度、pass3 を実行する
+        // 課題：２つ以上の（異なる範囲を持つ）colSpan/rowSpanのセルが、それぞれ拡張されるとき、必要な拡張量以上に大きくなってしまう。（いまのところ制限事項）
         [self pass3_calcStretchedCellForCol:forCol sizes:sizes fix:fix];
     }
 }

@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICUiDsTabView.h
 //
 //  タブビュー（タブ耳と切り替わるボディビューから構成されるビュー）クラス
@@ -11,6 +11,7 @@
 #import "MICUiTabBarView.h"
 #import "MICUiStatefulResource.h"
 #import "MICUiDsTabButton.h"
+#import "MICUiDsSvgIconButton.h"
 
 @class MICUiDsTabView;
 
@@ -86,6 +87,11 @@
  */
 - (void) endCustomize;
 
+
+/**
+ * 矢印ボタンを作成
+ */
++ (MICUiDsSvgIconButton*) createArrowButton:(bool) next;
 
 
 @end

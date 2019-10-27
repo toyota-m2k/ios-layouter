@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICUiStackView.m
 //
 //  StackLayout（Viewを縦または横方向に並べて配置するレイアウター）を内包するスクロールビュー
@@ -8,6 +8,7 @@
 //
 
 #import "MICUiStackView.h"
+#import "MICUiRectUtil.h"
 
 @implementation MICUiStackView
 
@@ -30,6 +31,18 @@
     return self;
 }
 
+/**
+ * [PROTECTED] ビューのサイズが変化した時に呼び出される
+ */
+- (void) onViewSizeChanged {
+    MICRect rc(self.bounds);
+    if(_stackLayout.orientation==MICUiVertical) {
+        _stackLayout.fixedSideSize = rc.width() - MICEdgeInsets(_stackLayout.margin).dw();
+    } else {
+        _stackLayout.fixedSideSize = rc.height() - MICEdgeInsets(_stackLayout.margin).dh();
+    }
+}
+
 #pragma mark - MICUiSizeDeterminableProtocolの実装
 
 /**
@@ -46,5 +59,5 @@
     return sizeCont;
 }
 
-
 @end
+

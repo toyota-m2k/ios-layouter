@@ -1,6 +1,6 @@
-﻿//
+//
 //  MICResetableEvent.m
-//  Anytime
+//  AnotherWorld
 //
 //  Created by @toyota-m2k on 2018/11/06.
 //  Copyright  2018年 @toyota-m2k Corporation. All rights reserved.
@@ -18,6 +18,10 @@
 
 + (instancetype)create:(bool)initialSignaled {
     return [[MICAutoResetEvent alloc] initSignaled:initialSignaled];
+}
+
+- (instancetype) init {
+    return [self initSignaled:false];
 }
 
 - (instancetype) initSignaled:(bool)signaled {

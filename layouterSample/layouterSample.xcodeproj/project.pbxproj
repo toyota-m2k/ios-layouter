@@ -21,7 +21,7 @@
 		841AD7C922EE93FA00F9AB7D /* MICPathRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD77322EE93FA00F9AB7D /* MICPathRepository.m */; };
 		841AD7CA22EE93FA00F9AB7D /* MICExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD77622EE93FA00F9AB7D /* MICExecutor.m */; };
 		841AD7CB22EE93FA00F9AB7D /* MICQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD77D22EE93FA00F9AB7D /* MICQueue.m */; };
-		841AD7CC22EE93FA00F9AB7D /* MICObservers.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD77E22EE93FA00F9AB7D /* MICObservers.m */; };
+		841AD7CC22EE93FA00F9AB7D /* MICKeyValueObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD77E22EE93FA00F9AB7D /* MICKeyValueObserver.m */; };
 		841AD7CD22EE93FA00F9AB7D /* MICDelegates.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD78022EE93FA00F9AB7D /* MICDelegates.m */; };
 		841AD7CE22EE93FA00F9AB7D /* MICSvgPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD78122EE93FA00F9AB7D /* MICSvgPath.mm */; };
 		841AD7CF22EE93FA00F9AB7D /* MICAsync.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD78722EE93FA00F9AB7D /* MICAsync.m */; };
@@ -47,7 +47,7 @@
 		841AD7E322EE93FA00F9AB7D /* MICUiStatefulResource.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD7B122EE93FA00F9AB7D /* MICUiStatefulResource.m */; };
 		841AD7E422EE93FA00F9AB7D /* MICUiDsTabView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD7B222EE93FA00F9AB7D /* MICUiDsTabView.mm */; };
 		841AD7E522EE93FA00F9AB7D /* MICUiLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD7B522EE93FA00F9AB7D /* MICUiLayoutView.m */; };
-		841AD7E622EE93FA00F9AB7D /* MICUiStackView.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD7B722EE93FA00F9AB7D /* MICUiStackView.m */; };
+		841AD7E622EE93FA00F9AB7D /* MICUiStackView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD7B722EE93FA00F9AB7D /* MICUiStackView.mm */; };
 		841AD7E722EE93FA00F9AB7D /* MICUiAccordionView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD7B822EE93FA00F9AB7D /* MICUiAccordionView.mm */; };
 		841AD7E822EE93FA00F9AB7D /* MICUiSimpleLayoutView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD7B922EE93FA00F9AB7D /* MICUiSimpleLayoutView.mm */; };
 		841AD7E922EE93FA00F9AB7D /* MICUiAccordionCellView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD7BA22EE93FA00F9AB7D /* MICUiAccordionCellView.mm */; };
@@ -68,20 +68,38 @@
 		841AD84422F52AEE00F9AB7D /* WPLObservableMutableData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD83722F52AEE00F9AB7D /* WPLObservableMutableData.mm */; };
 		841AD84522F52AEE00F9AB7D /* WPLDelegatedObservableData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD83822F52AEE00F9AB7D /* WPLDelegatedObservableData.mm */; };
 		841AD84A22F53C4E00F9AB7D /* layouterSampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD74D22EE93AE00F9AB7D /* layouterSampleTests.m */; };
-		841AD84D22F5B09C00F9AB7D /* WPLSampleView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD84C22F5B09C00F9AB7D /* WPLSampleView.mm */; };
 		841AD85022F6611900F9AB7D /* WPLSwitchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD84F22F6611900F9AB7D /* WPLSwitchCell.m */; };
 		841AD85322F6722C00F9AB7D /* WPLBinder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD85222F6722C00F9AB7D /* WPLBinder.mm */; };
 		841AD85622F7BD7D00F9AB7D /* WPLGenericBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD85522F7BD7D00F9AB7D /* WPLGenericBinding.m */; };
-		841AD85922F8104C00F9AB7D /* WPLGridSampleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD85822F8104C00F9AB7D /* WPLGridSampleViewController.mm */; };
 		841AD85C22FB203700F9AB7D /* bindingTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD85B22FB203700F9AB7D /* bindingTests.mm */; };
-		841AD86222FC0F8D00F9AB7D /* WPLHostViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD86122FC0F8D00F9AB7D /* WPLHostViewController.mm */; };
 		841AD86522FC5C4100F9AB7D /* WPLFrame.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD86422FC5C4100F9AB7D /* WPLFrame.mm */; };
 		841AD86922FD513C00F9AB7D /* WPLCellHostingView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD86822FD513C00F9AB7D /* WPLCellHostingView.mm */; };
 		841AD86F22FD684D00F9AB7D /* WPLFrameView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD86E22FD684D00F9AB7D /* WPLFrameView.mm */; };
 		841AD87222FD6B8D00F9AB7D /* WPLGridView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD87122FD6B8D00F9AB7D /* WPLGridView.mm */; };
 		841AD87522FD6DA300F9AB7D /* WPLStackPanelView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD87422FD6DA300F9AB7D /* WPLStackPanelView.mm */; };
 		841AD87922FD827500F9AB7D /* MICAutoLayoutBuilder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD87722FD827500F9AB7D /* MICAutoLayoutBuilder.mm */; };
-		841AD87C23026D8F00F9AB7D /* WPLConstraintController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD87B23026D8F00F9AB7D /* WPLConstraintController.mm */; };
+		841AD8882306434F00F9AB7D /* WPLGridTestViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8802306434F00F9AB7D /* WPLGridTestViewController.mm */; };
+		841AD8892306434F00F9AB7D /* WPLSampleView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8822306434F00F9AB7D /* WPLSampleView.mm */; };
+		841AD88A2306434F00F9AB7D /* WPLHostViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8832306434F00F9AB7D /* WPLHostViewController.mm */; };
+		841AD88B2306434F00F9AB7D /* WPLConstraintController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8842306434F00F9AB7D /* WPLConstraintController.mm */; };
+		841AD88E2306439B00F9AB7D /* WPLBindViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD88D2306439B00F9AB7D /* WPLBindViewController.mm */; };
+		841AD8A3230648D700F9AB7D /* AccordionViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD891230648D700F9AB7D /* AccordionViewController.mm */; };
+		841AD8A4230648D700F9AB7D /* TabViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD893230648D700F9AB7D /* TabViewController.mm */; };
+		841AD8A5230648D700F9AB7D /* CollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD896230648D700F9AB7D /* CollectionViewController.m */; };
+		841AD8A6230648D700F9AB7D /* GridViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD898230648D700F9AB7D /* GridViewController.mm */; };
+		841AD8A7230648D700F9AB7D /* ExDDViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD899230648D700F9AB7D /* ExDDViewController.mm */; };
+		841AD8A8230648D700F9AB7D /* StackViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD89A230648D700F9AB7D /* StackViewController.mm */; };
+		841AD8AA230648D700F9AB7D /* RelativeViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD89C230648D700F9AB7D /* RelativeViewController.mm */; };
+		841AD8AB230648D700F9AB7D /* AccordionCellViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD89D230648D700F9AB7D /* AccordionCellViewController.mm */; };
+		841AD8AC230648D700F9AB7D /* TabBarViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD89F230648D700F9AB7D /* TabBarViewController.mm */; };
+		841AD8AF230944A000F9AB7D /* WPLSampleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8AE230944A000F9AB7D /* WPLSampleViewController.mm */; };
+		841AD8B2230963D500F9AB7D /* WPLCellHostingScrollView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8B1230963D500F9AB7D /* WPLCellHostingScrollView.mm */; };
+		841AD8B52309800300F9AB7D /* WPLCellHostingHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8B42309800300F9AB7D /* WPLCellHostingHelper.mm */; };
+		841AD8B82309A88E00F9AB7D /* WPLStackPanelScrollView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8B72309A88E00F9AB7D /* WPLStackPanelScrollView.mm */; };
+		841AD8BB230A3CF200F9AB7D /* WPLStackPanelSampleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8BA230A3CF200F9AB7D /* WPLStackPanelSampleViewController.mm */; };
+		841AD8BE230A704A00F9AB7D /* WPLGridSampleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8BD230A704A00F9AB7D /* WPLGridSampleViewController.mm */; };
+		841AD8C1230A71E300F9AB7D /* WPLGridScrollView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8C0230A71E300F9AB7D /* WPLGridScrollView.mm */; };
+		845B5AB8230D50A00055A98A /* acomTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 845B5AB7230D50A00055A98A /* acomTests.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -121,7 +139,7 @@
 		841AD76722EE93FA00F9AB7D /* MICUiStackLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MICUiStackLayout.h; sourceTree = "<group>"; };
 		841AD76922EE93FA00F9AB7D /* MICUiColorUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MICUiColorUtil.h; sourceTree = "<group>"; };
 		841AD76A22EE93FA00F9AB7D /* MICAcom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MICAcom.m; sourceTree = "<group>"; };
-		841AD76B22EE93FA00F9AB7D /* MICObservers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MICObservers.h; sourceTree = "<group>"; };
+		841AD76B22EE93FA00F9AB7D /* MICKeyValueObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MICKeyValueObserver.h; sourceTree = "<group>"; };
 		841AD76C22EE93FA00F9AB7D /* MICQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MICQueue.h; sourceTree = "<group>"; };
 		841AD76D22EE93FA00F9AB7D /* MICDicUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MICDicUtil.h; sourceTree = "<group>"; };
 		841AD76E22EE93FA00F9AB7D /* MICStringUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MICStringUtil.h; sourceTree = "<group>"; };
@@ -140,7 +158,7 @@
 		841AD77B22EE93FA00F9AB7D /* MICAcom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MICAcom.h; sourceTree = "<group>"; };
 		841AD77C22EE93FA00F9AB7D /* MICCGContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MICCGContext.h; sourceTree = "<group>"; };
 		841AD77D22EE93FA00F9AB7D /* MICQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MICQueue.m; sourceTree = "<group>"; };
-		841AD77E22EE93FA00F9AB7D /* MICObservers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MICObservers.m; sourceTree = "<group>"; };
+		841AD77E22EE93FA00F9AB7D /* MICKeyValueObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MICKeyValueObserver.m; sourceTree = "<group>"; };
 		841AD77F22EE93FA00F9AB7D /* MICExecutor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MICExecutor.h; sourceTree = "<group>"; };
 		841AD78022EE93FA00F9AB7D /* MICDelegates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MICDelegates.m; sourceTree = "<group>"; };
 		841AD78122EE93FA00F9AB7D /* MICSvgPath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MICSvgPath.mm; sourceTree = "<group>"; };
@@ -194,7 +212,7 @@
 		841AD7B422EE93FA00F9AB7D /* MICUiSimpleLayoutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MICUiSimpleLayoutView.h; sourceTree = "<group>"; };
 		841AD7B522EE93FA00F9AB7D /* MICUiLayoutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MICUiLayoutView.m; sourceTree = "<group>"; };
 		841AD7B622EE93FA00F9AB7D /* MICUiGridView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MICUiGridView.h; sourceTree = "<group>"; };
-		841AD7B722EE93FA00F9AB7D /* MICUiStackView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MICUiStackView.m; sourceTree = "<group>"; };
+		841AD7B722EE93FA00F9AB7D /* MICUiStackView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MICUiStackView.mm; sourceTree = "<group>"; };
 		841AD7B822EE93FA00F9AB7D /* MICUiAccordionView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MICUiAccordionView.mm; sourceTree = "<group>"; };
 		841AD7B922EE93FA00F9AB7D /* MICUiSimpleLayoutView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MICUiSimpleLayoutView.mm; sourceTree = "<group>"; };
 		841AD7BA22EE93FA00F9AB7D /* MICUiAccordionCellView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MICUiAccordionCellView.mm; sourceTree = "<group>"; };
@@ -234,20 +252,14 @@
 		841AD83822F52AEE00F9AB7D /* WPLDelegatedObservableData.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLDelegatedObservableData.mm; sourceTree = "<group>"; };
 		841AD83922F52AEE00F9AB7D /* WPLObservableData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLObservableData.h; sourceTree = "<group>"; };
 		841AD83A22F52AEE00F9AB7D /* WPLObservableMutableData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLObservableMutableData.h; sourceTree = "<group>"; };
-		841AD84B22F5B09C00F9AB7D /* WPLSampleView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLSampleView.h; sourceTree = "<group>"; };
-		841AD84C22F5B09C00F9AB7D /* WPLSampleView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLSampleView.mm; sourceTree = "<group>"; };
 		841AD84E22F6611900F9AB7D /* WPLSwitchCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLSwitchCell.h; sourceTree = "<group>"; };
 		841AD84F22F6611900F9AB7D /* WPLSwitchCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WPLSwitchCell.m; sourceTree = "<group>"; };
 		841AD85122F6722C00F9AB7D /* WPLBinder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLBinder.h; sourceTree = "<group>"; };
 		841AD85222F6722C00F9AB7D /* WPLBinder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLBinder.mm; sourceTree = "<group>"; };
 		841AD85422F7BD7D00F9AB7D /* WPLGenericBinding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGenericBinding.h; sourceTree = "<group>"; };
 		841AD85522F7BD7D00F9AB7D /* WPLGenericBinding.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WPLGenericBinding.m; sourceTree = "<group>"; };
-		841AD85722F8104C00F9AB7D /* WPLGridSampleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGridSampleViewController.h; sourceTree = "<group>"; };
-		841AD85822F8104C00F9AB7D /* WPLGridSampleViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridSampleViewController.mm; sourceTree = "<group>"; };
 		841AD85A22FA629F00F9AB7D /* WPLContainersL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLContainersL.h; sourceTree = "<group>"; };
 		841AD85B22FB203700F9AB7D /* bindingTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = bindingTests.mm; sourceTree = "<group>"; };
-		841AD86022FC0F8D00F9AB7D /* WPLHostViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLHostViewController.h; sourceTree = "<group>"; };
-		841AD86122FC0F8D00F9AB7D /* WPLHostViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLHostViewController.mm; sourceTree = "<group>"; };
 		841AD86322FC5C4100F9AB7D /* WPLFrame.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLFrame.h; sourceTree = "<group>"; };
 		841AD86422FC5C4100F9AB7D /* WPLFrame.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLFrame.mm; sourceTree = "<group>"; };
 		841AD86722FD513C00F9AB7D /* WPLCellHostingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLCellHostingView.h; sourceTree = "<group>"; };
@@ -260,8 +272,49 @@
 		841AD87422FD6DA300F9AB7D /* WPLStackPanelView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLStackPanelView.mm; sourceTree = "<group>"; };
 		841AD87622FD824F00F9AB7D /* MICAutoLayoutBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MICAutoLayoutBuilder.h; sourceTree = "<group>"; };
 		841AD87722FD827500F9AB7D /* MICAutoLayoutBuilder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MICAutoLayoutBuilder.mm; sourceTree = "<group>"; };
-		841AD87A23026D8F00F9AB7D /* WPLConstraintController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLConstraintController.h; sourceTree = "<group>"; };
-		841AD87B23026D8F00F9AB7D /* WPLConstraintController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLConstraintController.mm; sourceTree = "<group>"; };
+		841AD8802306434F00F9AB7D /* WPLGridTestViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridTestViewController.mm; sourceTree = "<group>"; };
+		841AD8812306434F00F9AB7D /* WPLGridTestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLGridTestViewController.h; sourceTree = "<group>"; };
+		841AD8822306434F00F9AB7D /* WPLSampleView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLSampleView.mm; sourceTree = "<group>"; };
+		841AD8832306434F00F9AB7D /* WPLHostViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLHostViewController.mm; sourceTree = "<group>"; };
+		841AD8842306434F00F9AB7D /* WPLConstraintController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLConstraintController.mm; sourceTree = "<group>"; };
+		841AD8852306434F00F9AB7D /* WPLConstraintController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLConstraintController.h; sourceTree = "<group>"; };
+		841AD8862306434F00F9AB7D /* WPLSampleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLSampleView.h; sourceTree = "<group>"; };
+		841AD8872306434F00F9AB7D /* WPLHostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLHostViewController.h; sourceTree = "<group>"; };
+		841AD88C2306439B00F9AB7D /* WPLBindViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLBindViewController.h; sourceTree = "<group>"; };
+		841AD88D2306439B00F9AB7D /* WPLBindViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLBindViewController.mm; sourceTree = "<group>"; };
+		841AD88F230648D700F9AB7D /* ExDDViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExDDViewController.h; sourceTree = "<group>"; };
+		841AD890230648D700F9AB7D /* GridViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GridViewController.h; sourceTree = "<group>"; };
+		841AD891230648D700F9AB7D /* AccordionViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AccordionViewController.mm; sourceTree = "<group>"; };
+		841AD893230648D700F9AB7D /* TabViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TabViewController.mm; sourceTree = "<group>"; };
+		841AD894230648D700F9AB7D /* TabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarViewController.h; sourceTree = "<group>"; };
+		841AD895230648D700F9AB7D /* AccordionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccordionViewController.h; sourceTree = "<group>"; };
+		841AD896230648D700F9AB7D /* CollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionViewController.m; sourceTree = "<group>"; };
+		841AD897230648D700F9AB7D /* CollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionViewController.h; sourceTree = "<group>"; };
+		841AD898230648D700F9AB7D /* GridViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GridViewController.mm; sourceTree = "<group>"; };
+		841AD899230648D700F9AB7D /* ExDDViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ExDDViewController.mm; sourceTree = "<group>"; };
+		841AD89A230648D700F9AB7D /* StackViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = StackViewController.mm; sourceTree = "<group>"; };
+		841AD89C230648D700F9AB7D /* RelativeViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RelativeViewController.mm; sourceTree = "<group>"; };
+		841AD89D230648D700F9AB7D /* AccordionCellViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AccordionCellViewController.mm; sourceTree = "<group>"; };
+		841AD89E230648D700F9AB7D /* RelativeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RelativeViewController.h; sourceTree = "<group>"; };
+		841AD89F230648D700F9AB7D /* TabBarViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TabBarViewController.mm; sourceTree = "<group>"; };
+		841AD8A0230648D700F9AB7D /* TabViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabViewController.h; sourceTree = "<group>"; };
+		841AD8A1230648D700F9AB7D /* AccordionCellViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccordionCellViewController.h; sourceTree = "<group>"; };
+		841AD8A2230648D700F9AB7D /* StackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StackViewController.h; sourceTree = "<group>"; };
+		841AD8AD230944A000F9AB7D /* WPLSampleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLSampleViewController.h; sourceTree = "<group>"; };
+		841AD8AE230944A000F9AB7D /* WPLSampleViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLSampleViewController.mm; sourceTree = "<group>"; };
+		841AD8B0230963D500F9AB7D /* WPLCellHostingScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLCellHostingScrollView.h; sourceTree = "<group>"; };
+		841AD8B1230963D500F9AB7D /* WPLCellHostingScrollView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLCellHostingScrollView.mm; sourceTree = "<group>"; };
+		841AD8B32309800300F9AB7D /* WPLCellHostingHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLCellHostingHelper.h; sourceTree = "<group>"; };
+		841AD8B42309800300F9AB7D /* WPLCellHostingHelper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLCellHostingHelper.mm; sourceTree = "<group>"; };
+		841AD8B62309A88E00F9AB7D /* WPLStackPanelScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLStackPanelScrollView.h; sourceTree = "<group>"; };
+		841AD8B72309A88E00F9AB7D /* WPLStackPanelScrollView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLStackPanelScrollView.mm; sourceTree = "<group>"; };
+		841AD8B9230A3CF200F9AB7D /* WPLStackPanelSampleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLStackPanelSampleViewController.h; sourceTree = "<group>"; };
+		841AD8BA230A3CF200F9AB7D /* WPLStackPanelSampleViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLStackPanelSampleViewController.mm; sourceTree = "<group>"; };
+		841AD8BC230A704A00F9AB7D /* WPLGridSampleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGridSampleViewController.h; sourceTree = "<group>"; };
+		841AD8BD230A704A00F9AB7D /* WPLGridSampleViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridSampleViewController.mm; sourceTree = "<group>"; };
+		841AD8BF230A71E300F9AB7D /* WPLGridScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGridScrollView.h; sourceTree = "<group>"; };
+		841AD8C0230A71E300F9AB7D /* WPLGridScrollView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridScrollView.mm; sourceTree = "<group>"; };
+		845B5AB7230D50A00055A98A /* acomTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = acomTests.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -313,6 +366,8 @@
 		841AD73322EE93AD00F9AB7D /* layouterSample */ = {
 			isa = PBXGroup;
 			children = (
+				841AD87F230642D600F9AB7D /* wpl */,
+				841AD87E2306428700F9AB7D /* original */,
 				841AD73422EE93AD00F9AB7D /* AppDelegate.h */,
 				841AD73522EE93AD00F9AB7D /* AppDelegate.m */,
 				841AD73722EE93AD00F9AB7D /* ViewController.h */,
@@ -322,14 +377,6 @@
 				841AD73F22EE93AE00F9AB7D /* LaunchScreen.storyboard */,
 				841AD74222EE93AE00F9AB7D /* Info.plist */,
 				841AD74322EE93AE00F9AB7D /* main.m */,
-				841AD84B22F5B09C00F9AB7D /* WPLSampleView.h */,
-				841AD84C22F5B09C00F9AB7D /* WPLSampleView.mm */,
-				841AD85722F8104C00F9AB7D /* WPLGridSampleViewController.h */,
-				841AD85822F8104C00F9AB7D /* WPLGridSampleViewController.mm */,
-				841AD86022FC0F8D00F9AB7D /* WPLHostViewController.h */,
-				841AD86122FC0F8D00F9AB7D /* WPLHostViewController.mm */,
-				841AD87A23026D8F00F9AB7D /* WPLConstraintController.h */,
-				841AD87B23026D8F00F9AB7D /* WPLConstraintController.mm */,
 			);
 			path = layouterSample;
 			sourceTree = "<group>";
@@ -340,6 +387,7 @@
 				841AD74D22EE93AE00F9AB7D /* layouterSampleTests.m */,
 				841AD74F22EE93AE00F9AB7D /* Info.plist */,
 				841AD85B22FB203700F9AB7D /* bindingTests.mm */,
+				845B5AB7230D50A00055A98A /* acomTests.mm */,
 			);
 			path = layouterSampleTests;
 			sourceTree = "<group>";
@@ -392,8 +440,8 @@
 				841AD78722EE93FA00F9AB7D /* MICAsync.m */,
 				841AD77F22EE93FA00F9AB7D /* MICExecutor.h */,
 				841AD77622EE93FA00F9AB7D /* MICExecutor.m */,
-				841AD76B22EE93FA00F9AB7D /* MICObservers.h */,
-				841AD77E22EE93FA00F9AB7D /* MICObservers.m */,
+				841AD76B22EE93FA00F9AB7D /* MICKeyValueObserver.h */,
+				841AD77E22EE93FA00F9AB7D /* MICKeyValueObserver.m */,
 				841AD76C22EE93FA00F9AB7D /* MICQueue.h */,
 				841AD77D22EE93FA00F9AB7D /* MICQueue.m */,
 				841AD78922EE93FA00F9AB7D /* MICResetableEvent.h */,
@@ -450,7 +498,7 @@
 				841AD7BB22EE93FA00F9AB7D /* MICUiLayoutView.h */,
 				841AD7B522EE93FA00F9AB7D /* MICUiLayoutView.m */,
 				841AD7A222EE93FA00F9AB7D /* MICUiStackView.h */,
-				841AD7B722EE93FA00F9AB7D /* MICUiStackView.m */,
+				841AD7B722EE93FA00F9AB7D /* MICUiStackView.mm */,
 				841AD7B622EE93FA00F9AB7D /* MICUiGridView.h */,
 				841AD7A322EE93FA00F9AB7D /* MICUiGridView.m */,
 				841AD7B422EE93FA00F9AB7D /* MICUiSimpleLayoutView.h */,
@@ -564,16 +612,72 @@
 		841AD86622FD4EA200F9AB7D /* view */ = {
 			isa = PBXGroup;
 			children = (
+				841AD8B32309800300F9AB7D /* WPLCellHostingHelper.h */,
+				841AD8B42309800300F9AB7D /* WPLCellHostingHelper.mm */,
 				841AD86722FD513C00F9AB7D /* WPLCellHostingView.h */,
 				841AD86822FD513C00F9AB7D /* WPLCellHostingView.mm */,
+				841AD8B0230963D500F9AB7D /* WPLCellHostingScrollView.h */,
+				841AD8B1230963D500F9AB7D /* WPLCellHostingScrollView.mm */,
 				841AD86D22FD684D00F9AB7D /* WPLFrameView.h */,
 				841AD86E22FD684D00F9AB7D /* WPLFrameView.mm */,
 				841AD87022FD6B8D00F9AB7D /* WPLGridView.h */,
 				841AD87122FD6B8D00F9AB7D /* WPLGridView.mm */,
+				841AD8BF230A71E300F9AB7D /* WPLGridScrollView.h */,
+				841AD8C0230A71E300F9AB7D /* WPLGridScrollView.mm */,
 				841AD87322FD6DA300F9AB7D /* WPLStackPanelView.h */,
 				841AD87422FD6DA300F9AB7D /* WPLStackPanelView.mm */,
+				841AD8B62309A88E00F9AB7D /* WPLStackPanelScrollView.h */,
+				841AD8B72309A88E00F9AB7D /* WPLStackPanelScrollView.mm */,
 			);
 			path = view;
+			sourceTree = "<group>";
+		};
+		841AD87E2306428700F9AB7D /* original */ = {
+			isa = PBXGroup;
+			children = (
+				841AD8A1230648D700F9AB7D /* AccordionCellViewController.h */,
+				841AD89D230648D700F9AB7D /* AccordionCellViewController.mm */,
+				841AD895230648D700F9AB7D /* AccordionViewController.h */,
+				841AD891230648D700F9AB7D /* AccordionViewController.mm */,
+				841AD897230648D700F9AB7D /* CollectionViewController.h */,
+				841AD896230648D700F9AB7D /* CollectionViewController.m */,
+				841AD88F230648D700F9AB7D /* ExDDViewController.h */,
+				841AD899230648D700F9AB7D /* ExDDViewController.mm */,
+				841AD890230648D700F9AB7D /* GridViewController.h */,
+				841AD898230648D700F9AB7D /* GridViewController.mm */,
+				841AD89E230648D700F9AB7D /* RelativeViewController.h */,
+				841AD89C230648D700F9AB7D /* RelativeViewController.mm */,
+				841AD8A2230648D700F9AB7D /* StackViewController.h */,
+				841AD89A230648D700F9AB7D /* StackViewController.mm */,
+				841AD894230648D700F9AB7D /* TabBarViewController.h */,
+				841AD89F230648D700F9AB7D /* TabBarViewController.mm */,
+				841AD8A0230648D700F9AB7D /* TabViewController.h */,
+				841AD893230648D700F9AB7D /* TabViewController.mm */,
+			);
+			path = original;
+			sourceTree = "<group>";
+		};
+		841AD87F230642D600F9AB7D /* wpl */ = {
+			isa = PBXGroup;
+			children = (
+				841AD8AD230944A000F9AB7D /* WPLSampleViewController.h */,
+				841AD8AE230944A000F9AB7D /* WPLSampleViewController.mm */,
+				841AD88C2306439B00F9AB7D /* WPLBindViewController.h */,
+				841AD88D2306439B00F9AB7D /* WPLBindViewController.mm */,
+				841AD8852306434F00F9AB7D /* WPLConstraintController.h */,
+				841AD8842306434F00F9AB7D /* WPLConstraintController.mm */,
+				841AD8812306434F00F9AB7D /* WPLGridTestViewController.h */,
+				841AD8802306434F00F9AB7D /* WPLGridTestViewController.mm */,
+				841AD8872306434F00F9AB7D /* WPLHostViewController.h */,
+				841AD8832306434F00F9AB7D /* WPLHostViewController.mm */,
+				841AD8862306434F00F9AB7D /* WPLSampleView.h */,
+				841AD8822306434F00F9AB7D /* WPLSampleView.mm */,
+				841AD8B9230A3CF200F9AB7D /* WPLStackPanelSampleViewController.h */,
+				841AD8BA230A3CF200F9AB7D /* WPLStackPanelSampleViewController.mm */,
+				841AD8BC230A704A00F9AB7D /* WPLGridSampleViewController.h */,
+				841AD8BD230A704A00F9AB7D /* WPLGridSampleViewController.mm */,
+			);
+			path = wpl;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -708,63 +812,80 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				841AD8882306434F00F9AB7D /* WPLGridTestViewController.mm in Sources */,
 				841AD7EB22EE93FA00F9AB7D /* MICUiSwitchingViewMediator.m in Sources */,
+				841AD8BB230A3CF200F9AB7D /* WPLStackPanelSampleViewController.mm in Sources */,
 				841AD7D822EE93FA00F9AB7D /* MICUiCellDragSupportEx.mm in Sources */,
 				841AD87922FD827500F9AB7D /* MICAutoLayoutBuilder.mm in Sources */,
 				841AD7D622EE93FA00F9AB7D /* MICUiGridLayout.mm in Sources */,
 				841AD7E722EE93FA00F9AB7D /* MICUiAccordionView.mm in Sources */,
 				841AD86522FC5C4100F9AB7D /* WPLFrame.mm in Sources */,
-				841AD7CC22EE93FA00F9AB7D /* MICObservers.m in Sources */,
+				841AD7CC22EE93FA00F9AB7D /* MICKeyValueObserver.m in Sources */,
 				841AD7E122EE93FA00F9AB7D /* MICUiDsTabButton.mm in Sources */,
+				841AD8A3230648D700F9AB7D /* AccordionViewController.mm in Sources */,
+				841AD8AF230944A000F9AB7D /* WPLSampleViewController.mm in Sources */,
 				841AD73922EE93AD00F9AB7D /* ViewController.mm in Sources */,
 				841AD85322F6722C00F9AB7D /* WPLBinder.mm in Sources */,
-				841AD87C23026D8F00F9AB7D /* WPLConstraintController.mm in Sources */,
+				841AD88E2306439B00F9AB7D /* WPLBindViewController.mm in Sources */,
 				841AD85022F6611900F9AB7D /* WPLSwitchCell.m in Sources */,
-				841AD84D22F5B09C00F9AB7D /* WPLSampleView.mm in Sources */,
 				841AD7DF22EE93FA00F9AB7D /* MICUiDsCustomButton.mm in Sources */,
+				841AD8A7230648D700F9AB7D /* ExDDViewController.mm in Sources */,
 				841AD83E22F52AEE00F9AB7D /* WPLTextCell.mm in Sources */,
 				841AD84022F52AEE00F9AB7D /* WPLStackPanel.mm in Sources */,
+				841AD8AC230648D700F9AB7D /* TabBarViewController.mm in Sources */,
 				841AD7C722EE93FA00F9AB7D /* MICTargetSelector.m in Sources */,
 				841AD7C822EE93FA00F9AB7D /* MICImageUtil.mm in Sources */,
-				841AD86222FC0F8D00F9AB7D /* WPLHostViewController.mm in Sources */,
 				841AD7DC22EE93FA00F9AB7D /* MICUiBaseLayout.m in Sources */,
 				841AD7D022EE93FA00F9AB7D /* MICSortedArray.mm in Sources */,
 				841AD7C522EE93FA00F9AB7D /* MICAcom.m in Sources */,
 				841AD7D422EE93FA00F9AB7D /* MICUiStackLayout.mm in Sources */,
 				841AD7ED22EE93FA00F9AB7D /* MICUiVirtualView.mm in Sources */,
 				841AD7DE22EE93FA00F9AB7D /* MICUiGridView.m in Sources */,
+				841AD8A5230648D700F9AB7D /* CollectionViewController.m in Sources */,
 				841AD7D922EE93FA00F9AB7D /* MICUiCellDragSupport.mm in Sources */,
 				841AD83B22F52AEE00F9AB7D /* WPLValueBinding.mm in Sources */,
+				841AD8A6230648D700F9AB7D /* GridViewController.mm in Sources */,
 				841AD7DD22EE93FA00F9AB7D /* MICUiTabBarView.mm in Sources */,
 				841AD84122F52AEE00F9AB7D /* WPLContainerCell.mm in Sources */,
-				841AD7E622EE93FA00F9AB7D /* MICUiStackView.m in Sources */,
+				841AD7E622EE93FA00F9AB7D /* MICUiStackView.mm in Sources */,
+				841AD8A8230648D700F9AB7D /* StackViewController.mm in Sources */,
 				841AD7E422EE93FA00F9AB7D /* MICUiDsTabView.mm in Sources */,
 				841AD83D22F52AEE00F9AB7D /* WPLCell.mm in Sources */,
 				841AD7E922EE93FA00F9AB7D /* MICUiAccordionCellView.mm in Sources */,
+				841AD8892306434F00F9AB7D /* WPLSampleView.mm in Sources */,
+				841AD8C1230A71E300F9AB7D /* WPLGridScrollView.mm in Sources */,
 				841AD7DA22EE93FA00F9AB7D /* MICUiDragView.m in Sources */,
 				841AD7D522EE93FA00F9AB7D /* MICUiAccordionCellViewSwicherProc.m in Sources */,
+				841AD88B2306434F00F9AB7D /* WPLConstraintController.mm in Sources */,
 				841AD84522F52AEE00F9AB7D /* WPLDelegatedObservableData.mm in Sources */,
 				841AD7C922EE93FA00F9AB7D /* MICPathRepository.m in Sources */,
 				841AD7E222EE93FA00F9AB7D /* MICUiDsDefaults.m in Sources */,
 				841AD83C22F52AEE00F9AB7D /* WPLBoolStateBinding.mm in Sources */,
+				841AD88A2306434F00F9AB7D /* WPLHostViewController.mm in Sources */,
+				841AD8B2230963D500F9AB7D /* WPLCellHostingScrollView.mm in Sources */,
+				841AD8B82309A88E00F9AB7D /* WPLStackPanelScrollView.mm in Sources */,
 				841AD7CF22EE93FA00F9AB7D /* MICAsync.m in Sources */,
+				841AD8BE230A704A00F9AB7D /* WPLGridSampleViewController.mm in Sources */,
 				841AD7D322EE93FA00F9AB7D /* MICMatrix.m in Sources */,
 				841AD7E322EE93FA00F9AB7D /* MICUiStatefulResource.m in Sources */,
-				841AD85922F8104C00F9AB7D /* WPLGridSampleViewController.mm in Sources */,
 				841AD7CB22EE93FA00F9AB7D /* MICQueue.m in Sources */,
 				841AD7E822EE93FA00F9AB7D /* MICUiSimpleLayoutView.mm in Sources */,
 				841AD74422EE93AE00F9AB7D /* main.m in Sources */,
+				841AD8A4230648D700F9AB7D /* TabViewController.mm in Sources */,
 				841AD7CD22EE93FA00F9AB7D /* MICDelegates.m in Sources */,
 				841AD7D222EE93FA00F9AB7D /* MICTree.m in Sources */,
+				841AD8AA230648D700F9AB7D /* RelativeViewController.mm in Sources */,
 				841AD7EA22EE93FA00F9AB7D /* MICUiSimpleStackLayoutView.m in Sources */,
 				841AD84422F52AEE00F9AB7D /* WPLObservableMutableData.mm in Sources */,
 				841AD7CE22EE93FA00F9AB7D /* MICSvgPath.mm in Sources */,
 				841AD85622F7BD7D00F9AB7D /* WPLGenericBinding.m in Sources */,
 				841AD83F22F52AEE00F9AB7D /* WPLValueCell.mm in Sources */,
+				841AD8B52309800300F9AB7D /* WPLCellHostingHelper.mm in Sources */,
 				841AD7E022EE93FA00F9AB7D /* MICUiDsSvgIconButton.mm in Sources */,
 				841AD7E522EE93FA00F9AB7D /* MICUiLayoutView.m in Sources */,
 				841AD86922FD513C00F9AB7D /* WPLCellHostingView.mm in Sources */,
 				841AD87522FD6DA300F9AB7D /* WPLStackPanelView.mm in Sources */,
+				841AD8AB230648D700F9AB7D /* AccordionCellViewController.mm in Sources */,
 				841AD7EE22EE93FA00F9AB7D /* MICUiRelativeLayout.mm in Sources */,
 				841AD73622EE93AD00F9AB7D /* AppDelegate.m in Sources */,
 				841AD84322F52AEE00F9AB7D /* WPLObservableData.mm in Sources */,
@@ -782,6 +903,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				845B5AB8230D50A00055A98A /* acomTests.mm in Sources */,
 				841AD84A22F53C4E00F9AB7D /* layouterSampleTests.m in Sources */,
 				841AD85C22FB203700F9AB7D /* bindingTests.mm in Sources */,
 			);

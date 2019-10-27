@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICUiLayoutView.m
 //
 //  レイアウター（MICUiLayoutProtocolに準拠するオブジェクト）を内包するスクロールビューの共通実装
@@ -51,12 +51,14 @@
         if(!_frameObserverEnabled) {
             _frameObserverEnabled = true;
             [self addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+            [self addObserver:self forKeyPath:@"bounds" options:NSKeyValueObservingOptionNew context:nil];
         }
     } else {
         // デタッチされる
         if(_frameObserverEnabled) {
             _frameObserverEnabled = false;
             [self removeObserver:self forKeyPath:@"frame"];
+            [self removeObserver:self forKeyPath:@"bounds"];
         }
     }
     //NSLog(@"did move to superview: %@", [self.superview description]);
@@ -122,12 +124,20 @@
 - (void)endCustomizing {
     [_dragSupport endCustomizing];
 }
+
+/**
+ * [PROTECTED] ビューのサイズが変化した時に呼び出される
+ */
+- (void) onViewSizeChanged {
+    [_layouter requestRecalcLayout];
+}
+
 /**
  * ビューのサイズ変更監視
  */
 - (void)didChangeValueForKey:(NSString *)key {
-    if([key isEqualToString:@"frame"] && nil!=_layouter) {
-        [_layouter requestRecalcLayout];
+    if( nil!=_layouter && ([key isEqualToString:@"frame"] || [key isEqualToString:@"bounds"])) {
+        [self onViewSizeChanged];
         [_layouter updateLayout:false onCompleted:nil];
     }
 }
