@@ -25,7 +25,7 @@
     @property (nonatomic,readonly) NSInteger intValue;
 
     /**
-     * 値が変化したことを通知する(RO)
+     * 値が変化したことを通知する
      */
     - (void) valueChanged;
 

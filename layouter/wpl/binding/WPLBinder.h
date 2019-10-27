@@ -197,7 +197,7 @@ public:
         return *this;
     }
     
-    WPLBinderBuilder& bindState(NSString* name, id<IWPLCell> cell, WPLBoolStateActionType actionType, bool negation, WPLBindingCustomAction customAction=nil ) {
+    WPLBinderBuilder& bindState(NSString* name, id<IWPLCell> cell, WPLBoolStateActionType actionType, bool negation=false, WPLBindingCustomAction customAction=nil ) {
         [_binder bindProperty:name withBoolStateOfCell:cell actionType:actionType negation:negation customActin:customAction];
         return *this;
     }
