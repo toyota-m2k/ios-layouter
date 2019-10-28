@@ -274,6 +274,47 @@
 
 }
 
+/**
+ * サブスレッドで重い処理を実行し、完了したら、completedコールバックを呼び出す、よくある形のメソッド
+ */
+- (void) someFunc:(void(^)(NSInteger result)) completed {
+    [MICAsync.executor execute:^{
+        // 時間がかかる処理
+        [NSThread sleepForTimeInterval:0.2];
+        completed(17);
+    }];
+}
+
+- (MICPromise) promisticSomeFunc {
+    return MICAiful()
+    .then_(^(id  chainedResult, MICAcomix promix) {
+        [self someFunc:^(NSInteger result) {
+            promix.resolve(@(result));
+        }];
+    });
+}
+
+- (void)testCallbackToPromise {
+    __block bool finished = false;
+    
+    MICPromise promise = [self promisticSomeFunc];
+    BEGIN_AIFUL_LAUNCH
+        MICAiful(promise)
+        .then(^MICPromise _Nonnull(id  _Nullable chainedResult) {
+            XCTAssert(MPSV_INT(chainedResult)==17);
+            return MICAcom.resolve;
+        })
+        .then(^MICPromise _Nonnull(id  _Nullable chainedResult) {
+            finished = true;
+            return MICAcom.resolve;
+        })
+    END_AIFUL
+    
+    while(!finished) {
+        
+    }
+}
+
 
 - (void)testPerformanceExample {
     // This is an example of a performance test case.

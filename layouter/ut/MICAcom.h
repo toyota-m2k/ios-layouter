@@ -121,6 +121,9 @@ typedef id<IMICAcom> MICPromise;
 
 #define MICAcomRESOLVE(v)  [MICAcom resolve:(v)]
 #define MICAcomREJECT(v)   [MICAcom reject:(v)]
+#define acom_resolve    MICAcom.resolve
+#define acom_reject     MICAcom.reject
+
 
 #define BEGIN_PROMISTIC_ASYNC [MICAcom beginAsync:
 #define END_PROMISTIC_ASYNC ];

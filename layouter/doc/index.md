@@ -4,7 +4,7 @@
 
 はじめての iOSプログラミングの例題として作った子ビューの配置を自動化するレイアウター(GridLayout,StackLayout,RelativeLayout)。
 
-スクロールやD&Dによる入れ替えなどもサポートしているが、単なるレイアウトに使うにはオーバースペックなので、
+スクロールやアニメーション、D&Dによる並べ替えなどもサポートしているが、単なるレイアウトに使うにはオーバースペックなので、
 今後は、wp-layouter (Grid/StackPanel) に移行していく予定。
 また、RelativeLayout相当のレンダリングには、AutoLayoutベースの MICAutoLayouBuilder も使える（こっちのほうが使いやすい）。
 
@@ -17,7 +17,7 @@ iOSのボタンカスタマイズは、とにかく面倒なので。SVG Pathを
 
 Windows の WPF をリスペクトして実装。<br>
 コンテナとして、よく使う Grid, StackPanel を実装。
-UIView のプロパティと、Observableなデータをバインディングすることが可能。
+UIView のプロパティと、Observableなデータをバインディングできる。
 
 ### [CGRect, CGSize, ...](rect-size.md)
 
@@ -36,7 +36,7 @@ CGContextRefとかCGImageRefとかも、C++で。<br>
 
 SortedArray, Queue, Matrix, Tree, ...<br>
 
-### [マルチスレッド](threading.md)
+### [非同期API・マルチスレッド](threading.md)
 
 Javascript の Promise にインスパイヤーされた Acom クラスを中心に、マルチスレッド化やスレッド間同期を手軽に実行するための仕掛けを提供。
 
