@@ -250,13 +250,13 @@ public:
     }
     
     /* Add an arc of a circle to `path', possibly preceded by a straight line
-     segment. The arc is approximated by a sequence of Bzier curves. The
+     segment. The arc is approximated by a sequence of Bézier curves. The
      center of the arc is `(x,y)'; `radius' is its radius. `startAngle' is the
      angle to the first endpoint of the arc, measured counter-clockwise from
      the positive x-axis. `startAngle + delta' is the angle to the second
      endpoint of the arc. If `delta' is positive, then the arc is drawn
      counter-clockwise; if negative, clockwise. `startAngle' and `delta' are
-     measured in radians. If `matrix' is non-NULL, then the constructed Bzier
+     measured in radians. If `matrix' is non-NULL, then the constructed Bézier
      curves representing the arc will be transformed by `matrix' before they
      are added to the path. */
     //
@@ -277,12 +277,12 @@ public:
 
     
     /* Add an arc of a circle to `path', possibly preceded by a straight line
-     segment. The arc is approximated by a sequence of Bzier curves. `(x, y)'
+     segment. The arc is approximated by a sequence of Bézier curves. `(x, y)'
      is the center of the arc; `radius' is its radius; `startAngle' is the
      angle to the first endpoint of the arc; `endAngle' is the angle to the
      second endpoint of the arc; and `clockwise' is true if the arc is to be
      drawn clockwise, false otherwise. `startAngle' and `endAngle' are
-     measured in radians. If `m' is non-NULL, then the constructed Bzier
+     measured in radians. If `m' is non-NULL, then the constructed Bézier
      curves representing the arc will be transformed by `m' before they are
      added to `path'.
      
@@ -316,10 +316,10 @@ public:
     }
     
     /* Add an arc of a circle to `path', possibly preceded by a straight line
-     segment. The arc is approximated by a sequence of Bzier curves. `radius'
+     segment. The arc is approximated by a sequence of Bézier curves. `radius'
      is the radius of the arc. The resulting arc is tangent to the line from
      the current point of `path' to `(x1, y1)', and the line from `(x1, y1)'
-     to `(x2, y2)'. If `m' is non-NULL, then the constructed Bzier curves
+     to `(x2, y2)'. If `m' is non-NULL, then the constructed Bézier curves
      representing the arc will be transformed by `m' before they are added to
      `path'. */
     //
