@@ -71,7 +71,7 @@ typedef enum _WPLBoolStateActionType {
 //@end
 
 /**
- *  
+ *  直接バインド可能なUIViewの属性
  */
 typedef enum _WPLPropType {
     WPLPropTypeALPHA,

@@ -171,32 +171,56 @@ public:
         _binder = nil;
     }
     
-    
+    /**
+     * nameという名前のプロパティを作成（初期値 nil）
+     */
     WPLBinderBuilder& property(NSString* name) {
         [_binder createPropertyWithValue:nil withKey:name];
         return *this;
     }
+    /**
+     * nameという名前のプロパティを作成（初期値 int）
+     */
     WPLBinderBuilder& property(NSString* name, int initialValue) {
         [_binder createPropertyWithValue:@(initialValue) withKey:name];
         return *this;
     }
+    /**
+     * nameという名前のプロパティを作成（初期値 long）
+     */
     WPLBinderBuilder& property(NSString* name, long initialValue) {
         [_binder createPropertyWithValue:@(initialValue) withKey:name];
         return *this;
     }
+    /**
+     * nameという名前のプロパティを作成（初期値 CGFloat）
+     */
     WPLBinderBuilder& property(NSString* name, CGFloat initialValue) {
         [_binder createPropertyWithValue:@(initialValue) withKey:name];
         return *this;
     }
+    /**
+     * nameという名前のプロパティを作成（初期値 bool）
+     */
     WPLBinderBuilder& property(NSString* name, bool initialValue) {
         [_binder createPropertyWithValue:@(initialValue) withKey:name];
         return *this;
     }
+    /**
+     * nameという名前のプロパティを作成（初期値 string）
+     */
     WPLBinderBuilder& property(NSString* name, NSString* initialValue) {
         [_binder createPropertyWithValue:initialValue withKey:name];
         return *this;
     }
 
+    /**
+     * nameという名前の依存型（DelegatedObservableData）プロパティを作成
+     *
+     * @param name プロパティ名
+     * @param sourceProc 値を解決するための関数ブロック
+     * @param dependsOn このプロパティが依存するプロパティ名の配列。。。このメソッドが呼び出される時点で解決できなければ、指定は無効となるので、定義順序に注意。
+     */
     WPLBinderBuilder& dependentProperty(NSString* name, WPLSourceDelegateProc sourceProc, NSString* dependsOn=nil, ...) {
         va_list args;
         va_start(args, dependsOn);
@@ -206,7 +230,7 @@ public:
     }
     
     /**
-     * bind to value of cell
+     * nameで指定されたプロパティを、cellのvalue にバインドする
      */
     WPLBinderBuilder& bind(NSString* name, id<IWPLCell> cell, WPLBindingMode mode=WPLBindingModeSOURCE_TO_VIEW, WPLBindingCustomAction customAction=nil) {
         [_binder bindProperty:name withValueOfCell:cell bindingMode:mode customActin:customAction];
@@ -214,7 +238,7 @@ public:
     }
     
     /**
-     * bind to bool state of cell
+     * nameで指定されたプロパティを、cellのboolState（visible/enabled/readonly）にバインドする
      */
     WPLBinderBuilder& bind(NSString* name, id<IWPLCell> cell, WPLBoolStateActionType actionType, bool negation=false, WPLBindingCustomAction customAction=nil ) {
         [_binder bindProperty:name withBoolStateOfCell:cell actionType:actionType negation:negation customActin:customAction];
@@ -222,13 +246,17 @@ public:
     }
 
     /**
-     * bind to view property directly
+     * nameで指定されたプロパティを、cellが持つviewのプロパティに直接バインドする。
+     * 現在バインド可能なプロパティは、enum WPLPropType で定義されている。
      */
     WPLBinderBuilder& bind(NSString* name, id<IWPLCell> cell, WPLPropType propType, WPLBindingCustomAction customAction=nil ) {
         [_binder bindProperty:name withCell:cell propType:propType customActin:customAction];
         return *this;
     }
     
+    /**
+     * nameで指定されたプロパティをcellに対してバインドし、その動作をcustomActionで定義する。
+     */
     WPLBinderBuilder& bindCustom(NSString* name, id<IWPLCell> cell, WPLBindingCustomAction customAction) {
         [_binder bindProperty:name withCell:cell customAction:customAction];
         return *this;

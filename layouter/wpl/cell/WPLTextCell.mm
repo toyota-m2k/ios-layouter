@@ -78,6 +78,12 @@
             return;
         }
         // [self onValueChanged];
+        
+        // サイズの自動調整が要求されていれば、変更後の文字列のサイズに合わせてリサイズする
+        if(self.requestViewSize.width==WPL_CELL_SIZING_AUTO||self.requestViewSize.height==WPL_CELL_SIZING_AUTO) {
+            [view sizeToFit];
+            self.needsLayout = true;
+        }
     }
 }
 

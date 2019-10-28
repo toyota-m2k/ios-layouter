@@ -14,6 +14,7 @@
 #import "WPLBindViewController.h"
 #import "WPLStackPanelSampleViewController.h"
 #import "WPLGridSampleViewController.h"
+#import "WPLGuidanceViewController.h"
 
 @interface WPLSampleViewController ()
 
@@ -28,6 +29,7 @@ enum {
     CMDGridPanel,
     
     CMDOtherTest,
+    CMDGuidance,
 };
 
 - (void)viewDidLoad {
@@ -67,6 +69,14 @@ enum {
     cell = [WPLCell newCellWithView:btn name:@"GridPanelButton" params:WPLCellParams()];
     [_stackPanel.container addCell:cell];
 
+    btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    btn.frame = MICRect(200, 50);
+    btn.tag = CMDGuidance;
+    [btn setTitle:@"Guidance Sample" forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(onCommand:) forControlEvents:UIControlEventTouchUpInside];
+    cell = [WPLCell newCellWithView:btn name:@"GuidanceButton" params:WPLCellParams()];
+    [_stackPanel.container addCell:cell];
+
     
     let back = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     back.frame = CGRectMake(10, 20, 200, 50);
@@ -95,6 +105,9 @@ enum {
             break;
         case CMDOtherTest:
             controller = [[WPLBindViewController alloc] init];
+            break;
+        case CMDGuidance:
+            controller = [[WPLGuidanceViewController alloc] init];
             break;
         default:
             return;
