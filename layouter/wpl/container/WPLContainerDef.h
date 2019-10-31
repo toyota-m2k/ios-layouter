@@ -38,9 +38,14 @@
     - (void) addCell:(id<IWPLCell>) cell;
 
     /**
-     * セルを削除
+     * セルを削除(CellはDisposeされる)
      */
     - (void) removeCell:(id<IWPLCell>) cell;
+
+    /**
+     * セルをコンテナから切り離す (見た目はremoveCellと同じだが、Disposeされない）
+     */
+    - (id<IWPLCell>) detachCell:(id<IWPLCell>) cell;
 
     /**
      * セルの名前で検索
