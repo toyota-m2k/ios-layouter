@@ -13,7 +13,12 @@
 
 + (instancetype) instance;
 
++ (instancetype) localInstance;
+
 - (MICSvgPath*) getPath:(NSString*)pathString viewboxSize:(CGSize)size;
 - (void) releasePath:(MICSvgPath*)path;
+
+// 強制的な全クリア
+- (void) dispose;
 
 @end

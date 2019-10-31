@@ -251,6 +251,23 @@ IWPLContainerCell#addCellは、0行0列にセルを追加するメソッドと�
               column:(NSInteger)column 
              rowSpan:(NSInteger)rowSpan 
              colSpan:(NSInteger)colSpan;
+
+### 制限事項
+
+colSpan, rowSpanを設定すると、意図した配置ができないことがある。
+配置計算が手抜きのため、個々column/rowのサイズが決定可能であること、配置計算の前提となっている。
+例えば、requestedSize(AUTO,AUTO)のグリッドで、
+row=0, column=0, colSpan=1 : W=30
+row=1, column=0, colSpan=2 : W=100
+row=2, column=1, colSpan=1 : W=Stretch
+という定義があったとき、row 1,2 の定義から、column=1 の幅は、100 - 30 = 70 であることは（人間には）自明だが、
+このような、colSpanを考慮した引き算によるセル幅の計算を頑張っていないため、意図した配置にならない。
+WPLGridDefinition または、セルのrequestedSize属性で、column=1の幅を明示的に指定するか、
+または、Grid.requestedSizeで、全体のWidthにAuto以外の値を指定することで、どうにかやりくりしてほしい。
+
+
+※そのうち改善したいとは思っている。
+
 </details>
 
 <details><summary>

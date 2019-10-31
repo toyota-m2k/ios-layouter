@@ -7,10 +7,13 @@
 //
 
 #import "WPLValueCell.h"
+#import "MICTargetSelector.h"
 
 /**
  * UITextView用のCellクラス
  */
 @interface WPLTextCell : WPLValueCell<IWPLCellSuportReadonly, UITextViewDelegate, UITextFieldDelegate>
+
+@property (nonatomic) MICTargetSelector* actionOnReturn;    // UITextField で　Returnキーがタップされたことを通知
 
 @end

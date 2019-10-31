@@ -53,6 +53,10 @@
     return sInstance;
 }
 
++ (instancetype) localInstance {
+    return [[MICPathRepository alloc] init];
+}
+
 - (instancetype) init {
     self = [super init];
     if(nil!=self) {
@@ -86,6 +90,10 @@
             }
         }
     }
+}
+
+- (void) dispose {
+    [_dic removeAllObjects];
 }
 
 

@@ -7,7 +7,8 @@
 //
 
 #import "WPLValueCell.h"
+#import "MICUiDsCustomButton.h"
 
-@interface WPLDsCustomButton : WPLValueCell
+@interface WPLDsCustomButtonCell : WPLCell
 
 @end

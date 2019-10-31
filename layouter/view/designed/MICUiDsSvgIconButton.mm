@@ -12,27 +12,27 @@
 #import "MICPathRepository.h"
 
 @implementation MICUiDsSvgIconButton {
-    MICSvgPath* _svgPathNormal;
-    MICSvgPath* _svgPathActivated;
-    MICSvgPath* _svgPathSelected;
-    MICSvgPath* _svgPathDisabled;
+    MICPathRepository* _pathRepo;
+    MICPathRepository* _localPathRepo;
 }
 
 - (instancetype) initWithFrame:(CGRect)frame {
-    return [self initWithFrame:frame iconSize:MICSize(24,24) pathViewboxSize:MICSize(24,24)];
+    return [self initWithFrame:frame iconSize:MICSize(24,24) pathViewboxSize:MICSize(24,24) pathRepositiory:nil];
 }
 
-- (instancetype) initWithFrame:(CGRect) frame iconSize:(CGSize)iconSize pathViewboxSize:(CGSize)viewboxSize {
+- (instancetype) initWithFrame:(CGRect) frame iconSize:(CGSize)iconSize pathViewboxSize:(CGSize)viewboxSize pathRepositiory:(MICPathRepository*) repo {
     self = [super initWithFrame:frame];
     if(nil!=self) {
         self.backgroundColor = UIColor.clearColor;
         _viewboxSize = viewboxSize;
         _iconSize = iconSize;
         _stretchIcon = false;
-        _svgPathNormal = nil;
-        _svgPathActivated = nil;
-        _svgPathSelected = nil;
-        _svgPathDisabled = nil;
+        _localPathRepo = nil;
+        if(nil==repo) {
+            _localPathRepo = [MICPathRepository localInstance];
+            repo = _localPathRepo;
+        }
+        _pathRepo = repo;
     }
     return self;
 }
@@ -44,51 +44,24 @@
 }
 
 - (void) dispose {
-    [MICPathRepository.instance releasePath:_svgPathNormal];    _svgPathNormal = nil;
-    [MICPathRepository.instance releasePath:_svgPathActivated]; _svgPathActivated = nil;
-    [MICPathRepository.instance releasePath:_svgPathSelected];  _svgPathSelected = nil;
-    [MICPathRepository.instance releasePath:_svgPathDisabled];  _svgPathDisabled = nil;
+    if(_localPathRepo!=nil) {
+        [_localPathRepo dispose];
+    }
 }
 
 - (void) dealloc {
     [self dispose];
 }
 
-- (MICSvgPath*) createSvgPathForState:(MICUiViewState)state {
-    NSString* path = [self.colorResources resourceOf:MICUiResTypeSVG_PATH forState:state fallbackState:MICUiViewStateNORMAL];
-    return [MICPathRepository.instance getPath:path viewboxSize:_viewboxSize];
-}
-
 - (MICSvgPath*) getSvgPathForState:(MICUiViewState)state {
-    switch(state) {
-        default:
-        case MICUiViewStateNORMAL:
-            if(nil==_svgPathNormal) {
-                _svgPathNormal = [self createSvgPathForState:state];
-            }
-            return _svgPathNormal;
-        case MICUiViewStateSELECTED:
-            if(nil==_svgPathSelected) {
-                _svgPathSelected = [self createSvgPathForState:state];
-            }
-            return _svgPathSelected;
-        case MICUiViewStateACTIVATED:
-            if(nil==_svgPathActivated) {
-                _svgPathActivated = [self createSvgPathForState:state];
-            }
-            return _svgPathActivated;
-        case MICUiViewStateDISABLED:
-            if(nil==_svgPathDisabled) {
-                _svgPathDisabled = [self createSvgPathForState:state];
-            }
-            return _svgPathDisabled;
-    }
+    NSString* path = [self resource:self.colorResources onStateForType:MICUiResTypeSVG_PATH];
+    return [_pathRepo getPath:path viewboxSize:_viewboxSize];
 }
 
 - (UIColor*) getIconColorForState:(MICUiViewState)state {
-    UIColor* color = [self.colorResources resourceOf:(MICUiResTypeSVG_COLOR) forState:state fallbackState:MICUiViewStateNORMAL];
+    UIColor* color = [self resource:self.colorResources onStateForType:MICUiResTypeSVG_COLOR];
     if(nil==color) {
-        color = [self.colorResources resourceOf:(MICUiResTypeFGCOLOR) forState:state fallbackState:MICUiViewStateNORMAL];
+        color = [self resource:self.colorResources onStateForType:MICUiResTypeFGCOLOR];
     }
     return color;
 }

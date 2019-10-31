@@ -234,14 +234,19 @@
  * 有効・無効 getter
  */
 - (bool) enabled {
-    return _view.userInteractionEnabled;
+    if([_view isKindOfClass:UIControl.class]) {
+        return ((UIControl*)_view).enabled;
+    }
+    return false;
 }
 
 /**
  * 有効・無効 setter
  */
 - (void) setEnabled:(bool)v {
-    _view.userInteractionEnabled = v;
+    if([_view isKindOfClass:UIControl.class]) {
+        ((UIControl*)_view).enabled = v;
+    }
 }
 
 - (CGSize) requestCellSize {

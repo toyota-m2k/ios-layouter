@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICUiStatefulResource.m
 //
 //  状態依存のリソースを保持するためのクラス
@@ -69,6 +69,9 @@
     id r = [self resourceOf:type forState:state];
     if( nil==r && state != fallback) {
         r = [self resourceOf:type forState:fallback];
+        if(nil==r && state != MICUiViewStateNORMAL && fallback != MICUiViewStateNORMAL) {
+            return [self resourceOf:type forState:MICUiViewStateNORMAL];
+        }
     }
     return r;
 }
@@ -77,98 +80,112 @@
     switch(type) {
         case MICUiResTypeBGCOLOR:
             switch(state){
-                case MICUiViewStateACTIVATED:
+                case MICUiViewStateACTIVATED_:
                     return MICUiStatefulBgColorACTIVATED;
-                case MICUiViewStateDISABLED:
+                case MICUiViewStateDISABLED_:
                     return MICUiStatefulBgColorDISABLED;
-                case MICUiViewStateSELECTED:
+                case MICUiViewStateSELECTED_:
                     return MICUiStatefulBgColorSELECTED;
                 case MICUiViewStateNORMAL:
                     return MICUiStatefulBgColorNORMAL;
+                case MICUiViewStateDISABLED_SELECTED:
+                    return MICUiStatefulBgColorDISABLED_SELECTED;
                 default:
                     break;
             }
             break;
         case MICUiResTypeFGCOLOR:
             switch(state){
-                case MICUiViewStateACTIVATED:
+                case MICUiViewStateACTIVATED_:
                     return MICUiStatefulFgColorACTIVATED;
-                case MICUiViewStateDISABLED:
+                case MICUiViewStateDISABLED_:
                     return MICUiStatefulFgColorDISABLED;
-                case MICUiViewStateSELECTED:
+                case MICUiViewStateSELECTED_:
                     return MICUiStatefulFgColorSELECTED;
                 case MICUiViewStateNORMAL:
                     return MICUiStatefulFgColorNORMAL;
+                case MICUiViewStateDISABLED_SELECTED:
+                    return MICUiStatefulFgColorDISABLED_SELECTED;
                 default:
                     break;
             }
             break;
         case MICUiResTypeBORDERCOLOR:
             switch(state){
-                case MICUiViewStateACTIVATED:
+                case MICUiViewStateACTIVATED_:
                     return MICUiStatefulBorderColorACTIVATED;
-                case MICUiViewStateDISABLED:
+                case MICUiViewStateDISABLED_:
                     return MICUiStatefulBorderColorDISABLED;
-                case MICUiViewStateSELECTED:
+                case MICUiViewStateSELECTED_:
                     return MICUiStatefulBorderColorSELECTED;
                 case MICUiViewStateNORMAL:
                     return MICUiStatefulBorderColorNORMAL;
+                case MICUiViewStateDISABLED_SELECTED:
+                    return MICUiStatefulBorderColorDISABLED_SELECTED;
                 default:
                     break;
             }
             break;
         case MICUiResTypeBGIMAGE:
             switch(state){
-                case MICUiViewStateACTIVATED:
+                case MICUiViewStateACTIVATED_:
                     return MICUiStatefulBgImageACTIVATED;
-                case MICUiViewStateDISABLED:
+                case MICUiViewStateDISABLED_:
                     return MICUiStatefulBgImageDISABLED;
-                case MICUiViewStateSELECTED:
+                case MICUiViewStateSELECTED_:
                     return MICUiStatefulBgImageSELECTED;
                 case MICUiViewStateNORMAL:
                     return MICUiStatefulBgImageNORMAL;
+                case MICUiViewStateDISABLED_SELECTED:
+                    return MICUiStatefulBgImageDISABLED_SELECTED;
                 default:
                     break;
             }
             break;
         case MICUiResTypeICON:
             switch(state){
-                case MICUiViewStateACTIVATED:
+                case MICUiViewStateACTIVATED_:
                     return MICUiStatefulIconACTIVATED;
-                case MICUiViewStateDISABLED:
+                case MICUiViewStateDISABLED_:
                     return MICUiStatefulIconDISABLED;
-                case MICUiViewStateSELECTED:
+                case MICUiViewStateSELECTED_:
                     return MICUiStatefulIconSELECTED;
                 case MICUiViewStateNORMAL:
                     return MICUiStatefulIconNORMAL;
+                case MICUiViewStateDISABLED_SELECTED:
+                    return MICUiStatefulIconDISABLED_SELECTED;
                 default:
                     break;
             }
             break;
         case MICUiResTypeSVG_PATH:
             switch(state){
-                case MICUiViewStateACTIVATED:
+                case MICUiViewStateACTIVATED_:
                     return MICUiStatefulSvgPathACTIVATED;
-                case MICUiViewStateDISABLED:
+                case MICUiViewStateDISABLED_:
                     return MICUiStatefulSvgPathDISABLED;
-                case MICUiViewStateSELECTED:
+                case MICUiViewStateSELECTED_:
                     return MICUiStatefulSvgPathSELECTED;
                 case MICUiViewStateNORMAL:
                     return MICUiStatefulSvgPathNORMAL;
+                case MICUiViewStateDISABLED_SELECTED:
+                    return MICUiStatefulSvgPathDISABLED_SELECTED;
                 default:
                     break;
             }
             break;
         case MICUiResTypeSVG_COLOR:
             switch(state){
-                case MICUiViewStateACTIVATED:
+                case MICUiViewStateACTIVATED_:
                     return MICUiStatefulSvgColorACTIVATED;
-                case MICUiViewStateDISABLED:
+                case MICUiViewStateDISABLED_:
                     return MICUiStatefulSvgColorDISABLED;
-                case MICUiViewStateSELECTED:
+                case MICUiViewStateSELECTED_:
                     return MICUiStatefulSvgColorSELECTED;
                 case MICUiViewStateNORMAL:
                     return MICUiStatefulSvgColorNORMAL;
+                case MICUiViewStateDISABLED_SELECTED:
+                    return MICUiStatefulSvgColorDISABLED_SELECTED;
                 default:
                     break;
             }

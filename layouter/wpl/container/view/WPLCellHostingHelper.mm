@@ -224,7 +224,7 @@ static inline void set_origin(bool forHorz, MICRect& rect, CGFloat pos=0) {
     }
     switch([self align:forHorz]) {
         case WPLCellAlignmentSTART:
-            cellRect.setWidth(get_size(forHorz, cellSize));
+            set_size(forHorz, cellRect, get_size(forHorz, cellSize));
             break;
         case WPLCellAlignmentEND:
             set_size(forHorz, cellRect, get_size(forHorz, cellSize));

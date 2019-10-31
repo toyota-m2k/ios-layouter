@@ -6,6 +6,7 @@
 //
 
 #import "MICUiDsCustomButton.h"
+#import "MICPathRepository.h"
 
 /**
  * SVG Path をアイコンとして使えるカスタムボタンクラス
@@ -39,9 +40,20 @@
 
 @property (nonatomic,readwrite) CGSize iconSize;
 @property (nonatomic,readwrite) CGSize viewboxSize;
-@property (nonatomic,readwrite) bool stretchIcon;       // true: frame.height に合わせてアイコンを拡大する / false: iconSize に従って描画（デフォルト）
+@property (nonatomic,readwrite) bool stretchIcon;       // true: frame.height に合わせてアイコンを拡大する
+                                                        // false: iconSize に従って描画（デフォルト）
 
-- (instancetype) initWithFrame:(CGRect) frame iconSize:(CGSize)iconSize pathViewboxSize:(CGSize)viewboxSize;
+/**
+ * @param iconSize  描画サイズ
+ * @param viewboxSize   SVGパスのviewboxサイズ
+ * @param repo  SVG Path Repository
+ *              nilを渡すと、このボタンインスタンス専用のリポジトリを作成して使用
+ *              有効なリポジトリを渡すと、それを使用するが、作成したパスをReleaseしない。
+ */
+- (instancetype) initWithFrame:(CGRect) frame
+                      iconSize:(CGSize)iconSize
+               pathViewboxSize:(CGSize)viewboxSize
+               pathRepositiory:(MICPathRepository*) repo ;
 
 @end
 

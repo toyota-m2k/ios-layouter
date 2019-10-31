@@ -126,6 +126,36 @@ public:
     }
 };
 
+class WPLCellPosition {
+public:
+    NSInteger row;
+    NSInteger column;
+    NSInteger rowSpan;
+    NSInteger colSpan;
+public:
+    WPLCellPosition(NSInteger row_, NSInteger column_) {
+        row = row_;
+        column = column_;
+        colSpan = rowSpan = 1;
+    }
+    
+    WPLCellPosition(NSInteger row_, NSInteger column_, NSInteger rowSpan_, NSInteger colSpan_) {
+        row = row_;
+        column = column_;
+        colSpan = colSpan_;
+        rowSpan = rowSpan_;
+    }
+    
+    WPLCellPosition(const WPLCellPosition& src) {
+        row = src.row;
+        column = src.column;
+        colSpan = src.colSpan;
+        rowSpan = src.rowSpan;
+    }
+};
+
+typedef WPLCellPosition (^WPLUpdateCellPosition)(id<IWPLCell>cell, WPLCellPosition pos);
+
 #endif
 
 /**
@@ -186,6 +216,11 @@ public:
 + (instancetype) gridWithName:(NSString*) name
                        params:(const WPLGridParams&) params;
 
+- (void) addCell:(id<IWPLCell>)cell position:(const WPLCellPosition&) pos;
+- (void) moveCell:(id<IWPLCell>)cell position:(const WPLCellPosition&) pos;
+
+- (instancetype) reformWithParams:(const WPLGridParams&) params updateCell:(WPLUpdateCellPosition) updateCellPosition;
+
 #endif
 
 @property (nonatomic) CGSize cellSpacing;
@@ -195,5 +230,9 @@ public:
 - (void) addCell:(id<IWPLCell>)cell;
 - (void) addCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column;
 - (void) addCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan;
+
+// 追加されているセルを、他のセルに移動する(detachCell-->addCellと同じ）
+- (void) moveCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column;
+- (void) moveCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan;
 
 @end

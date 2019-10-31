@@ -116,6 +116,7 @@
                     .horz().free()
                     .left().adjacent(v10, 10)
                     .right().adjacent(v5));
+//    v11.hidden = true;
     let v12 = [self viewInColor:UIColor.redColor];
     builder.addView(v12,
                     RALParams()

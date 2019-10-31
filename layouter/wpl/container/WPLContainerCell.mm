@@ -118,12 +118,21 @@
 }
 
 /**
- * セルを削除
+ * セルを削除（セルはDisposeされる）
  */
 - (void) removeCell:(id<IWPLCell>) cell {
     [cell.view removeFromSuperview];
     [cell dispose];
     [_cells removeObject:cell];
+    self.needsLayoutChildren = true;
+}
+
+- (id<IWPLCell>)detachCell:(id<IWPLCell>) cell {
+    [cell.view removeFromSuperview];
+    [_cells removeObject:cell];
+    self.needsLayoutChildren = true;
+    cell.extension = nil;
+    return cell;
 }
 
 /**

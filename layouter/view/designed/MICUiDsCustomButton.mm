@@ -46,22 +46,35 @@
  * (private) ボタンの状態に合わせて（必要なら）表示を更新
  */
 - (void)updateButtonState {
-    MICUiViewState state = MICUiViewStateNORMAL;
+    unsigned int state = MICUiViewStateNORMAL;
     if(!_enabled) {
-        state = MICUiViewStateDISABLED;
-    } else if (_activated) {
-        state = MICUiViewStateACTIVATED;
-    } else if (_selected) {
-        state = MICUiViewStateSELECTED;
+        state |= MICUiViewStateDISABLED_;
+    }
+    if (_selected) {
+        state |= MICUiViewStateSELECTED_;
+    }
+    if (_activated && _enabled) {
+        state |= MICUiViewStateACTIVATED_;
     }
     if(_buttonState != state) {
         MICUiViewState oldState = _buttonState;
-        _buttonState = state;
+        _buttonState = (MICUiViewState)state;
         [self setNeedsDisplay];
         if(nil!=_customButtonDelegate) {
-            [_customButtonDelegate onCustomButtonStateChangedAt:self from:oldState to:state];
+            [_customButtonDelegate onCustomButtonStateChangedAt:self from:oldState to:_buttonState];
         }
     }
+}
+
+/**
+ * 現在のボタンステートに応じたリソースを取得
+ */
+- (id) resource:(id<MICUiStatefulResourceProtocol>)resource onStateForType:(MICUiResType)type {
+    MICUiViewState state = _buttonState, fallback=MICUiViewStateNORMAL;
+    if(MICUiViewState_IsSelected(state)) {
+        fallback = MICUiViewStateSELECTED_;
+    }
+    return [resource resourceOf:type forState:state fallbackState:fallback];
 }
 
 /**
@@ -210,14 +223,14 @@
  */
 - (void)eraseBackground:(CGContextRef)rctx rect:(CGRect)rect {
     MICCGContext ctx(rctx, false);
-    UIImage* bgImage = [_colorResources resourceOf:MICUiResTypeBGIMAGE forState:_buttonState];
+    UIImage* bgImage = [self resource:_iconResources onStateForType:MICUiResTypeBGIMAGE];
     
     if(nil!=bgImage) {
         [bgImage drawInRect:rect];
     }
     else {
-        UIColor* colorBg = [_colorResources resourceOf:MICUiResTypeBGCOLOR forState:_buttonState fallbackState:MICUiViewStateNORMAL];
-        UIColor* colorBorder = [_colorResources resourceOf:MICUiResTypeBORDERCOLOR forState:_buttonState fallbackState:MICUiViewStateNORMAL];
+        UIColor* colorBg = [self resource:_colorResources onStateForType:MICUiResTypeBGCOLOR];
+        UIColor* colorBorder = [self resource:_colorResources onStateForType:MICUiResTypeBORDERCOLOR];
         if (_roundRadius>0) {
             UIBezierPath* path = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:_roundRadius];
             if(nil!=colorBg) {
@@ -293,7 +306,7 @@
 }
 
 - (NSDictionary*) getTextAttributes:(NSTextAlignment)halign {
-    UIColor* colorFg = [_colorResources resourceOf:MICUiResTypeFGCOLOR forState:_buttonState fallbackState:MICUiViewStateNORMAL];
+    UIColor* colorFg = [self resource:_colorResources onStateForType:MICUiResTypeFGCOLOR];
     if(nil==colorFg) {
         return nil;
     }
@@ -346,9 +359,9 @@
  */
 - (UIImage*) getIconForState:(MICUiViewState)state {
     if(nil!=_iconResources) {
-        return [_iconResources resourceOf:MICUiResTypeICON forState:state fallbackState:MICUiViewStateNORMAL];
+        return [self resource:_iconResources onStateForType:MICUiResTypeICON];
     } else {
-        return [_colorResources resourceOf:MICUiResTypeICON forState:state fallbackState:MICUiViewStateNORMAL];
+        return [self resource:_colorResources onStateForType:MICUiResTypeICON];
     }
 }
 
@@ -445,6 +458,11 @@
         textSize = [self.text sizeWithAttributes:attr];
     }
     return MICSize(iconSize.width + spacing + textSize.width + margin.dw(), MAX(iconSize.height, textSize.height+margin.dh()));
+}
+
+- (void)sizeToFit {
+    MICRect rc([self calcPlausibleButtonSizeFotHeight:0 forState:MICUiViewStateNORMAL]);
+    self.frame = rc;
 }
 
 //- (void)layoutSubviews {

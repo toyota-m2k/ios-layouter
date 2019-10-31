@@ -26,6 +26,8 @@
 + (instancetype) gridViewWithName:(NSString*) name
                            params:(WPLGridParams) params;
 
+- (void) reformWithParams:(const WPLGridParams&) params updateCell:(WPLUpdateCellPosition) updateCellPosition;
+
 #endif
 
 @end

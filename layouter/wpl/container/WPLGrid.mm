@@ -21,6 +21,7 @@
     @property (nonatomic, readonly) NSInteger rowSpan;
     @property (nonatomic, readonly) NSInteger colSpan;
     @property (nonatomic) CGSize size;
+@property (nonatomic, readonly) WPLCellPosition cellPosition;
 @end
 
 @implementation WPLGridExtension
@@ -55,6 +56,10 @@
 // fun xSize(forCol:Boolean) : Float {
 //     return if(forCol) size.height else size.width
 // }
+
+- (WPLCellPosition) cellPosition {
+    return WPLCellPosition(_row, _column, _rowSpan, _colSpan);
+}
 @end
 
 #pragma mark - Utility Functions
@@ -211,6 +216,17 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     return [self gridWithName:name params:params superview:nil containerDelegate:nil];
 }
 
+- (instancetype) reformWithParams:(const WPLGridParams&) params updateCell:(WPLUpdateCellPosition) updateCellPosition {
+    WPLGrid* reformed = [self.class gridWithName:self.name params:params];
+    while(self.cells.count>0) {
+        id<IWPLCell> cell = self.cells[0];
+        WPLCellPosition pos(updateCellPosition(cell, EXT(cell).cellPosition));
+        [self detachCell:cell];
+        [reformed addCell:cell position:pos];
+    }
+    return reformed;
+}
+
 #pragma mark - Properties
 
 /**
@@ -267,12 +283,32 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
         colSpan = 1;
     }
     if (row+rowSpan-1 >= self.rows || column+colSpan-1 >= self.columns) {
-        [NSException raise:NSRangeException format:@"WPLGrid.addCell: out of range (%ld,%ld).", (long)self.rows, (long)self.columns];
+        [NSException raise:NSRangeException format:@"WPLGrid.addCell(%@): out of range (%ld,%ld).", cell.name, (long)self.rows, (long)self.columns];
     }
     
     cell.extension = [WPLGridExtension newWithRow:row column:column rowSpan:rowSpan colSpan:colSpan];
     [super addCell:cell];
 }
+
+- (void)addCell:(id<IWPLCell>)cell position:(const WPLCellPosition &)pos {
+    [self addCell:cell row:pos.row column:pos.column rowSpan:pos.rowSpan colSpan:pos.colSpan];
+}
+
+
+
+- (void) moveCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column {
+    [self detachCell:cell];
+    [self addCell:cell row:row column:column];
+}
+
+- (void) moveCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan {
+    [self detachCell:cell];
+    [self addCell:cell row:row column:column rowSpan:rowSpan colSpan:colSpan];
+}
+- (void) moveCell:(id<IWPLCell>)cell position:(const WPLCellPosition &)pos {
+    [self moveCell:cell row:pos.row column:pos.column rowSpan:pos.rowSpan colSpan:pos.colSpan];
+}
+
 
 //- (void) addCell:(id<IWPLCell>)cell params:(const WPLGridAddCellParams&) params {
 //    [self addCell:cell row:params._row column:params._column rowSpan:params._rowSpan colSpan:params._colSpan];

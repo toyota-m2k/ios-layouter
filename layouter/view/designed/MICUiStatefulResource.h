@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICUiStatefulResource.h
 //
 //  状態依存のリソースを保持するためのクラス
@@ -12,12 +12,18 @@
 /**
  * ビューの状態
  */
-typedef enum _micUiViewState {
-    MICUiViewStateNORMAL,
-    MICUiViewStateSELECTED,
-    MICUiViewStateACTIVATED,
-    MICUiViewStateDISABLED,
+typedef enum _micUiViewState : unsigned int {
+    MICUiViewStateNORMAL        = 0,
+    MICUiViewStateSELECTED_      = 0x01,
+    MICUiViewStateACTIVATED_     = 0x02,
+    MICUiViewStateDISABLED_      = 0x04,
+    MICUiViewStateDISABLED_SELECTED     = 0x04|0x01,
+    MICUiViewStateACTIVATED_SELECTED    = 0x02|0x01,
 } MICUiViewState;
+
+#define MICUiViewState_IsSelected(v) (((v)&MICUiViewStateSELECTED_)==MICUiViewStateSELECTED_)
+#define MICUiViewState_IsDisabled(v) (((v)&MICUiViewStateDISABLED_)==MICUiViewStateDISABLED_)
+#define MICUiViewState_IsActivated(v) (((v)&MICUiViewStateACTIVATED_)==MICUiViewStateACTIVATED_)
 
 /**
  * リソースのタイプ
@@ -38,36 +44,50 @@ typedef enum _micUiResType {
 #define MICUiStatefulBgColorSELECTED  @"BgSelected"
 #define MICUiStatefulBgColorACTIVATED @"BgActivated"
 #define MICUiStatefulBgColorDISABLED  @"BgDisabled"
+#define MICUiStatefulBgColorDISABLED_SELECTED  @"BgDisabledSelected"
+#define MICUiStatefulBgColorACTIVATED_SELECTED @"BgActivatedSelected"
 
 #define MICUiStatefulFgColorNORMAL    @"FgNormal"
 #define MICUiStatefulFgColorSELECTED  @"FgSelected"
 #define MICUiStatefulFgColorACTIVATED @"FgActivated"
 #define MICUiStatefulFgColorDISABLED  @"FgDisabled"
+#define MICUiStatefulFgColorDISABLED_SELECTED  @"FgDisabledSelected"
+#define MICUiStatefulFgColorACTIVATED_SELECTED @"FgActivatedSelected"
 
 #define MICUiStatefulBorderColorNORMAL    @"BorderNormal"
 #define MICUiStatefulBorderColorSELECTED  @"BorderSelected"
 #define MICUiStatefulBorderColorACTIVATED @"BorderActivated"
 #define MICUiStatefulBorderColorDISABLED  @"BorderDisabled"
+#define MICUiStatefulBorderColorDISABLED_SELECTED  @"BorderDisabledSelected"
+#define MICUiStatefulBorderColorACTIVATED_SELECTED @"BorderActivatedSelected"
 
 #define MICUiStatefulBgImageNORMAL    @"BgImageNormal"
 #define MICUiStatefulBgImageSELECTED  @"BgImageSelected"
 #define MICUiStatefulBgImageACTIVATED @"BgImageActivated"
 #define MICUiStatefulBgImageDISABLED  @"BgImageDisabled"
+#define MICUiStatefulBgImageDISABLED_SELECTED  @"BgImageDisabledSelected"
+#define MICUiStatefulBgImageACTIVATED_SELECTED @"BgImageActivatedSelected"
 
 #define MICUiStatefulIconNORMAL    @"IconNormal"
 #define MICUiStatefulIconSELECTED  @"IconSelected"
 #define MICUiStatefulIconACTIVATED @"IconActivated"
 #define MICUiStatefulIconDISABLED  @"IconDisabled"
+#define MICUiStatefulIconDISABLED_SELECTED  @"IconDisabledSelected"
+#define MICUiStatefulIconACTIVATED_SELECTED @"IconActivatedSelected"
 
 #define MICUiStatefulSvgPathNORMAL    @"SvgPathNormal"
 #define MICUiStatefulSvgPathSELECTED  @"SvgPathSelected"
 #define MICUiStatefulSvgPathACTIVATED @"SvgPathActivated"
 #define MICUiStatefulSvgPathDISABLED  @"SvgPathDisabled"
+#define MICUiStatefulSvgPathDISABLED_SELECTED  @"SvgPathDisabledSelected"
+#define MICUiStatefulSvgPathACTIVATED_SELECTED @"SvgPathActivatedSelected"
 
 #define MICUiStatefulSvgColorNORMAL    @"SvgColorNormal"
 #define MICUiStatefulSvgColorSELECTED  @"SvgColorSelected"
 #define MICUiStatefulSvgColorACTIVATED @"SvgColorActivated"
 #define MICUiStatefulSvgColorDISABLED  @"SvgColorDisabled"
+#define MICUiStatefulSvgColorDISABLED_SELECTED  @"SvgColorDisabledSelected"
+#define MICUiStatefulSvgColorACTIVATED_SELECTED @"SvgColorActivatedSelected"
 
 /**
  * 状態依存リソースのi/f定義

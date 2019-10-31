@@ -8,6 +8,7 @@
 //  Created by toyota-m2k on 2019/08/07.
 //  Copyright © 2019 toyota-m2k. All rights reserved.
 //
+#import "WPLCellL.h"
 #import "WPLContainerDef.h"
 
 #define AUTO        @(WPL_CELL_SIZING_AUTO)
@@ -16,4 +17,3 @@
 
 #define VAUTO       WPL_CELL_SIZING_AUTO
 #define VSTRC       WPL_CELL_SIZING_STRETCH
-

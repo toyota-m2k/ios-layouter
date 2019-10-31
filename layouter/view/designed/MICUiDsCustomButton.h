@@ -1,4 +1,4 @@
-﻿//
+//
 //  MICUiDsCustomButton.h
 //
 //  オーナードローなボタンビューの基底クラス
@@ -62,6 +62,11 @@
 - (void) setTarget:(id)target action:(SEL)action;
 
 #pragma mark - PROTECTED methods
+
+/**
+ * 現在のボタンステートに応じたリソースを取得
+ */
+- (id) resource:(id<MICUiStatefulResourceProtocol>)resource onStateForType:(MICUiResType)type;
 
 /**
  * 状態依存のアイコンを取得

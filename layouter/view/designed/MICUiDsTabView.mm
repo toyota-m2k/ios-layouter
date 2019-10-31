@@ -253,7 +253,7 @@
     MICSize iconSize(MICSize(24,24));
     MICSize viewboxSize(24,24);
 
-    let btn = [[MICUiDsSvgIconButton alloc] initWithFrame:MICRect(iconSize) iconSize:iconSize pathViewboxSize:viewboxSize];
+    let btn = [[MICUiDsSvgIconButton alloc] initWithFrame:MICRect(iconSize) iconSize:iconSize pathViewboxSize:viewboxSize pathRepositiory:nil];
     btn.colorResources = [[MICUiStatefulResource alloc] initWithDictionary:
                                 @{
                                   MICUiStatefulSvgPathNORMAL: next ? SVG_PATH_NEXT : SVG_PATH_PREV,

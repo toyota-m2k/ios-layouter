@@ -319,6 +319,7 @@
 		845B5AB7230D50A00055A98A /* acomTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = acomTests.mm; sourceTree = "<group>"; };
 		846DC31023667627006CD2CE /* WPLGuidanceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGuidanceViewController.h; sourceTree = "<group>"; };
 		846DC31123667627006CD2CE /* WPLGuidanceViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGuidanceViewController.mm; sourceTree = "<group>"; };
+		846DC50423681F24006CD2CE /* WPLCellL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLCellL.h; sourceTree = "<group>"; };
 		847AFEA02313A506004809EB /* WPLPropBinding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLPropBinding.h; sourceTree = "<group>"; };
 		847AFEA12313A506004809EB /* WPLPropBinding.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLPropBinding.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -572,6 +573,7 @@
 		841AD82322F52AEE00F9AB7D /* cell */ = {
 			isa = PBXGroup;
 			children = (
+				846DC50423681F24006CD2CE /* WPLCellL.h */,
 				841AD82922F52AEE00F9AB7D /* WPLCellDef.h */,
 				841AD82A22F52AEE00F9AB7D /* WPLCell.h */,
 				841AD82622F52AEE00F9AB7D /* WPLCell.mm */,

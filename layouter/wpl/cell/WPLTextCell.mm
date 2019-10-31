@@ -103,6 +103,25 @@
     [self onValueChanged];
 }
 
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    [self onValueChanging];
+    return true;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [self onValueChanging];
+    if(nil!=_actionOnReturn) {
+        id me = self;
+        [_actionOnReturn performWithParam:&me];
+    }
+    return false;
+}
+
+- (BOOL)textFieldShouldClear:(UITextField *)textField {
+    [self onValueChanging];
+    return true;
+}
+
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     return !_textFieldReadOnly;
 }
@@ -131,4 +150,14 @@
     }
 }
 
+- (void) onValueChanging {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1*NSEC_PER_SEC), dispatch_get_main_queue(), ^(){
+        [self onValueChanged];
+    });
+}
+
+- (void)dispose {
+    [super dispose];
+    _actionOnReturn = nil;
+}
 @end
