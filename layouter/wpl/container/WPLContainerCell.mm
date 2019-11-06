@@ -121,6 +121,7 @@
  * セルを削除（セルはDisposeされる）
  */
 - (void) removeCell:(id<IWPLCell>) cell {
+    cell.containerDelegate = nil;
     [cell.view removeFromSuperview];
     [cell dispose];
     [_cells removeObject:cell];
@@ -128,6 +129,7 @@
 }
 
 - (id<IWPLCell>)detachCell:(id<IWPLCell>) cell {
+    cell.containerDelegate = nil;
     [cell.view removeFromSuperview];
     [_cells removeObject:cell];
     self.needsLayoutChildren = true;

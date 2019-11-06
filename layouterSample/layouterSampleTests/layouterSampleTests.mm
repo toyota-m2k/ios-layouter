@@ -31,7 +31,7 @@
     // This is an example of a functional test case.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
     _count = 0;
-    let oba = WPLObservableMutableData.new;
+    let oba = [[WPLObservableMutableData alloc] init];
     XCTAssert(oba.intValue == 0);
     id key = [oba addValueChangedListener:self selector:@selector(observeValue:)];
     oba.intValue = 5;
@@ -51,8 +51,8 @@
 
 - (void) testDelegatedObservableData {
     _count = 0;
-    let oba = WPLObservableMutableData.new;
-    let obb = WPLObservableMutableData.new;
+    let oba = [[WPLObservableMutableData alloc] init];
+    let obb = [[WPLObservableMutableData alloc] init];
     
     let doa = [WPLDelegatedObservableData newDataWithSourceBlock:^id (id _) {
         return [NSNumber numberWithInteger:oba.intValue+obb.intValue];

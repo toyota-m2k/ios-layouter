@@ -1,16 +1,25 @@
 //
-//  WPLGrid.m
+//  WPLGrid.mm
 //  WP Layouter
 //
 //  Created by toyota-m2k on 2019/08/03.
 //  Copyright © 2019 toyota-m2k. All rights reserved.
 //
 
+
 #import "WPLGrid.h"
 #import "MICVar.h"
-#import "MICUiRectUtil.h"
+#import "WPLContainersL.h"
+#import <vector>
 
-#pragma mark - Inner Class
+/**
+ * Row/Columnを区別する定義
+ * ... bool でもよいのだが、視認性が悪いので、あえてラベルを定義
+ */
+enum RowColumn {
+    ROW = 0,
+    COL = 1,
+};
 
 /**
  * WPLCell.extension にセットされるGridの管理情報クラス
@@ -21,113 +30,315 @@
     @property (nonatomic, readonly) NSInteger rowSpan;
     @property (nonatomic, readonly) NSInteger colSpan;
     @property (nonatomic) CGSize size;
-@property (nonatomic, readonly) WPLCellPosition cellPosition;
+    @property (nonatomic) bool rowComp;
+    @property (nonatomic) bool colComp;
+    @property (nonatomic, readonly) WPLCellPosition cellPosition;
 @end
 
 @implementation WPLGridExtension
-- (instancetype) initRow:(NSInteger)row column:(NSInteger)column rowSpan:(NSInteger) rowSpan colSpan:(NSInteger)colSpan {
+
+- (instancetype) initWithPosition:(const WPLCellPosition&) pos {
     self = [super init];
     if(nil!=self) {
-        _row = row;
-        _column = column;
-        _rowSpan = rowSpan;
-        _colSpan = colSpan;
+        _row = pos.row;
+        _column = pos.column;
+        _rowSpan = pos.rowSpan;
+        _colSpan = pos.colSpan;
         _size = MICSize();
+        _rowComp = false;
+        _colComp = false;
     }
     return self;
 }
 
-+ (instancetype) newWithRow:(NSInteger)row column:(NSInteger)column rowSpan:(NSInteger) rowSpan colSpan:(NSInteger)colSpan {
-    return [[self alloc] initRow:row column:column rowSpan:rowSpan colSpan:colSpan];
-}
-
-- (NSInteger) posForCol:(bool)forCol {
-    return (forCol) ? self.column : self.row;
-}
-
-- (NSInteger) spanForCol:(bool)forCol {
-    return (forCol) ? self.colSpan : self.rowSpan;
-}
-
-- (CGFloat) sSizeForCol:(bool) forCol {
-    return (forCol) ? self.size.width : self.size.height;
-}
-
-// fun xSize(forCol:Boolean) : Float {
-//     return if(forCol) size.height else size.width
-// }
-
-- (WPLCellPosition) cellPosition {
+- (WPLCellPosition)cellPosition {
     return WPLCellPosition(_row, _column, _rowSpan, _colSpan);
 }
+
+- (NSInteger) index:(RowColumn) rc {
+    return rc==COL ? _column : _row;
+}
+
+- (NSInteger) span:(RowColumn) rc {
+    return rc==COL ? _colSpan : _rowSpan;
+}
+
+- (CGFloat) size:(RowColumn) rc {
+    return (rc==COL) ? _size.width : _size.height;
+}
+
+- (void) setSize:(RowColumn) rc value:(CGFloat)value{
+    if (rc==COL) {
+        _size.width = value;
+    } else {
+        _size.height = value;
+    }
+}
+
+- (bool) isCompleted:(RowColumn) rc {
+    return (rc==COL) ? _colComp : _rowComp;
+}
+
+- (void) completed:(RowColumn) rc {
+    if(rc==COL) {
+        _colComp = true;
+    } else {
+        _rowComp = true;
+    }
+}
+
+- (void) reset {
+    _size = MICSize::zero();
+    _rowComp = false;
+    _colComp = false;
+}
+
+- (NSString*) keyForSpan:(RowColumn)rc {
+    if(rc==COL) {
+        return [NSString stringWithFormat:@"col=%ld,span=%ld", (long)_column, (long)_colSpan];
+    } else {
+        return [NSString stringWithFormat:@"row=%ld,span=%ld", (long)_row, (long)_rowSpan];
+    }
+}
+
 @end
 
-#pragma mark - Utility Functions
-
-static inline WPLGridExtension* EXT(id<IWPLCell> cell)   { return (WPLGridExtension*)cell.extension; }
-
-static inline CGFloat GET_FLOAT(NSArray<NSNumber*>* ary, NSInteger index) {
-    return [ary[index] floatValue];
-}
-
-static inline void SET_FLOAT(NSMutableArray<NSNumber*>* ary, NSInteger index, CGFloat v) {
-    ary[index] = [NSNumber numberWithFloat:v];
-}
-
-static CGFloat sumRange(NSArray<NSNumber*>* ary, NSInteger from=0, NSInteger count=-1) {
-    if(count<0) {
-        count = ary.count;
+class CellInfo {
+private:
+    CGFloat def;
+public:
+    CGFloat size;
+    bool completed;
+public:
+    CellInfo(CGFloat defSize) {
+        def = defSize;
+        size = 0;
+        completed = false;
     }
-    CGFloat sum = 0;
-    for(NSInteger i=0 ; i<count; i++) {
-        sum += [ary[from+i] floatValue];
+    CellInfo(const CellInfo& src) {
+        def = src.def;
+        size = src.size;
+        completed = src.completed;
     }
-    return sum;
-}
-
-static void clearRange(NSMutableArray<NSNumber*>* ary, NSInteger from=0, NSInteger count=-1) {
-    if(count<0) {
-        count = ary.count;
+    CGFloat defSize() const {
+        return def;
     }
-    for(NSInteger i =0 ; i<count ; i++) {
-        ary[from+i] = @(0);
-    }
-}
+};
 
-static NSMutableArray<NSNumber*>* zeroArray( NSInteger count) {
-    let ary = [NSMutableArray arrayWithCapacity:count];
-    for(NSInteger i=0 ; i<count ; i++) {
-        [ary addObject:@(0)];
-    }
-    return ary;
-}
-
-#pragma mark - WPLGrid クラス
-
-/**
- * Row/Column でレイアウト可能なコンテナセルクラス
- */
-@implementation WPLGrid {
-    // Row/Column definitions
-    NSArray<NSNumber*>* _rowDefs;
-    NSArray<NSNumber*>* _colDefs;
+class CellTable {
+    std::vector<CellInfo> _cols;
+    std::vector<CellInfo> _rows;
     
-    // カラムの幅を計算するための配列
-    NSMutableArray<NSNumber*>* _rowHeights;
-    NSMutableArray<NSNumber*>* _columnWidths;
+public:
+    CellTable() {
+        
+    }
     
-    CGSize _cachedSize;
+    void init(NSArray<NSNumber*>* rowDefs, NSArray<NSNumber*>* colDefs) {
+        _rows.assign(rowDefs.count, CellInfo(S_AUTO));
+        _cols.assign(colDefs.count, CellInfo(S_AUTO));
+        for(NSInteger i=0 ; i<rowDefs.count ; i++) {
+            NSInteger v = rowDefs[i].integerValue;
+            if(v!=S_AUTO) {
+                _rows[i] = CellInfo(v);
+            }
+        }
+        for(NSInteger i=0 ; i<colDefs.count ; i++) {
+            NSInteger v = colDefs[i].integerValue;
+            if(v!=S_AUTO) {
+                _cols[i] = CellInfo(v);
+            }
+        }
+    }
     
-    CGSize _cellSpacing;
-}
+    void reset(RowColumn rc) {
+        if(rc==COL) {
+            for(NSInteger i=_cols.size()-1 ; i>=0 ; i--) {
+                _cols[i].completed = false;
+                _cols[i].size = 0;
+            }
+        } else {
+            for(NSInteger i=_rows.size()-1 ; i>=0 ; i--) {
+                _rows[i].completed = false;
+                _rows[i].size = 0;
+            }
+        }
+    }
+    
+    void reset() {
+        reset(ROW);
+        reset(COL);
+    }
+    
+    NSInteger count(RowColumn rc) const {
+        return (rc==COL) ? _cols.size() : _rows.size();
+    }
+    
+    void setSize(RowColumn rc, NSInteger index, CGFloat value) {
+        if(rc==COL) {
+            _cols[index].size = value;
+        } else {
+            _rows[index].size = value;
+        }
+    }
+    
+    CGFloat getSize(RowColumn rc, NSInteger index) const {
+        if(rc==COL) {
+            return _cols[index].size;
+        } else {
+            return _rows[index].size;
+        }
+    }
+    
+    CGFloat getDefSize(RowColumn rc, NSInteger index) const {
+        if(rc==COL) {
+            return _cols[index].defSize();
+        } else {
+            return _rows[index].defSize();
+        }
+    }
+
+    CGFloat getDefSize(RowColumn rc, NSInteger index, NSInteger span, CGFloat spacing) const {
+        if(span==1) {
+            return getDefSize(rc,index);
+        }
+        if(rc==COL) {
+            return sumDefSize(_cols, index, span, spacing);
+        } else {
+            return sumDefSize(_rows, index, span, spacing);
+        }
+    }
+    
+    
+//    CGFloat getDefSize(RowColumn rc, WPLGridExtension* ex) {
+//        if(rc==COL) {
+//            return _cols[ex.column].defSize();
+//        } else {
+//            return _rows[ex.row].defSize();
+//        }
+//    }
+             
+     bool isCompleted(RowColumn rc, NSInteger index) const{
+        if(rc==COL) {
+            return _cols[index].completed;
+        } else {
+            return _rows[index].completed;
+        }
+     }
+    
+    void completed(RowColumn rc, NSInteger index, bool completed) {
+        if(rc==COL) {
+            _cols[index].completed = completed;
+        } else {
+            _rows[index].completed = completed;
+        }
+    }
+    
+    NSInteger uncompletedCount(RowColumn rc) {
+        if(rc==COL) {
+            return uncompletedCount(_cols);
+        } else {
+            return uncompletedCount(_rows);
+        }
+    }
+    
+    CGFloat sizeRange(RowColumn rc, NSInteger index, NSInteger span, CGFloat spacing) {
+        CGFloat value = 0;
+        for(NSInteger i=0 ; i<span ; i++) {
+            CGFloat v = getSize(rc, index+i);
+            if(v>0) {
+                if(value!=0) {
+                    value+=spacing;
+                }
+                value += v;
+            }
+        }
+        return value;
+    }
+    
+    CGFloat offsetAt(RowColumn rc, NSInteger index, CGFloat spacing) {
+        CGFloat value = sizeRange(rc, 0, index, spacing);
+        if(value>0) {
+            value += spacing;
+        }
+        return value;
+    }
+   
+   
+private:
+    static CGFloat sumDefSize(const std::vector<CellInfo>& ary, NSInteger index, NSInteger span, CGFloat spacing) {
+        CGFloat value = 0;
+        bool a = false;
+        for(NSInteger i=0 ; i<span ; i++) {
+            CGFloat v = ary[i+index].defSize();
+            if(v < 0) {
+                return -1;
+            } else if(v==0) {
+                a = true;
+            } else {
+                if(value!=0) {
+                    value+=spacing;
+                }
+                value += v;
+            }
+        }
+        if(a) {
+            return 0;
+        } else {
+            return value;
+        }
+    }
+    
+    static NSInteger uncompletedCount(const std::vector<CellInfo>& ary) {
+        NSInteger count = 0;
+        for(NSInteger i=ary.size()-1 ; i>=0 ; i--) {
+            if(!ary[i].completed) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+};
 
 static NSArray<NSNumber*>* s_single_def_auto = @[@(0)];
 static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 
-#pragma mark - Construction
+@implementation WPLGrid {
+   
+    CGSize _cachedSize;
+    CGSize _cellSpacing;
+
+    // Row/Column definitions
+    CellTable _table;
+}
+
+#pragma mark - 初期化
+
+/**
+* Gridの正統なコンストラクタ
+*/
+- (instancetype)initWithView:(UIView *)view name:(NSString *)name margin:(UIEdgeInsets)margin requestViewSize:(CGSize)requestViewSize hAlignment:(WPLCellAlignment)hAlignment vAlignment:(WPLCellAlignment)vAlignment visibility:(WPLVisibility)visibility containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate rowDefs:(NSArray<NSNumber *> *)rowDefs colDefs:(NSArray<NSNumber *> *)colDefs cellSpacing:(CGSize)cellSpacing {
+
+    self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
+    if(nil!=self) {
+        _cachedSize = MICSize();
+        _cellSpacing = cellSpacing;
+        
+        // row/column definitions が省略されているときは、１x１グリッドとして定義を自動生成
+        // このとき、requestViewSizeが固定サイズなら、それに合わせて中身を伸縮（stretch)
+        //         requestViewSize == 0 （auto) なら、中身のサイズを変えずに、Gridの方を伸縮する。
+        // この動作を変更したければ、１x１でも、明示的に、row/column definitions を指定すること。
+        rowDefs = (rowDefs!=nil&&rowDefs.count>0) ? rowDefs : (requestViewSize.height>0 ? s_single_def_stretch : s_single_def_auto);
+        colDefs = (colDefs!=nil&&colDefs.count>0) ? colDefs : (requestViewSize.width>0  ? s_single_def_stretch : s_single_def_auto);
+        _table.init(rowDefs,colDefs);
+    }
+    return self;
+}
 
 /**
  * WPLCell.initWithView のオーバーライド
+ * （１x１のグリッド≒WPLFrame を作成する）
  */
 - (instancetype) initWithView:(UIView *)view
                          name:(NSString *)name
@@ -138,38 +349,6 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
                    visibility:(WPLVisibility)visibility
             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
     return [self initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate rowDefs:nil colDefs:nil cellSpacing:MICSize()];
-}
-
-/**
- * Gridの正統なコンストラクタ
- */
-- (instancetype) initWithView:(UIView*)view
-                         name:(NSString*) name
-                       margin:(UIEdgeInsets) margin
-              requestViewSize:(CGSize) requestViewSize
-                   hAlignment:(WPLCellAlignment)hAlignment
-                   vAlignment:(WPLCellAlignment)vAlignment
-                   visibility:(WPLVisibility)visibility
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
-                      rowDefs:(NSArray<NSNumber*>*) rowDefs
-                      colDefs:(NSArray<NSNumber*>*) colDefs
-                  cellSpacing:(CGSize)cellSpacing {
-    self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
-    if(nil!=self) {
-        _cachedSize = MICSize();
-        _cellSpacing = cellSpacing;
-        
-        // row/column definitions が省略されているときは、１x１グリッドとして定義を自動生成
-        // このとき、requestViewSizeが固定サイズなら、それに合わせて中身を伸縮（stretch)
-        //         requestViewSize == 0 （auto) なら、中身のサイズを変えずに、Gridの方を伸縮する。
-        // この動作を変更したければ、１x１でも、明示的に、row/column definitions を指定すること。
-        _rowDefs = (rowDefs!=nil&&rowDefs.count>0) ? rowDefs : (requestViewSize.height>0 ? s_single_def_stretch : s_single_def_auto);
-        _colDefs = (colDefs!=nil&&colDefs.count>0) ? colDefs : (requestViewSize.width>0  ? s_single_def_stretch : s_single_def_auto);
-        
-        _columnWidths = zeroArray(_colDefs.count);
-        _rowHeights = zeroArray(_rowDefs.count);
-    }
-    return self;
 }
 
 /**
@@ -191,7 +370,7 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     if(nil!=superview) {
         [superview addSubview:view];
     }
-    return [[WPLGrid alloc] initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment
+    return [[self alloc] initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment
                               vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate rowDefs:rowDefs colDefs:colDefs cellSpacing:cellSpacing];
 }
 
@@ -216,43 +395,22 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     return [self gridWithName:name params:params superview:nil containerDelegate:nil];
 }
 
-- (instancetype) reformWithParams:(const WPLGridParams&) params updateCell:(WPLUpdateCellPosition) updateCellPosition {
-    WPLGrid* reformed = [self.class gridWithName:self.name params:params];
-    while(self.cells.count>0) {
-        id<IWPLCell> cell = self.cells[0];
-        WPLCellPosition pos(updateCellPosition(cell, EXT(cell).cellPosition));
-        [self detachCell:cell];
-        [reformed addCell:cell position:pos];
-    }
-    return reformed;
++ (instancetype) gridWithView:(UIView*) view
+                         name:(NSString*) name
+                       params:(const WPLGridParams&) params {
+    return [[self alloc] initWithView:view name:name margin:params._margin requestViewSize:params._requestViewSize hAlignment:params._align.horz vAlignment:params._align.vert visibility:params._visibility containerDelegate:nil rowDefs:params._dimension.rowDefs colDefs:params._dimension.colDefs cellSpacing:params._cellSpacing];
 }
 
-#pragma mark - Properties
 
-/**
- * requestViewSize プロパティのセッターをオーバーライド
- */
-- (void)setRequestViewSize:(CGSize)requestViewSize {
-    if(MICSize(requestViewSize)!=self.requestViewSize) {
-        // 自動生成された row/column definitions があれば、initWithView内のコメントに合致するように更新する
-        if(self.rows==1 && (_rowDefs==s_single_def_stretch||_rowDefs==s_single_def_auto)) {
-            _rowDefs = requestViewSize.height>0 ? s_single_def_stretch : s_single_def_auto;
-        }
-        if(self.columns==1 && (_colDefs==s_single_def_stretch||_colDefs==s_single_def_auto)) {
-            _colDefs = requestViewSize.width>0  ? s_single_def_stretch : s_single_def_auto;
-        }
-
-        [super setRequestViewSize:requestViewSize];
-    }
-}
+#pragma mark - プロパティ
 
 // 行数
 - (NSInteger) rows {
-    return _rowDefs.count;
+    return _table.count(ROW);
 }
 // カラム数
 - (NSInteger) columns {
-    return _colDefs.count;
+    return _table.count(COL);
 }
 
 - (CGSize) cellSpacing {
@@ -266,8 +424,11 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     }
 }
 
-#pragma mark - Appending Cell
+#pragma mark - セル操作
 
+/**
+ * セルの追加
+ */
 - (void) addCell:(id<IWPLCell>)cell {
     [self addCell:cell row:0 column:0 rowSpan:1 colSpan:1];
 }
@@ -275,7 +436,7 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     [self addCell:cell row:row column:column rowSpan:1 colSpan:1];
 }
 
-- (void) addCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan {
+- (void) createExtension:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan {
     if(rowSpan<1) {
         rowSpan = 1;
     }
@@ -285,8 +446,11 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     if (row+rowSpan-1 >= self.rows || column+colSpan-1 >= self.columns) {
         [NSException raise:NSRangeException format:@"WPLGrid.addCell(%@): out of range (%ld,%ld).", cell.name, (long)self.rows, (long)self.columns];
     }
-    
-    cell.extension = [WPLGridExtension newWithRow:row column:column rowSpan:rowSpan colSpan:colSpan];
+    cell.extension = [[WPLGridExtension alloc] initWithPosition:WPLCellPosition(row, column, rowSpan, colSpan)];
+}
+
+- (void) addCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan {
+    [self createExtension:cell row:row column:column rowSpan:rowSpan colSpan:colSpan];
     [super addCell:cell];
 }
 
@@ -294,8 +458,9 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     [self addCell:cell row:pos.row column:pos.column rowSpan:pos.rowSpan colSpan:pos.colSpan];
 }
 
-
-
+/**
+ * セルの移動
+ */
 - (void) moveCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column {
     [self detachCell:cell];
     [self addCell:cell row:row column:column];
@@ -309,285 +474,301 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     [self moveCell:cell row:pos.row column:pos.column rowSpan:pos.rowSpan colSpan:pos.colSpan];
 }
 
+/**
+ * グリッド構成の再構築
+ */
+- (void) reformWithParams:(const WPLGridParams&) params updateCell:(WPLUpdateCellPosition) updateCellPosition {
+    [self setParams:params];
+    _cachedSize = MICSize();
+    _cellSpacing = params._cellSpacing;
+    var rowDefs = params._dimension.rowDefs;
+    var colDefs = params._dimension.colDefs;
+    rowDefs = (rowDefs!=nil&&rowDefs.count>0) ? rowDefs : (params._requestViewSize.height>0 ? s_single_def_stretch : s_single_def_auto);
+    colDefs = (colDefs!=nil&&colDefs.count>0) ? colDefs : (params._requestViewSize.width>0  ? s_single_def_stretch : s_single_def_auto);
+    _table.init(rowDefs,colDefs);
 
-//- (void) addCell:(id<IWPLCell>)cell params:(const WPLGridAddCellParams&) params {
-//    [self addCell:cell row:params._row column:params._column rowSpan:params._rowSpan colSpan:params._colSpan];
-//}
+    for(id<IWPLCell> cell in self.cells) {
+        WPLCellPosition pos(updateCellPosition(cell, ((WPLGridExtension*)(cell.extension)).cellPosition));
+        cell.extension = nil;
+        [self createExtension:cell row:pos.row column:pos.column rowSpan:pos.rowSpan colSpan:pos.colSpan];
+    }
+}
 
+#pragma mark - レイアウト計算用
 
-//- (CGFloat) sumRange:(NSArray<NSNumber*>*) ary from:(NSInteger)from count:(NSInteger)count {
-//    if(count<0) {
-//        count = ary.count;
-//    }
-//    CGFloat sum = 0f;
-//    for(NSInteger i=0 ; i<count; i++) {
-//        sum += [ary[from+i] floatValue];
-//    }
-//    return sum;
-//}
-//
-//- (void) clearRange:(NSMutableArray<NSNumber*>*)ary from:(NSInteger)from count:(NSInteger)count {
-//    if(count<0) {
-//        count = ary.count;
-//    }
-//    for(NSInteger i =0 ; i<count ; i++) {
-//        ary[from+i] = @(0f);
-//    }
-//}
-//
-//- (void) fillZero:(NSMutableArray<NSNumber*>*)ary count:(NSInteger)count {
-//    for(NSInteger i=0 ; i<count ; i++) {
-//        [ary addObject:@(0f)];
-//    }
-//}
-
-#pragma mark - Rendering
+#pragma mark レイアウト計算：Pass1 ... 初期化＋内部セルの必要サイズを計算
 
 /**
  * セルマージンを含むセルサイズを計算する
- * 各セルに対して、calcMinSizeFor... を呼び出してセルが管理しているサイズを取得し、それに対してセルマージンを付加して返す。
- * セルマージンは、各セルの右下についているものとし、右端、下端のセルは、セルマージンがゼロになるよう除外処理を入れる
+ * 各セルに対して、layoutPrepare を呼び出してセルが管理しているサイズを取得し、それに対してセルマージンを付加して返す。
  */
-- (void) calcGellSizeWithCellSpacing:(id<IWPLCell>)cell {
-    MICSize size;
-    let ex = EXT(cell);
+- (void) calcCellSizeWithCellSpacing:(id<IWPLCell>)cell {
+    let ex = (WPLGridExtension*)cell.extension;
     if(cell.visibility!=WPLVisibilityCOLLAPSED) {
-        MICSize regSize( (ex.colSpan>1) ? 0 : GET_FLOAT(_colDefs, ex.column),
-                         (ex.rowSpan>1) ? 0 : GET_FLOAT(_rowDefs, ex.row   ) );
-        size = [cell layoutPrepare:regSize];
-        if(ex.column+ex.colSpan < self.columns) {
-            size.width += _cellSpacing.width;
+        // regulatingCellSize: Stretchセルのサイズを決めるためのヒント
+        // ここでは、defCols/defRowsに正値を指定すると、それが regulatingSizeになる。
+        // layoutPrepareは負値（stretch）を扱えないので、そのときは 0(auto)を渡すようにする。
+        MICSize regSize( MAX(0, _table.getDefSize(COL, ex.column, ex.colSpan, _cellSpacing.width )),
+                         MAX(0, _table.getDefSize(ROW, ex.row,    ex.rowSpan, _cellSpacing.height)));
+        MICSize size = [cell layoutPrepare:regSize];
+        
+        
+        // 固定サイズ指定のセルはサイズを確定する
+        ex.size = size;
+        if(cell.requestViewSize.width >=0 || regSize.width>=0) {
+            ex.colComp = true;
         }
-        if(ex.row+ex.rowSpan < self.rows) {
-            size.height += _cellSpacing.height;
+        if(cell.requestViewSize.height>=0 || regSize.height>=0) {
+            ex.rowComp = true;
         }
+    } else {
+        // Invisibleなセルはサイズゼロとして扱う
+        ex.size = MICSize::zero();
+        ex.rowComp = true;
+        ex.colComp = true;
     }
-    ex.size = size;
 }
 
 /**
- * cell.extension に保持しているセルマージンを含むセルサイズから、セルマージンを除外した正味のセルサイズを取得する。
- */
-- (CGSize) trimCellSpacing:(id<IWPLCell>)cell width:(CGFloat)width height:(CGFloat)height {
-    MICSize size;
-    if(cell.visibility!=WPLVisibilityCOLLAPSED) {
-        let ex = EXT(cell);
-        size.set(width,height);
-        if(ex.column+ex.colSpan < self.columns) {
-            size.width -= _cellSpacing.width;
-        }
-        if(ex.row+ex.rowSpan < self.rows) {
-            size.height -= _cellSpacing.height;
-        }
-    }
-    return size;
-}
-
-/**
+ * Pass1
+ *
  * すべてのセルのminSize を計算して、GridExtensionにセットする
  * グリッドセルのサイズが固定の場合は無駄になるかもしれないが、Row/Columnのどちらかで必要になるケースもあるので、
  * とにかく全部計算しておく。
  */
 - (void) pass1_initParams {
-    _cachedSize.width = 0;
-    _cachedSize.height = 0;
+    _cachedSize = MICSize::zero();
+    _table.reset();
     for(id<IWPLCell> c in self.cells) {
-        [self calcGellSizeWithCellSpacing:c];
+        [(WPLGridExtension*)(c.extension) reset];
+        [self calcCellSizeWithCellSpacing:c];
     }
 }
 
+#pragma mark レイアウト計算：Pass2 ... Row/Columnのサイズを計算
+
+
 /**
- * Row/Columnの必要最小限の幅/高さを計算する
- * Span>1 のセルは、ここでは除外しておく --> pass4
+ * Pass2
+ *
+ * pass1で各セルの必要最小サイズを求めたので、それを集計して、row/column毎の最大値（row/columnの必要サイズ）を計算する。
+ * GridDefinitionで、固定サイズが指定されているrow/columnは、それを優先的に採用する。
  */
-- (bool) pass2_getMinSizeForCol:(bool)forCol sizes:(NSMutableArray<NSNumber*>*)sizes {
-    let defs = (forCol) ? _colDefs : _rowDefs;
-    bool span = false;
+- (void) pass2_getMinRowColumnSize:(RowColumn)rc {
     for(id<IWPLCell> c in self.cells) {
-        if(c.visibility==WPLVisibilityCOLLAPSED) {
-            continue;
-        }
-        let ex = EXT(c);
-        NSInteger pos = [ex posForCol:forCol];
+        let ex = (WPLGridExtension*)c.extension;
+        NSInteger pos = [ex index:rc];
         
-        CGFloat fval = GET_FLOAT(defs, pos);
-        if (fval > 0) {
-            // グリッドカラムの高さ/幅が固定値で指定されている
-            SET_FLOAT(sizes, pos, fval);
-        } else if ([ex spanForCol:forCol] == 1) {  // span>1 のものは除外
-            SET_FLOAT(sizes, pos, MAX(GET_FLOAT(sizes, pos), MAX(fval, [ex sSizeForCol:forCol])));
-        } else {
-            span = true;
+       if(!_table.isCompleted(rc, pos)) {
+            CGFloat defSize = _table.getDefSize(rc, pos);
+            if (defSize > 0) {
+                // GridDefinietionで、カラムの高さ/幅が固定値として指定されている
+                _table.setSize(rc, pos, defSize);
+                _table.completed(rc, pos, true);    // このサイズで確定
+            } else if ([ex span:rc] == 1) {  // span>1 のものは除外
+                CGFloat csize = [ex size:rc];
+                _table.setSize(rc, pos, MAX(_table.getSize(rc,pos), csize));
+            }
         }
     }
-    return span;
+    
+    // Pass2 を終えた時点で　AUTOのセルは、すべてサイズは確定している。
+    for(NSInteger i = _table.count(rc)-1 ; i>=0 ; i--) {
+        if(/*_table.getSize(rc, i)>=0 &&*/ _table.getDefSize(rc, i)>=0) {
+            _table.completed(rc, i, true);
+        }
+    }
+}
+
+
+#pragma mark レイアウト計算：Pass3 ... Stretch指定されたrow/columnのサイズを計算
+
+/**
+ * Pass3
+ *
+ * RowSpan/ColSpan >1 のセルサイズが固定or Autoで与えられている場合、それを基準に解決可能なstretchセルのサイズを計算する。
+ */
+
+/**
+ * Row+RowSpan, Column+ColSpan によってグループ化して、最もサイズが大きいものを取り出す。
+ */
+- (NSDictionary<NSString*,WPLGridExtension*>*) groupCellBySpanning:(RowColumn) rc {
+    NSMutableDictionary<NSString*,WPLGridExtension*>* dic = nil;
+    for(id<IWPLCell> c in self.cells) {
+        let ex = (WPLGridExtension*)c.extension;
+        if([ex span:rc]>1 && [ex isCompleted:rc]) {
+            let key = [ex keyForSpan:rc];
+            if(nil==dic) {
+                dic = [[NSMutableDictionary alloc] init];
+                [dic setObject:ex forKey:key];
+            } else {
+                WPLGridExtension* prev = [dic objectForKey:key];
+                if([prev size:rc]<[ex size:rc]) {
+                    [dic setObject:ex forKey:key];
+                }
+            }
+        }
+    }
+    return dic;
 }
 
 /**
-* STRETCH指定のセル幅を計算する
-*
-* fixWidth/Height が有効な場合は、stretchedでないセルのサイズ（pass2で計算）を除いた残りの領域から比例配分する
-* それ以外の場合は、比例配分した結果がpass2で計算された幅すべて収まる最小サイズになるよう調整する
-*/
-- (void) pass3_calcStretchedCellForCol:(bool)forCol sizes:(NSMutableArray<NSNumber*>*)sizes fix:(CGFloat)fix {
-    let defs = (forCol) ? _colDefs : _rowDefs;
-    
-    CGFloat sum = 0;
-    CGFloat base = 0;
-    CGFloat occupied = 0;
-    for(NSInteger i = 0 ; i<defs.count ; i++) {
-        CGFloat fval = GET_FLOAT(defs, i);
-        if(fval<0) {
-            sum += ABS(fval);
-            base = MAX(base, GET_FLOAT(sizes, i) / abs(fval));
-        } else {
-            occupied += GET_FLOAT(sizes, i);
-        }
-    }
-    if(sum==0) {
+ * Span>1でサイズが固定されているものを基準に、そのspanに含まれる stretchセルのサイズを決定する。
+ */
+- (void) resolveStretchBySpannedCell:(RowColumn) rc {
+    let dic = [self groupCellBySpanning:rc];
+    if(nil==dic) {
         return;
     }
     
-    if(fix>0) {
-        // グリッドの幅または高さが固定されている場合
-        let remained = fix - occupied;
-        if(remained>0) {
-            for (NSInteger i = 0 ; i< defs.count ; i++) {
-                CGFloat fval = GET_FLOAT(defs,i);
-                if ( fval < 0) {
-                    SET_FLOAT(sizes, i, ABS(fval) *remained/sum);
-                }
+    for(id key in dic.allKeys) {
+        [self tryResolveSize:rc by:dic[key]];
+    }
+}
+
+/**
+ * ex (Span>1でサイズ固定のセル)を基準に　そのspanに含まれる stretchセルのサイズを決定する。
+ */
+- (void) tryResolveSize:(RowColumn) rc by:(WPLGridExtension*)ex {
+    NSInteger index = [ex index:rc];
+    NSInteger span = [ex span:rc];
+    CGFloat spacing = [self cellSpacingFor:rc];
+    CGFloat size = [ex size:rc] + spacing;      // すべてのセルサイズにspacingが含まれている前提で計算するので、最初に右側のspacingを足しておく
+    CGFloat totalStretch = 0;
+    NSInteger stretchCount = 0;
+
+    for(NSInteger i=0, ci=span ; i<ci ; i++) {
+        NSInteger pos = index+i;
+        if(!_table.isCompleted(rc, pos)) {
+            CGFloat defSize = _table.getDefSize(rc, pos);
+            if(defSize<0) {
+                totalStretch += ABS(defSize);
+                stretchCount++;
+            } else {
+//                NSAssert(false, @"non-stretched cell but unknown size.");
+                NSLog(@"non-stretched cell but unknown size.(%@) : index=%ld defSize=%f", (rc==COL?@"COL":@"ROW"), (long)pos, defSize);
+            }
+        } else {
+            CGFloat v = _table.getSize(rc, pos);
+            if(v>0) {
+                size -= (v+spacing);
             }
         }
-    } else {
-        // グリッドの幅・高さが固定されていない場合、すべてのSTRETCHEDセルが収まり、且つ、比率が指定通りになるサイズに伸縮する
-        for (NSInteger i=0 ; i<defs.count ; i++) {
-            CGFloat fval = GET_FLOAT(defs, i);
-            if (fval < 0) {
-                SET_FLOAT(sizes, i, base * ABS(fval));
+    }
+
+    // 得られた計算結果をセルサイズテーブルに反映
+    CGFloat totalSize = size - spacing * (stretchCount-1);
+    [self completeStretched:rc index:index span:span totalSize:totalSize totalStretch:totalStretch];
+}
+
+/**
+ * indexからspanの範囲の未確定なセルに、totalSizeとtotalStretchから按分されるサイズを設定する。
+ */
+- (void) completeStretched:(RowColumn)rc index:(NSInteger)index span:(NSInteger)span totalSize:(CGFloat) size totalStretch:(CGFloat) totalStretch {
+    if(totalStretch<=0) {
+        // stretchなセルはなかった
+        return;
+    }
+    
+    // stretchの比率に合わせて、サイズを決定
+    for(NSInteger i=0, ci=span ; i<ci ; i++) {
+        NSInteger pos = index+i;
+        if(!_table.isCompleted(rc, pos)) {
+            CGFloat defSize = _table.getDefSize(rc, pos);
+            if(defSize<0) {
+                if(size>0) {
+                    _table.setSize(rc, pos, ABS(defSize)*size/totalStretch);
+                } else {
+                    _table.setSize(rc, pos, 0);
+                }
+                _table.completed(rc, pos, true);
             }
         }
     }
 }
 
+- (CGFloat) cellSpacingFor:(RowColumn) rc {
+    return (rc==COL) ? _cellSpacing.width : _cellSpacing.height;
+}
+
 /**
-* pass3までに決まったサイズをもとに、Span指定のセルのサイズを計算する。
-* このとき、Span後のサイズより、セルの最小サイズが大きい場合で、fixWidth/Heightでない場合は、セルを拡張するが、
-* この場合は、指定比率になるよう、もう一度、pass3 を実行する。
-*/
-- (void) pass4_calcSpannedCellsForCol:(bool)forCol sizes:(NSMutableArray<NSNumber*>*) sizes fix:(CGFloat)fix {
-    let defs = (forCol) ? _colDefs : _rowDefs;
-    bool expansion = false;
-    for(id<IWPLCell> c in self.cells) {
-        if(c.visibility == WPLVisibilityCOLLAPSED) {
-            continue;
-        }
-        let ex = EXT(c);
-        NSInteger span = [ex spanForCol:forCol];
-        if(span>1) {
-            NSInteger pos = [ex posForCol:forCol];
-            CGFloat ss = sumRange(sizes, pos, span);    // Span範囲の各セルの合計サイズ
-            CGFloat sa = [ex sSizeForCol:forCol];       // spannedセルの最小要求サイズ
-            if (ss > 0 && ss < sa) {
-                if (fix <= 0) {
-                    // spannedセルの要求サイズが、他のセルから計算されたセルサイズ合計より小さいため、拡張が必要
-                    expansion = true;
-                    
-                    // もし、stretched なセルがあれば、優先的に拡張する
-                    CGFloat stretchable = 0;
-                    for (NSInteger i = 0 ; i<span; i++) {
-                        if(GET_FLOAT(defs,pos+i)<0) {
-                            stretchable += GET_FLOAT(sizes, pos+1);
-                        }
-                    }
-                    if(stretchable<=0) {
-                        // stretchedなセルがなかったら、すべてのセルを比率で拡張
-                        for (NSInteger i = 0 ; i<span; i++) {
-                            SET_FLOAT(sizes, pos+i, GET_FLOAT(sizes,i) * sa/ss);
-                        }
-                    } else {
-                        // stretchedなセルがあれば、それらを比率で拡張
-                        for (NSInteger i = 0 ; i<span; i++) {
-                            if(GET_FLOAT(defs,pos+i)<0) {
-                                SET_FLOAT(sizes, pos+i, GET_FLOAT(sizes,i) * (1+(sa-ss)/stretchable));
-                            }
-                        }
-                    }
-                }
+ * グリッドのサイズが固定サイズとして指定されている場合に、それを基準にStretchセルのサイズを計算する。
+ */
+- (void) resolveStretchByFixedSize:(RowColumn) rc fixed:(CGFloat) fixed {
+    CGFloat totalStretch = 0;
+    CGFloat occupied = 0;
+    CGFloat spacing = [self cellSpacingFor:rc];
+    NSInteger countStretch = 0;
+    for(NSInteger i=0, ci=_table.count(rc) ; i<ci ; i++) {
+        if(!_table.isCompleted(rc, i)) {
+            CGFloat defSize = _table.getDefSize(rc, i);
+            if(defSize<0) {
+                totalStretch += ABS(defSize);
+                countStretch++;
+            }
+        } else {
+            CGFloat v = _table.getSize(rc, i);
+            if(v>0) {
+                occupied += (v+spacing);
             }
         }
     }
-    if(expansion) {
-        // 指定比率になるよう、もう一度、pass3 を実行する
-        // 課題：２つ以上の（異なる範囲を持つ）colSpan/rowSpanのセルが、それぞれ拡張されるとき、必要な拡張量以上に大きくなってしまう。（いまのところ制限事項）
-        [self pass3_calcStretchedCellForCol:forCol sizes:sizes fix:fix];
+    CGFloat totalSize = fixed-occupied-spacing*(countStretch-1);
+    [self completeStretched:rc index:0 span:_table.count(rc) totalSize:totalSize totalStretch:totalStretch];
+}
+
+- (void) pass3_calcStretch:(RowColumn)rc fixedSize:(CGFloat)fixedSize {
+    //NSAssert(fixedSize>=0, @"fixed size must have positive value (auto|fixed).");
+    if(fixedSize==0) {
+        // Auto: 内部のセルサイズを優先
+        [self resolveStretchBySpannedCell:rc];
+    } else {
+        // Fixed: グリッドのサイズを優先
+        [self resolveStretchByFixedSize:rc fixed:MAX(fixedSize,0)];
     }
 }
+
+#pragma mark レイアウト計算：Pass4 ... 各セルに配置を反映
 
 /**
  * セルを配置する
  * widths/heights に入っている各column/rowの幅・高さの計算結果を、セルに反映する
  */
-- (void) pass5_finalizeInWidths:(NSArray<NSNumber*>*)widths andHeights:(NSArray<NSNumber*>*)heights {
+- (void) pass4_finalize {
     for(id<IWPLCell> c in self.cells) {
-        let ex = EXT(c);
-        MICSize size([self trimCellSpacing:c width:sumRange(widths, ex.column, ex.colSpan) height:sumRange(heights, ex.row, ex.rowSpan)]);
-        MICPoint point(sumRange(widths, 0, ex.column), sumRange(heights, 0, ex.row));
+        let ex = (WPLGridExtension*) c.extension;
+        MICSize size(_table.sizeRange(COL, ex.column, ex.colSpan, _cellSpacing.width),
+                     _table.sizeRange(ROW, ex.row, ex.rowSpan, _cellSpacing.height));
+        MICPoint point(_table.offsetAt(COL, ex.column, _cellSpacing.width),
+                       _table.offsetAt(ROW, ex.row, _cellSpacing.height));
         [c layoutCompleted:MICRect(point,size)];
     }
 }
 
-/**
- * カラムのサイズ計算（セルの配置は行わない）
- * @return Grid全体の幅
- */
-- (CGFloat) calcColumnWidth:(CGFloat) fix {
-    clearRange(_columnWidths);
-    bool spanCol = [self pass2_getMinSizeForCol:true sizes:_columnWidths];
-    [self pass3_calcStretchedCellForCol:true sizes:_columnWidths fix:fix];
-    if (spanCol) {
-        [self pass4_calcSpannedCellsForCol:true sizes:_columnWidths fix:fix];
-    }
-    return (fix > 0) ? fix : sumRange(_columnWidths);
-}
+#pragma mark レイアウト エントリーポイント
 
-/**
- * 行のサイズ計算（セルの配置は行わない）
- * Pass-2 ～ 4
- * @return Grid全体の高さ
- */
-- (CGFloat) calcRowHeight:(CGFloat) fix {
-    clearRange(_rowHeights);
-    bool spanRow = [self pass2_getMinSizeForCol:false sizes:_rowHeights];
-    [self pass3_calcStretchedCellForCol:false sizes:_rowHeights fix:fix];
-    if (spanRow) {
-        [self pass4_calcSpannedCellsForCol:false sizes:_rowHeights fix:fix];
-    }
-    return (fix > 0) ? fix : sumRange(_rowHeights);
+- (CGFloat) calcGridSize:(RowColumn)rc fixedSize:(CGFloat) fixedSize {
+    _table.reset(rc);
+    [self pass2_getMinRowColumnSize:rc];
+    [self pass3_calcStretch:rc fixedSize:fixedSize];
+    return (fixedSize > 0) ? fixedSize : _table.sizeRange(rc, 0, _table.count(rc), [self cellSpacingFor:rc]);
 }
 
 /**
  * キャッシュサイズが確定していない場合（cachedSize.width/height==0f）には、サイズを計算する(Pass2 ～ Pass4)。
  * 計算結果に基づいて、セルを配置する(Pass5)。
  */
-- (CGSize) innerLayout:(CGSize) fixSize {
-    NSAssert(fixSize.width>=0 && fixSize.height>=0, @"Grid.innerLayout: fix < 0");
+- (CGSize) innerLayout:(CGSize) fixedSize {
+//    NSAssert(fixedSize.width>=0 && fixedSize.height>=0, @"Grid.innerLayout: fix < 0");
     if(_cachedSize.width==0) {
-        _cachedSize.width = [self calcColumnWidth:fixSize.width];
+        _cachedSize.width = [self calcGridSize:COL fixedSize:fixedSize.width];
     }
     if(_cachedSize.height==0) {
-        _cachedSize.height = [self calcRowHeight:fixSize.height];
+        _cachedSize.height = [self calcGridSize:ROW fixedSize:fixedSize.height];
     }
-    [self pass5_finalizeInWidths:_columnWidths andHeights:_rowHeights];
+    [self pass4_finalize];
     self.needsLayoutChildren = false;
     return _cachedSize;
-}
-
-/**
- * サイズに負値が入らないようにして返す
- */
-static inline MICSize positiveSize(const CGSize& size) {
-    return MICSize(MAX(size.width, 0), MAX(size.height,0));
 }
 
 /**
@@ -596,15 +777,13 @@ static inline MICSize positiveSize(const CGSize& size) {
 - (CGSize) layout {
     if(self.needsLayoutChildren) {
         [self pass1_initParams];
-        
-        [self innerLayout:positiveSize(self.requestViewSize)];
-        
+        [self innerLayout:self.requestViewSize];
         if(MICSize(_cachedSize)!=self.view.frame.size) {
             self.view.frame = MICRect(self.view.frame.origin, _cachedSize);
         }
     }
     self.needsLayout = false;
-    return MICSize(_cachedSize) + self.margin;
+    return [self sizeWithMargin:_cachedSize];
 }
 
 /**
@@ -626,7 +805,8 @@ static inline MICSize positiveSize(const CGSize& size) {
         [self pass1_initParams];
         MICSize fixSize( (self.requestViewSize.width>=0)  ? self.requestViewSize.width  : regSize.width,
                          (self.requestViewSize.height>=0) ? self.requestViewSize.height : regSize.height );
-        [self innerLayout:positiveSize(fixSize)];
+        
+        [self innerLayout:[self sizeWithoutMargin:fixSize]];
     }
     return [self sizeWithMargin:_cachedSize];
 }
@@ -669,5 +849,8 @@ static inline MICSize positiveSize(const CGSize& size) {
     }
     [super layoutCompleted:finalCellRect];
 }
+
+
+
 
 @end

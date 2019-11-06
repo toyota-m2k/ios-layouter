@@ -1,10 +1,11 @@
 //
-//  WPLGrid2.h
-//  layouterSample
+//  WPLGrid.h
+//  WP Layouter
 //
-//  Created by Mitsuki Toyota on 2019/11/05.
-//  Copyright © 2019 Mitsuki Toyota. All rights reserved.
+//  Created by toyota-m2k on 2019/08/03.
+//  Copyright © 2019 toyota-m2k. All rights reserved.
 //
+#if 0
 
 #import "WPLContainerCell.h"
 
@@ -158,6 +159,9 @@ typedef WPLCellPosition (^WPLUpdateCellPosition)(id<IWPLCell>cell, WPLCellPositi
 
 #endif
 
+/**
+ * Row/Column でレイアウト可能なコンテナセルクラス
+ */
 @interface WPLGrid : WPLContainerCell
 
 /**
@@ -195,18 +199,6 @@ typedef WPLCellPosition (^WPLUpdateCellPosition)(id<IWPLCell>cell, WPLCellPositi
 //                    andColumns:(NSArray<NSNumber*>*) colDefs
 //               requestViewSize:(CGSize) requestViewSize;
 
-@property (nonatomic) CGSize cellSpacing;
-@property (nonatomic,readonly) NSInteger rows;
-@property (nonatomic,readonly) NSInteger columns;
-
-- (void) addCell:(id<IWPLCell>)cell;
-- (void) addCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column;
-- (void) addCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan;
-
-// 追加されているセルを、他のセルに移動する(detachCell-->addCellと同じ）
-- (void) moveCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column;
-- (void) moveCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan;
-
 #if defined(__cplusplus)
 /**
  * C++用インスタンス生成ヘルパー
@@ -232,9 +224,21 @@ typedef WPLCellPosition (^WPLUpdateCellPosition)(id<IWPLCell>cell, WPLCellPositi
 - (void) addCell:(id<IWPLCell>)cell position:(const WPLCellPosition&) pos;
 - (void) moveCell:(id<IWPLCell>)cell position:(const WPLCellPosition&) pos;
 
-- (void) reformWithParams:(const WPLGridParams&) params updateCell:(WPLUpdateCellPosition) updateCellPosition;
+- (instancetype) reformWithParams:(const WPLGridParams&) params updateCell:(WPLUpdateCellPosition) updateCellPosition;
 
 #endif
 
-@end
+@property (nonatomic) CGSize cellSpacing;
+@property (nonatomic,readonly) NSInteger rows;
+@property (nonatomic,readonly) NSInteger columns;
 
+- (void) addCell:(id<IWPLCell>)cell;
+- (void) addCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column;
+- (void) addCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan;
+
+// 追加されているセルを、他のセルに移動する(detachCell-->addCellと同じ）
+- (void) moveCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column;
+- (void) moveCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan;
+
+@end
+#endif

@@ -215,6 +215,7 @@ public:
         FIT,            // 兄弟または親の対応する辺に対して配置　--> 上下左右を揃える
         ADJACENT,       // 兄弟の向かい合う辺に対して配置する --> 上下左右に並べる
         CENTER,         // センタリング（縦方向ならtop/bottom、横方向ならleft/right のいずれかに指定。もう片方の指定は無視される）
+        SAFE_AREA,      // セーフエリアにアタッチ
     };
 public:
     Attach _attach;
@@ -255,6 +256,16 @@ public:
      */
     RALAttach& parent(CGFloat distance=0) {
         _attach = FIT;
+        _related = nil;
+        _value = distance;
+        return *this;
+    }
+    
+    /**
+     * セーフエリアにアタッチ
+     */
+    RALAttach& safeArea(CGFloat distance=0) {
+        _attach = SAFE_AREA;
         _related = nil;
         _value = distance;
         return *this;
@@ -532,6 +543,11 @@ public:
     }
     
     RALParams&
+    attach(const RALAttach& attach) {
+        return top_left(attach).bottom_right(attach);
+    }
+    
+    RALParams&
     scaling(const RALScaling& scale) {
         _horz = scale;
         _vert = scale;
@@ -584,6 +600,21 @@ public:
      */
     RALBuilder& addView(UIView* view, RALParams& params);
     
+    /**
+     * ビューのセーフエリアに合わせて配置する
+     * @param target        対象ビュー
+     * @param pos           targetのどの辺に制約をつけるかを指定するビットフラグ（MICUiPosExLEFT|TOP|RIGHT|BOTTOM）を指定
+     * @param margin        セーフエリアからのマージン（posで指定されていない部分のマージンは無視される）
+     */
+    RALBuilder&
+    fitToSafeArea(UIView* target, MICUiPosEx pos = MICUiPosExALL, const UIEdgeInsets& margin=MICEdgeInsets(), int relativity=0) {
+        if(_autoAddSubview) {
+            [_parentView addSubview:target];
+        }
+        MICAutoLayoutBuilder::fitToSafeArea(target, pos, margin, relativity);
+        return *this;
+    }
+
 private:
     void attachToRelated(UIView* target, UIView* related, MICUiPos pos, bool adjacent, CGFloat distance);
     void attachCenter(UIView* view, UIView*related, bool vert);

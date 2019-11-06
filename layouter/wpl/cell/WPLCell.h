@@ -144,6 +144,8 @@ public:
                             name:(NSString*) name
                           params:(const WPLCellParams&) params;
 
+- (void) setParams:(const WPLCellParams&) params;
+
 #endif
 
 @property (nonatomic,readonly) CGSize requestCellSize;

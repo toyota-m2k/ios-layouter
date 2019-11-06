@@ -21,10 +21,6 @@
     self.containerCell = v;
 }
 
-- (void) reformWithParams:(const WPLGridParams&) params updateCell:(WPLUpdateCellPosition) updateCellPosition {
-    self.containerCell = [self.container reformWithParams:params updateCell:updateCellPosition];
-}
-
 + (WPLGridView *) gridViewWithName:(NSString *)name
                             params:(WPLGridParams)params {
     let view = [WPLGridView new];

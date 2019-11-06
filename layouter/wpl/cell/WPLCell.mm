@@ -68,6 +68,14 @@
     return self;
 }
 
+- (void)setParams:(const WPLCellParams &)params {
+    self.margin = params._margin;
+    self.hAlignment = params._align.horz;
+    self.vAlignment = params._align.vert;
+    self.requestViewSize = params._requestViewSize;
+    self.visibility = params._visibility;
+}
+
 /**
  * インスタンス生成ヘルパー
  * 通常、containerDelegate は、ContainerCellへの addCell で設定されるため、ここでは nil にしておく。
@@ -268,9 +276,15 @@
     MICSize s(size);
     if(s.width>0) {
         s.width -= _margin.dw();
+        if(s.width<0) {
+            s.width = 0;
+        }
     }
     if(s.height>0) {
         s.height -= _margin.dh();
+        if(s.height<0) {
+            s.height = 0;
+        }
     }
     return s;
 }

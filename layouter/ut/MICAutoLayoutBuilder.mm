@@ -201,6 +201,10 @@ MICAutoLayoutBuilder::fitHorizontallyToSibling(UIView* target, UIView* sibling, 
     return *this;
 }
 
+// ------------------------------------------------------------------------------------------------------
+
+#pragma mark - RALBuilder
+
 
 /**
  * RALParams の指定に従って、サブビューの配置を行うためのビルダー
@@ -297,6 +301,9 @@ void RALBuilder::attachToRelated(UIView* view, const RALAttach& attach, MICUiPos
             // fall through ...
         case RALAttach::FIT:
             attachToRelated(view, attach._related, pos, adjacent, attach._value);
+            break;
+        case RALAttach::SAFE_AREA:
+            MICAutoLayoutBuilder::fitToSafeArea(view, (MICUiPosEx)pos, MICEdgeInsets(attach._value), 0);
             break;
         default:
             break;

@@ -129,9 +129,9 @@ static inline void set_size(bool forHorz, MICRect& rect, CGFloat v) {
     }
 }
 
-//static inline CGFloat get_point(bool forHorz, const CGPoint& point) {
-//    return forHorz ? point.x : point.y;
-//}
+static inline CGFloat get_point(bool forHorz, const CGPoint& point) {
+    return forHorz ? point.x : point.y;
+}
 
 /**
  * ２点間の指定方向の距離を取得
@@ -203,13 +203,6 @@ static inline void set_origin(bool forHorz, MICRect& rect, CGFloat pos=0) {
         ((UIScrollView*)_view).contentSize = contentRect.size;
     }
     
-    if(contentRect!=viewRect) {
-        [self alignContainerCellForHorz:true contentRect:contentRect viewRect:viewRect];
-        [self alignContainerCellForHorz:false contentRect:contentRect viewRect:viewRect];
-        _containerCell.view.frame = contentRect;
-    }
-    
-    
 }
 
 /**
@@ -220,7 +213,10 @@ static inline void set_origin(bool forHorz, MICRect& rect, CGFloat pos=0) {
                  cellSize:(const MICSize&) cellSize
                  cellRect:(MICRect&)cellRect {
     if(get_size(forHorz, _containerCell.requestViewSize)<0) {
-        return; // stretch
+        // stretch
+        set_origin(forHorz, cellRect, get_point(forHorz, viewRect.origin));
+        set_size(forHorz, cellRect, get_size(forHorz,viewRect.size));
+        return;
     }
     switch([self align:forHorz]) {
         case WPLCellAlignmentSTART:

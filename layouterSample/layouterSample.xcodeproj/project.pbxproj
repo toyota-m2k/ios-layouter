@@ -13,7 +13,7 @@
 		841AD73E22EE93AE00F9AB7D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 841AD73D22EE93AE00F9AB7D /* Assets.xcassets */; };
 		841AD74122EE93AE00F9AB7D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 841AD73F22EE93AE00F9AB7D /* LaunchScreen.storyboard */; };
 		841AD74422EE93AE00F9AB7D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD74322EE93AE00F9AB7D /* main.m */; };
-		841AD75922EE93AE00F9AB7D /* layouterSampleUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD75822EE93AE00F9AB7D /* layouterSampleUITests.m */; };
+		841AD75922EE93AE00F9AB7D /* layouterSampleUITests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD75822EE93AE00F9AB7D /* layouterSampleUITests.mm */; };
 		841AD7C522EE93FA00F9AB7D /* MICAcom.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD76A22EE93FA00F9AB7D /* MICAcom.m */; };
 		841AD7C622EE93FA00F9AB7D /* MICResetableEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD76F22EE93FA00F9AB7D /* MICResetableEvent.m */; };
 		841AD7C722EE93FA00F9AB7D /* MICTargetSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD77022EE93FA00F9AB7D /* MICTargetSelector.m */; };
@@ -63,11 +63,11 @@
 		841AD83F22F52AEE00F9AB7D /* WPLValueCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD82822F52AEE00F9AB7D /* WPLValueCell.mm */; };
 		841AD84022F52AEE00F9AB7D /* WPLStackPanel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD82C22F52AEE00F9AB7D /* WPLStackPanel.mm */; };
 		841AD84122F52AEE00F9AB7D /* WPLContainerCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD82D22F52AEE00F9AB7D /* WPLContainerCell.mm */; };
-		841AD84222F52AEE00F9AB7D /* WPLGrid.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD82E22F52AEE00F9AB7D /* WPLGrid.mm */; };
+		841AD84222F52AEE00F9AB7D /* WPLGridOld.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD82E22F52AEE00F9AB7D /* WPLGridOld.mm */; };
 		841AD84322F52AEE00F9AB7D /* WPLObservableData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD83522F52AEE00F9AB7D /* WPLObservableData.mm */; };
 		841AD84422F52AEE00F9AB7D /* WPLObservableMutableData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD83722F52AEE00F9AB7D /* WPLObservableMutableData.mm */; };
 		841AD84522F52AEE00F9AB7D /* WPLDelegatedObservableData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD83822F52AEE00F9AB7D /* WPLDelegatedObservableData.mm */; };
-		841AD84A22F53C4E00F9AB7D /* layouterSampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD74D22EE93AE00F9AB7D /* layouterSampleTests.m */; };
+		841AD84A22F53C4E00F9AB7D /* layouterSampleTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD74D22EE93AE00F9AB7D /* layouterSampleTests.mm */; };
 		841AD85022F6611900F9AB7D /* WPLSwitchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD84F22F6611900F9AB7D /* WPLSwitchCell.m */; };
 		841AD85322F6722C00F9AB7D /* WPLBinder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD85222F6722C00F9AB7D /* WPLBinder.mm */; };
 		841AD85622F7BD7D00F9AB7D /* WPLGenericBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD85522F7BD7D00F9AB7D /* WPLGenericBinding.m */; };
@@ -102,6 +102,10 @@
 		845B5AB8230D50A00055A98A /* acomTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 845B5AB7230D50A00055A98A /* acomTests.mm */; };
 		846DC31223667627006CD2CE /* WPLGuidanceViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 846DC31123667627006CD2CE /* WPLGuidanceViewController.mm */; };
 		847AFEA22313A506004809EB /* WPLPropBinding.mm in Sources */ = {isa = PBXBuildFile; fileRef = 847AFEA12313A506004809EB /* WPLPropBinding.mm */; };
+		84DDAFAC2371104100232310 /* gridTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84DDAFAB2371104100232310 /* gridTest.mm */; };
+		84DDAFAF2371142E00232310 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84DDAFAE2371142E00232310 /* UIKit.framework */; };
+		84DDAFB22371293B00232310 /* WPLGrid.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84DDAFB12371293B00232310 /* WPLGrid.mm */; };
+		84DDAFB423728D7E00232310 /* stackPanelTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84DDAFB323728D7E00232310 /* stackPanelTest.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -133,10 +137,10 @@
 		841AD74222EE93AE00F9AB7D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		841AD74322EE93AE00F9AB7D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		841AD74922EE93AE00F9AB7D /* layouterSampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = layouterSampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		841AD74D22EE93AE00F9AB7D /* layouterSampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = layouterSampleTests.m; sourceTree = "<group>"; };
+		841AD74D22EE93AE00F9AB7D /* layouterSampleTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = layouterSampleTests.mm; sourceTree = "<group>"; };
 		841AD74F22EE93AE00F9AB7D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		841AD75422EE93AE00F9AB7D /* layouterSampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = layouterSampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		841AD75822EE93AE00F9AB7D /* layouterSampleUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = layouterSampleUITests.m; sourceTree = "<group>"; };
+		841AD75822EE93AE00F9AB7D /* layouterSampleUITests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = layouterSampleUITests.mm; sourceTree = "<group>"; };
 		841AD75A22EE93AE00F9AB7D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		841AD76722EE93FA00F9AB7D /* MICUiStackLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MICUiStackLayout.h; sourceTree = "<group>"; };
 		841AD76922EE93FA00F9AB7D /* MICUiColorUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MICUiColorUtil.h; sourceTree = "<group>"; };
@@ -242,9 +246,9 @@
 		841AD82A22F52AEE00F9AB7D /* WPLCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLCell.h; sourceTree = "<group>"; };
 		841AD82C22F52AEE00F9AB7D /* WPLStackPanel.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLStackPanel.mm; sourceTree = "<group>"; };
 		841AD82D22F52AEE00F9AB7D /* WPLContainerCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLContainerCell.mm; sourceTree = "<group>"; };
-		841AD82E22F52AEE00F9AB7D /* WPLGrid.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGrid.mm; sourceTree = "<group>"; };
+		841AD82E22F52AEE00F9AB7D /* WPLGridOld.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridOld.mm; sourceTree = "<group>"; };
 		841AD82F22F52AEE00F9AB7D /* WPLContainerDef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLContainerDef.h; sourceTree = "<group>"; };
-		841AD83022F52AEE00F9AB7D /* WPLGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLGrid.h; sourceTree = "<group>"; };
+		841AD83022F52AEE00F9AB7D /* WPLGridOld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLGridOld.h; sourceTree = "<group>"; };
 		841AD83122F52AEE00F9AB7D /* WPLStackPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLStackPanel.h; sourceTree = "<group>"; };
 		841AD83222F52AEE00F9AB7D /* WPLContainerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLContainerCell.h; sourceTree = "<group>"; };
 		841AD83422F52AEE00F9AB7D /* WPLObservableDef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLObservableDef.h; sourceTree = "<group>"; };
@@ -322,6 +326,11 @@
 		846DC50423681F24006CD2CE /* WPLCellL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLCellL.h; sourceTree = "<group>"; };
 		847AFEA02313A506004809EB /* WPLPropBinding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLPropBinding.h; sourceTree = "<group>"; };
 		847AFEA12313A506004809EB /* WPLPropBinding.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLPropBinding.mm; sourceTree = "<group>"; };
+		84DDAFAB2371104100232310 /* gridTest.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = gridTest.mm; sourceTree = "<group>"; };
+		84DDAFAE2371142E00232310 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		84DDAFB02371293B00232310 /* WPLGrid.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGrid.h; sourceTree = "<group>"; };
+		84DDAFB12371293B00232310 /* WPLGrid.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGrid.mm; sourceTree = "<group>"; };
+		84DDAFB323728D7E00232310 /* stackPanelTest.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = stackPanelTest.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -336,6 +345,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84DDAFAF2371142E00232310 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -357,6 +367,7 @@
 				841AD74C22EE93AE00F9AB7D /* layouterSampleTests */,
 				841AD75722EE93AE00F9AB7D /* layouterSampleUITests */,
 				841AD73222EE93AD00F9AB7D /* Products */,
+				84DDAFAD2371142E00232310 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -391,10 +402,12 @@
 		841AD74C22EE93AE00F9AB7D /* layouterSampleTests */ = {
 			isa = PBXGroup;
 			children = (
-				841AD74D22EE93AE00F9AB7D /* layouterSampleTests.m */,
+				841AD74D22EE93AE00F9AB7D /* layouterSampleTests.mm */,
 				841AD74F22EE93AE00F9AB7D /* Info.plist */,
 				841AD85B22FB203700F9AB7D /* bindingTests.mm */,
 				845B5AB7230D50A00055A98A /* acomTests.mm */,
+				84DDAFAB2371104100232310 /* gridTest.mm */,
+				84DDAFB323728D7E00232310 /* stackPanelTest.mm */,
 			);
 			path = layouterSampleTests;
 			sourceTree = "<group>";
@@ -402,7 +415,7 @@
 		841AD75722EE93AE00F9AB7D /* layouterSampleUITests */ = {
 			isa = PBXGroup;
 			children = (
-				841AD75822EE93AE00F9AB7D /* layouterSampleUITests.m */,
+				841AD75822EE93AE00F9AB7D /* layouterSampleUITests.mm */,
 				841AD75A22EE93AE00F9AB7D /* Info.plist */,
 			);
 			path = layouterSampleUITests;
@@ -599,8 +612,10 @@
 				841AD82C22F52AEE00F9AB7D /* WPLStackPanel.mm */,
 				841AD86322FC5C4100F9AB7D /* WPLFrame.h */,
 				841AD86422FC5C4100F9AB7D /* WPLFrame.mm */,
-				841AD83022F52AEE00F9AB7D /* WPLGrid.h */,
-				841AD82E22F52AEE00F9AB7D /* WPLGrid.mm */,
+				841AD83022F52AEE00F9AB7D /* WPLGridOld.h */,
+				841AD82E22F52AEE00F9AB7D /* WPLGridOld.mm */,
+				84DDAFB02371293B00232310 /* WPLGrid.h */,
+				84DDAFB12371293B00232310 /* WPLGrid.mm */,
 			);
 			path = container;
 			sourceTree = "<group>";
@@ -690,6 +705,14 @@
 				846DC31123667627006CD2CE /* WPLGuidanceViewController.mm */,
 			);
 			path = wpl;
+			sourceTree = "<group>";
+		};
+		84DDAFAD2371142E00232310 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				84DDAFAE2371142E00232310 /* UIKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -858,6 +881,7 @@
 				841AD83B22F52AEE00F9AB7D /* WPLValueBinding.mm in Sources */,
 				841AD8A6230648D700F9AB7D /* GridViewController.mm in Sources */,
 				841AD7DD22EE93FA00F9AB7D /* MICUiTabBarView.mm in Sources */,
+				84DDAFB22371293B00232310 /* WPLGrid.mm in Sources */,
 				841AD84122F52AEE00F9AB7D /* WPLContainerCell.mm in Sources */,
 				841AD7E622EE93FA00F9AB7D /* MICUiStackView.mm in Sources */,
 				841AD8A8230648D700F9AB7D /* StackViewController.mm in Sources */,
@@ -909,7 +933,7 @@
 				841AD87222FD6B8D00F9AB7D /* WPLGridView.mm in Sources */,
 				841AD86F22FD684D00F9AB7D /* WPLFrameView.mm in Sources */,
 				841AD7CA22EE93FA00F9AB7D /* MICExecutor.m in Sources */,
-				841AD84222F52AEE00F9AB7D /* WPLGrid.mm in Sources */,
+				841AD84222F52AEE00F9AB7D /* WPLGridOld.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -918,8 +942,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				845B5AB8230D50A00055A98A /* acomTests.mm in Sources */,
-				841AD84A22F53C4E00F9AB7D /* layouterSampleTests.m in Sources */,
+				841AD84A22F53C4E00F9AB7D /* layouterSampleTests.mm in Sources */,
 				841AD85C22FB203700F9AB7D /* bindingTests.mm in Sources */,
+				84DDAFAC2371104100232310 /* gridTest.mm in Sources */,
+				84DDAFB423728D7E00232310 /* stackPanelTest.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -927,7 +953,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				841AD75922EE93AE00F9AB7D /* layouterSampleUITests.m in Sources */,
+				841AD75922EE93AE00F9AB7D /* layouterSampleUITests.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1158,6 +1184,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.michael.layouterSampleUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = layouterSample;
 			};
@@ -1175,6 +1202,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.michael.layouterSampleUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = layouterSample;
 			};
