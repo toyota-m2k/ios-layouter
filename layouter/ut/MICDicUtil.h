@@ -9,8 +9,6 @@
 #ifndef MICDicUtil_h
 #define MICDicUtil_h
 
-#if defined(__cplusplus)
-
 static inline id exorcizeNSNull(id v) {
     return (v!=[NSNull null])?v:nil;
 }
@@ -43,6 +41,8 @@ static inline bool dic_bool(NSDictionary* dic, id key, bool defval) {
     id r = dic_obj(dic,key);
     return (nil!=r && [r respondsToSelector:@selector(boolValue)]) ? [r boolValue] : defval;
 }
+
+#if defined(__cplusplus)
 
 static inline CGFloat number_to_cgfloat(id r, CGFloat defVal=0) {
 #if CGFLOAT_IS_DOUBLE

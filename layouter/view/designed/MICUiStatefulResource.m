@@ -69,9 +69,9 @@
     id r = [self resourceOf:type forState:state];
     if( nil==r && state != fallback) {
         r = [self resourceOf:type forState:fallback];
-        if(nil==r && state != MICUiViewStateNORMAL && fallback != MICUiViewStateNORMAL) {
-            return [self resourceOf:type forState:MICUiViewStateNORMAL];
-        }
+    }
+    if(nil==r && state != MICUiViewStateNORMAL && fallback != MICUiViewStateNORMAL) {
+        return [self resourceOf:type forState:MICUiViewStateNORMAL];
     }
     return r;
 }

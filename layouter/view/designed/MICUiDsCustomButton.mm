@@ -78,12 +78,17 @@
  * 現在のボタンステートに応じたリソースを取得
  */
 - (id) resource:(id<MICUiStatefulResourceProtocol>)resource onStateForType:(MICUiResType)type {
-    MICUiViewState state = _buttonState, fallback=MICUiViewStateNORMAL;
+    return [self resource:resource onState:_buttonState ForType:type];
+}
+
+- (id) resource:(id<MICUiStatefulResourceProtocol>)resource onState:(MICUiViewState)state ForType:(MICUiResType)type {
+    MICUiViewState fallback=MICUiViewStateNORMAL;
     if(MICUiViewState_IsSelected(state)) {
         fallback = MICUiViewStateSELECTED_;
     }
     return [resource resourceOf:type forState:state fallbackState:fallback];
 }
+
 
 /**
  * enabledプロパティ
@@ -370,11 +375,15 @@
  * 状態依存のアイコンを取得
  *   iconResourcesが指定されていれば、それから取得、指定されていなければ、colorResourcesから取得する。
  */
+- (UIImage*) getIconForCurrentState {
+    return [self getIconForState:_buttonState];
+}
+
 - (UIImage*) getIconForState:(MICUiViewState)state {
     if(nil!=_iconResources) {
-        return [self resource:_iconResources onStateForType:MICUiResTypeICON];
+        return [self resource:_iconResources onState:state ForType:MICUiResTypeICON];
     } else {
-        return [self resource:_colorResources onStateForType:MICUiResTypeICON];
+        return [self resource:_colorResources onState:state ForType:MICUiResTypeICON];
     }
 }
 
@@ -398,7 +407,7 @@
     MICCGContext ctx(rctx, false);
     
     // アイコン/テキストの描画１を取得
-    UIImage* icon = [self getIconForState:_buttonState];
+    UIImage* icon = [self getIconForCurrentState];
     MICRect rcIcon, rcText;
     [self getContentRect:icon iconRect:&rcIcon textRect:&rcText];
    

@@ -77,6 +77,12 @@
  */
 - (UIImage*) getIconForState:(MICUiViewState)state;
 
+/**
+ * 現在のボタンの状態に応じたアイコンを取得
+ * [self getIconForState:_buttonState]と同じ。
+ */
+- (UIImage*) getIconForCurrentState;
+
 
 /**
  * ラベル描画用フォントを取得する
