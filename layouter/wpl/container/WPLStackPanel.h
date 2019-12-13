@@ -54,6 +54,14 @@ public:
         _align = v;
         return *this;
     }
+    WPLStackPanelParams& align(const WPLCellAlignment align) {
+        _align = WPLAlignment(align);
+        return *this;
+    }
+    WPLStackPanelParams& align(const WPLCellAlignment horz, const WPLCellAlignment vert) {
+        _align = WPLAlignment(horz, vert);
+        return *this;
+    }
 
     WPLStackPanelParams& horzAlign(const WPLCellAlignment v) {
         _align.horz = v;
@@ -138,6 +146,10 @@ public:
  * (Sub-Container 用）
  */
 + (instancetype) stackPanelWithName:(NSString*) name
+                             params:(const WPLStackPanelParams&)params;
+
++ (instancetype) stackPanelWithView:(UIView*)view
+                               name:(NSString*) name
                              params:(const WPLStackPanelParams&)params;
 
 #endif

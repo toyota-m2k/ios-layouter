@@ -314,6 +314,11 @@ static inline NSString* label_braced_string(NSString* a, NSString* s) {
     XCTAssert([cellNestA.value isEqualToString:label_braced_string(cellA.value, cellBC.value)]);
     XCTAssert(cellBC.enabled==true);
 
+    XCTAssert([@false isEqual:@(0)]);
+    XCTAssert([@true isEqual:@(1)]);
+    NSNumber* v = @(2);
+    XCTAssert(true == v.boolValue);
+
     [binder dispose];
 }
 

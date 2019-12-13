@@ -478,7 +478,10 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
  * グリッド構成の再構築
  */
 - (void) reformWithParams:(const WPLGridParams&) params updateCell:(WPLUpdateCellPosition) updateCellPosition {
+    // set CellParams
     [self setParams:params];
+    
+    // update GridParams
     _cachedSize = MICSize();
     _cellSpacing = params._cellSpacing;
     var rowDefs = params._dimension.rowDefs;
@@ -492,6 +495,8 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
         cell.extension = nil;
         [self createExtension:cell row:pos.row column:pos.column rowSpan:pos.rowSpan colSpan:pos.colSpan];
     }
+    self.needsLayoutChildren = true;
+    self.needsLayout = true;
 }
 
 #pragma mark - レイアウト計算用

@@ -64,6 +64,11 @@ public:
     , _dimension(src._dimension)
     , _cellSpacing(src._cellSpacing){}
     
+    WPLGridParams(const WPLCellParams& cellParams, WPLGridDefinition dim = WPLGridDefinition(), CGSize cellSpacing=MICSize())
+    : WPLCellParams(cellParams)
+    , _dimension(dim)
+    , _cellSpacing(cellSpacing) {}
+    
     // builder style methods ----
     
     WPLGridParams& margin(const UIEdgeInsets& v) {
@@ -86,6 +91,15 @@ public:
         _align = v;
         return *this;
     }
+    WPLGridParams& align(const WPLCellAlignment align) {
+        _align = WPLAlignment(align);
+        return *this;
+    }
+    WPLGridParams& align(const WPLCellAlignment horz, const WPLCellAlignment vert) {
+        _align = WPLAlignment(horz, vert);
+        return *this;
+    }
+   
     WPLGridParams& horzAlign(const WPLCellAlignment v) {
         _align.horz = v;
         return *this;

@@ -50,5 +50,10 @@
  */
 - (void) render;
 
+/**
+ * レンダリング完了通知を受け取るためのリスナー
+ */
+- (void) setLayoutCompletionEventListener:(id)target action:(SEL)action;
+
 @end
 

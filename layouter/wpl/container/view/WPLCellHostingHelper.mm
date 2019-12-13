@@ -10,6 +10,12 @@
 #import "MICUiRectUtil.h"
 #import "MICVar.h"
 #import "MICKeyValueObserver.h"
+#import "MICTargetSelector.h"
+
+enum Orientation {
+    VERT=0,
+    HORZ=1,
+};
 
 @implementation WPLCellHostingHelper {
     UIView* __weak _view;
@@ -18,6 +24,7 @@
     MICKeyValueObserver* _observer;
     WPLBinder* _binder;
     CGFloat _animationDuration;
+    MICTargetSelector* _layoutCompletionListener;
 }
 
 - (WPLBinder*) binder {
@@ -41,11 +48,23 @@
         _containerCell = nil;
         _binder = nil;
         _animationDuration = 0;
+        _layoutCompletionListener = nil;
         if(nil!=container) {
             self.containerCell = container;
         }
     }
     return self;
+}
+
+/**
+ * レンダリング完了通知を受け取るためのリスナー
+ */
+- (void) setLayoutCompletionEventListener:(id)target action:(SEL)action {
+    if(target==nil||action==nil) {
+        _layoutCompletionListener = nil;
+    } else {
+        _layoutCompletionListener = [MICTargetSelector targetSelector:target selector:action];
+    }
 }
 
 - (void) attach {
@@ -74,6 +93,7 @@
 
 - (void) dispose {
     [self detach];
+    _layoutCompletionListener = nil;
     if(_containerCell!=nil) {
         [_containerCell dispose];
         _containerCell = nil;
@@ -107,52 +127,52 @@
 /**
  * 指定方向のアラインメントを取得
  */
-- (WPLCellAlignment) align:(bool)forHorz {
-    return (forHorz) ? _containerCell.hAlignment : _containerCell.vAlignment;
+- (WPLCellAlignment) align:(Orientation) o {
+    return (o==HORZ) ? _containerCell.hAlignment : _containerCell.vAlignment;
 }
 
 /**
  * 指定方向のサイズを取得
  */
-static inline CGFloat get_size(bool forHorz, const CGSize& size) {
-    return forHorz ? size.width : size.height;
+static inline CGFloat get_size(Orientation o, const CGSize& size) {
+    return o==HORZ ? size.width : size.height;
 }
 
 /**
  * 指定方向のサイズを設定
  */
-static inline void set_size(bool forHorz, MICRect& rect, CGFloat v) {
-    if(forHorz) {
+static inline void set_size(Orientation o, MICRect& rect, CGFloat v) {
+    if(o==HORZ) {
         rect.setWidth(v);
     } else {
         rect.setHeight(v);
     }
 }
 
-static inline CGFloat get_point(bool forHorz, const CGPoint& point) {
-    return forHorz ? point.x : point.y;
+static inline CGFloat get_point(Orientation o, const CGPoint& point) {
+    return o==HORZ ? point.x : point.y;
 }
 
 /**
  * ２点間の指定方向の距離を取得
  */
-static inline CGFloat diff_point(bool forHorz, const CGPoint& p1, const CGPoint& p2) {
-    return forHorz ? p2.x - p1.x : p2.y - p1.y;
+static inline CGFloat diff_point(Orientation o, const CGPoint& p1, const CGPoint& p2) {
+    return o==HORZ ? p2.x - p1.x : p2.y - p1.y;
 }
 
 /**
  * 指定方向に、点を移動
  */
-static inline void move_rect(bool forHorz, MICRect& rect, CGFloat diff) {
-    if(forHorz) {
+static inline void move_rect(Orientation o, MICRect& rect, CGFloat diff) {
+    if(o==HORZ) {
         rect.move(diff, 0);
     } else {
         rect.move(0, diff);
     }
 }
 
-static inline void set_origin(bool forHorz, MICRect& rect, CGFloat pos=0) {
-    if(forHorz) {
+static inline void set_origin(Orientation o, MICRect& rect, CGFloat pos=0) {
+    if(o==HORZ) {
         rect.moveLeft(pos);
     } else {
         rect.moveTop(pos);
@@ -194,70 +214,73 @@ static inline void set_origin(bool forHorz, MICRect& rect, CGFloat pos=0) {
     }
     MICSize cellSize([_containerCell layoutPrepare:viewRect.size]);
     MICRect cellRect(viewRect);
-    [self renderSubForHorz:true  viewRect:viewRect cellSize:cellSize cellRect:cellRect];
-    [self renderSubForHorz:false viewRect:viewRect cellSize:cellSize cellRect:cellRect];
+    [self renderSub:HORZ  viewRect:viewRect cellSize:cellSize cellRect:cellRect];
+    [self renderSub:VERT viewRect:viewRect cellSize:cellSize cellRect:cellRect];
     
     [_containerCell layoutCompleted:cellRect];
     MICRect contentRect = _containerCell.view.frame;
     if([_view isKindOfClass:UIScrollView.class]) {
         ((UIScrollView*)_view).contentSize = contentRect.size;
     }
-    
+    if(nil!=_layoutCompletionListener) {
+        id p = _view;
+        [_layoutCompletionListener performWithParam:&p];
+    }
 }
 
 /**
  * 横・縦方向それぞれについて配置を計算する
  */
-- (void) renderSubForHorz:(bool)forHorz
+- (void) renderSub:(Orientation) orientation
                  viewRect:(const MICRect&) viewRect
                  cellSize:(const MICSize&) cellSize
                  cellRect:(MICRect&)cellRect {
-    if(get_size(forHorz, _containerCell.requestViewSize)<0) {
+    if(get_size(orientation, _containerCell.requestViewSize)<0) {
         // stretch
-        set_origin(forHorz, cellRect, get_point(forHorz, viewRect.origin));
-        set_size(forHorz, cellRect, get_size(forHorz,viewRect.size));
+        set_origin(orientation, cellRect, get_point(orientation, viewRect.origin));
+        set_size(orientation, cellRect, get_size(orientation,viewRect.size));
         return;
     }
-    switch([self align:forHorz]) {
+    switch([self align:orientation]) {
         case WPLCellAlignmentSTART:
-            set_size(forHorz, cellRect, get_size(forHorz, cellSize));
+            set_size(orientation, cellRect, get_size(orientation, cellSize));
             break;
         case WPLCellAlignmentEND:
-            set_size(forHorz, cellRect, get_size(forHorz, cellSize));
-            move_rect(forHorz, cellRect, diff_point(forHorz, cellRect.RB(), viewRect.RB()));
+            set_size(orientation, cellRect, get_size(orientation, cellSize));
+            move_rect(orientation, cellRect, diff_point(orientation, cellRect.RB(), viewRect.RB()));
             break;
         case WPLCellAlignmentCENTER:
-            set_size(forHorz, cellRect, get_size(forHorz, cellSize));
-            move_rect(forHorz, cellRect, diff_point(forHorz, cellRect.center(), viewRect.center()));
+            set_size(orientation, cellRect, get_size(orientation, cellSize));
+            move_rect(orientation, cellRect, diff_point(orientation, cellRect.center(), viewRect.center()));
             break;
         default:
             break;
     }
 }
 
-- (void) alignContainerCellForHorz:(bool)forHorz contentRect:(MICRect&) contentRect viewRect:(const MICRect&) viewRect {
-    CGFloat cs = get_size(forHorz, contentRect.size);
-    CGFloat vs = get_size(forHorz, viewRect.size);
-    if(cs>=vs) {
-        set_origin(forHorz, contentRect);
-        return;
-    }
-    
-    switch([self align:forHorz]) {
-        case WPLCellAlignmentSTART:
-            move_rect(forHorz, contentRect, diff_point(forHorz, contentRect.LT(), viewRect.LT()));
-            break;
-        case WPLCellAlignmentEND:
-            move_rect(forHorz, contentRect, diff_point(forHorz, contentRect.RB(), viewRect.RB()));
-            break;
-        case WPLCellAlignmentCENTER:
-            move_rect(forHorz, contentRect, diff_point(forHorz, contentRect.center(), viewRect.center()));
-            break;
-        default:
-            break;
-    }
-}
-
+//- (void) alignContainerCellForHorz:(Orientation)orientation contentRect:(MICRect&) contentRect viewRect:(const MICRect&) viewRect {
+//    CGFloat cs = get_size(orientation, contentRect.size);
+//    CGFloat vs = get_size(orientation, viewRect.size);
+//    if(cs>=vs) {
+//        set_origin(orientation, contentRect);
+//        return;
+//    }
+//
+//    switch([self align:orientation]) {
+//        case WPLCellAlignmentSTART:
+//            move_rect(orientation, contentRect, diff_point(orientation, contentRect.LT(), viewRect.LT()));
+//            break;
+//        case WPLCellAlignmentEND:
+//            move_rect(orientation, contentRect, diff_point(orientation, contentRect.RB(), viewRect.RB()));
+//            break;
+//        case WPLCellAlignmentCENTER:
+//            move_rect(orientation, contentRect, diff_point(orientation, contentRect.center(), viewRect.center()));
+//            break;
+//        default:
+//            break;
+//    }
+//}
+//
 #pragma mark - IWPLContainerCellDelegate i/f
 
 /**

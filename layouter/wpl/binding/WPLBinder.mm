@@ -12,6 +12,7 @@
 #import "WPLPropBinding.h"
 #import "WPLObservableMutableData.h"
 #import "WPLDelegatedObservableData.h"
+#import "WPLSubject.h"
 #import "MICVar.h"
 
 /**
@@ -34,6 +35,26 @@
         _autoDisposeBindings = true;
     }
     return self;
+}
+
+/**
+ * すべてのプロパティの変更イベントを発行する
+ * 初期化後、プロパティの値をビューに反映したいときに利用。
+ */
+- (void) trigger {
+    for(id<IWPLObservableData> x in _properties.allValues) {
+        [x valueChanged];
+    }
+}
+
+/**
+ * keyで識別されるプロパティの変更イベントを発行する
+ */
+- (void) triggerOf:(id)key {
+    let x = _properties[key];
+    if(nil!=x) {
+        [x valueChanged];
+    }
 }
 
 /**
@@ -89,6 +110,20 @@
 }
 
 /**
+ * WPLSubject型のプロパティを取得
+ * @param key   createSubjectWithValue の戻り値
+ * @return IWPLObservableMutableData型インスタンス（未登録、または、WPLSubjectでなければnil）
+ */
+- (WPLSubject*) subjectForKey:(id)key {
+    let r = [self mutablePropertyForKey:key];
+    if([r isKindOfClass:WPLSubject.class]) {
+        return r;
+    } else {
+        return nil;
+    }
+}
+
+/**
  * 通常の値型（ObservableMutableData型）プロパティを作成して登録
  * @param initialValue 初期値
  * @param key プロパティを識別するキー(nilなら、内部で生成して戻り値に返す）。
@@ -99,6 +134,17 @@
     ov.value = initialValue;
     return [self addProperty:ov forKey:key];
 }
+
+/**
+ * イベント発行用 ObservableMutableData である、WPLSubjectを作成
+ * 取得は、propertyForKey, mutablePropertyForKey でよいが、WPLSubjectを取得する専用メソッド subjectForKey も使える。
+ */
+- (id) createSubjectWithValue:(id)initialValue withKey:(id) key {
+    let s = [WPLSubject new];
+    s.value = initialValue;
+    return [self addProperty:s forKey:key];
+}
+
 
 /**
  * 依存型(DelegatedObservableData型）プロパティを生成して登録
@@ -190,7 +236,7 @@
 }
 
 /**
- * セルの状態(Bool型）とプロパティのバインディングを作成して登録
+ * セルの状態(Bool型）とBool型プロパティのバインディングを作成して登録
  * @param propKey       バインドするプロパティを識別するキー（必ず登録済みのものを指定）
  * @param cell          バインドするセル
  * @param actionType    Cellの何とバインドするか？
@@ -207,10 +253,47 @@
         NSAssert(false, @"no property %@", [propKey description]);
         return nil;
     }
-    let binding = [[WPLBoolStateBinding alloc] initWithCell:cell source:prop customAction:customAction actionType:actionType negation:negation];
+    let binding = [[WPLBoolStateBinding alloc] initWithCell:cell
+                                                     source:prop
+                                               customAction:customAction
+                                                 actionType:actionType
+                                                   negation:negation];
     [self addBinding:binding];
     return binding;
 }
+
+/**
+ * セルの状態(Bool型）と任意のプロパティの比較結果とのバインディングを作成して登録
+ * @param propKey        バインドするプロパティを識別するキー（必ず登録済みのものを指定）
+ * @param cell           バインドするセル
+ * @param actionType     Cellの何とバインドするか？
+ * @param referenceValue 比較対象値
+ * @param equals         == / !=
+ * @param customAction   プロパティ、または、セルの値が変更されたときのコールバック関数（nil可）
+ */
+- (id<IWPLBinding>) bindProperty:(id)propKey
+             withBoolStateOfCell:(id<IWPLCell>)cell
+                      actionType:(WPLBoolStateActionType) actionType
+                  referenceValue:(id)referenceValue
+                          equals:(bool)equals
+                    customAction:(WPLBindingCustomAction)customAction {
+
+    let prop = [self propertyForKey:propKey];
+    if(nil==prop) {
+        NSAssert(false, @"no property %@", [propKey description]);
+        return nil;
+    }
+    let binding = [[WPLBoolStateBinding alloc] initWithCell:cell
+                                                     source:prop
+                                               customAction:customAction
+                                                 actionType:actionType
+                                             referenceValue:referenceValue
+                                                     equals:equals
+                                           compareAsBoolean:false];
+    [self addBinding:binding];
+    return binding;
+}
+
 
 /**
  * セルの値とプロパティのバインディングを作成して登録
