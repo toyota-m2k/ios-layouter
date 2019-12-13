@@ -52,6 +52,9 @@
 @property (nonatomic) bool selected;                                                ///< 選択状態
 @property (nonatomic) bool activated;                                               ///< アクティブ化状態（タップされた状態）
 @property (nonatomic) bool inert;                                                   ///< 不活性状態（主に内部利用のみ：D&D操作中のタップ動作を禁止する場合に使用）
+@property (nonatomic) bool multiLineText;                                           ///< true:改行コードによる複数行文字列表示を有効にする (default:false)
+@property (nonatomic) CGFloat lineSpacing;                                          ///< 複数行表示の場合の行間（行の高さに対する比率で指定）
+
 @property (nonatomic) id<MICUiDsCustomButtonDelegate> customButtonDelegate;         ///< イベントリスナー
 @property (nonatomic) NSString* key;
 
@@ -136,5 +139,10 @@
  * @return ボタンサイズ（contentMarginを含む）
  */
 - (CGSize) calcPlausibleButtonSizeFotHeight:(CGFloat)height forState:(MICUiViewState)state;
+
+/**
+ * 複数行を考慮して、テキスト枠のサイズを計算する。
+ */
+- (CGSize) calcTextSize:(NSDictionary*)attr;
 
 @end

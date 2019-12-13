@@ -14,7 +14,9 @@
  */
 @implementation WPLBoolStateBinding {
     WPLBoolStateActionType _actionType;
-    bool _negation;
+    id _referenceValue;
+    bool _equals;
+    bool _compareAsBoolean;
 }
 
 - (instancetype) initWithCell:(id<IWPLCell>) cell
@@ -22,10 +24,32 @@
                  customAction:(WPLBindingCustomAction)customAction
                    actionType:(WPLBoolStateActionType) actionType
                      negation:(bool)negation {
-    self = [super initInternalWithCell:cell source:source bindingMode:(WPLBindingModeSOURCE_TO_VIEW) customAction:customAction enableSourceListener:false];
-    if(self!=nil) {
+    return [self initWithCell:cell
+                       source:source
+                 customAction:customAction
+                   actionType:actionType
+               referenceValue:negation ? @false : @true
+                       equals:true
+             compareAsBoolean:true];
+}
+
+- (instancetype)initWithCell:(id<IWPLCell>)cell
+                      source:(id<IWPLObservableData>)source
+                customAction:(WPLBindingCustomAction)customAction
+                  actionType:(WPLBoolStateActionType)actionType
+              referenceValue:(id)referenceValue
+                      equals:(bool)equals
+            compareAsBoolean:(bool) compareAsBoolean {
+    self = [super initInternalWithCell:cell
+                                source:source
+                           bindingMode:WPLBindingModeSOURCE_TO_VIEW
+                          customAction:customAction
+                  enableSourceListener:false];
+    if(nil!=self) {
         _actionType = actionType;
-        _negation = negation;
+        _referenceValue = referenceValue;
+        _equals = equals;
+        _compareAsBoolean = compareAsBoolean;
         [self setBoolStateFromSource:source];
         [self startSourceChangeListener];
     }
@@ -36,12 +60,18 @@
     return _actionType;
 }
 
-- (bool)negation {
-    return _negation;
+- (bool) isMatch:(id<IWPLObservableData>)source {
+    bool r;
+    if(_compareAsBoolean && [_referenceValue isKindOfClass:NSNumber.class]) {
+        r = source.boolValue == [(NSNumber*)_referenceValue boolValue];
+    } else {
+        r = [_referenceValue isEqual:source.value];
+    }
+    return _equals ? r : !r;
 }
 
 - (void) setBoolStateFromSource:(id<IWPLObservableData>) source {
-    let v = (_negation) ? !source.boolValue : source.boolValue;
+    let v = [self isMatch:source];
     switch(_actionType) {
         case WPLBoolStateActionTypeVISIBLE_COLLAPSED:
             self.cell.visibility = v ? WPLVisibilityVISIBLE : WPLVisibilityCOLLAPSED;

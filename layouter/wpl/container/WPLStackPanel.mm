@@ -97,7 +97,24 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
     return self;
 }
 
-/**
+- (instancetype) initWithView:(UIView *)view
+                         name:(NSString *)name
+                       params:(const WPLStackPanelParams&)params
+          containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
+    return [self initWithView:view
+                         name:name
+                       margin:params._margin
+              requestViewSize:params._requestViewSize
+                   hAlignment:params._align.horz
+                   vAlignment:params._align.vert
+                   visibility:params._visibility
+            containerDelegate:containerDelegate
+                  orientation:params._orientation
+                  cellSpacing:params._cellSpacing];
+}
+
+
+/*
  * インスタンス生成ヘルパー
  * StackPanel用のUIViewは、自動的に作成され、superviewにaddSubviewされる。
  */
@@ -136,6 +153,12 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
 + (instancetype) stackPanelWithName:(NSString*) name
                              params:(const WPLStackPanelParams&)params {
     return [self stackPanelWithName:name params:params superview:nil containerDelegate:nil];
+}
+
++ (instancetype) stackPanelWithView:(UIView*)view
+                               name:(NSString*) name
+                             params:(const WPLStackPanelParams&)params {
+    return [[self alloc] initWithView:view name:name params:params containerDelegate:nil];
 }
 
 //+ (instancetype)stackPanelViewWithName:(NSString*) name

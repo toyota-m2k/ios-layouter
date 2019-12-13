@@ -84,7 +84,15 @@ public:
         _align = v;
         return *this;
     }
-    
+    WPLCellParams& align(const WPLCellAlignment align) {
+        _align = WPLAlignment(align);
+        return *this;
+    }
+    WPLCellParams& align(const WPLCellAlignment horz, const WPLCellAlignment vert) {
+        _align = WPLAlignment(horz, vert);
+        return *this;
+    }
+
     WPLCellParams& horzAlign(const WPLCellAlignment v) {
         _align.horz = v;
         return *this;
@@ -145,6 +153,7 @@ public:
                           params:(const WPLCellParams&) params;
 
 - (void) setParams:(const WPLCellParams&) params;
+- (WPLCellParams) currentParams;
 
 #endif
 

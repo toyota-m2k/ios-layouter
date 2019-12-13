@@ -10,6 +10,7 @@
 #import "WPLContainerDef.h"
 #import "WPLBinder.h"
 
+
 @interface WPLCellHostingHelper : NSObject <IWPLContainerCellDelegate>
 
 /**
@@ -63,6 +64,12 @@
  * セルの自動配置を一時停止・再開する
  */
 - (void) enableLayout:(bool)sw;
+
+/**
+ * レンダリング完了通知を受け取るためのリスナー
+ */
+- (void) setLayoutCompletionEventListener:(id)target action:(SEL)action;
+
 
 @end
 

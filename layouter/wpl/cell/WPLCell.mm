@@ -76,6 +76,14 @@
     self.visibility = params._visibility;
 }
 
+- (WPLCellParams) currentParams {
+    return WPLCellParams()
+            .margin(self.margin)
+            .align(self.hAlignment,self.vAlignment)
+            .requestViewSize(self.requestViewSize)
+            .visibility(self.visibility);
+}
+
 /**
  * インスタンス生成ヘルパー
  * 通常、containerDelegate は、ContainerCellへの addCell で設定されるため、ここでは nil にしておく。

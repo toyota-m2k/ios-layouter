@@ -12,8 +12,12 @@
 #import "MICCGContext.h"
 #import "MICUiRectUtil.h"
 #import "MICUiDsDefaults.h"
+#import "MICVar.h"
 
-@implementation MICUiDsCustomButton
+@implementation MICUiDsCustomButton {
+    NSArray* _lines;
+    CGFloat _lineHeight;
+}
 
 #pragma mark - Initialize
 
@@ -29,6 +33,10 @@
         _contentMargin = MIC_BTN_CONTENT_MARGIN;
         _iconTextMargin = MIC_BTN_ICON_TEXT_MARGIN;
         _textHorzAlignment = MICUiAlignCENTER;
+        _multiLineText = false;
+        _lineSpacing = 0.3;
+        _lines = nil;
+        _lineHeight = 0;
         
         self.backgroundColor = UIColor.clearColor;
     }
@@ -120,6 +128,7 @@
 - (void)setText:(NSString *)text {
     if(![_text isEqualToString:text]) {
         _text = text;
+        _lines = nil;
         [self setNeedsDisplay];
     }
 }
@@ -236,24 +245,30 @@
     else {
         UIColor* colorBg = [self resource:_colorResources onStateForType:MICUiResTypeBGCOLOR];
         UIColor* colorBorder = [self resource:_colorResources onStateForType:MICUiResTypeBORDERCOLOR];
+        bool hasBorder = nil!=colorBorder && _borderWidth>0;
+        MICRect borderRect(rect);
+        if(hasBorder) {
+            borderRect.deflate(_borderWidth);
+        }
         if (_roundRadius>0) {
-            UIBezierPath* path = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:_roundRadius];
+            UIBezierPath* path = [UIBezierPath bezierPathWithRoundedRect:borderRect cornerRadius:_roundRadius];
             if(nil!=colorBg) {
                 ctx.setFillColor(colorBg);
                 [path fill];
             }
-            if(nil!=colorBorder && _borderWidth>0) {
+            if(hasBorder) {
+                path.lineWidth = _borderWidth;
                 ctx.setStrokeColor(colorBorder);
                 [path stroke];
             }
         } else {
             if(nil!=colorBg) {
                 ctx.setFillColor(colorBg);
-                ctx.fillRect(rect);
+                ctx.fillRect(borderRect);
             }
-            if(nil!=colorBorder && _borderWidth>0) {
+            if(hasBorder) {
                 ctx.setStrokeColor(colorBorder);
-                ctx.strokeRect(rect, _borderWidth);
+                ctx.strokeRect(borderRect, _borderWidth);
             }
         }
     }
@@ -338,7 +353,7 @@
     }
     
     NSDictionary *attr = [self getTextAttributes:halign];
-    CGSize size = [self.text sizeWithAttributes:attr];
+    CGSize size = [self calcTextSize:attr];
     MICRect rcText = rect;
     switch(valign) {
         case MICUiAlignBOTTOM:
@@ -353,9 +368,7 @@
             break;
             
     }
-    
-    [self.text drawInRect:rcText withAttributes:attr];
-    
+    [self drawTextInRect:rcText attr:attr halign:halign];
 }
 
 /**
@@ -433,25 +446,28 @@
     [self drawContent:ctx rect:rect];
 }
 
+- (CGSize) iconSize {
+    UIImage* icon = [self getIconForState:MICUiViewStateNORMAL];
+    return (icon!=nil) ? icon.size : MICSize::zero();
+}
+
 /**
  * コンテントを表示するための最小ボタンサイズを計算する。
  * @param  height   タブの高さ（0なら、高さも計算する）
  * @return ボタンサイズ（contentMarginを含む）
  */
 - (CGSize) calcPlausibleButtonSizeFotHeight:(CGFloat)height forState:(MICUiViewState)state {
-    UIImage* icon = [self getIconForState:state];
-
+    MICSize iconSize = [self iconSize];
     MICEdgeInsets margin(_contentMargin);
     CGFloat contentHeight = (height>0) ? height-margin.dh() : 0;
     CGFloat spacing = 0;
-    MICSize iconSize, textSize;
+    MICSize textSize;
     NSTextAlignment halign = NSTextAlignmentCenter;
-    if(nil!=icon) {
-        iconSize = icon.size;
+    if(!iconSize.isEmpty()) {
         if(contentHeight>0) {
-            if(icon.size.height>contentHeight) {
+            if(iconSize.height>contentHeight) {
                 // 要縮小
-                CGFloat r = contentHeight / icon.size.height;
+                CGFloat r = contentHeight / iconSize.height;
                 iconSize.width *= r;
             }
             iconSize.height = contentHeight;
@@ -464,14 +480,15 @@
     
     if(nil!=_text) {
         NSDictionary *attr = [self getTextAttributes:halign];
-        textSize = [self.text sizeWithAttributes:attr];
+        textSize = [self calcTextSize:attr];
     }
     return MICSize(iconSize.width + spacing + textSize.width + margin.dw(), MAX(iconSize.height, textSize.height+margin.dh()));
 }
 
 - (void)sizeToFit {
-    MICRect rc([self calcPlausibleButtonSizeFotHeight:0 forState:MICUiViewStateNORMAL]);
-    self.frame = rc;
+//    MICRect rc([self calcPlausibleButtonSizeFotHeight:0 forState:MICUiViewStateNORMAL]);
+//    self.frame = rc;
+    self.frame = MICRect(self.frame.origin, [self calcPlausibleButtonSizeFotHeight:0 forState:MICUiViewStateNORMAL]);
 }
 
 //- (void)layoutSubviews {
@@ -487,4 +504,52 @@
     [super setFrame:frame];
     [self setNeedsDisplay];
 }
+
+#pragma mark - 複数行対応
+
+- (void) prepareMultiLineIfNeed {
+    if(_multiLineText && nil==_lines) {
+        let ary = [NSMutableArray array];
+        [self.text enumerateLinesUsingBlock:^(NSString * _Nonnull line, BOOL * _Nonnull stop) {
+            [ary addObject:line];
+        }];
+        _lines = ary;
+    }
+}
+
+- (CGSize) calcTextSize:(NSDictionary*)attr {
+    if(!_multiLineText) {
+        return [self.text sizeWithAttributes:attr];
+    } else {
+        [self prepareMultiLineIfNeed];
+        CGFloat w=0, h=0;
+        if(_lines.count>0) {
+            for(NSString* s in _lines) {
+                CGSize sz = [s sizeWithAttributes:attr];
+                w = MAX(w,sz.width);
+                h = MAX(h,sz.height);
+            }
+            _lineHeight = h;
+            CGFloat spacing = (_lineHeight * _lineSpacing) * (_lines.count - 1);
+            h = _lineHeight*_lines.count + spacing;
+        }
+        return MICSize(w,h);
+    }
+}
+
+- (void) drawTextInRect:(CGRect)rect attr:(NSDictionary*)attr halign:(NSTextAlignment)halign {
+    if(!_multiLineText) {
+        [self.text drawInRect:rect withAttributes:attr];
+    } else {
+        MICRect rc(rect);
+        for(NSString* s in _lines) {
+            MICSize sz = [s sizeWithAttributes:attr];
+            rc.setHeight(sz.height);
+            [s drawInRect:rc withAttributes:attr];
+            rc.move(0, _lineHeight * (1+_lineSpacing));
+        }
+    }
+}
+
+
 @end

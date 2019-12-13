@@ -88,27 +88,27 @@
 //    return rc;
 //}
 
-- (CGSize) calcPlausibleButtonSizeFotHeight:(CGFloat)height forState:(MICUiViewState)state {
-    MICEdgeInsets margin(self.contentMargin);
-    CGFloat spacing = 0;
-    MICSize textSize;
-    NSTextAlignment halign = NSTextAlignmentCenter;
-    
-    if(nil!=self.text) {
-        spacing = self.iconTextMargin;
-        halign = NSTextAlignmentLeft;
-    }
-    
-    if(nil!=self.text) {
-        NSDictionary *attr = [self getTextAttributes:halign];
-        textSize = [self.text sizeWithAttributes:attr];
-    }
-    return MICSize(_iconSize.width + spacing + textSize.width + margin.dw(), MAX(_iconSize.height, textSize.height+margin.dh()));
-}
-
-- (void)sizeToFit {
-    self.frame = MICRect(self.frame.origin, [self calcPlausibleButtonSizeFotHeight:0 forState:MICUiViewStateNORMAL]);
-}
+//- (CGSize) calcPlausibleButtonSizeFotHeight:(CGFloat)height forState:(MICUiViewState)state {
+//    MICEdgeInsets margin(self.contentMargin);
+//    CGFloat spacing = 0;
+//    MICSize textSize;
+//    NSTextAlignment halign = NSTextAlignmentCenter;
+//    
+//    if(nil!=self.text) {
+//        spacing = self.iconTextMargin;
+//        halign = NSTextAlignmentLeft;
+//    }
+//    
+//    if(nil!=self.text) {
+//        NSDictionary *attr = [self getTextAttributes:halign];
+//        textSize = [self.text sizeWithAttributes:attr];
+//    }
+//    return MICSize(_iconSize.width + spacing + textSize.width + margin.dw(), MAX(_iconSize.height, textSize.height+margin.dh()));
+//}
+//
+//- (void)sizeToFit {
+//    self.frame = MICRect(self.frame.origin, [self calcPlausibleButtonSizeFotHeight:0 forState:MICUiViewStateNORMAL]);
+//}
 
 /**
  * icon（UIImage)の代わりに、SvgPathを扱うように、getContentRect をオーバーライド

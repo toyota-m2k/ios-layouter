@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8410A13D23A0B8710066C185 /* WPLSubject.m in Sources */ = {isa = PBXBuildFile; fileRef = 8410A13C23A0B8710066C185 /* WPLSubject.m */; };
 		841AD73622EE93AD00F9AB7D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD73522EE93AD00F9AB7D /* AppDelegate.m */; };
 		841AD73922EE93AD00F9AB7D /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD73822EE93AD00F9AB7D /* ViewController.mm */; };
 		841AD73C22EE93AD00F9AB7D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 841AD73A22EE93AD00F9AB7D /* Main.storyboard */; };
@@ -126,6 +127,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8410A13B23A0B8710066C185 /* WPLSubject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLSubject.h; sourceTree = "<group>"; };
+		8410A13C23A0B8710066C185 /* WPLSubject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WPLSubject.m; sourceTree = "<group>"; };
 		841AD73122EE93AD00F9AB7D /* layouterSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = layouterSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		841AD73422EE93AD00F9AB7D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		841AD73522EE93AD00F9AB7D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -630,6 +633,8 @@
 				841AD83722F52AEE00F9AB7D /* WPLObservableMutableData.mm */,
 				841AD83622F52AEE00F9AB7D /* WPLDelegatedObservableData.h */,
 				841AD83822F52AEE00F9AB7D /* WPLDelegatedObservableData.mm */,
+				8410A13B23A0B8710066C185 /* WPLSubject.h */,
+				8410A13C23A0B8710066C185 /* WPLSubject.m */,
 			);
 			path = observable;
 			sourceTree = "<group>";
@@ -889,6 +894,7 @@
 				841AD83D22F52AEE00F9AB7D /* WPLCell.mm in Sources */,
 				841AD7E922EE93FA00F9AB7D /* MICUiAccordionCellView.mm in Sources */,
 				841AD8892306434F00F9AB7D /* WPLSampleView.mm in Sources */,
+				8410A13D23A0B8710066C185 /* WPLSubject.m in Sources */,
 				841AD8C1230A71E300F9AB7D /* WPLGridScrollView.mm in Sources */,
 				841AD7DA22EE93FA00F9AB7D /* MICUiDragView.m in Sources */,
 				841AD7D522EE93FA00F9AB7D /* MICUiAccordionCellViewSwicherProc.m in Sources */,

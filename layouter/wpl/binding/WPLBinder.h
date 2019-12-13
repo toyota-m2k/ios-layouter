@@ -33,6 +33,16 @@
  */
 - (void) dispose;
 
+/**
+ * すべてのプロパティの変更イベントを発行する
+ * 初期化後、プロパティの値をビューに反映したいときに利用。
+ */
+- (void) trigger;
+/**
+ * keyで識別されるプロパティの変更イベントを発行する
+ */
+- (void) triggerOf:(id)key;
+
 
 #pragma mark - bindable properties
 
@@ -51,12 +61,25 @@
 - (id<IWPLObservableMutableData>) mutablePropertyForKey:(id)key;
 
 /**
+ * WPLSubject型のプロパティを取得
+ * @param key   createSubjectWithValue の戻り値
+ * @return IWPLObservableMutableData型インスタンス（未登録、または、WPLSubjectでなければnil）
+ */
+- (WPLSubject*) subjectForKey:(id)key;
+
+/**
  * 通常の値型（ObservableMutableData型）プロパティを作成して登録
  * @param initialValue 初期値
  * @param key プロパティを識別するキー(nilなら、内部で生成して戻り値に返す）。
  * @return プロパティを識別するキー
  */
 - (id) createPropertyWithValue:(id)initialValue withKey:(id) key;
+
+/**
+ * イベント発行用 ObservableMutableData である、WPLSubjectを作成
+ * 取得は、propertyForKey, mutablePropertyForKey でよいが、WPLSubjectを取得する専用メソッド subjectForKey も使える。
+ */
+- (id) createSubjectWithValue:(id)initialValue withKey:(id) key;
 
 /**
  * 依存型(DelegatedObservableData型）プロパティを生成して登録
@@ -106,7 +129,7 @@
                      customActin:(WPLBindingCustomAction)customAction;
 
 /**
- * セルの状態(Bool型）とプロパティのバインディングを作成して登録
+ * セルの状態(Bool型）とBool型プロパティのバインディングを作成して登録
  * @param propKey       バインドするプロパティを識別するキー（必ず登録済みのものを指定）
  * @param cell          バインドするセル
  * @param actionType    Cellの何とバインドするか？
@@ -120,6 +143,21 @@
                         negation:(bool) negation
                      customActin:(WPLBindingCustomAction)customAction;
 
+/**
+ * セルの状態(Bool型）と任意のプロパティの比較結果とのバインディングを作成して登録
+ * @param propKey        バインドするプロパティを識別するキー（必ず登録済みのものを指定）
+ * @param cell           バインドするセル
+ * @param actionType     Cellの何とバインドするか？
+ * @param referenceValue 比較対象値
+ * @param equals         == / !=
+ * @param customAction   プロパティ、または、セルの値が変更されたときのコールバック関数（nil可）
+ */
+- (id<IWPLBinding>) bindProperty:(id)propKey
+             withBoolStateOfCell:(id<IWPLCell>)cell
+                      actionType:(WPLBoolStateActionType) actionType
+                  referenceValue:(id)referenceValue
+                          equals:(bool)equals
+                    customAction:(WPLBindingCustomAction)customAction;
 
 /**
  * セルの値とプロパティのバインディングを作成して登録
@@ -214,6 +252,51 @@ public:
         return *this;
     }
 
+    
+    /**
+     * nameという名前のSubjectを作成（初期値 nil）
+     */
+    WPLBinderBuilder& subject(NSString* name) {
+        [_binder createSubjectWithValue:nil withKey:name];
+        return *this;
+    }
+    /**
+     * nameという名前のSubjectを作成（初期値 int）
+     */
+    WPLBinderBuilder& subject(NSString* name, int initialValue) {
+        [_binder createSubjectWithValue:@(initialValue) withKey:name];
+        return *this;
+    }
+    /**
+     * nameという名前のSubjectを作成（初期値 long）
+     */
+    WPLBinderBuilder& subject(NSString* name, long initialValue) {
+        [_binder createSubjectWithValue:@(initialValue) withKey:name];
+        return *this;
+    }
+    /**
+     * nameという名前のSubjectを作成（初期値 CGFloat）
+     */
+    WPLBinderBuilder& subject(NSString* name, CGFloat initialValue) {
+        [_binder createSubjectWithValue:@(initialValue) withKey:name];
+        return *this;
+    }
+    /**
+     * nameという名前のSubjectを作成（初期値 bool）
+     */
+    WPLBinderBuilder& subject(NSString* name, bool initialValue) {
+        [_binder createPropertyWithValue:@(initialValue) withKey:name];
+        return *this;
+    }
+    /**
+     * nameという名前のSubjectを作成（初期値 string）
+     */
+    WPLBinderBuilder& subject(NSString* name, NSString* initialValue) {
+        [_binder createPropertyWithValue:initialValue withKey:name];
+        return *this;
+    }
+
+
     /**
      * nameという名前の依存型（DelegatedObservableData）プロパティを作成
      *
@@ -242,6 +325,11 @@ public:
      */
     WPLBinderBuilder& bind(NSString* name, id<IWPLCell> cell, WPLBoolStateActionType actionType, bool negation=false, WPLBindingCustomAction customAction=nil ) {
         [_binder bindProperty:name withBoolStateOfCell:cell actionType:actionType negation:negation customActin:customAction];
+        return *this;
+    }
+
+    WPLBinderBuilder& bind(NSString* name, id<IWPLCell> cell, WPLBoolStateActionType actionType, id referenceValue, bool equals=true, WPLBindingCustomAction customAction=nil ) {
+        [_binder bindProperty:name withBoolStateOfCell:cell actionType:actionType referenceValue:referenceValue equals:equals customAction:customAction];
         return *this;
     }
 

@@ -71,6 +71,13 @@
 }
 
 /**
+ * レンダリング完了通知を受け取るためのリスナー
+ */
+- (void) setLayoutCompletionEventListener:(id)target action:(SEL)action {
+    [_hosting setLayoutCompletionEventListener:target action:action];
+}
+
+/**
  * デフォルトのDuration(0.15)でアニメーションの有効・無効を切り替える
  */
 - (void) enableAnimation:(bool)sw {

@@ -84,3 +84,4 @@ typedef enum _WPLPropType {
 //@property (nonatomic, readonly) WPLPropertyType propType;
 //@end
 
+@class WPLSubject;
