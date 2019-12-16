@@ -39,7 +39,7 @@ iOSの非同期APIは、メソッド呼び出し＋完了コールバックと�
 
 #### 終了を待たない呼び出し（やりっぱなし型呼び出し）
 
-MICAiful でタスクチェーンを作り、BEGIN_AIFUL_LAUNCH/END_AIFUL マクロで囲みます。このタスクチェーンは、サブスレッドで実行され、その完了を待たずに処理を返します。
+MICAiful でタスクチェーンを作り、BEGIN_AIFUL_LAUNCH/END_AIFUL マクロで囲みます。このタスクチェーンは、サブスレッドで実行され、その完了を待たずに処理を返します。ちなみに、*_LAUNCH は、kotlin の coroutine の launch をリスペクトして命名。
 
 ```
     BEGIN_AIFUL_LAUNCH
@@ -67,7 +67,7 @@ MICAiful でタスクチェーンを作り、BEGIN_AIFUL_LAUNCH/END_AIFUL マク
 
 #### 終了の待ち合わせが可能な非同期呼び出し
 
-MICAiful でタスクチェーンを作り、BEGIN_AIFUL_ASYNC/END_AIFUL マクロで囲みます。これにより、このタスクチェーンをサブスレッドで実行するとともに、その完了を待ち合わせるための、MICAwaiter インスタンスを返します。このMICAwaiterに対して、await メソッドを呼び出すことで、結果が取得できるまで待機しますが、この待ち合わせは、スレッドをブロックするので、必ず、サブスレッドで実行します。
+MICAiful でタスクチェーンを作り、BEGIN_AIFUL_ASYNC/END_AIFUL マクロで囲みます。これにより、このタスクチェーンをサブスレッドで実行するとともに、その完了を待ち合わせるための、MICAwaiter インスタンスを返します。このMICAwaiterに対して、await メソッドを呼び出すことで、結果が取得できるまで待機しますが、この待ち合わせは、スレッドをブロックするので、必ず、サブスレッドで実行します。もちろん、この *_ASYNC も、kotlin の async から。
 
 ```
     let awaiter = BEGIN_AIFUL_ASYNC

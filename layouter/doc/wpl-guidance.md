@@ -7,35 +7,45 @@
 UIViewController#viewDidLoad などの中で、コンテナーセルをホストするための、WPLCellHostingViewを用意します。この例では、ルートコンテナとして、WPLStackPanelを使うことにして、ホスティング・ビューには、WPLStackPanelView を使います。
 
 尚、"let" は、MICVar.h で定義しています。__auto_type const と読み替えてください。
+### （１）ルートコンテナ属性を定義します。
 
-（１）ルートコンテナのStackPanelの属性（WPLStackPanelParams）を定義します。
+ここでは、コンテナとして、WPLStackPanel を使用することにして、その属性を、WPLStackPanelParams で定義します。
 
-    // - 横方向は画面サイズに合わせて伸縮
-    // - 縦方向は、内部のパーツが収まるサイズに調整し、センタリング
-    // - 並べるアイテム（セル）の間隔は20px
     let stackParams = WPLStackPanelParams()
                         .requestViewSize(MICSize(WPL_CELL_SIZING_STRETCH,WPL_CELL_SIZING_AUTO))
                         .align(WPLAlignment(WPLCellAlignmentCENTER))
                         .cellSpacing(20);
 
-（２）CellHostingView（WPLStackPanelView）を作成します。
+上の例では、つぎのように設定しています。<br>
+ 
+  ・横方向は画面サイズに合わせて伸縮<br>
+  ・縦方向は、内部のパーツが収まるサイズに調整し、センタリング<br>
+  ・並べるアイテム（セル）の間隔は20px<br>
+
+
+### （２）セル・ホスティング・ビューを作成します。
+
+セル・ホスティング・ビューとして、WPLStackPanelViewを使います。
+
 
     _hostView =  [WPLStackPanelView stackPanelViewWithName:@"root" // 名前は任意
                                                     params:stackParams];
 
-（３）CellHostingView を、親ビューに配置します。
+### （３）セル・ホスティング・ビューを、親ビューに配置します。
 
     // UIViewController#view の子ビューにする
     [self.view addSubview:_hostView];
 
-    // UIViewControllerのSafeAreaいっぱいにCellHostingViewを配置
-    // MICAutoLayoutBuilderを使って NSLayoutConstraint の設定を行う。
+    // 親ビュー内での配置は、NSLayoutConstraintに任せる
     MICAutoLayoutBuilder(self.view)
-        .fitToSafeArea(_hostView,MICUiPosExALL, MICEdgeInsets(50))
+        .fitToSafeArea(_hostView, MICUiPosExALL, MICEdgeInsets(50))
         .activate();
 
+WP Layouter の本質からは逸れますが、UIViewControllerのSafeAreaいっぱいに View を配置する、などの指定には、NSLayoutConstraint を使うのがよいですが、その使い方がかなり面倒です。この面倒を軽減するため、MICAutoLayoutBuilder を使っています。
 
-（４）ビューと、それをラップするセルを作成します。
+### （４）ビューと、それをラップするセルを作成します。
+
+ここでは４つのビュー（UILabel, UITextField, UISwitch, UITextView）と、それぞれを保持するセルを作成します。UILabel, UITextField, UITextView の３つは、属性としてテキストを持っているので、WPLTextCell を使います。UISwitchは、on/off状態を持つ専用のセル、WPLSwitchCell を使います。これらにより、テキストやon/offなどの状態を、プロパティ（IWPLObservableData）とをバインドできるようになります。
 
     // UILabelを持つ WPLTextCellを作成
     // - 左詰を指定（これはデフォルト値だけど）
@@ -75,30 +85,40 @@ UIViewController#viewDidLoad などの中で、コンテナーセルをホスト
                                           params:WPLCellParams()
                                              .align(WPLAlignment(WPLCellAlignmentEND,WPLCellAlignmentCENTER))];
 
-（５）作成したセルをコンテナ（スタックパネル）に追加します。
+### （５）作成したセルをコンテナ（スタックパネル）に追加します。
 
     [_hostView.container addCell:labelCell];
     [_hostView.container addCell:textViewCell];
     [_hostView.container addCell:switchCell];
     [_hostView.container addCell:echoCell];
 
-（６）最後に、WPLBinder, WPLBindingBuilder を使ってデータバインドを定義していきます。
 
-    _binder = WPLBinderBuilder()
-                // バインド可能なプロパティを登録
-                .property(@"labelProperty", @"WPL Demo")   // --> label
-                .property(@"inputTextProperty", @"")        // --> text field
-                .property(@"switchProperty", true)      // --> switch
-                // セルをプロパティにバインド
-                .bind(@"labelProperty", labelCell, WPLBindingModeSOURCE_TO_VIEW)
-                .bind(@"inputTextProperty", textViewCell, WPLBindingModeTWO_WAY)
-                .bind(@"switchProperty", switchCell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT)
-                // UISwitchのon/off で、TextViewの RW/ROを切り替えるためのバインドを作成
-                .bind(@"switchProperty", textViewCell, WPLBoolStateActionTypeREADONLY, true)
-                // TextViewへの入力内容を、echoCellにエコーバックするためのバインドを作成
-                .bind(@"inputTextProperty", echoCell, WPLBindingModeSOURCE_TO_VIEW)
-                // 以上の内容で WPLBinderを作成
-                .build();
+### （６）セルにバインドするためのプロパティを作成します。
+
+バインディングとは、セルとデータソース(IWPLObservableData)の接続情報を持つ、IWPLBinding インスタンスを生成することです。このIWPLBindingインスタンスは、実行中、どこかで保持しておく必要があります。この管理は、独自に実装してもかまいませんが、ここでは、WPL標準のバインド管理機構であり、セル・ホスティング・ビューから提供される、WPLBinder を利用します。
+
+    WPLBinderBuilder(_hostView.binder)
+      // バインド可能なプロパティを登録
+      .property(@"labelProperty", @"WPL Demo")   // --> label
+      .property(@"inputTextProperty", @"")        // --> text field
+      .property(@"switchProperty", true)        // --> switch
+
+### （７）プロパティとセルをバインドします。
+
+WPLBinderを使う場合、プロパティには、プロパティ名でアクセスし、プロパティを、セルのどの属性に、どのようにバインドするかを指定します。あらかじめ用意されているバインドでは実現できない動作は、bindCustom()を使ってカスタマイズ可能です。
+
+尚、この例では、セルとして、手順（４）で定義した変数を使っていますが、これも、
+WPLContainerCell の findByName: メソッドを使えば、名前でアクセスできるので、あらかじめ定義しておいたstaticなテーブルからビュー、プロパティ、バインドをまとめて構築する、というような処理が書くことが可能になります。
+
+    WPLBinderBuilder(_hostView.binder)
+      // セルをプロパティにバインド
+      .bind(@"labelProperty", labelCell, WPLBindingModeSOURCE_TO_VIEW)
+      .bind(@"inputTextProperty", textViewCell, WPLBindingModeTWO_WAY)
+      .bind(@"switchProperty", switchCell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT)
+      // UISwitchのon/off で、TextViewの RW/ROを切り替えるためのバインドを作成
+      .bind(@"switchProperty", textViewCell, WPLBoolStateActionTypeREADONLY, true)
+      // TextViewへの入力内容を、echoCellにエコーバックするためのバインドを作成
+      .bind(@"inputTextProperty", echoCell, WPLBindingModeSOURCE_TO_VIEW)
 
 
 

@@ -252,21 +252,31 @@ IWPLContainerCell#addCellは、0行0列にセルを追加するメソッドと�
              rowSpan:(NSInteger)rowSpan 
              colSpan:(NSInteger)colSpan;
 
-### 制限事項
+### グリッド構成の動的な変更
 
-colSpan, rowSpanを設定すると、意図した配置ができないことがある。
-配置計算が手抜きのため、個々column/rowのサイズが決定可能であること、配置計算の前提となっている。
-例えば、requestedSize(AUTO,AUTO)のグリッドで、
-row=0, column=0, colSpan=1 : W=30
-row=1, column=0, colSpan=2 : W=100
-row=2, column=1, colSpan=1 : W=Stretch
-という定義があったとき、row 1,2 の定義から、column=1 の幅は、100 - 30 = 70 であることは（人間には）自明だが、
-このような、colSpanを考慮した引き算によるセル幅の計算を頑張っていないため、意図した配置にならない。
-WPLGridDefinition または、セルのrequestedSize属性で、column=1の幅を明示的に指定するか、
-または、Grid.requestedSizeで、全体のWidthにAuto以外の値を指定することで、どうにかやりくりしてほしい。
+回転や画面分割などによるサイズ変更時に、グリッドの構成を変更したいことがあるが、
+グリッドやセルを作り直すのはコストが大きい。そのような場合には、
+reformWithParams:updateCell を使用する。
 
+例）landscape / portrait でrow/columnを入れ替える
 
-※そのうち改善したいとは思っている。
+    - (void) layoutFor:(bool)landscape {
+        let cols = (landscape) ? @[AUTO,AUTO,AUTO] : @[AUTO,AUTO];
+        let rows = (landscape) ? @[AUTO,AUTO] : @[AUTO,AUTO,AUTO];
+
+        [grid reformWithParams:WPLGridParams(grid.currentParams)
+                                .colDefs(@[AUTO,STRC,AUTO])
+                                .rowDefs(@[AUTO,AUTO,AUTO])
+                updateCell:^WPLCellPosition(id<IWPLCell> cell, WPLCellPosition pos) {
+                    let i = pos.row;
+                    pos.row = pos.column;
+                    pos.column = i;
+                    return pos;
+                }];
+    }
+
+第１引数のparamsを、WPLGridParams(grid.currentParams) をベースして変更している点に注意。
+WPLGridParams()をベースにすると、visibilityなど、WPLCellParamsの属性がデフォルト値で初期化されてしまい、意図しない表示になってしまうことがある。
 
 </details>
 
@@ -414,6 +424,15 @@ dataSource に、値を取得するデリゲートをセットして使用する
 単独で使用する場合は、値が変化するときに、明示的に valueChanged を呼び出す必要があるが、通常は、外部の値として、他のオブザーバブルデータオブジェクトを参照する場合は、その Relation に登録しておくことで、valueChangedイベントの発行を自動化できる。
 
 </details>
+
+<details><summary>
+WPLSubject クラス
+</summary>
+
+WPLObservableMutableData と、ほとんど同じだが、valueに値をセットしたとき、値が変化していても、変化していなくても、valueChangedイベントを発行する点だけ異なる。つまり、単純なイベント発行/監視（バインド）を 他のObservableDataと同じスタイルで記述できるようにするためのクラスである。
+
+</details>
+
 
 ---
 
@@ -643,7 +662,6 @@ WPLBinderは、以下の手順で使う。
                             negation:(bool) negation
                         customActin:(WPLBindingCustomAction)customAction;
 
-
     /**
     　* 特殊なバインドを作成　（SOURCE to VIEWのみ）
     　* バインドの内容は、customAction に記述する。
@@ -702,6 +720,8 @@ WPLBinderを使ったバインディングの構築を、C++の書式でエレ�
 
 </details>
 
+---
+
 ##  セル・ホスティング・ビュー
 
 コンテナーセルは、そのサイズやマージンなどの属性が変化したときに、内部のセルやコンテナーセルを自動的に再配置するが、普通のUIViewの世界と、WPLの世界との境界、すなわち、ルートのコンテナーセルだけは、UIViewのサイズ変更などに対して、適切な処理を行うためのコードを書く必要がある。
@@ -710,30 +730,35 @@ WPLBinderを使ったバインディングの構築を、C++の書式でエレ�
 ちなみに、WPLCellHosting
 
 <details><summary>
-WPLCellHostingView (UIView派生クラス)自身を、親となるビュー(UIViewContainer#viewなど)に配置することになるが、その配置には、NSLayoutConstraint などが使え、さらに、NSLayoutConstraint を使うなら、[AutoLayoutBuilder](/layouter/auto-layout.md)が便利。
+WPLCellHostingView / WPLCellHostingScrollView 
 </summary>
 
 汎用的な、セル・ホスティング・ビュークラス。
 あらかじめ用意した containerCell をプロパティとして与えることで、セル・ホスティング・ビューのサイズ変更などに合わせて、containerCellが適切に再配置される。
 
+WPLCellHostingViewはUIViewから派生しているのに対して、WPLCellHostingScrollViewは、UIScrollView から派生しており、親ビュー上での frame を指定しておくと、そのサイズがコンテントのサイズより小さくなると、自動的にスクロールが有効になる。
+
+また、セルホスティングビューは、親となるビュー(UIViewContainer#viewなど)に配置することになるが、その配置には、NSLayoutConstraint などが使え、さらに、NSLayoutConstraint を使うなら、[AutoLayoutBuilder](/layouter/auto-layout.md)が便利。
+
+尚、通常は、特定のレイアウターをあらかじめ保持している、サブクラスの、WPLGridView/WPLGridScrollView, WPLStackView/WPLStackPanelScrollView, WPLFrameView/WPLFrameScrollView など使用する。
 </details>
 
 <details><summary>
-WPLGridView
+WPLGridView / WPLGridScrollView
 </summary>
 
-WPLCellHostingView の containerCellプロパティに、WPLGrid インスタンスがセットされたもの。
+WPLCellHostingView / WPLCellHostingScrollView の containerCellプロパティに、WPLGrid インスタンスがセットされたもの。
 WPLCellHostingViewとWPLGridを別々に作ってセットすることすら面倒なもので。
 </details>
 
 <details><summary>
-WPLStackPanelView
+WPLStackPanelView / WPLStackPanelScrollView
 </summary>
 WPLCellHostingView の containerCellプロパティに、WPLStackPanel インスタンスがセットされたもの。
 </details>
 
 <details><summary>
-WPLFrameView
+WPLFrameView / WPLFrameScrollView
 </summary>
 WPLCellHostingView の containerCellプロパティに、WPLFrame インスタンスがセットされたもの。
 </details>
