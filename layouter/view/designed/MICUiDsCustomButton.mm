@@ -446,8 +446,11 @@
     [self drawContent:ctx rect:rect];
 }
 
-- (CGSize) iconSize {
-    UIImage* icon = [self getIconForState:MICUiViewStateNORMAL];
+/**
+ * 状態依存のアイコンサイズを取得
+ */
+- (CGSize) iconSizeForState:(MICUiViewState)state {
+    UIImage* icon = [self getIconForState:state];
     return (icon!=nil) ? icon.size : MICSize::zero();
 }
 
@@ -457,7 +460,7 @@
  * @return ボタンサイズ（contentMarginを含む）
  */
 - (CGSize) calcPlausibleButtonSizeFotHeight:(CGFloat)height forState:(MICUiViewState)state {
-    MICSize iconSize = [self iconSize];
+    MICSize iconSize = [self iconSizeForState:state];
     MICEdgeInsets margin(_contentMargin);
     CGFloat contentHeight = (height>0) ? height-margin.dh() : 0;
     CGFloat spacing = 0;

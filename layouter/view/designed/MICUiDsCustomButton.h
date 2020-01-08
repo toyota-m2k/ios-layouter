@@ -145,4 +145,9 @@
  */
 - (CGSize) calcTextSize:(NSDictionary*)attr;
 
+/**
+ * 状態依存のアイコンサイズを取得
+ * SvgButtonでオーバーライドするので、ヘッダに書いておく。
+ */
+- (CGSize) iconSizeForState:(MICUiViewState)state;
 @end

@@ -163,4 +163,11 @@
     }
 }
 
+/**
+ * 現時点で、MICUiDsSvgIconButton で、状態によってアイコンが変化する、というような使い方は考慮していない。
+ */
+- (CGSize) iconSizeForState:(MICUiViewState)state {
+    return self.iconSize;
+}
+
 @end
