@@ -1,6 +1,6 @@
 # Layouter解説
 
-2015.04.28 M.TOYOTA
+2015.04.28 @toyota-m2k
 
 ----
 
