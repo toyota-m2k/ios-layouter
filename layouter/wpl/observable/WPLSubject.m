@@ -30,4 +30,27 @@
     [self setValue:value];
 }
 
+/**
+ * リスナー(OnNext的なやつ）を登録
+ * ... addValueChangedListener のエイリアス
+ *
+ * @param target 通知先
+ * @param selector メソッドのセレクタ
+ * @return 登録されたリスナーを識別するキー --> removeListener に渡して登録解除する
+ */
+- (id) addListener:(id)target selector:(SEL)selector {
+    return [self addValueChangedListener:target selector:selector];
+}
+
+/**
+ * リスナーを登録解除する
+ * ... removeValueChangedListener のエイリアス
+ *
+ * @param key addListener の戻り値
+ */
+- (void) removeListener:(id)key {
+    [self removeValueChangedListener:key];
+}
+
+
 @end

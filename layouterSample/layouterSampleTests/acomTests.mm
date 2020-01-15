@@ -315,6 +315,65 @@
     }
 }
 
+-(void) testSequential {
+    __block bool chain1Finished = false;
+    __block bool chain2Finished = false;
+    __block bool chain3Finished = false;
+    __block bool finished = false;
+    __block int count = 0;
+
+    let chain1 = MICAiful()
+    .then(^MICPromise _Nonnull(id  _Nullable chainedResult) {
+        count++;
+        return MICAcom.resolve;
+    })
+    .then(^MICPromise _Nonnull(id  _Nullable chainedResult) {
+        chain1Finished = true;
+        return MICAcom.resolve;
+    });
+    
+    let chain2 = MICAiful()
+    .then(^MICPromise _Nonnull(id  _Nullable chainedResult) {
+        count++;
+        return MICAcom.resolve;
+    })
+    .then(^MICPromise _Nonnull(id  _Nullable chainedResult) {
+        chain2Finished = true;
+        return MICAcom.resolve;
+    });
+
+    let chain3 = MICAiful()
+    .then(^MICPromise _Nonnull(id  _Nullable chainedResult) {
+        count++;
+        return MICAcom.resolve;
+    })
+    .then(^MICPromise _Nonnull(id  _Nullable chainedResult) {
+        chain3Finished = true;
+        return MICAcom.resolve;
+    });
+
+    
+    BEGIN_AIFUL_LAUNCH
+        MICAiful()
+        .seq(@[(MICAcom*)chain1, (MICAcom*)chain2, (MICAcom*)chain3])
+        .then(^MICPromise _Nonnull(id  _Nullable chainedResult) {
+            XCTAssert(count==3);
+            XCTAssert(chain1Finished);
+            XCTAssert(chain2Finished);
+            XCTAssert(chain3Finished);
+            return MICAcom.resolve;
+        })
+        .anyway(^(id  _Nullable param) {
+            finished = true;
+    })
+    END_AIFUL
+    
+    while(!finished) {
+        
+    }
+
+}
+
 
 - (void)testPerformanceExample {
     // This is an example of a performance test case.

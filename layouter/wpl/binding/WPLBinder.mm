@@ -10,6 +10,7 @@
 #import "WPLValueBinding.h"
 #import "WPLBoolStateBinding.h"
 #import "WPLPropBinding.h"
+#import "WPLCommandBinding.h"
 #import "WPLObservableMutableData.h"
 #import "WPLDelegatedObservableData.h"
 #import "WPLSubject.h"
@@ -334,6 +335,26 @@
     [self addBinding:binding];
     return binding;
 }
+
+/**
+ * コマンド（ボタンタップなど）とプロパティ（通常はWPLSubject）とのバインド（WPLCommandBinding)を生成する。
+ */
+- (id<IWPLBinding>) bindCommand:(id)subjectKey
+                       withCell:(id<IWPLCellSupportCommand>)cell
+                   customAction:(WPLBindingCustomAction) customAction {
+    let prop = [self propertyForKey:subjectKey];
+    if(nil==prop) {
+        NSAssert(false, @"no property %@", [subjectKey description]);
+        return nil;
+    }
+    if(![prop isKindOfClass:WPLSubject.class]) {
+        NSLog(@"[WARN] WPLBinder.bindCommand: property is not WPLSubject.");
+    }
+    let binding = [[WPLCommandBinding alloc] initWithCell:cell source:prop customAction:customAction];
+    [self addBinding:binding];
+    return binding;
+}
+
 
 /**
  * バインドを解除する

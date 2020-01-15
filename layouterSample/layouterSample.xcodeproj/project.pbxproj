@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		8410A13D23A0B8710066C185 /* WPLSubject.m in Sources */ = {isa = PBXBuildFile; fileRef = 8410A13C23A0B8710066C185 /* WPLSubject.m */; };
+		8411466923CD752B0041A769 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8411466823CD752B0041A769 /* XCTest.framework */; };
+		8411466C23CD75D10041A769 /* WPLCommandBinding.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8411466A23CD75D00041A769 /* WPLCommandBinding.mm */; };
+		8411466E23CD79760041A769 /* acomTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 845B5AB7230D50A00055A98A /* acomTests.mm */; };
 		841AD73622EE93AD00F9AB7D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD73522EE93AD00F9AB7D /* AppDelegate.m */; };
 		841AD73922EE93AD00F9AB7D /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD73822EE93AD00F9AB7D /* ViewController.mm */; };
 		841AD73C22EE93AD00F9AB7D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 841AD73A22EE93AD00F9AB7D /* Main.storyboard */; };
@@ -100,7 +103,6 @@
 		841AD8BB230A3CF200F9AB7D /* WPLStackPanelSampleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8BA230A3CF200F9AB7D /* WPLStackPanelSampleViewController.mm */; };
 		841AD8BE230A704A00F9AB7D /* WPLGridSampleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8BD230A704A00F9AB7D /* WPLGridSampleViewController.mm */; };
 		841AD8C1230A71E300F9AB7D /* WPLGridScrollView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8C0230A71E300F9AB7D /* WPLGridScrollView.mm */; };
-		845B5AB8230D50A00055A98A /* acomTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 845B5AB7230D50A00055A98A /* acomTests.mm */; };
 		846DC31223667627006CD2CE /* WPLGuidanceViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 846DC31123667627006CD2CE /* WPLGuidanceViewController.mm */; };
 		847AFEA22313A506004809EB /* WPLPropBinding.mm in Sources */ = {isa = PBXBuildFile; fileRef = 847AFEA12313A506004809EB /* WPLPropBinding.mm */; };
 		84DDAFAC2371104100232310 /* gridTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84DDAFAB2371104100232310 /* gridTest.mm */; };
@@ -129,6 +131,9 @@
 /* Begin PBXFileReference section */
 		8410A13B23A0B8710066C185 /* WPLSubject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLSubject.h; sourceTree = "<group>"; };
 		8410A13C23A0B8710066C185 /* WPLSubject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WPLSubject.m; sourceTree = "<group>"; };
+		8411466823CD752B0041A769 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		8411466A23CD75D00041A769 /* WPLCommandBinding.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLCommandBinding.mm; sourceTree = "<group>"; };
+		8411466B23CD75D10041A769 /* WPLCommandBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLCommandBinding.h; sourceTree = "<group>"; };
 		841AD73122EE93AD00F9AB7D /* layouterSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = layouterSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		841AD73422EE93AD00F9AB7D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		841AD73522EE93AD00F9AB7D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -348,6 +353,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8411466923CD752B0041A769 /* XCTest.framework in Frameworks */,
 				84DDAFAF2371142E00232310 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -571,6 +577,8 @@
 		841AD81D22F52AEE00F9AB7D /* binding */ = {
 			isa = PBXGroup;
 			children = (
+				8411466B23CD75D10041A769 /* WPLCommandBinding.h */,
+				8411466A23CD75D00041A769 /* WPLCommandBinding.mm */,
 				841AD82222F52AEE00F9AB7D /* WPLBindingDef.h */,
 				841AD85422F7BD7D00F9AB7D /* WPLGenericBinding.h */,
 				841AD85522F7BD7D00F9AB7D /* WPLGenericBinding.m */,
@@ -715,6 +723,7 @@
 		84DDAFAD2371142E00232310 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8411466823CD752B0041A769 /* XCTest.framework */,
 				84DDAFAE2371142E00232310 /* UIKit.framework */,
 			);
 			name = Frameworks;
@@ -864,6 +873,7 @@
 				841AD7E122EE93FA00F9AB7D /* MICUiDsTabButton.mm in Sources */,
 				841AD8A3230648D700F9AB7D /* AccordionViewController.mm in Sources */,
 				841AD8AF230944A000F9AB7D /* WPLSampleViewController.mm in Sources */,
+				8411466C23CD75D10041A769 /* WPLCommandBinding.mm in Sources */,
 				841AD73922EE93AD00F9AB7D /* ViewController.mm in Sources */,
 				841AD85322F6722C00F9AB7D /* WPLBinder.mm in Sources */,
 				841AD88E2306439B00F9AB7D /* WPLBindViewController.mm in Sources */,
@@ -947,7 +957,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				845B5AB8230D50A00055A98A /* acomTests.mm in Sources */,
+				8411466E23CD79760041A769 /* acomTests.mm in Sources */,
 				841AD84A22F53C4E00F9AB7D /* layouterSampleTests.mm in Sources */,
 				841AD85C22FB203700F9AB7D /* bindingTests.mm in Sources */,
 				84DDAFAC2371104100232310 /* gridTest.mm in Sources */,

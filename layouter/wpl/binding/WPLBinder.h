@@ -182,6 +182,13 @@
                     customAction:(WPLBindingCustomAction) customAction;
 
 /**
+ * コマンド（ボタンタップなど）とプロパティ（通常はWPLSubject）とのバインド（WPLCommandBinding)を生成する。
+ */
+- (id<IWPLBinding>) bindCommand:(id)subjectKey
+                       withCell:(id<IWPLCellSupportCommand>)cell
+                   customAction:(WPLBindingCustomAction) customAction;
+
+/**
  * バインドを解除する
  * @param binding   バインディングインスタンス
  */
@@ -350,6 +357,23 @@ public:
         return *this;
     }
     
+    /**
+     * CommandCell と プロパティ（WPLSubject)をバインドする。
+     * 実際のアクションの指定方法は次の３つ。
+     * - WPLSubject の addListenerでtarget/selectorを登録する（command()によるバインド不要...ボタンに直接 setTarget:action するのと同じなので、binderを使う意味が希薄）。
+     * - command()のcustomAction引数 （ブロック型）として渡す。
+     * - WPLSubject型のプロパティ (subject()で作成）、または、それを relationsに指定したプロパティにカスタムアクションをバインドする。
+     */
+    WPLBinderBuilder& command(NSString* name, id<IWPLCellSupportCommand> cell, WPLBindingCustomAction customAction) {
+        [_binder bindCommand:name withCell:cell customAction:customAction];
+        return *this;
+    }
+    
+    /**
+     * 作成した　WPLBinderを返す。
+     * 単に メンバー変数の_binder を返すだけなので、複数回呼び出してもよいし、
+     * コンストラクタでWPLBinderインスタンスを外部から渡した場合は、呼ばなくてもよい。
+     */
     WPLBinder* build() {
         return _binder;
     }

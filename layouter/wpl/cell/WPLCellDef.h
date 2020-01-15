@@ -121,3 +121,18 @@ typedef enum _WPLVisibility {
     - (void) removeInputListener:(id)key;
 @end
 
+@protocol IWPLCellSupportCommand <IWPLCell>
+    /**
+     * タップ（ボタンactionなど）イベントのリスナー
+     * @param target            listener object
+     * @param selector          (cell)->Unit
+     * @return key
+     */
+    - (id) addTappedListener:(id)target selector:(SEL)selector;
+
+    /**
+     * リスナーの登録を解除
+     */
+    - (void) removeTappedListener:(id)key;
+@end
+
