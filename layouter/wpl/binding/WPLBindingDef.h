@@ -78,6 +78,7 @@ typedef enum _WPLPropType {
     WPLPropTypeBG_COLOR,
     WPLPropTypeFG_COLOR,
     WPLPropTypeTEXT,
+    WPLPropTypePLACEHOLDER,
 } WPLPropType;
 
 //@protocol IWPLPropBinding <IWPLBinding>

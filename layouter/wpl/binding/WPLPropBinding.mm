@@ -51,6 +51,12 @@
             } else if ([self.cell.view respondsToSelector:@selector(setTitle:forState:)]) {
                 [(id)self.cell.view setTitle:source.stringValue forState:UIControlStateNormal];
             }
+            break;
+        case WPLPropTypePLACEHOLDER:
+            if([self.cell.view respondsToSelector:@selector(setPlaceholder:)]) {
+                [(id)self.cell.view setPlaceholder:source.stringValue];
+            }
+            break;
         default:
             break;
     }

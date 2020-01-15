@@ -18,9 +18,6 @@
                    vAlignment:(WPLCellAlignment)vAlignment
                    visibility:(WPLVisibility)visibility
             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
-    if(nil==view) {
-        view = [[UISwitch alloc] init];
-    }
     NSAssert([view isKindOfClass:MICUiDsCustomButton.class], @"WPLSwitchCell: view must be instance of UISwitch");
     self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:nil];
     return self;
@@ -44,11 +41,18 @@
     self.customButton.enabled = v;
 }
 
-- (void)onCustomButtonTapped:(MICUiDsCustomButton *)view {
-    
+- (id)addTappedListener:(id)target selector:(SEL)selector {
+    if(!self.tappedListenerRegistered) {
+        [(MICUiDsCustomButton*)self.view setTarget:self action:@selector(onButtonTapped:)];
+    }
+    return [super addTappedListener:target selector:selector];
 }
 
-- (void)onCustomButtonStateChangedAt:(MICUiDsCustomButton *)view from:(MICUiViewState)before to:(MICUiViewState)after {
-    
-}
+//- (void)onCustomButtonTapped:(MICUiDsCustomButton *)view {
+//
+//}
+//
+//- (void)onCustomButtonStateChangedAt:(MICUiDsCustomButton *)view from:(MICUiViewState)before to:(MICUiViewState)after {
+//
+//}
 @end
