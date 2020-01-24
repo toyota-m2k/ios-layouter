@@ -6,7 +6,7 @@ iOSの非同期APIは、メソッド呼び出し＋完了コールバックと�
 ## Promise --> Acom --> Aiful　：背景と経緯
 
 まず最初に、Promiseっぽい記述ができる、非常に簡単なMICPromise というクラスを作りました。
-このMICPromisticは、タスクチェーンを定義するだけで、実行するスレッドの管理は、タスクに委ねるという、とてもいい加減な作りだったので、慎重にコーディングしないと、メインスレッドをブロックしてしまい、具合が悪かったので、そのあたりをちゃんとする、
+このMICPromisteは、タスクチェーンを定義するだけで、実行するスレッドの管理は、タスクに委ねるという、とてもいい加減な作りだったため、慎重にコーディングしないと、メインスレッドをブロックしてしまい、具合が悪く、そのあたりをちゃんとするために、
 改良版の　MICAcom クラスを作りました。しばらくは、MICPromiseとMICAcomが共存していましたが、現在は、MICAcomに一本化しています。（MICPromiseは、id<IMICAcom>のエイリアスとして、メソッドの戻り値の型として痕跡が残っています。）
 ちなみに、MICAcomは、Objective-C だけで、なんとか、Promise風の記述ができるように工夫した実装ですが、C++を使えば、もう少し、綺麗に書けるよね、というのが　MICAiful クラスです。
 
@@ -36,6 +36,62 @@ iOSの非同期APIは、メソッド呼び出し＋完了コールバックと�
   
 
 ### 使い方
+
+#### Promistic な API
+
+- MICPromise then(MICPromise (^action)(id chainedResult))
+
+    action を実行するPromiseノードを生成してタスクチェーンに追加する。
+    JSのthenと同様、このノードは、一つ前のPromiseノードが成功した(MICAcom.resolveを返した)ときに実行される。
+
+- MICPromise then_(void ^(action)(id chainedResult, MICAcomix acomix))
+
+    前述の then()と同様だが、このactionは、MICPromiseを返す代わりに、acomix引数に対して、resolve または、reject メソッドを呼び出すことで、このノードの処理を終了して、次のノードに処理を移す。
+    MICAcomix は、.NET の、TaskCompletionSource、Kotlinの、suspendCoroutineで使う、Continuation のような役割と考えればよいかと。「コールバック型APIをMICAcomタスクチェーンに取り込む」参照。
+
+- MICPromise ignore(MICPromise (^action)(id chainedResult))
+
+    actionが返すMICPromiseの成功/失敗に関わらず、必ず、Resolved するノードを作成する。
+    処理が失敗しても、Promiseチェーンの実行を継続する必要がある場合に使用する。
+    後述の anyway に似ているが、こちらは、chainedResult を引き渡して、続きのPromiseチェーンに処理を渡していく点が異なる。
+
+- MICPromise failed(void (^action)(id error))
+
+    actionが失敗したときに実行されるPromiseノードを生成してタスクチェーンに追加する。
+    JSのPromiseでは、catch だが、catchは予約後のため、定義できないので、failedという名前にしている。
+
+- MICPromise anyway(void (^action)(id param))
+
+    actionの成功、失敗に関わらず実行されるPromiseノードを生成してタスクチェーンに追加する。
+    JSのPromiseでは、finally に相当。これも予約語のため、anyway という名前で定義。
+
+- MICPromise all((NSArray&lt;MICPromise>* tasks)
+
+    tasks で与えられた １つ以上のPromiseチェーンをパラレルに実行するPromiseノードを作成しする。
+    このノードに着火すると、すべてのPromiseチェーンを同時に実行し、すべてのチェーンの実行が完了するまで待機する。
+    そして、すべてが成功した場合には成功(Resolved)、１つでも失敗したらエラー(Rejected)として扱う。
+    次のthenノードのchainedResult には、個々のPromiseチェーンの結果（chainedResult)の配列、
+    failedノードには、chainedResultまたはerrorの配列が渡される。
+
+    注意
+    Promiseチェーン毎にスレッドを起こすので、大量にぶっこむとマズいかもしれない。後述の seq で代用できるなら、その方がよいケースが多いと思われる。
+
+- MICPromise race((NSArray&lt;MICPromise>* tasks)
+
+    tasks で与えられた １つ以上のPromiseチェーンをパラレルに実行するPromiseノードを作成しする。
+    このノードに着火すると、すべてのPromiseチェーンを同時に実行し、１つでも成功したら、その時点で、そのchainedResultを次のthenブロックに渡す。
+    すべて失敗すると、最後のerror を、次の failedノードに渡す。
+
+    注意
+    最初の１つのPromiseチェーンが成功しても、残りのタスクが中止されるわけではない。つまり、結果が捨てられるのに、処理が続く。JSのPromiseにraceというのがあったから真似したが、（少なくともクライアントのプログラムで）これが必要になるケースを思いつかないし、使ったことがない。
+
+- MICPromise seq((NSArray&lt;MICPromise>* tasks)
+
+    tasks で与えられた １つ以上のPromiseチェーンをシーケンシャルに実行するPromiseノードを作成しする。
+    普通に、then()でノードを足していくのと結果は同じだが、動的に複数のPromiseチェーンが生成される場合に対応するために、このメソッドを用意した。
+    all() ではスレッドが走りすぎて問題を起こしそうな場合の代用としても利用。
+
+
 
 #### 終了を待たない呼び出し（やりっぱなし型呼び出し）
 

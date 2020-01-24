@@ -1,7 +1,14 @@
 # CGRect, CGSize, CGPoint, ... を置き換える
 
-iOSの開発を始めて間もないころに、CGRectMake とか、CGPointEqualToPoint とか、いつの時代のコーディング？　と思って作ったクラス。この程度は標準で提供されていてもバチは当たらないと思うし、私にとっては、もしなかったら死ぬレベルで必須。
+iOSの開発を始めて間もないころに、CGRectMake とか、CGPointEqualToPoint とか、いつの時代のコーディング？　と思って作ったクラス。
 
+例えば、「view.frame を UIEdgeInsets margin を差し引いた位置・サイズに変更する」、は、
+
+    view.frame = MICRect(view.frame) - margin;
+
+と、1行で書けちゃう。
+
+この程度は標準で提供されていてもバチは当たらないと思うし、私にとっては、もしなかったら死ぬレベルで必須。
 
     /layouter/ut/
         MICUiRectUtil.h

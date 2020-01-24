@@ -50,9 +50,11 @@ IWPLCell プロトコル のプロパティに加えて、以下を定義。
 ### ビューの入力（値の変更）監視用イベントリスナー
 
     // リスナー登録
+    // @return リスナー解除用のキー
     - (id) addInputChangedListener:(id)target selector:(SEL)selector;
 
     // リスナーの登録を解除
+    // @param key   addInputChangedListener が返した値
     - (void) removeInputListener:(id)key;
 
 
@@ -67,6 +69,29 @@ readonly属性をサポートするビューをホストするセルを定義す
 ### プロパティ
 
     @property(nonatomic) bool readonly;
+
+</details>
+
+<details><summary>
+IWPLCellSuportCommand プロトコル
+</summary>
+
+ボタンのタップなど、（値を持たない）イベント（＝コマンド）を扱うビューをホストするセルを定義する。
+
+### メソッド
+
+    /**
+     * Viewへの入力が更新されたときのリスナー登録
+     * @param target        listener object
+     * @param selector      (cell)->Unit
+     * @return key  removeInputListenerに渡して解除する
+     */
+    - (id) addInputChangedListener:(id)target selector:(SEL)selector;
+
+    /**
+     * リスナーの登録を解除
+     */
+    - (void) removeInputListener:(id)key;
 
 </details>
 
@@ -103,13 +128,13 @@ C++版のイニシャライザで使用するパラメータクラス。
 
     - requestViewSize: CGSize
 
-        0: auto ... Viewのサイズに合わせる（デフォルト）
+        0: auto ... 内包するViewのサイズに合わせる（デフォルト）
         正値: fixed ... 指定されたサイズに固定
         負値: stretch ... コンテナにfitする
 
     - align : WPLAlignment (horz/vert)
 
-        コンテナ内での配置位置指定
+        コンテナ内での配置位置
 
     - visibility : WPLVisibility
 
@@ -135,7 +160,7 @@ WPLValueCell クラス
 </details>
 
 <details><summary>
-WPLTextCell
+WPLTextCell クラス
 </summary>
 
 値（value属性）として、テキストを持つビュー（UILabel, UITextView, UJTextField）を内包するセルクラス。
@@ -149,7 +174,7 @@ WPLTextCell
 
 
 <details><summary>
-WPLSwitchCell
+WPLSwitchCell クラス
 </summary>
 
 値（value属性）として、bool値を持つビュー（UISwitch）を内包するセルクラス。
@@ -159,6 +184,31 @@ WPLSwitchCell
 - IWPLCellSupportValue
 
 </details>
+
+<details><summary>
+WPLCommandCell クラス
+</summary>
+
+ボタンのタップ操作と、そのイベント発行を抽象化するセルクラス。
+
+継承するプロトコル
+- IWPLCell
+- IWPLCellSupportCommand
+
+</details>
+
+<details><summary>
+WPLDsCustomButtonCell クラス
+</summary>
+
+MICDsCustomButtonを内包する、WPLCommandCell 派生クラス。
+
+継承するプロトコル
+- IWPLCell
+- IWPLCellSupportCommand
+
+</details>
+
 
 ---
 
@@ -224,13 +274,15 @@ WFP/UWP の Grid にインスパイヤされたクラス。
 
         高さ、幅に、正値を指定すると、その固定サイズとなる。
         AUTO を指定すると、中に配置されるCellを収容できるサイズに伸縮する(XAMLの"AUTO"と同じ)。
-        STRC を指定すると、残りのサイズいっぱいに広がる(XAMLの"*"と同じ）。
-        STRC は複数指定でき、その場合は、残りのサイズが按分される。按分する比率を指定する場合は、STRCx(n) マクロを使用する。例えば、STRC,STRCx(2) と指定すると、1:2 に按分される。
+        STRC を指定すると、残りのサイズいっぱいに広がる(XAMLの"*"に相当）。
+        STRC は複数指定でき、その場合は、残りのサイズが按分される。
+        按分する比率を指定する場合は、STRCx(n) マクロを使用する。
+        例えば、STRC,STRCx(2) と指定すると、1:2 に按分される(XAMLの1*,2*に相当）。
         ※STRCx(1) は STRC と同義。
 
 - cellSpacing: CGSize
 
-    セルとセルの間隔
+    セルとセルの間隔<br>
     当たり前の機能だと思うんだが、WPF/UWP の Gridには、なぜかこれがなくて結構不自由したものだ。
 
 ### グリッドへのセル追加
@@ -317,6 +369,10 @@ WPF/UWPでは、しばしば、この用途で、row/columnを定義しない（
 
 ## オブザーバブル データオブジェクト
 
+値の変化を監視・通知する仕掛けを持ったデータクラス。
+Observableという名前だが、Reactive Extensions (Rx*) の Obj-C版、というような大それたものではなく、どちらかというと、Android の LiveData に近い。
+addValueChangedListener で値変更時のコールバックを設定して使う。また、RxのSelectMany とか、Concat みたいなことができないので、代わりに、Relation（このオブジェクトの値変更が影響する仲間たち）という概念を導入。とにかく、UIとのバインディングに使うなら、なんとかやれる程度の実装。。
+
 <details><summary>
 IWPLObservableData プロトコル
 </summary>
@@ -348,7 +404,7 @@ IWPLObservableData プロトコル
 
 ### 依存関係の管理
 
-このデータオブジェクトの値が変更されたとき、それに伴ってデータが変更される関連オブジェクトを定義する。つまり、このデータオブジェクトの変更イベントとともに、addRelation(s)で追加されたオブジェクトについても、変更イベントが発生する。
+このデータオブジェクトの値が変更されたとき、それに伴ってデータが変更される関連オブジェクトを定義する。つまり、このデータオブジェクトの変更イベントとともに、addRelation(s)で追加されたオブジェクトについても、変更イベントが発生する。元のデータオブジェクトの変更イベントを監視して、その中から、依存オブジェクトの変更イベントを発行するのと効果は同じだが、リソース、効率の観点から、relationで定義するほうがよい。
 
     - (void) addRelation:(id<IWPLObservableData>)relation;
 
@@ -542,6 +598,30 @@ IWPLCellSupportValue プロトコルに準拠したセルクラス（WPLValueCel
                       bindingMode:(WPLBindingMode)bindingMode
                      customAction:(WPLBindingCustomAction)customAction;
 
+
+</details>
+
+<details><summary>
+WPLPropBinding クラス
+</summary>
+
+UIViewの標準プロパティを、sourceにバインドするためのクラス。
+利用可能な標準プロパティは、以下の通り。
+バインドモードは、常に、SOURCE_TO_VIEW となる。
+
+- WPLPropTypeALPHA 透過度
+- WPLPropTypeBG_COLOR 背景色
+- WPLPropTypeFG_COLOR 文字色
+- WPLPropTypeTEXT テキスト（双方向のバインドが必要なら、WPLTextBindingを使うこと）
+- WPLPropTypePLACEHOLDER TextViewなどのプレースホルダー
+
+</details>
+
+<details><summary>
+WPLCommandBinding クラス
+</summary>
+
+ボタン(UIButton, MICDsCustomButton)のタップイベントを、sourceの変化として扱うバインディングクラス。これにより、ボタンクリックによるアクション（コマンド）を、通常のプロパティと同じように、他のプロパティ(通常はWPLSubject)にバインドし、動作を宣言できるようになる。
 
 </details>
 
