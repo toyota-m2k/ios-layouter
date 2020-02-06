@@ -3,7 +3,7 @@
 //  layouter
 //
 //  Created by @toyota-m2k on 2015/02/04.
-//  Copyright (c) 2015年 @toyota-m2k Corporation. All rights reserved.
+//  Copyright (c) 2015年 @toyota-m2k. All rights reserved.
 //
 
 #import "MICImageUtil.h"

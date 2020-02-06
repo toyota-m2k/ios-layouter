@@ -95,6 +95,45 @@
 - (id) createDependentPropertyWithKey:(id)key sourceProc:(WPLSourceDelegateProc)sourceProc dependsOn:(NSString*) firstRelation dependsOnArgument:(va_list) args;
 
 /**
+ * Rx map / select(.net) 相当の値変換を行うObservableプロパティを生成
+ * @param key プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
+ * @param src 変換元データ
+ * @param fn  変換関数  id convert(id s)
+ */
+- (id) createPropertyWithKey:(id)key map:(id<IWPLObservableData>)src func:(WPLRx1Proc) fn;
+/**
+ * Rx combineLatest に相当。２系列のデータソースから、新しいObservableを生成。
+ * @param key   プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
+ * @param src   ソース１
+ * @param src2  ソース２
+ * @param fn    変換関数　id convert(id s1, id s2)
+ */
+- (id) createPropertyWithKey:(id)key combineLatest:(id<IWPLObservableData>)src with:(id<IWPLObservableData>)src2 func:(WPLRx2Proc) fn;
+
+/**
+ * Rx where に相当。２系列のデータソースを単純にマージ
+ * @param key   プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
+ * @param src   ソース
+ * @param fn    フィルター関数(trueを返した値だけが有効になる)　bool filter(id s)
+ */
+- (id) createPropertyWithKey:(id)key where:(id<IWPLObservableData>)src func:(WPLRx1BoolProc) fn;
+
+/**
+ * Rx merge に相当。２系列のデータソースを単純にマージ
+ * @param key   プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
+ * @param src   ソース１
+ * @param src2  ソース２
+ */
+- (id) createPropertyWithKey:(id)key merge:(id<IWPLObservableData>)src with:(id<IWPLObservableData>)src2;
+/**
+ * Rx scan 相当の値変換を行うObservableプロパティを生成
+ * @param key   プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
+ * @param src   変換元データ
+ * @param fn    変換関数　id convert(id previous, id current)
+*/
+- (id) createPropertyWithKey:(id)key scan:(id<IWPLObservableData>)src func:(WPLRx2Proc) fn;
+
+/**
  * 外部で作成したObservableData型のインスタンスをプロパティとしてバインダーに登録する。
  * @param prop ObservableData型インスタンス
  * @param key プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
@@ -124,7 +163,22 @@
  * @return 作成された binding インスタンス
  */
 - (id<IWPLBinding>) bindProperty:(id)propKey
-                 withValueOfCell:(id<IWPLCell>)cell
+                 withValueOfCell:(id<IWPLCellSupportValue>)cell
+                     bindingMode:(WPLBindingMode)bindingMode
+                     customActin:(WPLBindingCustomAction)customAction;
+
+/**
+ * セルのNamedValueとプロパティのバインディングを作成して登録
+ * @param propKey   バインドするプロパティを識別するキー（必ず登録済みのものを指定）
+ * @param cell      バインドするセル
+ * @param valueName namedValueの名前
+ * @param bindingMode   VIEW_TO_SOURCE_WITH_INIT | VIEW_TO_SOURCE | SOURCE_TO_VIEW | TWOWAY
+ * @param customAction  プロパティ、または、セルの値が変更されたときのコールバック関数（nil可）
+ * @return 作成された binding インスタンス
+ */
+- (id<IWPLBinding>) bindProperty:(id)propKey
+                        withCell:(id<IWPLCellSupportNamedValue>)cell
+                    andValueName:(NSString*) valueName
                      bindingMode:(WPLBindingMode)bindingMode
                      customActin:(WPLBindingCustomAction)customAction;
 
@@ -259,6 +313,13 @@ public:
         return *this;
     }
 
+    /**
+     * 外部で定義されているObservableDataをプロパティとして登録する。
+     */
+    WPLBinderBuilder& property(NSString* name, id<IWPLObservableData> dataSource) {
+        [_binder addProperty:dataSource forKey:name];
+        return *this;
+    }
     
     /**
      * nameという名前のSubjectを作成（初期値 nil）
@@ -319,14 +380,25 @@ public:
         return *this;
     }
     
+    
+
+    
     /**
      * nameで指定されたプロパティを、cellのvalue にバインドする
      */
-    WPLBinderBuilder& bind(NSString* name, id<IWPLCell> cell, WPLBindingMode mode=WPLBindingModeSOURCE_TO_VIEW, WPLBindingCustomAction customAction=nil) {
+    WPLBinderBuilder& bind(NSString* name, id<IWPLCellSupportValue> cell, WPLBindingMode mode=WPLBindingModeSOURCE_TO_VIEW, WPLBindingCustomAction customAction=nil) {
         [_binder bindProperty:name withValueOfCell:cell bindingMode:mode customActin:customAction];
         return *this;
     }
-    
+
+    /**
+     * nameで指定されたプロパティを、cellのnamedValue にバインドする
+     */
+    WPLBinderBuilder& bind(NSString* name, id<IWPLCellSupportNamedValue> cell, NSString* valueName, WPLBindingMode mode=WPLBindingModeSOURCE_TO_VIEW, WPLBindingCustomAction customAction=nil) {
+        [_binder bindProperty:name withCell:cell andValueName:valueName bindingMode:mode customActin:customAction];
+        return *this;
+    }
+
     /**
      * nameで指定されたプロパティを、cellのboolState（visible/enabled/readonly）にバインドする
      */

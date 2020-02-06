@@ -113,6 +113,10 @@ public:
     
     MICCGFont(CGFontRef font, bool retained=true) : MICCGResource<CGFontRef>(font, retained) {
     }
+    
+    MICCGFont(UIFont* font) : MICCGResource<CGFontRef>(CGFontCreateWithFontName((CFStringRef)font.fontName),true) {
+        
+    }
 };
 
 #pragma mark - MICCGUIColor
@@ -882,7 +886,10 @@ public:
     void scale(CGFloat sx, CGFloat sy) {
         CGContextScaleCTM(_res, sx, sy);
     }
-    
+    void scale(CGFloat s) {
+        CGContextScaleCTM(_res, s, s);
+    }
+
 };
 
 #pragma mark - MICCGImageContext

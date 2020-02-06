@@ -30,6 +30,7 @@
         _borderWidth = MIC_BTN_BORDER_WIDTH;
         _roundRadius = MIC_BTN_ROUND_RADIUS;
         _fontSize = MIC_BTN_FONT_SIZE;
+        _boldFont = true;
         _contentMargin = MIC_BTN_CONTENT_MARGIN;
         _iconTextMargin = MIC_BTN_ICON_TEXT_MARGIN;
         _textHorzAlignment = MICUiAlignCENTER;
@@ -37,6 +38,7 @@
         _lineSpacing = 0.3;
         _lines = nil;
         _lineHeight = 0;
+        _autoScaleToBounds = false;
         
         self.backgroundColor = UIColor.clearColor;
     }
@@ -319,10 +321,14 @@
 
 /**
  * ラベル描画用フォントを取得する
- *  デフォルトの実装では、boldSystemFont を使用。これを変更する場合はサブクラスでオーバーライドする。
+ *  デフォルトの実装では、systemFont or boldSystemFont を使用。これを変更する場合はサブクラスでオーバーライドする。
  */
 - (UIFont*)getFont {
-    return [UIFont boldSystemFontOfSize:self.fontSize];
+    if(self.boldFont) {
+        return [UIFont boldSystemFontOfSize:self.fontSize];
+    } else {
+        return [UIFont systemFontOfSize:self.fontSize];
+    }
 }
 
 - (NSDictionary*) getTextAttributes:(NSTextAlignment)halign {
@@ -333,7 +339,7 @@
     UIFont* font = [self getFont];
     
     NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
-    style.lineBreakMode = NSLineBreakByTruncatingTail;
+    style.lineBreakMode = self.autoScaleToBounds ? NSLineBreakByClipping : NSLineBreakByTruncatingTail;
     style.alignment = halign;
     NSDictionary *attr = @{
                            NSForegroundColorAttributeName: colorFg,
@@ -405,12 +411,13 @@
  */
 - (void)drawContent:(CGContextRef)rctx rect:(CGRect)rect {
     MICCGContext ctx(rctx, false);
+    MICCGGStateStack stack(rctx);
     
     // アイコン/テキストの描画１を取得
     UIImage* icon = [self getIconForCurrentState];
     MICRect rcIcon, rcText;
     [self getContentRect:icon iconRect:&rcIcon textRect:&rcText];
-   
+    
     NSTextAlignment halign;
     switch(_textHorzAlignment) {
         case MICUiAlignRIGHT:
@@ -423,6 +430,20 @@
             halign = NSTextAlignmentCenter;
             break;
     }
+
+     if (self.autoScaleToBounds) {
+         NSDictionary *attr = [self getTextAttributes:halign];
+         CGSize size = [self calcTextSize:attr];
+         CGFloat d = size.width - rcText.width();
+         if(d>0) {
+             MICRect rcContent(self.bounds - _contentMargin);
+             CGFloat s = rect.size.width/(rect.size.width+d);
+             rcText.size = size;
+             ctx.translate(0,rcContent.center().y-rcText.center().y*s);
+             ctx.scale(s);
+         }
+     }
+    
 
     // アイコンを描画
     [self drawIcon:rctx icon:icon rect:rcIcon];
@@ -459,6 +480,10 @@
  * @param  height   タブの高さ（0なら、高さも計算する）
  * @return ボタンサイズ（contentMarginを含む）
  */
+//- (CGSize) calcPlausibleButtonSizeFotHeight:(CGFloat)height forState:(MICUiViewState)state {
+//    return [self calcPlausibleButtonSizeWithText:self.text fotHeight:height forState:state];
+//}
+
 - (CGSize) calcPlausibleButtonSizeFotHeight:(CGFloat)height forState:(MICUiViewState)state {
     MICSize iconSize = [self iconSizeForState:state];
     MICEdgeInsets margin(_contentMargin);
@@ -475,13 +500,13 @@
             }
             iconSize.height = contentHeight;
         }
-        if(nil!=_text) {
+        if(nil!=self.text) {
             spacing = _iconTextMargin;
             halign = NSTextAlignmentLeft;
         }
     }
     
-    if(nil!=_text) {
+    if(nil!=self.text) {
         NSDictionary *attr = [self getTextAttributes:halign];
         textSize = [self calcTextSize:attr];
     }
@@ -492,6 +517,10 @@
 //    MICRect rc([self calcPlausibleButtonSizeFotHeight:0 forState:MICUiViewStateNORMAL]);
 //    self.frame = rc;
     self.frame = MICRect(self.frame.origin, [self calcPlausibleButtonSizeFotHeight:0 forState:MICUiViewStateNORMAL]);
+}
+
+- (CGSize)sizeThatFits:(CGSize)size {
+    return [self calcPlausibleButtonSizeFotHeight:size.height forState:MICUiViewStateNORMAL];
 }
 
 //- (void)layoutSubviews {

@@ -2,7 +2,7 @@
 //  MICExecutor.m
 //
 //  Created by @toyota-m2k on 2018/12/01.
-//  Copyright  2018年 @toyota-m2k Corporation. All rights reserved.
+//  Copyright  2018年 @toyota-m2k. All rights reserved.
 //
 
 #import "MICExecutor.h"
@@ -48,7 +48,7 @@
         if(useGlobal){
             _queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         } else {
-            _queue = dispatch_queue_create("com.@toyota-m2k.MICGCDExecutor", DISPATCH_QUEUE_CONCURRENT);
+            _queue = dispatch_queue_create("ios-layouter.mic.GCDExecutor", DISPATCH_QUEUE_CONCURRENT);
         }
     }
     return self;
@@ -73,7 +73,7 @@
     self = [super init];
     if(nil!=self) {
         _runnable = runnable;
-        self.name = @"com.@toyota-m2k.MICRawThread";
+        self.name = @"ios-layouter.mic.RawThread";
     }
     return self;
 }

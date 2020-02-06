@@ -1,9 +1,8 @@
 //
 //  WPLPropBinding.m
-//  layouterSample
 //
-//  Created by Mitsuki Toyota on 2019/08/26.
-//  Copyright © 2019 Mitsuki Toyota. All rights reserved.
+//  Created by toyota-m2k on 2019/08/26.
+//  Copyright © 2019 toyota-m2k. All rights reserved.
 //
 
 #import "WPLPropBinding.h"
@@ -55,6 +54,11 @@
         case WPLPropTypePLACEHOLDER:
             if([self.cell.view respondsToSelector:@selector(setPlaceholder:)]) {
                 [(id)self.cell.view setPlaceholder:source.stringValue];
+            }
+            break;
+        case WPLPropTypeSELECTED:
+            if([self.cell.view respondsToSelector:@selector(setSelected:)]) {
+                [(id)self.cell.view setSelected:source.boolValue];
             }
             break;
         default:

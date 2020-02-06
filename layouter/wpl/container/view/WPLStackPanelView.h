@@ -11,7 +11,18 @@
 #import "WPLStackPanel.h"
 
 
-@interface WPLStackPanelView : WPLCellHostingView
+@protocol IWPLStackPanelView <IWPLCellHostingView>
+
+/**
+ * ルートコンテナセルを取得
+ * (WPLFrame*) o.containerCell
+ * と同じ。frame というプロパティ名にしたかったが、UIView#frameと名前が衝突するから。。。
+ */
+@property (nonatomic) WPLStackPanel* container;
+
+@end
+
+@interface WPLStackPanelView : WPLCellHostingView<IWPLStackPanelView>
 
 /**
  * ルートコンテナセルを取得
@@ -23,7 +34,7 @@
 #if defined(__cplusplus)
 
 /**
- * Frameコンテナをルートにもつホスティグビューを作成
+ * StackPanelコンテナをルートにもつホスティグビューを作成
  *  C++以外は相手にしない。
  */
 + (instancetype) stackPanelViewWithName:(NSString*) name

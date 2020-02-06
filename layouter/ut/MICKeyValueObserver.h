@@ -3,7 +3,7 @@
 //  NSKeyValueObserverRegistration に対するオブザーバー登録／解除をいい具合にする
 //
 //  Created by @toyota-m2k on 2017/11/02.
-//  Copyright  2017年 @toyota-m2k Corporation. All rights reserved.
+//  Copyright  2017年 @toyota-m2k. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

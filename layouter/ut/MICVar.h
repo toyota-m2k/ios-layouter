@@ -4,7 +4,7 @@
 //  __I_LIKE_KOTLIN__をdefineしてから、importすれば、val も使えるよ。
 //
 //  Created by @toyota-m2k on 2018/10/11.
-//  Copyright  2018年 @toyota-m2k Corporation. All rights reserved.
+//  Copyright  2018年 @toyota-m2k. All rights reserved.
 //
 
 #ifndef MICVar_h

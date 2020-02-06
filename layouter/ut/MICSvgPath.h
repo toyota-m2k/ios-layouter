@@ -48,6 +48,12 @@
 - (void) draw:(CGContextRef) rctx dstRect:(CGRect) dstRect fillColor:(UIColor*)fillColor stroke:(UIColor*)strokeColor strokeWidth:(CGFloat)strokeWidth;
 
 /**
+ * 色を指定して、CGContext上の dstRectに描画する。
+ * （反転対応版）
+ */
+- (void) draw:(CGContextRef) rctx dstRect:(CGRect) dstRect fillColor:(UIColor*)fillColor stroke:(UIColor*)strokeColor strokeWidth:(CGFloat)strokeWidth mirrorX:(bool)mirrorX mirrorY:(bool)mirrorY;
+
+/**
  * 色を指定して、CGContext上の dstRectに塗る。
  */
 - (void) fill:(CGContextRef) rctx dstRect:(CGRect) dstRect fillColor:(UIColor*)fillColor;

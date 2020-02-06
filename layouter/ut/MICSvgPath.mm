@@ -233,7 +233,6 @@ private:
             path.addQuadCurveToPoint(pc1, p);
         }
     }
-
     
     CGPoint getFirstControlPoint(const MICCGMutablePath &path, SvgElement* prev) {
         MICPoint pc;
@@ -501,6 +500,32 @@ public:
     
     ctx.translate(dstRect.origin.x, dstRect.origin.y);
     ctx.scale(dstRect.size.width/_viewboxSize.width, dstRect.size.height/_viewboxSize.height);
+    ctx.createPath().addPath(_path);
+    if(fillColor!=nil) {
+        ctx.setFillColor(fillColor);
+        ctx.fillPath();
+    }
+    if(strokeColor!=nil&&strokeWidth>0) {
+        ctx.setStrokeColor(strokeColor);
+        ctx.setLineWidth(strokeWidth);
+    }
+}
+
+/**
+ * Pathを描画（ミラー対応版）
+ */
+- (void) draw:(CGContextRef) rctx dstRect:(CGRect) dstRect fillColor:(UIColor*)fillColor stroke:(UIColor*)strokeColor strokeWidth:(CGFloat)strokeWidth mirrorX:(bool)mirrorX mirrorY:(bool)mirrorY {
+    MICCGContext ctx(rctx, false);
+    MICCGGStateStack ss(rctx);
+    
+    CGFloat msx = mirrorX ? -1 : 1;
+    CGFloat msy = mirrorY ? -1 : 1;
+    ctx.translate(dstRect.origin.x, dstRect.origin.y);
+    ctx.scale(msx*dstRect.size.width/_viewboxSize.width, msy*dstRect.size.height/_viewboxSize.height);
+    CGFloat mtx = mirrorX ? _viewboxSize.width : 0;
+    CGFloat mty = mirrorY ? _viewboxSize.height : 0;
+    ctx.translate(-mtx, -mty);
+
     ctx.createPath().addPath(_path);
     if(fillColor!=nil) {
         ctx.setFillColor(fillColor);

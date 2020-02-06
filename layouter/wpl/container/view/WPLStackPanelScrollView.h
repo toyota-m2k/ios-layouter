@@ -8,9 +8,9 @@
 //
 
 #import "WPLCellHostingScrollView.h"
-#import "WPLStackPanel.h"
+#import "WPLStackPanelView.h"
 
-@interface WPLStackPanelScrollView : WPLCellHostingScrollView
+@interface WPLStackPanelScrollView : WPLCellHostingScrollView<IWPLStackPanelView>
 
 /**
  * ルートコンテナセルを取得
@@ -22,7 +22,7 @@
 #if defined(__cplusplus)
 
 /**
- * Frameコンテナをルートにもつホスティグビューを作成
+ * StackPanelコンテナをルートにもつホスティグビューを作成
  *  C++以外は相手にしない。
  */
 + (instancetype) stackPanelViewWithName:(NSString*) name

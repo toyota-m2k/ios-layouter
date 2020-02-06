@@ -2,14 +2,14 @@
 //  WPLCommandCell.m
 //  UIButton を内包して、tappedイベントを発行するセル
 //
-//  Created by Mitsuki Toyota on 2019/12/17.
-//  Copyright © 2019 MichaelSoft. All rights reserved.
+//  Created by toyota-m2k on 2019/12/17.
+//  Copyright © 2019 toyota-m2k. All rights reserved.
 //
 
 #import "WPLCommandCell.h"
 #import "MICListeners.h"
 #import "MICVar.h"
-
+#import "MICUiDsCustomButton.h"
 
 @implementation WPLCommandCell {
     MICListeners* _tappedListeners;
@@ -55,6 +55,8 @@
     if(!self.tappedListenerRegistered) {
         if([self.view isKindOfClass:UIButton.class]) {
             [(UIButton*)self.view addTarget:self action:@selector(onButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+        } else if([self.view isKindOfClass:MICUiDsCustomButton.class]) {
+            [(MICUiDsCustomButton*)self.view setTarget:self action:@selector(onButtonTapped:)];
         }
         _tappedListeners = MICListeners.listeners;
     }

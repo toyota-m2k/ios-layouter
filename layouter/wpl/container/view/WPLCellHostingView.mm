@@ -97,4 +97,12 @@
     [_hosting renderCell];
 }
 
+- (UIView*) view {
+    return self;
+}
+
+- (void) dispose {
+    [_hosting dispose];
+}
+
 @end

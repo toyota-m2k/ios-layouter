@@ -10,9 +10,11 @@
 #import "WPLValueBinding.h"
 #import "WPLBoolStateBinding.h"
 #import "WPLPropBinding.h"
+#import "WPLNamedValueBinding.h"
 #import "WPLCommandBinding.h"
 #import "WPLObservableMutableData.h"
 #import "WPLDelegatedObservableData.h"
+#import "WPLRxObservableData.h"
 #import "WPLSubject.h"
 #import "MICVar.h"
 
@@ -146,6 +148,60 @@
     return [self addProperty:s forKey:key];
 }
 
+/**
+ * Rx map / select(.net) 相当の値変換を行うObservableプロパティを生成
+ * @param key プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
+ * @param src 変換元データ
+ * @param fn  変換関数  id convert(id s)
+ */
+- (id) createPropertyWithKey:(id)key map:(id<IWPLObservableData>)src func:(WPLRx1Proc) fn {
+    let s = [WPLRxObservableData map:src func:fn];
+    return [self addProperty:s forKey:key];
+}
+
+/**
+ * Rx combineLatest に相当。２系列のデータソースから、新しいObservableを生成。
+ * @param key   プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
+ * @param src   ソース１
+ * @param src2  ソース２
+ * @param fn    変換関数　id convert(id s1, id s2)
+ */
+- (id) createPropertyWithKey:(id)key combineLatest:(id<IWPLObservableData>)src with:(id<IWPLObservableData>)src2 func:(WPLRx2Proc) fn {
+    let s = [WPLRxObservableData combineLatest:src with:src2 func:fn];
+    return [self addProperty:s forKey:key];
+}
+
+/**
+ * Rx where に相当。２系列のデータソースを単純にマージ
+ * @param key   プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
+ * @param src   ソース
+ * @param fn    フィルター関数(trueを返した値だけが有効になる)　bool filter(id s)
+ */
+- (id) createPropertyWithKey:(id)key where:(id<IWPLObservableData>)src func:(WPLRx1BoolProc) fn {
+    let s = [WPLRxObservableData where:src func:fn];
+    return [self addProperty:s forKey:key];
+}
+
+/**
+ * Rx merge に相当。２系列のデータソースを単純にマージ
+ * @param key   プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
+ * @param src   ソース１
+ * @param src2  ソース２
+ */
+- (id) createPropertyWithKey:(id)key merge:(id<IWPLObservableData>)src with:(id<IWPLObservableData>)src2 {
+    let s = [WPLRxObservableData merge:src with:src2];
+    return [self addProperty:s forKey:key];
+}
+/**
+ * Rx scan 相当の値変換を行うObservableプロパティを生成
+ * @param key   プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
+ * @param src   変換元データ
+ * @param fn    変換関数　id convert(id previous, id current)
+*/
+- (id) createPropertyWithKey:(id)key scan:(id<IWPLObservableData>)src func:(WPLRx2Proc) fn {
+    let s = [WPLRxObservableData scan:src func:fn];
+    return [self addProperty:s forKey:key];
+}
 
 /**
  * 依存型(DelegatedObservableData型）プロパティを生成して登録
@@ -223,7 +279,7 @@
  * @param customAction  プロパティ、または、セルの値が変更されたときのコールバック関数（nil可）
  */
 - (id<IWPLBinding>) bindProperty:(id)propKey
-                 withValueOfCell:(id<IWPLCell>)cell
+                 withValueOfCell:(id<IWPLCellSupportValue>)cell
                      bindingMode:(WPLBindingMode)bindingMode
                      customActin:(WPLBindingCustomAction)customAction {
     let prop = [self propertyForKey:propKey];
@@ -314,6 +370,21 @@
         return nil;
     }
     let binding = [[WPLPropBinding alloc] initWithCell:cell source:prop propType:propType customAction:customAction];
+    [self addBinding:binding];
+    return binding;
+}
+
+- (id<IWPLBinding>) bindProperty:(id)propKey
+                        withCell:(id<IWPLCellSupportNamedValue>)cell
+                    andValueName:(NSString*) valueName
+                     bindingMode:(WPLBindingMode)bindingMode
+                     customActin:(WPLBindingCustomAction)customAction {
+    let prop = [self propertyForKey:propKey];
+    if(nil==prop) {
+        NSAssert(false, @"no property %@", [propKey description]);
+        return nil;
+    }
+    let binding = [[WPLNamedValueBinding alloc] initWithCell:cell valueName:valueName source:prop bindingMode:bindingMode customAction:customAction];
     [self addBinding:binding];
     return binding;
 }

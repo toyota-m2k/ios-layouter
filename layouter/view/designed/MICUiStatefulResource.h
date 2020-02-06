@@ -35,7 +35,9 @@ typedef enum _micUiResType {
     MICUiResTypeBGIMAGE,
     MICUiResTypeICON,
     MICUiResTypeSVG_PATH,       // SVG Path
+    MICUiResTypeSVG_BGPATH,     // SVG BGPath
     MICUiResTypeSVG_COLOR,      // fill color of SVG path
+    MICUiResTypeSVG_BGCOLOR,    // bg color of SVG Path
     ////
     __MICUIRESTYPECOUNT
 } MICUiResType;
@@ -82,12 +84,26 @@ typedef enum _micUiResType {
 #define MICUiStatefulSvgPathDISABLED_SELECTED  @"SvgPathDisabledSelected"
 #define MICUiStatefulSvgPathACTIVATED_SELECTED @"SvgPathActivatedSelected"
 
+#define MICUiStatefulSvgBgPathNORMAL    @"SvgBgPathNormal"
+#define MICUiStatefulSvgBgPathSELECTED  @"SvgBgPathSelected"
+#define MICUiStatefulSvgBgPathACTIVATED @"SvgBgPathActivated"
+#define MICUiStatefulSvgBgPathDISABLED  @"SvgBgPathDisabled"
+#define MICUiStatefulSvgBgPathDISABLED_SELECTED  @"SvgBgPathDisabledSelected"
+#define MICUiStatefulSvgBgPathACTIVATED_SELECTED @"SvgBgPathActivatedSelected"
+
 #define MICUiStatefulSvgColorNORMAL    @"SvgColorNormal"
 #define MICUiStatefulSvgColorSELECTED  @"SvgColorSelected"
 #define MICUiStatefulSvgColorACTIVATED @"SvgColorActivated"
 #define MICUiStatefulSvgColorDISABLED  @"SvgColorDisabled"
 #define MICUiStatefulSvgColorDISABLED_SELECTED  @"SvgColorDisabledSelected"
 #define MICUiStatefulSvgColorACTIVATED_SELECTED @"SvgColorActivatedSelected"
+
+#define MICUiStatefulSvgBgColorNORMAL    @"SvgBgColorNormal"
+#define MICUiStatefulSvgBgColorSELECTED  @"SvgBgColorSelected"
+#define MICUiStatefulSvgBgColorACTIVATED @"SvgBgColorActivated"
+#define MICUiStatefulSvgBgColorDISABLED  @"SvgBgColorDisabled"
+#define MICUiStatefulSvgBgColorDISABLED_SELECTED  @"SvgBgColorDisabledSelected"
+#define MICUiStatefulSvgBgColorACTIVATED_SELECTED @"SvgBgColorActivatedSelected"
 
 /**
  * 状態依存リソースのi/f定義
@@ -111,6 +127,10 @@ typedef enum _micUiResType {
 - (void)complementResource:(id)res forName:(NSString *)name;
 - (void)mergeResource:(MICUiStatefulResource*) src overwrite:(bool)overwrite;
 - (void)mergeWithDictionary:(NSDictionary*) src overwrite:(bool)overwrite;
+- (void)mergeWith:(id<MICUiStatefulResourceProtocol>) src
+             type:(MICUiResType)type
+            state:(MICUiViewState)state
+        overwrite:(bool)overwrite;
 
 - (id)getResourceForName:(NSString *)name;
 + (NSString*)getStateName:(MICUiResType)type forState:(MICUiViewState)state;

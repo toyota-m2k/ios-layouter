@@ -110,4 +110,12 @@
     }];
 }
 
+- (void) dispose {
+    [_hosting dispose];
+}
+
+- (UIView *)view {
+    return self;
+}
+
 @end

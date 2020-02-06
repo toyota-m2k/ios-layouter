@@ -42,6 +42,7 @@
 @property (nonatomic) MICUiAlign    textHorzAlignment;                              ///< キャプションの横方向アラインメント
 @property (nonatomic) CGFloat borderWidth;                                          ///< 枠線の幅
 @property (nonatomic) CGFloat fontSize;                                             ///< フォントサイズ
+@property (nonatomic) bool boldFont;                                                ///< true:Bold (default)
 @property (nonatomic) UIEdgeInsets contentMargin;                                   ///< ボタン矩形とコンテント（アイコン・キャプション）とのマージン
 @property (nonatomic) CGFloat iconTextMargin;                                       ///< アイコンとキャプションの間のマージン
 @property (nonatomic) CGFloat roundRadius;                                          ///< 角丸の半径（ゼロなら直角）
@@ -54,6 +55,7 @@
 @property (nonatomic) bool inert;                                                   ///< 不活性状態（主に内部利用のみ：D&D操作中のタップ動作を禁止する場合に使用）
 @property (nonatomic) bool multiLineText;                                           ///< true:改行コードによる複数行文字列表示を有効にする (default:false)
 @property (nonatomic) CGFloat lineSpacing;                                          ///< 複数行表示の場合の行間（行の高さに対する比率で指定）
+@property (nonatomic) bool autoScaleToBounds;                                       ///< true:ビューのサイズに収まらない場合に自動的に縮小する (default:false)
 
 @property (nonatomic) id<MICUiDsCustomButtonDelegate> customButtonDelegate;         ///< イベントリスナー
 @property (nonatomic) NSString* key;
@@ -70,6 +72,7 @@
  * 現在のボタンステートに応じたリソースを取得
  */
 - (id) resource:(id<MICUiStatefulResourceProtocol>)resource onStateForType:(MICUiResType)type;
+- (id) resource:(id<MICUiStatefulResourceProtocol>)resource onState:(MICUiViewState)state ForType:(MICUiResType)type;
 
 /**
  * 状態依存のアイコンを取得
@@ -86,7 +89,7 @@
 
 /**
  * ラベル描画用フォントを取得する
- *  デフォルトの実装では、boldSystemFont を使用。これを変更する場合はサブクラスでオーバーライドする。
+ *  デフォルトの実装では、systemFont or boldSystemFont を使用。これを変更する場合はサブクラスでオーバーライドする。
  */
 - (UIFont*) getFont;
 

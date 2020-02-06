@@ -2,7 +2,7 @@
 //  MICUiDsSvgIconButton.h
 //
 //  Created by @toyota-m2k on 2019/03/15.
-//  Copyright  2019年 @toyota-m2k Corporation. All rights reserved.
+//  Copyright  2019 @toyota-m2k. All rights reserved.
 //
 
 #import "MICUiDsCustomButton.h"
@@ -42,6 +42,7 @@
 @property (nonatomic,readwrite) CGSize viewboxSize;
 @property (nonatomic,readwrite) bool stretchIcon;       // true: frame.height に合わせてアイコンを拡大する
                                                         // false: iconSize に従って描画（デフォルト）
+@property (nonatomic) MICPathRepository* pathRepository;
 
 /**
  * @param iconSize  描画サイズ
@@ -54,6 +55,14 @@
                       iconSize:(CGSize)iconSize
                pathViewboxSize:(CGSize)viewboxSize
                pathRepositiory:(MICPathRepository*) repo ;
+
+// Icon の重ね合わせ用
+// リソースに、MICUiResTypeSVG_BGPATH, MICUiResTypeSVG_BGCOLOR をセットすることで、BG->FGの順にアイコンを描画する。
+// FG、BGの描画位置は、次のメソッドをオーバーライドしてカスタマイズ可能。
+// デフォルトでは、チェックボックスなどの背景を塗るために、BGをFGより一回り(約4%)小さい矩形に描画する。
+- (CGRect) getIconBgRect:(CGRect) iconRect;
+- (CGRect) getIconFgRect:(CGRect) iconRect;
+
 
 @end
 

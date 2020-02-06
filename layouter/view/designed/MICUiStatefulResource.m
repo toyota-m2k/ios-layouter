@@ -56,6 +56,16 @@
 }
 
 
+- (void)mergeWith:(id<MICUiStatefulResourceProtocol>) src
+             type:(MICUiResType)type
+            state:(MICUiViewState)state
+        overwrite:(bool)overwrite {
+    let name = [self.class getStateName:type forState:state];
+    if(overwrite || _resources[name]==nil) {
+        [self setResource:[src resourceOf:type forState:state] forName:name];
+    }
+}
+
 
 - (id)getResourceForName:(NSString *)name {
     return [_resources objectForKey:name];
@@ -186,6 +196,37 @@
                     return MICUiStatefulSvgColorNORMAL;
                 case MICUiViewStateDISABLED_SELECTED:
                     return MICUiStatefulSvgColorDISABLED_SELECTED;
+                default:
+                    break;
+            }
+        case MICUiResTypeSVG_BGPATH:
+            switch(state){
+                case MICUiViewStateACTIVATED_:
+                    return MICUiStatefulSvgBgPathACTIVATED;
+                case MICUiViewStateDISABLED_:
+                    return MICUiStatefulSvgBgPathDISABLED;
+                case MICUiViewStateSELECTED_:
+                    return MICUiStatefulSvgBgPathSELECTED;
+                case MICUiViewStateNORMAL:
+                    return MICUiStatefulSvgBgPathNORMAL;
+                case MICUiViewStateDISABLED_SELECTED:
+                    return MICUiStatefulSvgBgPathDISABLED_SELECTED;
+                default:
+                    break;
+            }
+            break;
+        case MICUiResTypeSVG_BGCOLOR:
+            switch(state){
+                case MICUiViewStateACTIVATED_:
+                    return MICUiStatefulSvgBgColorACTIVATED;
+                case MICUiViewStateDISABLED_:
+                    return MICUiStatefulSvgBgColorDISABLED;
+                case MICUiViewStateSELECTED_:
+                    return MICUiStatefulSvgBgColorSELECTED;
+                case MICUiViewStateNORMAL:
+                    return MICUiStatefulSvgBgColorNORMAL;
+                case MICUiViewStateDISABLED_SELECTED:
+                    return MICUiStatefulSvgBgColorDISABLED_SELECTED;
                 default:
                     break;
             }

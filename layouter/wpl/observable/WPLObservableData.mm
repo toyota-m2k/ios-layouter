@@ -54,6 +54,11 @@
     return [v isKindOfClass:NSNumber.class] ? [(NSNumber*)v integerValue] : 0;
 }
 
+- (double) doubleValue {
+    id r = self.value;
+    return (nil!=r && [r respondsToSelector:@selector(doubleValue)]) ? [r doubleValue] : 0;
+}
+
 - (CGFloat) floatValue {
     id v = self.value;
     return number_to_cgfloat(v);

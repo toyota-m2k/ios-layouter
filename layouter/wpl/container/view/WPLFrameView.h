@@ -10,7 +10,18 @@
 #import "WPLCellHostingView.h"
 #import "WPLFrame.h"
 
-@interface WPLFrameView : WPLCellHostingView
+@protocol IWPLFrameView <IWPLCellHostingView>
+
+/**
+ * ルートコンテナセルを取得
+ * (WPLFrame*) o.containerCell
+ * と同じ。frame というプロパティ名にしたかったが、UIView#frameと名前が衝突するから。。。
+ */
+@property (nonatomic) WPLFrame* container;
+
+@end
+
+@interface WPLFrameView : WPLCellHostingView<IWPLFrameView>
 
 /**
  * ルートコンテナセルを取得

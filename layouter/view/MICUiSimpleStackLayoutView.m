@@ -3,7 +3,7 @@
 //  スクロールやD&Dをサポートしない単純なスタックレイアウトビュー
 //
 //  Created by @toyota-m2k on 2016/02/18.
-//  Copyright  2016年 @toyota-m2k Corporation. All rights reserved.
+//  Copyright  2016年 @toyota-m2k. All rights reserved.
 //
 
 #import "MICUiSimpleStackLayoutView.h"

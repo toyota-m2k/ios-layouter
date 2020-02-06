@@ -8,9 +8,9 @@
 //
 
 #import "WPLCellHostingScrollView.h"
-#import "WPLGrid.h"
+#import "WPLGridView.h"
 
-@interface WPLGridScrollView : WPLCellHostingScrollView
+@interface WPLGridScrollView : WPLCellHostingScrollView<IWPLGridView>
 
 /**
  * ルートコンテナセルを取得
@@ -21,7 +21,7 @@
 
 #if defined(__cplusplus)
 /**
- * Frameコンテナをルートにもつホスティグビューを作成
+ * Gridコンテナをルートにもつホスティグビューを作成
  *  C++以外は相手にしない。
  */
 + (instancetype) gridViewWithName:(NSString*) name

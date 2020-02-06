@@ -12,7 +12,7 @@
 //  [ts endCall];
 //
 //  Created by @toyota-m2k on 2016/01/26.
-//  Copyright  2016年 @toyota-m2k Corporation. All rights reserved.
+//  Copyright  2016年 @toyota-m2k. All rights reserved.
 //
 
 #import "MICTargetSelector.h"
@@ -40,6 +40,10 @@
 }
 
 + (instancetype) targetSelector:(id)target selector:(SEL)selector {
+    return [[MICTargetSelector alloc] initWithTarget:target selector:selector];
+}
+
++ (instancetype) target:(id)target selector:(SEL)selector {
     return [[MICTargetSelector alloc] initWithTarget:target selector:selector];
 }
 
@@ -206,10 +210,23 @@
     [self endCall];
 }
 
-
 - (void) performWithParam:(void*)argPtr getResult:(void*)result {
     [self beginCall];
     [self addArgument:argPtr];
+    [self endCallGetResult:result];
+}
+
+- (void) performWithParam:(void*)argPtr param2:(void*)argPtr2 {
+    [self beginCall];
+    [self addArgument:argPtr];
+    [self addArgument:argPtr2];
+    [self endCall];
+}
+
+- (void) performWithParam:(void*)argPtr param2:(void*)argPtr2 getResult:(void*)result {
+    [self beginCall];
+    [self addArgument:argPtr];
+    [self addArgument:argPtr2];
     [self endCallGetResult:result];
 }
 

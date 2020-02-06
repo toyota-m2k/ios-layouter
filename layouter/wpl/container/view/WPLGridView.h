@@ -10,7 +10,16 @@
 #import "WPLCellHostingView.h"
 #import "WPLGrid.h"
 
-@interface WPLGridView : WPLCellHostingView
+@protocol IWPLGridView <IWPLCellHostingView>
+/**
+ * ルートコンテナセルを取得
+ * (WPLFrame*) o.containerCell
+ * と同じ。frame というプロパティ名にしたかったが、UIView#frameと名前が衝突するから。。。
+ */
+@property (nonatomic) WPLGrid* container;
+@end
+
+@interface WPLGridView : WPLCellHostingView<IWPLGridView>
 /**
  * ルートコンテナセルを取得
  * (WPLFrame*) o.containerCell
@@ -20,7 +29,7 @@
 
 #if defined(__cplusplus)
 /**
- * Frameコンテナをルートにもつホスティグビューを作成
+ * Gridコンテナをルートにもつホスティグビューを作成
  *  C++以外は相手にしない。
  */
 + (instancetype) gridViewWithName:(NSString*) name

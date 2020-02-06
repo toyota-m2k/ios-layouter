@@ -47,6 +47,10 @@
     [self setValue:[NSNumber numberWithDouble:v]];
 }
 
+- (void) setDoubleValue:(double) v {
+    [self setValue:[NSNumber numberWithDouble:v]];
+}
+
 - (void) setStringValue:(NSString*)v {
     [self setValue:v];
 }

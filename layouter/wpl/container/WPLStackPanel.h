@@ -132,6 +132,13 @@ public:
                           superview:(UIView*)superview;
 
 #if defined(__cplusplus)
+
+- (instancetype) initWithView:(UIView *)view
+                         name:(NSString *)name
+                       params:(const WPLStackPanelParams&)params
+            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate;
+
+
 /**
  * C++版インスタンス生成ヘルパー
  * (Root Container 用）

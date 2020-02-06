@@ -121,6 +121,25 @@ typedef enum _WPLVisibility {
     - (void) removeInputListener:(id)key;
 @end
 
+@protocol IWPLCellSupportNamedValue <IWPLCell>
+    - (id) valueForName:(NSString*)name;
+    - (void) setValue:(id)value forName:(NSString*)name;
+
+    /**
+     * Viewへの入力が更新されたときのリスナー登録
+     * @param target        listener object
+     * @param selector      (cell,name)->Unit
+     * @return key  removeNamedValueListenerに渡して解除する
+     */
+    - (id) addNamed:(NSString*)name valueListener:(id)target selector:(SEL)selector;
+
+    /**
+     * リスナーの登録を解除
+     */
+    - (void) removeNamed:(NSString*)name valueListener:(id)key;
+@end
+
+
 @protocol IWPLCellSupportCommand <IWPLCell>
     /**
      * タップ（ボタンactionなど）イベントのリスナー

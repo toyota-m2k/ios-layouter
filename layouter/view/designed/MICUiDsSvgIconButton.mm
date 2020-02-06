@@ -2,7 +2,7 @@
 //  MICUiDsSvgIconButton.m
 //
 //  Created by @toyota-m2k on 2019/03/15.
-//  Copyright  2019年 @toyota-m2k Corporation. All rights reserved.
+//  Copyright  2019年 @toyota-m2k. All rights reserved.
 //
 
 #import "MICUiDsSvgIconButton.h"
@@ -14,6 +14,10 @@
 @implementation MICUiDsSvgIconButton {
     MICPathRepository* _pathRepo;
     MICPathRepository* _localPathRepo;
+}
+
+- (MICPathRepository*) pathRepository {
+    return _pathRepo;
 }
 
 - (instancetype) initWithFrame:(CGRect)frame {
@@ -125,7 +129,7 @@
     *prcText = CGRectNull;
     *prcIcon = CGRectNull;
 
-    MICRect rcIcon(rcContent.origin, _iconSize);
+    MICRect rcIcon(rcContent.origin, self.iconSize);
     if(rcIcon.height()>rcBounds.height()) {
         // アイコンが大きい→要縮小
         CGFloat r = rcContent.height() / rcIcon.height();
@@ -155,11 +159,17 @@
     *prcIcon = rcIcon;
 }
 
-
 - (void)drawIcon:(CGContextRef)rctx icon:(UIImage *)icon rect:(CGRect)rect {
+    let svgBgPath = self.currentSvgBgPath;
+    if(nil!=svgBgPath) {
+        let svgBgColor = self.currentSvgBgColor;
+        if(nil!=svgBgColor) {
+            [svgBgPath fill:rctx dstRect:[self getIconBgRect:rect] fillColor:svgBgColor];
+        }
+    }
     let svgPath = self.currentSvgPath;
     if(nil!=svgPath) {
-        [svgPath fill:rctx dstRect:rect fillColor:self.currentIconColor];
+        [svgPath fill:rctx dstRect:[self getIconFgRect:rect] fillColor:self.currentIconColor];
     }
 }
 
@@ -168,6 +178,41 @@
  */
 - (CGSize) iconSizeForState:(MICUiViewState)state {
     return self.iconSize;
+}
+
+#pragma - mark Background SVG ... SVGの重ね合わせ対応
+
+- (CGRect) getIconFgRect:(CGRect) iconRect {
+    return iconRect;
+}
+
+- (CGRect) getIconBgRect:(CGRect) iconRect {
+    let r = 1.0/24.0;
+    return iconRect - MICEdgeInsets(r*iconRect.size.width, r*iconRect.size.height);
+}
+
+- (MICSvgPath*) getSvgBgPathForState:(MICUiViewState)state {
+    NSString* path = [self resource:self.colorResources onStateForType:MICUiResTypeSVG_BGPATH];
+    if(path==nil) {
+        return nil;
+    }
+    return [_pathRepo getPath:path viewboxSize:_viewboxSize];
+}
+
+- (UIColor*) getSvgBgColorForState:(MICUiViewState)state {
+    UIColor* color = [self resource:self.colorResources onStateForType:MICUiResTypeSVG_BGCOLOR];
+//    if(nil==color) {
+//        color = [self resource:self.colorResources onStateForType:MICUiResTypeFGCOLOR];
+//    }
+    return color;
+}
+
+- (MICSvgPath*) currentSvgBgPath {
+    return [self getSvgBgPathForState:self.buttonState];
+}
+
+- (UIColor*) currentSvgBgColor {
+    return [self getSvgBgColorForState:self.buttonState];
 }
 
 @end

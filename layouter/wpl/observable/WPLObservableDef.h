@@ -23,6 +23,7 @@
     @property (nonatomic,readonly) CGFloat floatValue;
     @property (nonatomic,readonly) bool boolValue;
     @property (nonatomic,readonly) NSInteger intValue;
+    @property (nonatomic,readonly) double doubleValue;
 
     /**
      * 値が変化したことを通知する
@@ -43,7 +44,7 @@
     /**
      * 値変更監視リスナーを追加する
      * @param target     通知先
-     * @param selector   メソッドのセレクタ
+     * @param selector   メソッドのセレクタ (- void valueChanged:(id<IWPLObservableData>) source; )
      * @return 登録されたリスナーを識別するキー --> removeValueChangedListener に渡して登録解除する
      */
     - (id) addValueChangedListener:(id)target selector:(SEL)selector;
@@ -77,6 +78,7 @@
     @property (nonatomic) CGFloat floatValue;
     @property (nonatomic) bool boolValue;
     @property (nonatomic) NSInteger intValue;
+    @property (nonatomic) double doubleValue;
 @end
 
 @protocol IWPLDelegatedDataSource;
@@ -93,4 +95,11 @@ typedef id (^WPLSourceDelegateProc)(id<IWPLDelegatedDataSource>);
     @property (nonatomic) WPLSourceDelegateProc sourceDelegateBlock;
     @property (nonatomic) MICTargetSelector* sourceDelegateSelector;
 @end
+
+/**
+ * for Rx
+ */
+typedef id (^WPLRx1Proc)(id x);
+typedef id (^WPLRx2Proc)(id x, id y);
+typedef bool (^WPLRx1BoolProc)(id x);
 

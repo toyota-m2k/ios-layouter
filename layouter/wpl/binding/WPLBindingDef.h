@@ -79,6 +79,7 @@ typedef enum _WPLPropType {
     WPLPropTypeFG_COLOR,
     WPLPropTypeTEXT,
     WPLPropTypePLACEHOLDER,
+    WPLPropTypeSELECTED,        // MICUiDsCustomButton
 } WPLPropType;
 
 //@protocol IWPLPropBinding <IWPLBinding>

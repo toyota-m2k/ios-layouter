@@ -7,10 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "WPLContainerDef.h"
-#import "WPLBinder.h"
+#import "WPLCellHostingView.h"
 
-@interface WPLCellHostingScrollView : UIScrollView<UIScrollViewDelegate>
+@interface WPLCellHostingScrollView : UIScrollView<UIScrollViewDelegate, IWPLCellHostingView>
 
 /**
  * ホスティングするセルツリーのルートコンテナセル

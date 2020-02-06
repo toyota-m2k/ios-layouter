@@ -3,7 +3,7 @@
 //  layouter
 //
 //  Created by @toyota-m2k on 2016/01/26.
-//  Copyright  2016年 @toyota-m2k Corporation. All rights reserved.
+//  Copyright  2016年 @toyota-m2k. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -18,6 +18,7 @@
 - (instancetype)initWithTarget:(id)target selector:(SEL)selector;
 
 + (instancetype) targetSelector:(id)target selector:(SEL)selector;
++ (instancetype) target:(id)target selector:(SEL)selector;
 
 // 公開しているが多分使わない
 - (NSInvocation*) createInvocation;
@@ -35,6 +36,10 @@
 // １引数で実行
 - (void) performWithParam:(void*)argPtr;
 - (void) performWithParam:(void*)argPtr getResult:(void*)result;
+
+// 2引数で実行
+- (void) performWithParam:(void*)argPtr param2:(void*)argPtr2;
+- (void) performWithParam:(void*)argPtr param2:(void*)argPtr2 getResult:(void*)result;
 
 
 // あったら使えるかもしれないので外部にも公開
