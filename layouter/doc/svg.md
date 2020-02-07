@@ -92,6 +92,26 @@ iOS + Objective-Cでは、SVG Path の描画ができないっぽい。Swiftな�
 |stroke|UIColor*|線色|
 |strokeWidth|CGFloat|線幅|
 
+塗りつぶしと線の色、線幅、反転を指定して、CGContext上の矩形領域に描画する。
+
+    - (void)   draw:(CGContextRef) rctx 
+            dstRect:(CGRect) dstRect 
+          fillColor:(UIColor*)fillColor 
+             stroke:(UIColor*)strokeColor 
+        strokeWidth:(CGFloat)strokeWidth
+            mirrorX:(bool)mirrorX 
+            mirrorY:(bool)mirrorY;
+
+|引数名|型|説明|
+|:--|:--|:--|
+|rctx|CGContextRef|描画先コンテキスト|
+|dstRect|CGRect|描画先矩形|
+|fillColor|UIColor*|塗りつぶし色|
+|stroke|UIColor*|線色|
+|strokeWidth|CGFloat|線幅|
+|mirrorX|bool|true:左右反転|
+|mirrorY|bool|true:上下反転|
+
 ### リソース切り離し
 
     - (CGPathRef) detachCGPath;

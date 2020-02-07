@@ -36,6 +36,11 @@ let ts = [MICTargetSelector targetSelector:self @selector(callMe)];
 // 呼び出す（引数無しの場合）
 [ts perform];
 ```
+## MICListeners
+
+MICTargetSelector の配列。
+setListenerではなく、addListenr をサポートするためのクラス。
+fire メソッドで、すべてのtarget/selectorを呼び出すことが可能。
 
 ## MICKeyValueObserver
 

@@ -61,7 +61,7 @@ IWPLCell プロトコル のプロパティに加えて、以下を定義。
 </details>
 
 <details><summary>
-IWPLCellSuportReadonly プロトコル
+IWPLCellSupportReadonly プロトコル
 </summary>
 
 readonly属性をサポートするビューをホストするセルを定義する。
@@ -73,7 +73,7 @@ readonly属性をサポートするビューをホストするセルを定義す
 </details>
 
 <details><summary>
-IWPLCellSuportCommand プロトコル
+IWPLCellSupportCommand プロトコル
 </summary>
 
 ボタンのタップなど、（値を持たない）イベント（＝コマンド）を扱うビューをホストするセルを定義する。
@@ -95,6 +95,31 @@ IWPLCellSuportCommand プロトコル
 
 </details>
 
+
+<details><summary>
+IWPLCellSupportNamedValue プロトコル
+</summary>
+
+IWPLCellSupportValue は、唯一の値（valueプロパティ）を、バインド対象とするのに対して、IWPLCellSupportNamedValueは、複数の名前で識別されるValueをバインド対象とするセルを定義する。
+
+尚、IWPLCellSupportNamedValue も、value以外のプロパティにバインドする仕掛けだが、これは、alpha, backgroundColorなど、あらかじめ定義されているUIView共通のプロパティを扱う場合に利用する。
+
+### メソッド
+
+    /**
+     * Viewへの入力が更新されたときのリスナー登録
+     * @param target        listener object
+     * @param selector      (cell)->Unit
+     * @return key  removeInputListenerに渡して解除する
+     */
+    - (id) addInputChangedListener:(id)target selector:(SEL)selector;
+
+    /**
+     * リスナーの登録を解除
+     */
+    - (void) removeInputListener:(id)key;
+
+</details>
 
 <details><summary>
 WPLCell クラス
@@ -209,6 +234,20 @@ MICDsCustomButtonを内包する、WPLCommandCell 派生クラス。
 
 </details>
 
+
+<details><summary>
+WPLSliderCell クラス
+</summary>
+
+Sliderを内包する、WPLValueCell 派生クラス。
+IWPLCellSupportNamedValue をサポートし、value（スライダーの位置）に加えて、named valueとして、min (WPLSliderCell_MIN_NAME)と、max (WPLSliderCell_MIN_NAME) も、WPLNamedValueBindingによってバインド可能。
+
+継承するプロトコル
+- IWPLCell
+- IWPLCellSupportValue
+- IWPLCellSupportNamedValue
+
+</details>
 
 ---
 
@@ -489,6 +528,75 @@ WPLObservableMutableData と、ほとんど同じだが、valueに値をセッ�
 
 </details>
 
+<details><summary>
+WPLRxObservableData クラス
+</summary>
+
+前述の通り、このライブラリは、Rxではなく、データの変換や結合は、WPLRxObservableDataのcustomActionを使って、いかようにでも実装すればよい、というスタンスだったが、Select()とか、CombineLatest()くらいはあったほうが便利（というより、なかったらとても不便）なので、私が個人的に必要で、且つ、簡単なものだけ対応してみた。
+
+### サポートするオペレータ
+#### select (変換...mapともいう)
+```
+id<IWPLObservableData> v =
+[WPLRxObservableData select:(id<IWPLObservableData>)sx 
+                       func:(WPLRx1Proc)fn];
+```
+|引数|型|説明|
+|:--|:--|:--|
+|sx|id&lt;IWPLObservableData&gt;|変換元データソース|
+|fn|WPLRx1Proc|変換関数。<br>WPLRx1Procは、<br>id型の引数(IWPLObservableData#value)を１つ取り、<br>変換後のid型値（=selectの戻り値、IWPLObservableData#value）を返す関数ブロック。|
+
+#### where (フィルタリング)
+```
+id<IWPLObservableData> v =
+[WPLRxObservableData where:(id<IWPLObservableData>)sx 
+                      func:(WPLRx1BoolProc)fn];
+```
+|引数|型|説明|
+|:--|:--|:--|
+|sx|id&lt;IWPLObservableData&gt;|フィルタリング対象のデータソース|
+|fn|WPLRx1Proc|フィルター関数。<br>WPLRx1BoolProcは、<br>id型の引数(IWPLObservableData#value)を１つ取り、<br>その値を採用する場合はtrue, スキップする場合はfalseを返す関数ブロック。|
+
+#### combineLatest （結合）
+
+```
+id<IWPLObservableData> v =
+[WPLRxObservableData combineLatest:(id<IWPLObservableData>)sx 
+                              with:(id<IWPLObservableData>)sy 
+                              func:(WPLRx2Proc)fn];
+```
+|引数|型|説明|
+|:--|:--|:--|
+|sx|id&lt;IWPLObservableData&gt;|1系列目のデータソース|
+|sy|id&lt;IWPLObservableData&gt;|2系列目のデータソース|
+|fn|WPLRx2Proc|結合関数。<br>WPLRx2Procは、<br>id型の引数(IWPLObservableData#value)を２つ取り、<br>新しいid型値（=combineLatestの戻り値、IWPLObservableData#value）を返す関数ブロック。|
+
+#### merge （単純結合）
+
+```
+id<IWPLObservableData> v =
+[WPLRxObservableData merge:(id<IWPLObservableData>) sx 
+                      with:(id<IWPLObservableData>) sy];
+```
+|引数|型|説明|
+|:--|:--|:--|
+|sx|id&lt;IWPLObservableData&gt;|1系列目のデータソース|
+|sy|id&lt;IWPLObservableData&gt;|2系列目のデータソース|
+
+#### scan
+
+```
+id<IWPLObservableData> v =
+[WPLRxObservableData scan:(id<IWPLObservableData>)sx 
+                     func:(WPLRx2Proc)fn];
+```
+
+|引数|型|説明|
+|:--|:--|:--|
+|sx|id&lt;IWPLObservableData&gt;|データソース|
+|fn|WPLRx2Proc|累積関数。<br>WPLRx2Procは、<br>id型の引数を２つ（前回値と、今回の値）受け取り、<br>新しいid型値（=scanの戻り値、IWPLObservableData#value）を返す関数ブロック。|
+
+</details>
 
 ---
 
@@ -655,7 +763,7 @@ WPLBinderは、以下の手順で使う。
     // default:true
     @property (nonatomic) bool autoDisposeProperties;
 
-### バインド可能なプロパティ（データソース）の登録・取得・登録解除
+### バインド可能なプロパティ（データソース）の登録
 
     /**
      * 通常の値型（ObservableMutableData型）プロパティを作成して登録
@@ -664,6 +772,12 @@ WPLBinderは、以下の手順で使う。
      * @return プロパティを識別するキー
      */
     - (id) createPropertyWithValue:(id)initialValue withKey:(id) key;
+
+    /**
+    　* イベント発行用 ObservableMutableData である、WPLSubjectを作成
+    　* 取得は、propertyForKey, mutablePropertyForKey でよいが、WPLSubjectを取得する専用メソッド subjectForKey も使える。
+    　*/
+    - (id) createSubjectWithValue:(id)initialValue withKey:(id) key;
 
     /**
      * 依存型(DelegatedObservableData型）プロパティを生成して登録
@@ -685,11 +799,52 @@ WPLBinderは、以下の手順で使う。
                         dependsOnArgument:(va_list) args;
 
     /**
+    　* Rx map / select(.net) 相当の値変換を行うObservableプロパティを生成
+    　* @param key プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
+    　* @param src 変換元データ
+    　* @param fn  変換関数  id convert(id s)
+    　*/
+    - (id) createPropertyWithKey:(id)key map:(id<IWPLObservableData>)src func:(WPLRx1Proc) fn;
+    /**
+    　* Rx combineLatest に相当。２系列のデータソースから、新しいObservableを生成。
+    　* @param key   プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
+    　* @param src   ソース１
+    　* @param src2  ソース２
+    　* @param fn    変換関数　id convert(id s1, id s2)
+    　*/
+    - (id) createPropertyWithKey:(id)key combineLatest:(id<IWPLObservableData>)src with:(id<IWPLObservableData>)src2 func:(WPLRx2Proc) fn;
+
+    /**
+    　* Rx where に相当。２系列のデータソースを単純にマージ
+    　* @param key   プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
+    　* @param src   ソース
+    　* @param fn    フィルター関数(trueを返した値だけが有効になる)　bool filter(id s)
+    　*/
+    - (id) createPropertyWithKey:(id)key where:(id<IWPLObservableData>)src func:(WPLRx1BoolProc) fn;
+
+    /**
+    　* Rx merge に相当。２系列のデータソースを単純にマージ
+    　* @param key   プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
+    　* @param src   ソース１
+    　* @param src2  ソース２
+    　*/
+    - (id) createPropertyWithKey:(id)key merge:(id<IWPLObservableData>)src with:(id<IWPLObservableData>)src2;
+    /**
+    　* Rx scan 相当の値変換を行うObservableプロパティを生成
+    　* @param key   プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
+    　* @param src   変換元データ
+    　* @param fn    変換関数　id convert(id previous, id current)
+    　*/
+    - (id) createPropertyWithKey:(id)key scan:(id<IWPLObservableData>)src func:(WPLRx2Proc) fn;
+
+    /**
      * 外部で作成したObservableData型のインスタンスをプロパティとしてバインダーに登録する。
      * @param prop ObservableData型インスタンス
      * @param key プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
      */
     - (id) addProperty:(id<IWPLObservableData>) prop forKey:(id) key;
+
+### 登録済みのプロパティの取得
 
     /**
      * 登録済みのプロパティを取得
@@ -707,12 +862,21 @@ WPLBinderは、以下の手順で使う。
     - (id<IWPLObservableMutableData>) mutablePropertyForKey:(id)key;
 
     /**
+    　* WPLSubject型のプロパティを取得
+    　* @param key   createSubjectWithValue の戻り値
+    　* @return IWPLObservableMutableData型インスタンス（未登録、または、WPLSubjectでなければnil）
+    　*/
+    - (WPLSubject*) subjectForKey:(id)key;
+
+### プロパティの登録解除
+
+    /**
      * プロパティをバインダーから削除する。
      * @param key   addProperty, createProperty / createDependentProperty などが返した値。
      */
     - (void) removeProperty:(id)key;
 
-### Cellとプロパティの関連づけ
+### セルと登録済みプロパティのバインド
 
     /**
     　* セルの値とプロパティのバインディングを作成して登録
@@ -724,6 +888,21 @@ WPLBinderは、以下の手順で使う。
     　*/
     - (id<IWPLBinding>) bindProperty:(id)propKey
                     withValueOfCell:(id<IWPLCell>)cell
+                        bindingMode:(WPLBindingMode)bindingMode
+                        customActin:(WPLBindingCustomAction)customAction;
+
+    /**
+    　* セルのNamedValueとプロパティのバインディングを作成して登録
+    　* @param propKey   バインドするプロパティを識別するキー（必ず登録済みのものを指定）
+    　* @param cell      バインドするセル
+    　* @param valueName namedValueの名前
+    　* @param bindingMode   VIEW_TO_SOURCE_WITH_INIT | VIEW_TO_SOURCE | SOURCE_TO_VIEW | TWOWAY
+    　* @param customAction  プロパティ、または、セルの値が変更されたときのコールバック関数（nil可）
+    　* @return 作成された binding インスタンス
+    　*/
+    - (id<IWPLBinding>) bindProperty:(id)propKey
+                            withCell:(id<IWPLCellSupportNamedValue>)cell
+                        andValueName:(NSString*) valueName
                         bindingMode:(WPLBindingMode)bindingMode
                         customActin:(WPLBindingCustomAction)customAction;
 
@@ -757,6 +936,7 @@ WPLBinderは、以下の手順で使う。
     　*/
     - (void) addBinding:(id<IWPLBinding>) binding;
 
+### セルとプロパティのバインド解除
 
     /**
     　* バインドを解除する
@@ -764,7 +944,7 @@ WPLBinderは、以下の手順で使う。
     　*/
     - (void) unbind:(id<IWPLBinding>) binding;
 
-### バインディングの破棄
+### すべてのバインディングを破棄
 
     - (void) dispose;
 
