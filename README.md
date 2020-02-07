@@ -24,9 +24,10 @@ iOS標準のレイアウト機能である、NSLayoutConstraint を使うと、A
 
 ## [カスタムボタン](layouter/doc/custom-view.md)
 
-簡単にカスタマイズできるボタン。<br>
+SVG Pathをアイコンとして使うことも想定した、簡単にカスタマイズできるボタン。<br>
 iOSのボタンカスタマイズは、なにやら面倒なので。。。
-<br>SVG Pathをアイコンとして使うことも想定。
+<br>
+チェックボックスやコンボボックスなども追加。
 
 ## [CGRect, CGSize, ...](layouter/doc/rect-size.md)
 
