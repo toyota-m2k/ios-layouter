@@ -68,6 +68,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     bb.property(PROP_VERT_STACK_VISIBLE, true);
 
     WPLCell* cell;
+    id<IWPLCellSupportValue> vcell;
     UILabel* label;
     UIView* view;
     
@@ -87,9 +88,9 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     let sw1 = [UISwitch new];
     [sw1 sizeToFit];
     sw1.on = true;
-    cell = [WPLSwitchCell newCellWithView:sw1 name:@"no1-switch" params:WPLCellParams()];
-    bb.bind(PROP_HORZ_STACK_VISIBLE, cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
-    [ts1 addCell:cell];
+    vcell = [WPLSwitchCell newCellWithView:sw1 name:@"no1-switch" params:WPLCellParams()];
+    bb.bind(PROP_HORZ_STACK_VISIBLE, vcell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
+    [ts1 addCell:vcell];
 
     label = [UILabel new];
     label.text = @"Horizontal Stack Panel";
@@ -124,9 +125,9 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
 
     let sw2 = [UISwitch new];
     [sw2 sizeToFit];
-    cell = [WPLSwitchCell newCellWithView:sw2 name:@"no2-switch" params:WPLCellParams()];
-    bb.bind(PROP_VERT_STACK_VISIBLE, cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
-    [ts2 addCell:cell];
+    vcell = [WPLSwitchCell newCellWithView:sw2 name:@"no2-switch" params:WPLCellParams()];
+    bb.bind(PROP_VERT_STACK_VISIBLE, vcell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
+    [ts2 addCell:vcell];
 
     
     label = [UILabel new];

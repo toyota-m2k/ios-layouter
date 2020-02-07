@@ -74,6 +74,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     bb.property(PROP_GRID_D_VISIBLE, true);
 
     WPLCell* cell;
+    id<IWPLCellSupportValue> vcell;
     UILabel* label;
     UIView* view;
     
@@ -96,9 +97,9 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
 
     let sw1 = [UISwitch new];
     [sw1 sizeToFit];
-    cell = [WPLSwitchCell newCellWithView:sw1 name:@"A-switch" params:WPLCellParams().horzAlign(WPLCellAlignmentSTART)];
-    bb.bind(PROP_GRID_A_VISIBLE, cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
-    [gs.container addCell:cell row:row column:1];
+    vcell = [WPLSwitchCell newCellWithView:sw1 name:@"A-switch" params:WPLCellParams().horzAlign(WPLCellAlignmentSTART)];
+    bb.bind(PROP_GRID_A_VISIBLE, vcell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
+    [gs.container addCell:vcell row:row column:1];
 
 #if false
     // Row-2
@@ -159,9 +160,9 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     
     let sw2 = [UISwitch new];
     [sw2 sizeToFit];
-    cell = [WPLSwitchCell newCellWithView:sw2 name:@"B-switch" params:WPLCellParams().horzAlign(WPLCellAlignmentSTART)];
-    bb.bind(PROP_GRID_B_VISIBLE, cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
-    [gs.container addCell:cell row:row column:1];
+    vcell = [WPLSwitchCell newCellWithView:sw2 name:@"B-switch" params:WPLCellParams().horzAlign(WPLCellAlignmentSTART)];
+    bb.bind(PROP_GRID_B_VISIBLE, vcell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
+    [gs.container addCell:vcell row:row column:1];
 
 
     // Row-4
@@ -200,9 +201,9 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     
     let sw3 = [UISwitch new];
     [sw3 sizeToFit];
-    cell = [WPLSwitchCell newCellWithView:sw3 name:@"C-switch" params:WPLCellParams()];
-    bb.bind(PROP_GRID_C_VISIBLE, cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
-    [gs.container addCell:cell row:row column:1];
+    vcell = [WPLSwitchCell newCellWithView:sw3 name:@"C-switch" params:WPLCellParams()];
+    bb.bind(PROP_GRID_C_VISIBLE, vcell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
+    [gs.container addCell:vcell row:row column:1];
     
     // Row-6
     // Inner Grid-3
@@ -253,9 +254,9 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     
     let sw4 = [UISwitch new];
     [sw4 sizeToFit];
-    cell = [WPLSwitchCell newCellWithView:sw4 name:@"D-switch" params:WPLCellParams()];
-    bb.bind(PROP_GRID_D_VISIBLE, cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
-    [gs.container addCell:cell row:row column:1];
+    vcell = [WPLSwitchCell newCellWithView:sw4 name:@"D-switch" params:WPLCellParams()];
+    bb.bind(PROP_GRID_D_VISIBLE, vcell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
+    [gs.container addCell:vcell row:row column:1];
 
     row++;
     let g4 = [WPLGrid gridWithName:@"g4" params:WPLGridParams()
