@@ -7,26 +7,52 @@
 
 #import "MICUiDsGuardView.h"
 #import "MICTargetSelector.h"
+#import "MICKeyValueObserver.h"
 #import "MICUiColorUtil.h"
 #import "MICVar.h"
 
 @implementation MICUiDsGuardView {
     MICTargetSelector* _touchAction;
+    MICKeyValueObserver* _observer;
+    __weak UIView* _rootView;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
+- (instancetype)initWithRootView:(UIView*)rootView {
+    self = [super initWithFrame:rootView.bounds];
     if(self!=nil){
+        _rootView = rootView;
         self.backgroundColor = MICUiColorARGB(0x20000000);
     }
     return self;
+}
+
+/**
+ * rootViewのサイズ変更に追従
+ */
+- (void) sizePropertyChanged:(id<IMICKeyValueObserverItem>) info target:(id)target {
+    self.frame = ((UIView*)target).frame;
+}
+
+- (void)willMoveToSuperview:(UIView *)newSuperview {
+    if(nil!=newSuperview) {
+        if(nil!=_rootView && nil==_observer) {
+            _observer = [[MICKeyValueObserver alloc] initWithActor:_rootView];
+            [_observer add:@"frame" listener:self handler:@selector(sizePropertyChanged:target:)];
+            [_observer add:@"bounds" listener:self handler:@selector(sizePropertyChanged:target:)];
+        }
+    } else {
+        if(nil!=_observer) {
+            [_observer dispose];
+            _observer = nil;
+        }
+    }
 }
 
 + (instancetype) guardViewOnRootView:(UIView*) rootView
                               target:(id) target
                               action:(SEL) action
                              bgColor:(UIColor*) bgColor {
-    let v = [[MICUiDsGuardView alloc] initWithFrame:rootView.bounds];
+    let v = [[MICUiDsGuardView alloc] initWithRootView:rootView];
     if(bgColor!=nil) {
         v.backgroundColor = bgColor;
     }

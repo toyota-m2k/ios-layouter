@@ -286,7 +286,7 @@ public:
      * 中央寄せ
      * @param   sibling     基準ビュー（nilなら親を基準にする）
      */
-    RALAttach& center(UIView* sibling) {
+    RALAttach& center(UIView* sibling=nil) {
         _attach = CENTER;
         _related = sibling;
         _value = 0;

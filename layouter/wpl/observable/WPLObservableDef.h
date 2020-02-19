@@ -22,7 +22,8 @@
     @property (nonatomic,readonly) NSString* stringValue;
     @property (nonatomic,readonly) CGFloat floatValue;
     @property (nonatomic,readonly) bool boolValue;
-    @property (nonatomic,readonly) NSInteger intValue;
+    @property (nonatomic,readonly) NSInteger integerValue;
+    @property (nonatomic,readonly) int intValue;
     @property (nonatomic,readonly) double doubleValue;
 
     /**
@@ -77,7 +78,8 @@
     @property (nonatomic) NSString* stringValue;
     @property (nonatomic) CGFloat floatValue;
     @property (nonatomic) bool boolValue;
-    @property (nonatomic) NSInteger intValue;
+    @property (nonatomic) int intValue;
+    @property (nonatomic) NSInteger integerValue;
     @property (nonatomic) double doubleValue;
 @end
 

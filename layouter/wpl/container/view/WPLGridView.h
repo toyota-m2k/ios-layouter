@@ -28,6 +28,11 @@
 @property (nonatomic) WPLGrid* container;
 
 #if defined(__cplusplus)
+
+- (instancetype) initWithFrame:(CGRect)frame
+                         named:(NSString*) name
+                        params:(WPLGridParams)params;
+
 /**
  * Gridコンテナをルートにもつホスティグビューを作成
  *  C++以外は相手にしない。

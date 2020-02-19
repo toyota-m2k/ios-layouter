@@ -12,7 +12,27 @@
  * WPLObservableMutableData と同じ。
  * 他のObservableたちと同じ流儀で、event を扱えるようにしたかった。
  */
-@implementation WPLSubject
+@implementation WPLSubject {
+    NSMutableArray<WPLSubjectActionProc>* _subscribers;
+    id _subscribersKey;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if(nil!=self) {
+        _subscribers = nil;
+        _subscribersKey = nil;
+    }
+    return self;
+}
+
+- (void)dispose {
+    [super dispose];
+    if(nil!=_subscribers) {
+        [_subscribers removeAllObjects];
+        _subscribers = nil;
+    }
+}
 
 - (void)setValue:(id)value {
     if(![self.value isEqual:value]) {
@@ -52,5 +72,20 @@
     [self removeValueChangedListener:key];
 }
 
+- (void)subscribe:(WPLSubjectActionProc)action {
+    if(_subscribersKey==nil) {
+        _subscribersKey = [self addListener:self selector:@selector(onEmit:)];
+        _subscribers = [NSMutableArray array];
+    }
+    [_subscribers addObject:action];
+}
+
+- (void) onEmit:(id)_ {
+    if(_subscribers!=nil) {
+        for(WPLSubjectActionProc fn in _subscribers) {
+            fn(self.value);
+        }
+    }
+}
 
 @end

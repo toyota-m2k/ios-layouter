@@ -49,9 +49,14 @@
     id v = self.value;
     return [v isKindOfClass:NSString.class] ? (NSString*)v : @"";
 }
-- (NSInteger) intValue {
+
+- (NSInteger) integerValue {
     id v = self.value;
     return [v isKindOfClass:NSNumber.class] ? [(NSNumber*)v integerValue] : 0;
+}
+- (int) intValue {
+    id v = self.value;
+    return [v isKindOfClass:NSNumber.class] ? [(NSNumber*)v intValue] : 0;
 }
 
 - (double) doubleValue {

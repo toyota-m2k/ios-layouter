@@ -118,6 +118,7 @@ typedef id<IMICAcom> MICPromise;
 
 #define MPSV_INT(i) ((i)!=nil && [(i) isKindOfClass:NSNumber.class] ? [(NSNumber*)(i) integerValue] : 0)
 #define MPSV_BOOL(i) ((i)!=nil && [(i) isKindOfClass:NSNumber.class] ? [(NSNumber*)(i) boolValue] : false)
+#define MPSV_DOUBLE(i) ((i)!=nil && [(i) isKindOfClass:NSNumber.class] ? [(NSNumber*)(i) doubleValue] : 0)
 
 #define MICAcomRESOLVE(v)  [MICAcom resolve:(v)]
 #define MICAcomREJECT(v)   [MICAcom reject:(v)]

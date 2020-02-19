@@ -23,9 +23,20 @@
 
 + (instancetype) stackPanelViewWithName:(NSString*) name
                                  params:(WPLStackPanelParams) params {
-    let view = [WPLStackPanelView new];
-    view.container = [WPLStackPanel stackPanelWithName:name params:params];
-    return view;
+    return [[self alloc] initWithFrame:MICRect() named:name params:params];
 }
+
+- (instancetype) initWithFrame:(CGRect)frame {
+    return [self initWithFrame:frame named:@"" params:WPLStackPanelParams()];
+}
+
+- (instancetype) initWithFrame:(CGRect)frame named:(NSString*) name params:(WPLStackPanelParams)params {
+    self = [super initWithFrame:frame container:[WPLStackPanel stackPanelWithName:name params:params]];
+    if(nil!=self) {
+    }
+    return self;
+}
+
+
 
 @end

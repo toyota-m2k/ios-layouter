@@ -321,6 +321,32 @@ public:
         return *this;
     }
     
+    WPLBinderBuilder& select(NSString* name, NSString* nx, WPLRx1Proc fn) {
+        [_binder createPropertyWithKey:name map:[_binder propertyForKey:nx] func:fn];
+        return *this;
+    }
+    WPLBinderBuilder& map(NSString* name, NSString* nx, WPLRx1Proc fn) {
+        return select(name, nx, fn);
+    }
+    WPLBinderBuilder& combineLatest(NSString* name, NSString* nx, NSString* ny, WPLRx2Proc fn) {
+        [_binder createPropertyWithKey:name combineLatest:[_binder propertyForKey:nx] with:[_binder propertyForKey:ny] func:fn];
+        return *this;
+    }
+    WPLBinderBuilder& where(NSString* name, NSString* nx, WPLRx1BoolProc fn) {
+        [_binder createPropertyWithKey:name where:[_binder propertyForKey:nx] func:fn];
+        return *this;
+    }
+    
+    WPLBinderBuilder& merge(NSString* name, NSString* nx, NSString* ny) {
+        [_binder createPropertyWithKey:name merge:[_binder propertyForKey:nx] with:[_binder propertyForKey:ny]];
+        return *this;
+    }
+    
+    WPLBinderBuilder& scan(NSString* name, NSString* nx, WPLRx2Proc fn) {
+        [_binder createPropertyWithKey:name scan:[_binder propertyForKey:nx] func:fn];
+        return *this;
+    }
+    
     /**
      * nameという名前のSubjectを作成（初期値 nil）
      */

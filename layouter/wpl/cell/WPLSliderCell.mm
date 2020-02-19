@@ -6,7 +6,7 @@
 //
 
 #import "WPLSliderCell.h"
-#import "WPLNamedValueHost.h"
+//#import "WPLNamedValueHost.h"
 #import "MICDicUtil.h"
 
 @implementation WPLSliderCell {

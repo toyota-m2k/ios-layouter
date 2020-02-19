@@ -7,6 +7,8 @@
 
 #import "WPLObservableMutableData.h"
 
+typedef void (^WPLSubjectActionProc)(id value);
+
 @interface WPLSubject : WPLObservableMutableData
 
 /**
@@ -38,6 +40,9 @@
  * @param key addListener の戻り値
  */
 - (void) removeListener:(id)key;
+
+
+- (void) subscribe:(WPLSubjectActionProc) action;
 
 @end
 

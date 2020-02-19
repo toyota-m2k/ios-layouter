@@ -23,9 +23,18 @@
 
 + (instancetype) gridViewWithName:(NSString *)name
                             params:(WPLGridParams)params {
-    let view = [WPLGridScrollView new];
-    view.container = [WPLGrid gridWithName:name params:params];
-    return view;
+    return [[self alloc] initWithFrame:MICRect() named:name params:params];
+}
+
+- (instancetype) initWithFrame:(CGRect)frame {
+    return [self initWithFrame:frame named:@"" params:WPLGridParams()];
+}
+
+- (instancetype) initWithFrame:(CGRect)frame named:(NSString*) name params:(WPLGridParams)params {
+    self = [super initWithFrame:frame container:[WPLGrid gridWithName:name params:params]];
+    if(nil!=self) {
+    }
+    return self;
 }
 
 @end

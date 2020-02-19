@@ -21,12 +21,16 @@
 
 #if defined(__cplusplus)
 
+- (instancetype) initWithFrame:(CGRect)frame
+                         named:(NSString*) name
+                        params:(WPLStackPanelParams)params;
+
 /**
  * StackPanelコンテナをルートにもつホスティグビューを作成
  *  C++以外は相手にしない。
  */
 + (instancetype) stackPanelViewWithName:(NSString*) name
-params:(WPLStackPanelParams) params;
+                                 params:(WPLStackPanelParams) params;
 
 #endif
 

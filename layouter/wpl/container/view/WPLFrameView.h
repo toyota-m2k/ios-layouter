@@ -31,6 +31,11 @@
 @property (nonatomic) WPLFrame* container;
 
 #if defined(__cplusplus)
+
+- (instancetype) initWithFrame:(CGRect)frame
+                         named:(NSString*) name
+                        params:(WPLCellParams)params;
+
 /**
  * Frameコンテナをルートにもつホスティグビューを作成
  *  C++以外は相手にしない。

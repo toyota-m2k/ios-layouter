@@ -22,10 +22,19 @@
 }
 
 
-+ (WPLFrameView *)frameViewWithName:(NSString *)name params:(WPLCellParams)params {
-    let view = [WPLFrameView new];
-    view.containerCell = [WPLFrame frameWithName:name params:params];
-    return view;
++ (instancetype)frameViewWithName:(NSString *)name params:(WPLCellParams)params {
+    return [[self alloc] initWithFrame:MICRect() named:name params:params];
+}
+
+- (instancetype) initWithFrame:(CGRect)frame {
+    return [self initWithFrame:frame named:@"" params:WPLCellParams()];
+}
+
+- (instancetype) initWithFrame:(CGRect)frame named:(NSString*) name params:(WPLCellParams)params {
+    self = [super initWithFrame:frame container:[WPLFrame frameWithName:name params:params]];
+    if(nil!=self) {
+    }
+    return self;
 }
 
 @end

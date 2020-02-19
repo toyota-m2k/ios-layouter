@@ -34,9 +34,12 @@
     return self;
 }
 
-
-- (void) setIntValue:(NSInteger)v {
+- (void)setIntegerValue:(NSInteger)v {
     [self setValue:[NSNumber numberWithInteger:v]];
+}
+
+- (void) setIntValue:(int)v {
+    [self setValue:[NSNumber numberWithInt:v]];
 }
 
 - (void) setBoolValue:(bool)v {
@@ -53,6 +56,45 @@
 
 - (void) setStringValue:(NSString*)v {
     [self setValue:v];
+}
+
+
++ (instancetype) dataWithIntValue:(int)v {
+    WPLObservableMutableData* r = [[self alloc] init];
+    [r setIntValue:v];
+    return r;
+}
+
++ (instancetype) dataWithIntegerValue:(NSInteger)v {
+    WPLObservableMutableData* r = [[self alloc] init];
+    [r setIntegerValue:v];
+    return r;
+}
+
++ (instancetype) dataWithBoolValue:(bool)v {
+    WPLObservableMutableData* r = [[self alloc] init];
+    [r setBoolValue:v];
+    return r;
+}
++ (instancetype) dataWithFloatValue:(CGFloat)v {
+    WPLObservableMutableData* r = [[self alloc] init];
+    [r setFloatValue:v];
+    return r;
+}
++ (instancetype) dataWithDoubleValue:(double)v {
+    WPLObservableMutableData* r = [[self alloc] init];
+    [r setDoubleValue:v];
+    return r;
+}
++ (instancetype) dataWithStringValue:(NSString*)v {
+    WPLObservableMutableData* r = [[self alloc] init];
+    [r setStringValue:v];
+    return r;
+}
++ (instancetype) dataWithValue:(id)v {
+    WPLObservableMutableData* r = [[self alloc] init];
+    r.value = v;
+    return r;
 }
 
 @end

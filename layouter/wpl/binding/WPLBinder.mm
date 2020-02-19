@@ -284,7 +284,7 @@
                      customActin:(WPLBindingCustomAction)customAction {
     let prop = [self propertyForKey:propKey];
     if(nil==prop) {
-        NSAssert(false, @"no property %@", [propKey description]);
+        NSAssert1(false, @"no property %@", [propKey description]);
         return nil;
     }
     let binding = [[WPLValueBinding alloc] initWithCell:cell source:prop bindingMode:bindingMode customAction:customAction];
@@ -307,7 +307,7 @@
                      customActin:(WPLBindingCustomAction)customAction {
     let prop = [self propertyForKey:propKey];
     if(nil==prop) {
-        NSAssert(false, @"no property %@", [propKey description]);
+        NSAssert1(false, @"no property %@", [propKey description]);
         return nil;
     }
     let binding = [[WPLBoolStateBinding alloc] initWithCell:cell
@@ -337,7 +337,7 @@
 
     let prop = [self propertyForKey:propKey];
     if(nil==prop) {
-        NSAssert(false, @"no property %@", [propKey description]);
+        NSAssert1(false, @"no property %@", [propKey description]);
         return nil;
     }
     let binding = [[WPLBoolStateBinding alloc] initWithCell:cell
@@ -366,7 +366,7 @@
                      customActin:(WPLBindingCustomAction)customAction {
     let prop = [self propertyForKey:propKey];
     if(nil==prop) {
-        NSAssert(false, @"no property %@", [propKey description]);
+        NSAssert1(false, @"no property %@", [propKey description]);
         return nil;
     }
     let binding = [[WPLPropBinding alloc] initWithCell:cell source:prop propType:propType customAction:customAction];
@@ -381,7 +381,7 @@
                      customActin:(WPLBindingCustomAction)customAction {
     let prop = [self propertyForKey:propKey];
     if(nil==prop) {
-        NSAssert(false, @"no property %@", [propKey description]);
+        NSAssert1(false, @"no property %@", [propKey description]);
         return nil;
     }
     let binding = [[WPLNamedValueBinding alloc] initWithCell:cell valueName:valueName source:prop bindingMode:bindingMode customAction:customAction];
@@ -399,7 +399,7 @@
                     customAction:(WPLBindingCustomAction) customAction {
     let prop = [self propertyForKey:propKey];
     if(nil==prop) {
-        NSAssert(false, @"no property %@", [propKey description]);
+        NSAssert1(false, @"no property %@", [propKey description]);
         return nil;
     }
     let binding = [[WPLGenericBinding alloc] initWithCell:cell source:prop bindingMode:WPLBindingModeSOURCE_TO_VIEW customAction:customAction];
@@ -415,7 +415,7 @@
                    customAction:(WPLBindingCustomAction) customAction {
     let prop = [self propertyForKey:subjectKey];
     if(nil==prop) {
-        NSAssert(false, @"no property %@", [subjectKey description]);
+        NSAssert1(false, @"no property %@", [subjectKey description]);
         return nil;
     }
     if(![prop isKindOfClass:WPLSubject.class]) {
