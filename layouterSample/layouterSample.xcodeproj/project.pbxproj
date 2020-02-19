@@ -117,6 +117,7 @@
 		84D1029023EC124500203ADC /* WPLFrameScrollView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84D1028F23EC124500203ADC /* WPLFrameScrollView.mm */; };
 		84D1029323EC125500203ADC /* WPLRxObservableData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84D1029223EC125500203ADC /* WPLRxObservableData.mm */; };
 		84D1029623ED2ACB00203ADC /* MICListeners.m in Sources */ = {isa = PBXBuildFile; fileRef = 84D1029423ED2ACB00203ADC /* MICListeners.m */; };
+		84D103E423FCECB700203ADC /* WPLProgressCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 84D103E323FCECB700203ADC /* WPLProgressCell.m */; };
 		84DDAFAC2371104100232310 /* gridTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84DDAFAB2371104100232310 /* gridTest.mm */; };
 		84DDAFAF2371142E00232310 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84DDAFAE2371142E00232310 /* UIKit.framework */; };
 		84DDAFB22371293B00232310 /* WPLGrid.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84DDAFB12371293B00232310 /* WPLGrid.mm */; };
@@ -370,6 +371,8 @@
 		84D1029223EC125500203ADC /* WPLRxObservableData.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLRxObservableData.mm; sourceTree = "<group>"; };
 		84D1029423ED2ACB00203ADC /* MICListeners.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MICListeners.m; sourceTree = "<group>"; };
 		84D1029523ED2ACB00203ADC /* MICListeners.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MICListeners.h; sourceTree = "<group>"; };
+		84D103E223FCECB700203ADC /* WPLProgressCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLProgressCell.h; sourceTree = "<group>"; };
+		84D103E323FCECB700203ADC /* WPLProgressCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WPLProgressCell.m; sourceTree = "<group>"; };
 		84DDAFAB2371104100232310 /* gridTest.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = gridTest.mm; sourceTree = "<group>"; };
 		84DDAFAE2371142E00232310 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		84DDAFB02371293B00232310 /* WPLGrid.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGrid.h; sourceTree = "<group>"; };
@@ -645,6 +648,8 @@
 		841AD82322F52AEE00F9AB7D /* cell */ = {
 			isa = PBXGroup;
 			children = (
+				84D103E223FCECB700203ADC /* WPLProgressCell.h */,
+				84D103E323FCECB700203ADC /* WPLProgressCell.m */,
 				84D1028323EC122D00203ADC /* WPLCommandCell.h */,
 				84D1028223EC122D00203ADC /* WPLCommandCell.mm */,
 				84D1028723EC122D00203ADC /* WPLDsCustomButtonCell.h */,
@@ -1017,6 +1022,7 @@
 				84D1027D23EC11DA00203ADC /* MICUiDsGuardView.m in Sources */,
 				84D1028C23EC122D00203ADC /* WPLSliderCell.mm in Sources */,
 				841AD7C622EE93FA00F9AB7D /* MICResetableEvent.m in Sources */,
+				84D103E423FCECB700203ADC /* WPLProgressCell.m in Sources */,
 				841AD87222FD6B8D00F9AB7D /* WPLGridView.mm in Sources */,
 				84D1027C23EC11DA00203ADC /* MICUiDsEyeCatcherView.mm in Sources */,
 				841AD86F22FD684D00F9AB7D /* WPLFrameView.mm in Sources */,
