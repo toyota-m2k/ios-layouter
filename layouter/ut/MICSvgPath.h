@@ -63,4 +63,7 @@
  */
 - (void) stroke:(CGContextRef) rctx dstRect:(CGRect) dstRect strokeColor:(UIColor*)strokeColor strokeWidth:(CGFloat)strokeWidth;
 
+
++ (NSArray*) parseParams:(NSString*) paramString;
+
 @end

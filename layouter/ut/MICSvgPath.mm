@@ -648,7 +648,7 @@ public:
 }
 
 + (void) parse:(NSString*) pathString toPath:(SvgPath&) path {
-    NSString* svgPattern = @"([MmLlHhVvCcSsQqTtAa])([eE.,\\s\\d]+)";
+    NSString* svgPattern = @"([MmLlHhVvCcSsQqTtAaZz])([-eE.,\\s\\d]*)";
     NSError* error;
     let regexCmd = [NSRegularExpression regularExpressionWithPattern:svgPattern options:(NSRegularExpressionCaseInsensitive) error:&error];
     
@@ -716,6 +716,7 @@ public:
 }
 
 + (NSArray*) parseParams:(NSString*) paramString {
+    if(paramString==nil) return nil;
     NSString* pattern = @"([+-]?(?:\\d*\\.)?\\d+(?:[Ee][+-]?\\d+)?)";
     let array = [NSMutableArray array];
     NSError* error;

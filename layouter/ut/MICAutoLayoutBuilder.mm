@@ -29,7 +29,7 @@ MICAutoLayoutBuilder::constraint(UIView* target, NSLayoutAttribute attr, UIView*
 }
 
 MICAutoLayoutBuilder&
-MICAutoLayoutBuilder::anchorConstraint(NSLayoutAnchor* anchor, NSLayoutAnchor* relatedAnchor, CGFloat margin, int relativity) {
+MICAutoLayoutBuilder::anchorConstraint(NSLayoutAnchor* anchor, NSLayoutAnchor* relatedAnchor, CGFloat margin, NSLayoutRelation relativity) {
     if(@available(ios 9.0,*)) {
         NSLayoutConstraint* c;
         if(relativity==0) {
@@ -46,7 +46,7 @@ MICAutoLayoutBuilder::anchorConstraint(NSLayoutAnchor* anchor, NSLayoutAnchor* r
 }
 
 MICAutoLayoutBuilder&
-MICAutoLayoutBuilder::fitToSafeArea(UIView* target, MICUiPosEx pos, const UIEdgeInsets& margin, int relativity) {
+MICAutoLayoutBuilder::fitToSafeArea(UIView* target, MICUiPosEx pos, const UIEdgeInsets& margin, NSLayoutRelation relativity) {
     if(@available(ios 11.0,*)) {
         target.translatesAutoresizingMaskIntoConstraints = false;
         if((pos&MICUiPosLEFT)!=0) {
@@ -69,47 +69,47 @@ MICAutoLayoutBuilder::fitToSafeArea(UIView* target, MICUiPosEx pos, const UIEdge
 
 
 MICAutoLayoutBuilder&
-MICAutoLayoutBuilder::fitToParent(UIView* target, MICUiPosEx pos, const UIEdgeInsets& margin) {
+MICAutoLayoutBuilder::fitToParent(UIView* target, MICUiPosEx pos, const UIEdgeInsets& margin, NSLayoutRelation relativity) {
     if(@available(ios 9.0,*)) {
         target.translatesAutoresizingMaskIntoConstraints = false;
         if((pos&MICUiPosLEFT)!=0) {
-            anchorConstraint(target.leftAnchor, _parentView.leftAnchor, margin.left);
+            anchorConstraint(target.leftAnchor, _parentView.leftAnchor, margin.left, relativity);
         }
         if((pos&MICUiPosTOP)!=0) {
-            anchorConstraint(target.topAnchor, _parentView.topAnchor, margin.top);
+            anchorConstraint(target.topAnchor, _parentView.topAnchor, margin.top, relativity);
         }
         if((pos&MICUiPosRIGHT)!=0) {
-            anchorConstraint(target.rightAnchor, _parentView.rightAnchor, -margin.right);
+            anchorConstraint(target.rightAnchor, _parentView.rightAnchor, -margin.right, relativity);
         }
         if((pos&MICUiPosBOTTOM)!=0) {
-            anchorConstraint(target.bottomAnchor, _parentView.bottomAnchor, -margin.bottom);
+            anchorConstraint(target.bottomAnchor, _parentView.bottomAnchor, -margin.bottom, relativity);
         }
     } else {
         if((pos&MICUiPosLEFT)!=0) {
-            constraint(target, NSLayoutAttributeLeft, _parentView, NSLayoutAttributeLeft, margin.left);
+            constraint(target, NSLayoutAttributeLeft, _parentView, NSLayoutAttributeLeft, margin.left, relativity);
         }
         if((pos&MICUiPosTOP)!=0) {
-            constraint(target, NSLayoutAttributeTop, _parentView, NSLayoutAttributeTop, margin.top);
+            constraint(target, NSLayoutAttributeTop, _parentView, NSLayoutAttributeTop, margin.top, relativity);
         }
         if((pos&MICUiPosRIGHT)!=0) {
-            constraint(target, NSLayoutAttributeRight, _parentView, NSLayoutAttributeRight, -margin.right);
+            constraint(target, NSLayoutAttributeRight, _parentView, NSLayoutAttributeRight, -margin.right, relativity);
         }
         if((pos&MICUiPosBOTTOM)!=0) {
-            constraint(target, NSLayoutAttributeBottom, _parentView, NSLayoutAttributeBottom, -margin.bottom);
+            constraint(target, NSLayoutAttributeBottom, _parentView, NSLayoutAttributeBottom, -margin.bottom, relativity);
         }
     }
     return *this;
 }
 
 MICAutoLayoutBuilder&
-MICAutoLayoutBuilder::fitVerticallyToSibling(UIView* target, UIView* sibling, bool below, CGFloat spacing, MICUiAlignEx alignToSibling)
+MICAutoLayoutBuilder::fitVerticallyToSibling(UIView* target, UIView* sibling, bool below, CGFloat spacing, MICUiAlignEx alignToSibling, NSLayoutRelation relativity)
 {
     if(@available(ios 9.0,*)) {
         target.translatesAutoresizingMaskIntoConstraints = false;
         if(below) {
-            anchorConstraint(target.topAnchor, sibling.bottomAnchor, spacing);
+            anchorConstraint(target.topAnchor, sibling.bottomAnchor, spacing, relativity);
         } else {
-            anchorConstraint(target.bottomAnchor, sibling.topAnchor, -spacing);
+            anchorConstraint(target.bottomAnchor, sibling.topAnchor, -spacing, relativity);
         }
         switch(alignToSibling) {
             case MICUiAlignExTOP:
@@ -128,9 +128,9 @@ MICAutoLayoutBuilder::fitVerticallyToSibling(UIView* target, UIView* sibling, bo
         }
     } else {
         if(below) {
-            constraint(target, NSLayoutAttributeTop, sibling, NSLayoutAttributeBottom, spacing);
+            constraint(target, NSLayoutAttributeTop, sibling, NSLayoutAttributeBottom, spacing, relativity);
         } else {
-            constraint(target, NSLayoutAttributeBottom, sibling, NSLayoutAttributeTop, -spacing);
+            constraint(target, NSLayoutAttributeBottom, sibling, NSLayoutAttributeTop, -spacing, relativity);
         }
         switch(alignToSibling) {
             case MICUiAlignExTOP:
@@ -152,14 +152,14 @@ MICAutoLayoutBuilder::fitVerticallyToSibling(UIView* target, UIView* sibling, bo
 }
 
 MICAutoLayoutBuilder&
-MICAutoLayoutBuilder::fitHorizontallyToSibling(UIView* target, UIView* sibling, bool right, CGFloat spacing, MICUiAlignEx alignToSibling)
+MICAutoLayoutBuilder::fitHorizontallyToSibling(UIView* target, UIView* sibling, bool right, CGFloat spacing, MICUiAlignEx alignToSibling, NSLayoutRelation relativity)
 {
     if(@available(ios 9.0,*)) {
         target.translatesAutoresizingMaskIntoConstraints = false;
         if(right) {
-            anchorConstraint(target.leftAnchor, sibling.rightAnchor, spacing);
+            anchorConstraint(target.leftAnchor, sibling.rightAnchor, spacing, relativity);
         } else {
-            anchorConstraint(target.rightAnchor, sibling.leftAnchor, spacing);
+            anchorConstraint(target.rightAnchor, sibling.leftAnchor, spacing, relativity);
         }
         switch(alignToSibling) {
             case MICUiAlignExTOP:
@@ -178,9 +178,9 @@ MICAutoLayoutBuilder::fitHorizontallyToSibling(UIView* target, UIView* sibling, 
         }
     } else {
         if(right) {
-            constraint(target, NSLayoutAttributeLeft, sibling, NSLayoutAttributeRight, spacing);
+            constraint(target, NSLayoutAttributeLeft, sibling, NSLayoutAttributeRight, spacing, relativity);
         } else {
-            constraint(target, NSLayoutAttributeRight, sibling, NSLayoutAttributeLeft, spacing);
+            constraint(target, NSLayoutAttributeRight, sibling, NSLayoutAttributeLeft, spacing, relativity);
         }
         switch(alignToSibling) {
             case MICUiAlignExTOP:
@@ -211,7 +211,7 @@ MICAutoLayoutBuilder::fitHorizontallyToSibling(UIView* target, UIView* sibling, 
  */
 
 
-void RALBuilder::attachToRelated(UIView* target, UIView* related, MICUiPos pos, bool adjacent, CGFloat distance) {
+void RALBuilder::attachToRelated(UIView* target, UIView* related, MICUiPos pos, bool adjacent, CGFloat distance, NSLayoutRelation relativity) {
     if(@available(ios 9.0,*)) {
         if(related==nil) {
             related = _parentView;
@@ -240,7 +240,7 @@ void RALBuilder::attachToRelated(UIView* target, UIView* related, MICUiPos pos, 
                 distance *= -1.0;
                 break;
         }
-        anchorConstraint(targetAnchor, relatedAnchor, distance);
+        anchorConstraint(targetAnchor, relatedAnchor, distance, relativity);
     } else {
         if(related==nil) {
             related = _parentView;
@@ -269,7 +269,7 @@ void RALBuilder::attachToRelated(UIView* target, UIView* related, MICUiPos pos, 
                 distance *= -1.0;
                 break;
         }
-        constraint(target, targetAttr, related, relatedAttr, distance);
+        constraint(target, targetAttr, related, relatedAttr, distance, 1.0, relativity);
     }
 }
         
@@ -300,7 +300,7 @@ void RALBuilder::attachToRelated(UIView* view, const RALAttach& attach, MICUiPos
             adjacent = true;
             // fall through ...
         case RALAttach::FIT:
-            attachToRelated(view, attach._related, pos, adjacent, attach._value);
+            attachToRelated(view, attach._related, pos, adjacent, attach._value, attach._relation);
             break;
         case RALAttach::SAFE_AREA:
             MICAutoLayoutBuilder::fitToSafeArea(view, (MICUiPosEx)pos, MICEdgeInsets(attach._value), 0);
@@ -333,7 +333,7 @@ void RALBuilder::scaleFor(UIView* view, const RALScaling& scaling, bool vert) {
             multi = scaling._value;
             break;
     }
-    constraint(view, attr, related, attr, value, multi);
+    constraint(view, attr, related, attr, value, multi, scaling._relation);
 }
 
 static void autoCorrectSub(RALAttach& a1, RALAttach& a2, RALScaling& s) {
