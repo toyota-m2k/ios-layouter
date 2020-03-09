@@ -9,6 +9,7 @@
 #import "WPLCell.h"
 #import "MICVar.h"
 #import "MICUiRectUtil.h"
+#import "MICUiDsCustomButton.h"
 
 @implementation WPLCell {
     bool _needsLayout;
@@ -252,6 +253,8 @@
 - (bool) enabled {
     if([_view isKindOfClass:UIControl.class]) {
         return ((UIControl*)_view).enabled;
+    } else if([_view isKindOfClass:MICUiDsCustomButton.class]) {
+        return ((MICUiDsCustomButton*)_view).enabled;
     }
     return false;
 }
@@ -262,6 +265,8 @@
 - (void) setEnabled:(bool)v {
     if([_view isKindOfClass:UIControl.class]) {
         ((UIControl*)_view).enabled = v;
+    } else if([_view isKindOfClass:MICUiDsCustomButton.class]) {
+        ((MICUiDsCustomButton*)_view).enabled = v;
     }
 }
 

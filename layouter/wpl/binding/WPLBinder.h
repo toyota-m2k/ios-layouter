@@ -253,9 +253,19 @@
 
 #if defined(__cplusplus)
 
+#define WPLBinderBuilder_CheckProperty if(!checkProperty(name)) {return *this;}
+
 class WPLBinderBuilder {
 private:
     WPLBinder* _binder;
+    
+    bool checkProperty(NSString* name) {
+        if([_binder propertyForKey:name]!=nil) {
+            NSLog(@"WPLBinderBuilder: property %@ is duplicated.", name);
+            return false;
+        }
+        return true;
+    }
 public:
     WPLBinderBuilder() {
         _binder = [WPLBinder new];
@@ -274,6 +284,7 @@ public:
      * nameという名前のプロパティを作成（初期値 nil）
      */
     WPLBinderBuilder& property(NSString* name) {
+        WPLBinderBuilder_CheckProperty
         [_binder createPropertyWithValue:nil withKey:name];
         return *this;
     }
@@ -281,6 +292,7 @@ public:
      * nameという名前のプロパティを作成（初期値 int）
      */
     WPLBinderBuilder& property(NSString* name, int initialValue) {
+        WPLBinderBuilder_CheckProperty
         [_binder createPropertyWithValue:@(initialValue) withKey:name];
         return *this;
     }
@@ -288,6 +300,7 @@ public:
      * nameという名前のプロパティを作成（初期値 long）
      */
     WPLBinderBuilder& property(NSString* name, long initialValue) {
+        WPLBinderBuilder_CheckProperty
         [_binder createPropertyWithValue:@(initialValue) withKey:name];
         return *this;
     }
@@ -295,6 +308,7 @@ public:
      * nameという名前のプロパティを作成（初期値 CGFloat）
      */
     WPLBinderBuilder& property(NSString* name, CGFloat initialValue) {
+        WPLBinderBuilder_CheckProperty
         [_binder createPropertyWithValue:@(initialValue) withKey:name];
         return *this;
     }
@@ -302,6 +316,7 @@ public:
      * nameという名前のプロパティを作成（初期値 bool）
      */
     WPLBinderBuilder& property(NSString* name, bool initialValue) {
+        WPLBinderBuilder_CheckProperty
         [_binder createPropertyWithValue:@(initialValue) withKey:name];
         return *this;
     }
@@ -309,6 +324,7 @@ public:
      * nameという名前のプロパティを作成（初期値 string）
      */
     WPLBinderBuilder& property(NSString* name, NSString* initialValue) {
+        WPLBinderBuilder_CheckProperty
         [_binder createPropertyWithValue:initialValue withKey:name];
         return *this;
     }
@@ -317,32 +333,39 @@ public:
      * 外部で定義されているObservableDataをプロパティとして登録する。
      */
     WPLBinderBuilder& property(NSString* name, id<IWPLObservableData> dataSource) {
+        WPLBinderBuilder_CheckProperty
         [_binder addProperty:dataSource forKey:name];
         return *this;
     }
     
     WPLBinderBuilder& select(NSString* name, NSString* nx, WPLRx1Proc fn) {
+        WPLBinderBuilder_CheckProperty
         [_binder createPropertyWithKey:name map:[_binder propertyForKey:nx] func:fn];
         return *this;
     }
     WPLBinderBuilder& map(NSString* name, NSString* nx, WPLRx1Proc fn) {
+        WPLBinderBuilder_CheckProperty
         return select(name, nx, fn);
     }
     WPLBinderBuilder& combineLatest(NSString* name, NSString* nx, NSString* ny, WPLRx2Proc fn) {
+        WPLBinderBuilder_CheckProperty
         [_binder createPropertyWithKey:name combineLatest:[_binder propertyForKey:nx] with:[_binder propertyForKey:ny] func:fn];
         return *this;
     }
     WPLBinderBuilder& where(NSString* name, NSString* nx, WPLRx1BoolProc fn) {
+        WPLBinderBuilder_CheckProperty
         [_binder createPropertyWithKey:name where:[_binder propertyForKey:nx] func:fn];
         return *this;
     }
     
     WPLBinderBuilder& merge(NSString* name, NSString* nx, NSString* ny) {
+        WPLBinderBuilder_CheckProperty
         [_binder createPropertyWithKey:name merge:[_binder propertyForKey:nx] with:[_binder propertyForKey:ny]];
         return *this;
     }
     
     WPLBinderBuilder& scan(NSString* name, NSString* nx, WPLRx2Proc fn) {
+        WPLBinderBuilder_CheckProperty
         [_binder createPropertyWithKey:name scan:[_binder propertyForKey:nx] func:fn];
         return *this;
     }
@@ -351,6 +374,7 @@ public:
      * nameという名前のSubjectを作成（初期値 nil）
      */
     WPLBinderBuilder& subject(NSString* name) {
+        WPLBinderBuilder_CheckProperty
         [_binder createSubjectWithValue:nil withKey:name];
         return *this;
     }
@@ -358,6 +382,7 @@ public:
      * nameという名前のSubjectを作成（初期値 int）
      */
     WPLBinderBuilder& subject(NSString* name, int initialValue) {
+        WPLBinderBuilder_CheckProperty
         [_binder createSubjectWithValue:@(initialValue) withKey:name];
         return *this;
     }
@@ -365,6 +390,7 @@ public:
      * nameという名前のSubjectを作成（初期値 long）
      */
     WPLBinderBuilder& subject(NSString* name, long initialValue) {
+        WPLBinderBuilder_CheckProperty
         [_binder createSubjectWithValue:@(initialValue) withKey:name];
         return *this;
     }
@@ -372,6 +398,7 @@ public:
      * nameという名前のSubjectを作成（初期値 CGFloat）
      */
     WPLBinderBuilder& subject(NSString* name, CGFloat initialValue) {
+        WPLBinderBuilder_CheckProperty
         [_binder createSubjectWithValue:@(initialValue) withKey:name];
         return *this;
     }
@@ -379,6 +406,7 @@ public:
      * nameという名前のSubjectを作成（初期値 bool）
      */
     WPLBinderBuilder& subject(NSString* name, bool initialValue) {
+        WPLBinderBuilder_CheckProperty
         [_binder createPropertyWithValue:@(initialValue) withKey:name];
         return *this;
     }
@@ -386,6 +414,7 @@ public:
      * nameという名前のSubjectを作成（初期値 string）
      */
     WPLBinderBuilder& subject(NSString* name, NSString* initialValue) {
+        WPLBinderBuilder_CheckProperty
         [_binder createPropertyWithValue:initialValue withKey:name];
         return *this;
     }
@@ -399,6 +428,7 @@ public:
      * @param dependsOn このプロパティが依存するプロパティ名の配列。。。このメソッドが呼び出される時点で解決できなければ、指定は無効となるので、定義順序に注意。
      */
     WPLBinderBuilder& dependentProperty(NSString* name, WPLSourceDelegateProc sourceProc, NSString* dependsOn=nil, ...) {
+        WPLBinderBuilder_CheckProperty
         va_list args;
         va_start(args, dependsOn);
         [_binder createDependentPropertyWithKey:name sourceProc:sourceProc dependsOn:dependsOn dependsOnArgument:args];
