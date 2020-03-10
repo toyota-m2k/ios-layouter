@@ -29,6 +29,7 @@
 @property (nonatomic) id<IMICUiDsComboBoxDelegate> comboBoxDelegate;
 @property (nonatomic) bool droppingDown;
 @property (nonatomic) CGFloat maxDropDownHeight;
+@property (weak,nonatomic) UIView* rootView;
 
 - (instancetype)initWithFrame:(CGRect)frame
                     andValues:(NSArray<MICUiDsLabelValue*>*) values

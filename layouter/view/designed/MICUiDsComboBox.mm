@@ -41,7 +41,6 @@
     bool _droppingDown;
     MICTargetSelector* _valueChangedListener;
     UIView* _dropDownMenu;
-    __weak UIView* _rootView;
     NSString* _calculatingSizeTarget;
     id<IWPLStackPanelView> _hostView;
 }
@@ -76,6 +75,16 @@
                 [_valueChangedListener performWithParam:&me];
             }
         }
+    }
+}
+
+- (void)setRootView:(UIView *)rootView {
+    if(_rootView!=rootView) {
+        if(_dropDownMenu!=nil) {
+            [_dropDownMenu removeFromSuperview];
+            _dropDownMenu = nil;
+        }
+        _rootView = rootView;
     }
 }
 
@@ -218,6 +227,7 @@
 #define P_CURRENT @"current"
 
 - (void) prepareDropDownMenu {
+    NSAssert(_rootView!=nil, @"MICUiDsComboBox: rootView must be specified.");
     if(nil!=_dropDownMenu) {
         return;
     }

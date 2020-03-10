@@ -15,4 +15,6 @@
 @property (nonatomic) float min;
 @property (nonatomic) float max;
 
+@property (nonatomic) bool useIntValue;     // true:整数値だけを取るスライダー / false:連続値を扱うスライダー（デフォルト）
+
 @end

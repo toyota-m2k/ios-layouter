@@ -69,6 +69,8 @@ enum RxType {
                 NSAssert(false, @"unknown rx operator.");
         }
     }
+    id p1 = sx, p2 = sy;
+    [mHandler performWithParam:&p1 param2:&p2]; // 最初の１回目の呼び出し
     return self;
 }
 
