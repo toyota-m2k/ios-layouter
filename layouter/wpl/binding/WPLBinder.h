@@ -12,6 +12,8 @@
 //
 
 #import "WPLBindingDef.h"
+#import "WPLProperty.h"
+#import "MICVar.h"
 
 @interface WPLBinder : NSObject
 
@@ -109,6 +111,7 @@
  * @param fn    変換関数　id convert(id s1, id s2)
  */
 - (id) createPropertyWithKey:(id)key combineLatest:(id<IWPLObservableData>)src with:(id<IWPLObservableData>)src2 func:(WPLRx2Proc) fn;
+- (id) createPropertyWithKey:(id)key combineLatest:(NSArray<id<IWPLObservableData>>*)sources func:(WPLRxNProc) fn;
 
 /**
  * Rx where に相当。２系列のデータソースを単純にマージ
@@ -248,12 +251,12 @@
  */
 - (void) unbind:(id<IWPLBinding>) binding;
 
-
 @end
 
 #if defined(__cplusplus)
 
-#define WPLBinderBuilder_CheckProperty if(!checkProperty(name)) {return *this;}
+#define WPLBinderBuilder_CheckProperty  if(!checkProperty(name)) {return *this;}
+#define WPLBinderBuilder_CheckProperty_ if(!checkProperty(prop.name)) {return *this;}
 
 class WPLBinderBuilder {
 private:
@@ -350,6 +353,18 @@ public:
     WPLBinderBuilder& combineLatest(NSString* name, NSString* nx, NSString* ny, WPLRx2Proc fn) {
         WPLBinderBuilder_CheckProperty
         [_binder createPropertyWithKey:name combineLatest:[_binder propertyForKey:nx] with:[_binder propertyForKey:ny] func:fn];
+        return *this;
+    }
+    WPLBinderBuilder& combineLatest(NSString* name, NSArray<NSString*>* srcNames, WPLRxNProc fn) {
+        WPLBinderBuilder_CheckProperty
+        NSMutableArray<id<IWPLObservableData>>* ary = [NSMutableArray arrayWithCapacity:srcNames.count];
+        for(NSString* s in srcNames) {
+            let p = [_binder propertyForKey:s];
+            if(nil!=p) {
+                [ary addObject:p];
+            }
+        }
+        [_binder createPropertyWithKey:name combineLatest:ary func:fn];
         return *this;
     }
     WPLBinderBuilder& where(NSString* name, NSString* nx, WPLRx1BoolProc fn) {
@@ -492,10 +507,70 @@ public:
      * - command()のcustomAction引数 （ブロック型）として渡す。
      * - WPLSubject型のプロパティ (subject()で作成）、または、それを relationsに指定したプロパティにカスタムアクションをバインドする。
      */
-    WPLBinderBuilder& command(NSString* name, id<IWPLCellSupportCommand> cell, WPLBindingCustomAction customAction) {
+    WPLBinderBuilder& command(NSString* name, id<IWPLCellSupportCommand> cell, WPLBindingCustomAction customAction=nil) {
         [_binder bindCommand:name withCell:cell customAction:customAction];
         return *this;
     }
+    
+    #pragma mark - WPLProperty
+
+    //----------------------------------------------------------------------------------------------------------------
+    /**
+     * 外部で定義されているObservableDataをプロパティとして登録する。
+     */
+    WPLBinderBuilder& property(WPLProperty* prop) {
+        return property(prop.name, prop.data);
+    }
+    
+    WPLBinderBuilder& command(WPLCommand* prop, id<IWPLCellSupportCommand> cell, WPLBindingCustomAction customAction=nil) {
+        if(nil==[_binder propertyForKey:prop.name]) {
+            property(prop);
+        }
+        return command(prop.name, cell, nil);
+    }
+
+    /**
+     * nameで指定されたプロパティを、cellのvalue にバインドする
+     */
+    WPLBinderBuilder& bind(WPLProperty* prop, id<IWPLCellSupportValue> cell, WPLBindingMode mode=WPLBindingModeSOURCE_TO_VIEW, WPLBindingCustomAction customAction=nil) {
+        return bind(prop.name, cell, mode, customAction);
+    }
+
+    /**
+     * nameで指定されたプロパティを、cellのnamedValue にバインドする
+     */
+    WPLBinderBuilder& bind(WPLProperty* prop, id<IWPLCellSupportNamedValue> cell, NSString* valueName, WPLBindingMode mode=WPLBindingModeSOURCE_TO_VIEW, WPLBindingCustomAction customAction=nil) {
+        return bind(prop.name, cell, valueName, mode, customAction);
+    }
+
+    /**
+     * nameで指定されたプロパティを、cellのboolState（visible/enabled/readonly）にバインドする
+     */
+    WPLBinderBuilder& bind(WPLProperty* prop, id<IWPLCell> cell, WPLBoolStateActionType actionType, bool negation=false, WPLBindingCustomAction customAction=nil ) {
+        return bind(prop.name, cell, actionType, negation, customAction);
+    }
+
+    WPLBinderBuilder& bind(WPLProperty* prop, id<IWPLCell> cell, WPLBoolStateActionType actionType, id referenceValue, bool equals=true, WPLBindingCustomAction customAction=nil ) {
+        return bind(prop.name, cell, actionType, referenceValue, equals, customAction);
+    }
+
+    /**
+     * nameで指定されたプロパティを、cellが持つviewのプロパティに直接バインドする。
+     * 現在バインド可能なプロパティは、enum WPLPropType で定義されている。
+     */
+    WPLBinderBuilder& bind(WPLProperty* prop, id<IWPLCell> cell, WPLPropType propType, WPLBindingCustomAction customAction=nil ) {
+        return bind(prop.name, cell, propType, customAction);
+    }
+    
+    /**
+     * nameで指定されたプロパティをcellに対してバインドし、その動作をcustomActionで定義する。
+     */
+    WPLBinderBuilder& bindCustom(WPLProperty* prop, id<IWPLCell> cell, WPLBindingCustomAction customAction) {
+        return bindCustom(prop.name, cell, customAction);
+    }
+    
+    
+    #pragma mark - Finalize
     
     /**
      * 作成した　WPLBinderを返す。

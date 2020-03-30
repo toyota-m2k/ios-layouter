@@ -42,6 +42,12 @@
 + (instancetype) frameWithName:(NSString*)name
                         params:(WPLCellParams) params;
 
+- (instancetype) initWithView:(UIView*)view
+                         name:(NSString*) name
+                       params:(const WPLCellParams&) params
+            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate;
+
+
 #endif
 
 @end

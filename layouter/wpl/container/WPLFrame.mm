@@ -16,6 +16,13 @@
     MICSize _cachedSize;
 }
 
+- (instancetype) initWithView:(UIView*)view
+                         name:(NSString*) name
+                       params:(const WPLCellParams&) params
+            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
+    return [self initWithView:view name:name margin:params._margin requestViewSize:params._requestViewSize hAlignment:params._align.horz vAlignment:params._align.vert visibility:params._visibility containerDelegate:containerDelegate];
+}
+
 + (instancetype) frameWithName:(NSString*) name
                         margin:(UIEdgeInsets) margin
                requestViewSize:(CGSize) requestViewSize
@@ -43,6 +50,35 @@
     return [self frameWithName:name params:params containerDelegate:nil superview:nil];
 }
 
+/**
+ * @param fixedSize コンテナセルに対して与えたサイズ（もし、これが実際のセルサイズより小さければ、alignにしたがってoffsetを調整する必要がある。
+ */
+- (void) alignContainerCell:(id<IWPLCell>)cell ofSize:(CGSize)size inSize:(CGSize)fixedSize {
+    if(![cell conformsToProtocol:@protocol(IWPLContainerCell)]) {
+        // コンテナのセルは、WPLCell.completeLayoutで正しくアラインされる
+        return;
+    }
+    
+    MICVector move;
+    MICRect rc(cell.view.frame);
+    if(cell.hAlignment!=WPLCellAlignmentSTART && size.width < fixedSize.width) {
+        if(cell.hAlignment == WPLCellAlignmentCENTER) {
+            move.dx = (fixedSize.width-size.width)/2;
+        } else if (cell.hAlignment == WPLCellAlignmentEND) {
+            move.dx = fixedSize.width-size.width;
+        }
+    }
+    if(cell.vAlignment!=WPLCellAlignmentSTART && size.height < fixedSize.height) {
+        if(cell.vAlignment == WPLCellAlignmentCENTER) {
+            move.dy = (fixedSize.height-size.height)/2;
+        } else if (cell.vAlignment == WPLCellAlignmentEND) {
+            move.dy = fixedSize.height-size.height;
+        }
+    }
+    if(!move.isZero()) {
+        cell.view.frame = rc + move;
+    }
+}
 
 - (void) innerLayout:(const MICSize&)fixedSize {
     MICSize cellSize;
@@ -54,6 +90,9 @@
             cellSize.height = MAX(cellSize.height, size.height);
         }
         [cell layoutCompleted:MICRect(size)];
+        
+        // center / right alignment
+        [self alignContainerCell:cell ofSize:size inSize:fixedSize];
     }
     _cachedSize = MICSize( fixedSize.width<=0  ? cellSize.width  : fixedSize.width,
                            fixedSize.height<=0 ? cellSize.height : fixedSize.height);

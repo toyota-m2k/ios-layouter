@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "WPLDef.h"
 
 #define WPL_CELL_SIZING_AUTO 0           // Auto  中身に合わせてサイズを決定する
 #define WPL_CELL_SIZING_STRETCH (-1.0)   // Stretch 親のサイズに合わせて決定する
@@ -44,7 +45,7 @@ typedef enum _WPLVisibility {
 /**
  * セルの基底 i/f
  */
-@protocol IWPLCell    <NSObject>
+@protocol IWPLCell    <IWPLDisposable>
     @property(nonatomic) NSString* name;                        // 名前（任意）
     @property(nonatomic,readonly) UIView* view;               // セルに配置するビュー
     - (void) dispose;                                       // 破棄

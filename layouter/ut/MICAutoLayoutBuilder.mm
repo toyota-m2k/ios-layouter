@@ -303,7 +303,7 @@ void RALBuilder::attachToRelated(UIView* view, const RALAttach& attach, MICUiPos
             attachToRelated(view, attach._related, pos, adjacent, attach._value, attach._relation);
             break;
         case RALAttach::SAFE_AREA:
-            MICAutoLayoutBuilder::fitToSafeArea(view, (MICUiPosEx)pos, MICEdgeInsets(attach._value), 0);
+            MICAutoLayoutBuilder::fitToSafeArea(view, (MICUiPosEx)pos, MICEdgeInsets(attach._value), NSLayoutRelationEqual);
             break;
         default:
             break;

@@ -171,6 +171,11 @@
     return [self addProperty:s forKey:key];
 }
 
+- (id) createPropertyWithKey:(id)key combineLatest:(NSArray<id<IWPLObservableData>>*)sources func:(WPLRxNProc) fn {
+    let s = [WPLRxObservableData combineLatest:sources func:fn];
+    return [self addProperty:s forKey:key];
+}
+
 /**
  * Rx where に相当。２系列のデータソースを単純にマージ
  * @param key   プロパティを識別するキー（nilなら内部で生成して戻り値に返す）。
@@ -210,12 +215,11 @@
  * @param relations このプロパティが依存するプロパティ（のキー）。。。このメソッドが呼び出される時点で解決できなければ、指定は無効となるので、定義順序に注意。
  */
 - (id) createDependentPropertyWithKey:(id)key sourceProc:(WPLSourceDelegateProc)sourceProc dependsOn:(id)relations, ... {
-    let ov = [WPLDelegatedObservableData newDataWithSourceBlock:sourceProc];
     va_list args;
     va_start(args, relations);
-    [self createDependentPropertyWithKey:key sourceProc:sourceProc dependsOn:relations dependsOnArgument:args];
+    id r = [self createDependentPropertyWithKey:key sourceProc:sourceProc dependsOn:relations dependsOnArgument:args];
     va_end(args);
-    return [self addProperty:ov forKey:key];
+    return r;
 }
 
 /**
@@ -442,3 +446,4 @@
 }
 
 @end
+

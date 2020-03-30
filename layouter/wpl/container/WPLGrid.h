@@ -222,6 +222,9 @@ typedef WPLCellPosition (^WPLUpdateCellPosition)(id<IWPLCell>cell, WPLCellPositi
 - (void) moveCell:(id<IWPLCell>)cell row:(NSInteger)row column:(NSInteger)column rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan;
 
 #if defined(__cplusplus)
+
+- (instancetype)initWithView:(UIView*)view name:(NSString*)name params:(const WPLGridParams&) params containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate;
+
 /**
  * C++用インスタンス生成ヘルパー
  * (Root Container 用）

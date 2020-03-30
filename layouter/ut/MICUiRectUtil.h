@@ -918,6 +918,10 @@ public:
         return sqrtf(dx*dx+dy*dy);
     }
     
+    bool isZero() {
+        return dx==0 && dy==0;
+    }
+    
     static CGVector zero() {
         // return CGVectorZero; なんと！この定義はない。
         return MICVector(0,0);

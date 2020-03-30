@@ -28,7 +28,7 @@ typedef void (^WPLBindingCustomAction)(id<IWPLBinding> sender, bool fromView);
 /**
  * バインドオブジェクトの基底i/f
  */
-@protocol IWPLBinding <NSObject>
+@protocol IWPLBinding <IWPLDisposable>
     /**
      * ターゲットCell
      */

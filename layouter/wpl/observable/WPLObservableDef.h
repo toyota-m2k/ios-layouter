@@ -9,12 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "MICTargetSelector.h"
+#import "WPLDef.h"
 
 /**
  * 監視可能なデータオブジェクトの基底i/f
  * value は他の値/関数にデリゲートされることを前提とし、外部からの直接変更を禁止。
  */
-@protocol IWPLObservableData <NSObject>
+@protocol IWPLObservableData <IWPLDisposable>
     /**
      * 値属性
      */
@@ -101,7 +102,8 @@ typedef id (^WPLSourceDelegateProc)(id<IWPLDelegatedDataSource>);
 /**
  * for Rx
  */
-typedef id (^WPLRx1Proc)(id x);
-typedef id (^WPLRx2Proc)(id x, id y);
-typedef bool (^WPLRx1BoolProc)(id x);
+typedef id (^WPLRx1Proc)(id<IWPLObservableData> x);
+typedef id (^WPLRx2Proc)(id<IWPLObservableData> x, id<IWPLObservableData> y);
+typedef id (^WPLRxNProc)(NSArray<id<IWPLObservableData>>* ary);
+typedef bool (^WPLRx1BoolProc)(id<IWPLObservableData> x);
 

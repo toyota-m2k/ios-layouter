@@ -119,7 +119,7 @@ public:
      * @param margin        セーフエリアからのマージン（posで指定されていない部分のマージンは無視される）
      */
     MICAutoLayoutBuilder&
-    fitToSafeArea(UIView* target, MICUiPosEx pos = MICUiPosExALL, const UIEdgeInsets& margin=MICEdgeInsets(), NSLayoutRelation relativity=0);
+    fitToSafeArea(UIView* target, MICUiPosEx pos = MICUiPosExALL, const UIEdgeInsets& margin=MICEdgeInsets(), NSLayoutRelation relativity=NSLayoutRelationEqual);
 
     /**
      * 親ビューに合わせて配置する
@@ -128,17 +128,17 @@ public:
      * @param margin        親ビューのからのマージン（posで指定されていない部分のマージンは無視される）
      */
     MICAutoLayoutBuilder&
-    fitToParent(UIView* target, MICUiPosEx pos, const UIEdgeInsets& margin, NSLayoutRelation relativity=0);
+    fitToParent(UIView* target, MICUiPosEx pos, const UIEdgeInsets& margin, NSLayoutRelation relativity=NSLayoutRelationEqual);
 
     /**
      * 縦方向に兄弟ビューを並べる
      */
-    MICAutoLayoutBuilder& fitVerticallyToSibling(UIView* target, UIView* sibling, bool below, CGFloat spacing, MICUiAlignEx alignToSibling, NSLayoutRelation relativity=0 );
+    MICAutoLayoutBuilder& fitVerticallyToSibling(UIView* target, UIView* sibling, bool below, CGFloat spacing, MICUiAlignEx alignToSibling, NSLayoutRelation relativity=NSLayoutRelationEqual);
 
     /**
      * 横方向に兄弟ビューを並べる
      */
-    MICAutoLayoutBuilder& fitHorizontallyToSibling(UIView* target, UIView* sibling, bool right, CGFloat spacing, MICUiAlignEx alignToSibling, NSLayoutRelation relativity=0);
+    MICAutoLayoutBuilder& fitHorizontallyToSibling(UIView* target, UIView* sibling, bool right, CGFloat spacing, MICUiAlignEx alignToSibling, NSLayoutRelation relativity=NSLayoutRelationEqual);
 
     /**
      * ビューを兄弟ビューの下に配置する
@@ -258,7 +258,7 @@ public:
      * 上下左右を揃える
      * sibling(兄弟View)の対応する辺からの距離で指定
      */
-    RALAttach& fit(UIView* sibling, CGFloat distance=0, NSLayoutRelation relation=0) {
+    RALAttach& fit(UIView* sibling, CGFloat distance=0, NSLayoutRelation relation=NSLayoutRelationEqual) {
         _attach = FIT;
         _related = sibling;
         _value = distance;
@@ -268,7 +268,7 @@ public:
     /**
      * 親にアタッチ：fit(nil) と同義
      */
-    RALAttach& parent(CGFloat distance=0, NSLayoutRelation relation=0) {
+    RALAttach& parent(CGFloat distance=0, NSLayoutRelation relation=NSLayoutRelationEqual) {
         _attach = FIT;
         _related = nil;
         _value = distance;
@@ -279,7 +279,7 @@ public:
     /**
      * セーフエリアにアタッチ
      */
-    RALAttach& safeArea(CGFloat distance=0, NSLayoutRelation relation=0) {
+    RALAttach& safeArea(CGFloat distance=0, NSLayoutRelation relation=NSLayoutRelationEqual) {
         _attach = SAFE_AREA;
         _related = nil;
         _value = distance;
@@ -329,7 +329,7 @@ public:
     UIView* _related;            // relative以外の場合は無視 / relativeで target == nil なら親相対
     CGFloat _value;             // fixed の場合は実サイズ、relativeの場合は、比率（１ならequal)、それ以外の場合は無視
     NSLayoutRelation _relation;
-    
+
 public:
     RALScaling() {
         _scaling = NOSIZE;
@@ -343,7 +343,7 @@ public:
         _value = src._value;
         _relation = src._relation;
     }
-    RALScaling& fixed(CGFloat size, NSLayoutRelation relation=0) {
+    RALScaling& fixed(CGFloat size, NSLayoutRelation relation=NSLayoutRelationEqual) {
         _scaling = FIXED;
         _related = nil;
         _value = size;
@@ -364,7 +364,7 @@ public:
         _relation = NSLayoutRelationEqual;
         return *this;
     }
-    RALScaling& relative(UIView* related=nil, CGFloat size=1.0, NSLayoutRelation relation=0) {
+    RALScaling& relative(UIView* related=nil, CGFloat size=1.0, NSLayoutRelation relation=NSLayoutRelationEqual) {
         _scaling = RELATIVE;
         _related = related;
         _value = size;
@@ -418,7 +418,7 @@ private:
          * 上下左右に並べる
          * sibling(兄弟View)の向かい合う辺からの距離で指定
          */
-        RALParams& adjacent(UIView* sibling, CGFloat distance=0, NSLayoutRelation relation=0) {
+        RALParams& adjacent(UIView* sibling, CGFloat distance=0, NSLayoutRelation relation=NSLayoutRelationEqual) {
             _ref.adjacent(sibling, distance, relation);
             return _owner;
         }
@@ -446,7 +446,7 @@ private:
         : _owner(src._owner)
         , _ref(src._ref) {}
         
-        RALParams& fixed(CGFloat size,NSLayoutRelation relation=0) {
+        RALParams& fixed(CGFloat size,NSLayoutRelation relation=NSLayoutRelationEqual) {
             _ref.fixed(size, relation);
             return _owner;
         }
@@ -458,7 +458,7 @@ private:
             _ref.nosize();
             return _owner;
         }
-        RALParams& relative(UIView* related=nil, CGFloat size=1.0, NSLayoutRelation relation=0) {
+        RALParams& relative(UIView* related=nil, CGFloat size=1.0, NSLayoutRelation relation=NSLayoutRelationEqual) {
             _ref.relative(related, size, relation);
             return _owner;
         }
@@ -617,7 +617,7 @@ public:
     , _autoAddSubview(autoAddSubview)
     , _autoCorrect(autoCorrect)
     {}
-
+    
     /**
      * コピーコンストラクタ
      */
@@ -654,7 +654,7 @@ public:
      * @param margin        セーフエリアからのマージン（posで指定されていない部分のマージンは無視される）
      */
     RALBuilder&
-    fitToSafeArea(UIView* target, MICUiPosEx pos = MICUiPosExALL, const UIEdgeInsets& margin=MICEdgeInsets(), int relativity=0) {
+    fitToSafeArea(UIView* target, MICUiPosEx pos = MICUiPosExALL, const UIEdgeInsets& margin=MICEdgeInsets(), NSLayoutRelation relativity=NSLayoutRelationEqual) {
         if(_autoAddSubview) {
             [_parentView addSubview:target];
         }

@@ -17,6 +17,10 @@ enum RxType {
     RxMerge,
 };
 
+@interface WPLRxMultiCombinObservableData : WPLObservableData
+- (instancetype)initWithSources:(NSArray<id<IWPLObservableData>>*)sources func:(WPLRxNProc) fn;
+@end
+
 @implementation WPLRxObservableData {
     RxType mType;
     id<IWPLObservableData> mSx;
@@ -116,17 +120,17 @@ enum RxType {
 #pragma mark - Handlers for rx-operators
 
 - (void) handleSelect:(id<IWPLObservableData>) sx sy:(id<IWPLObservableData>) sy {
-    self.value = ((WPLRx1Proc)mFunc)(sx.value);
+    self.value = ((WPLRx1Proc)mFunc)(sx);
 }
 
 - (void) handleWhere:(id<IWPLObservableData>) sx sy:(id<IWPLObservableData>) sy {
-    if(((WPLRx1BoolProc)mFunc)(sx.value)) {
+    if(((WPLRx1BoolProc)mFunc)(sx)) {
         self.value = sx.value;
     }
 }
 
 - (void) handleCombineLatest:(id<IWPLObservableData>) sx sy:(id<IWPLObservableData>) sy {
-    self.value = ((WPLRx2Proc)mFunc)(mSx.value,mSy.value);
+    self.value = ((WPLRx2Proc)mFunc)(mSx,mSy);
 }
 
 - (void) handleMerge :(id<IWPLObservableData>) sx sy:(id<IWPLObservableData>) sy {
@@ -138,7 +142,7 @@ enum RxType {
 }
 
 - (void) handleScan :(id<IWPLObservableData>) sx sy:(id<IWPLObservableData>) sy {
-    self.value = ((WPLRx2Proc)mFunc)(self.value, sx.value);
+    self.value = ((WPLRx2Proc)mFunc)(self, sx);
 }
 
 #pragma mark - Factories
@@ -165,6 +169,14 @@ enum RxType {
 + (id<IWPLObservableData>) combineLatest:(id<IWPLObservableData>)sx with:(id<IWPLObservableData>)sy func:(WPLRx2Proc)fn {
     return [[WPLRxObservableData alloc] initForType:RxCombineLatest sx:sx sy:sy func:fn];
 }
+
+/**
+ * ３つ以上のソースのCombine用
+ */
++ (id<IWPLObservableData>) combineLatest:(NSArray<id<IWPLObservableData>>*) sources func:(WPLRxNProc)fn {
+    return [[WPLRxMultiCombinObservableData alloc] initWithSources:sources func:fn];
+}
+
 
 /**
  * Rx where に相当。２系列のデータソースを単純にマージ
@@ -194,3 +206,77 @@ enum RxType {
 }
 
 @end
+
+@interface WPLRxDataSourceRec : NSObject
+@property (nonatomic,readonly) id<IWPLObservableData> data;
+@property (nonatomic,readonly) id key;
+@end
+
+@implementation WPLRxDataSourceRec
+- (instancetype) initWithData:(id<IWPLObservableData>)data forKey:(id) key {
+    self = [super init];
+    if(nil!=self) {
+        _data = data;
+        _key = key;
+    }
+    return self;
+}
+@end
+
+@implementation WPLRxMultiCombinObservableData {
+    NSMutableArray<WPLRxDataSourceRec*>* mSources;
+    WPLRxNProc mFunc;
+    id mValue;
+}
+
+- (instancetype)initWithSources:(NSArray<id<IWPLObservableData>> *)sources func:(WPLRxNProc)fn {
+    self = [super init];
+    if(nil!=self) {
+        mFunc = fn;
+        mSources = [NSMutableArray arrayWithCapacity:sources.count];
+        for(id s in sources) {
+            [self addSource:s];
+        }
+        [self onSourceValueChanged:nil];
+    }
+    return self;
+}
+
+- (void) addSource:(id<IWPLObservableData>) src {
+    id key = [src addValueChangedListener:self selector:@selector(onSourceValueChanged:)];
+    let rec = [[WPLRxDataSourceRec alloc] initWithData:src forKey:key];
+    [mSources addObject:rec];
+}
+
+- (id) value {
+    return mValue;
+}
+
+- (void) setValue:(id) v {
+    if(![mValue isEqual:v]) {
+        mValue  = v;
+        [self valueChanged];
+    }
+}
+
+- (void) onSourceValueChanged:(id)src {
+    if(mFunc!=nil) {
+        let ary = [NSMutableArray arrayWithCapacity:mSources.count];
+        for(WPLRxDataSourceRec* rec in mSources) {
+            [ary addObject:rec.data];
+        }
+        self.value = mFunc(ary);
+    }
+}
+
+- (void)dispose {
+    [super dispose];
+    for(WPLRxDataSourceRec* r in mSources) {
+        [r.data removeValueChangedListener:r.key];
+    }
+    [mSources removeAllObjects];
+    mFunc = nil;
+}
+
+@end
+

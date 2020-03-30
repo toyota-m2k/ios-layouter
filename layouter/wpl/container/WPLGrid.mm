@@ -336,6 +336,9 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     return self;
 }
 
+- (instancetype)initWithView:(UIView*)view name:(NSString*)name params:(const WPLGridParams&) params containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
+    return [self initWithView:view name:name margin:params._margin requestViewSize:params._requestViewSize hAlignment:params._align.horz vAlignment:params._align.vert visibility:params._visibility containerDelegate:containerDelegate rowDefs:params._dimension.rowDefs colDefs:params._dimension.colDefs cellSpacing:params._cellSpacing];
+}
 /**
  * WPLCell.initWithView のオーバーライド
  * （１x１のグリッド≒WPLFrame を作成する）

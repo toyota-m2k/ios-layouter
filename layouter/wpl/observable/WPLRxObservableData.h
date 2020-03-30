@@ -28,6 +28,11 @@
 + (id<IWPLObservableData>) combineLatest:(id<IWPLObservableData>)sx with:(id<IWPLObservableData>)sy func:(WPLRx2Proc)fn;
 
 /**
+ * ３つ以上のソースのCombine用
+ */
++ (id<IWPLObservableData>) combineLatest:(NSArray<id<IWPLObservableData>>*) sources func:(WPLRxNProc)fn;
+
+/**
  * Rx where に相当。２系列のデータソースを単純にマージ
  * @param sx    ソース
  * @param fn    フィルター関数(trueを返した値だけが有効になる)　bool filter(id s)
