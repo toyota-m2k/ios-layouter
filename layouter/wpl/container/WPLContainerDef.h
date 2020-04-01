@@ -56,6 +56,12 @@
      * ビューでセルを検索
      */
     - (id<IWPLCell>) findByView:(UIView*) view;
+
+    /**
+     * レイアウトやり直すために、すべてのコンテナのレイアウトを無効化する。
+     */
+    - (void) invalidateAllLayout;
+
 @end
 
 

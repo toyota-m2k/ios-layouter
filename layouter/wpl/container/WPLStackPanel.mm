@@ -10,6 +10,15 @@
 #import "MICVar.h"
 #import "MICUiRectUtil.h"
 
+#ifdef DEBUG
+@interface WPLInternalStackPanelView : UIView
+@end
+@implementation WPLInternalStackPanelView
+@end
+#else
+#define WPLInternalStackPanelView UIView
+#endif
+
 /**
  * StackPanel セル-コンテナ クラス
  */
@@ -128,7 +137,7 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
                         orientation:(WPLOrientation) orientation
                         cellSpacing:(CGFloat)cellSpacing
                           superview:(UIView*)superview {
-    let view = [UIView new];
+    let view = [WPLInternalStackPanelView new];
     if(nil!=superview) {
         [superview addSubview:view];
     }

@@ -10,7 +10,14 @@
 #import "MICUiRectUtil.h"
 #import "MICVar.h"
 
-
+#ifdef DEBUG
+@interface WPLInternalFrameView : UIView
+@end
+@implementation WPLInternalFrameView
+@end
+#else
+#define WPLInternalFrameView UIView
+#endif
 
 @implementation WPLFrame {
     MICSize _cachedSize;
@@ -31,7 +38,7 @@
                     visibility:(WPLVisibility)visibility
              containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
                      superview:(UIView*)superview {
-    let view = [UIView new];
+    let view = [WPLInternalFrameView new];
     if(nil!=superview) {
         [superview addSubview:view];
     }

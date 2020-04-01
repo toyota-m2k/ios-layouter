@@ -10,7 +10,17 @@
 #import "WPLGrid.h"
 #import "MICVar.h"
 #import "WPLContainersL.h"
+#import "WPLGridCellLocator.h"
 #import <vector>
+
+#ifdef DEBUG
+@interface WPLInternalGridView : UIView
+@end
+@implementation WPLInternalGridView
+@end
+#else
+#define WPLInternalGridView UIView
+#endif
 
 /**
  * Row/Columnを区別する定義
@@ -369,7 +379,7 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
                       colDefs:(NSArray<NSNumber*>*) colDefs
                   cellSpacing:(CGSize)cellSpacing
                     superview:(UIView*)superview{
-    let view = [UIView new];
+    let view = [WPLInternalGridView new];
     if(nil!=superview) {
         [superview addSubview:view];
     }
@@ -461,6 +471,11 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     [self addCell:cell row:pos.row column:pos.column rowSpan:pos.rowSpan colSpan:pos.colSpan];
 }
 
+- (void)addCell:(id<IWPLCell>)cell locators:(NSDictionary<NSString *,WPLGridCellLocator *> *)locatorMap {
+    let loc = locatorMap[cell.name];
+    [self addCell:cell row:loc.row column:loc.column rowSpan:loc.rowSpan colSpan:loc.colSpan];
+}
+
 /**
  * セルの移動
  */
@@ -475,6 +490,11 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 }
 - (void) moveCell:(id<IWPLCell>)cell position:(const WPLCellPosition &)pos {
     [self moveCell:cell row:pos.row column:pos.column rowSpan:pos.rowSpan colSpan:pos.colSpan];
+}
+
+- (void) moveCell:(id<IWPLCell>)cell locators:(NSDictionary<NSString *,WPLGridCellLocator *> *)locatorMap {
+    let loc = locatorMap[cell.name];
+    [self moveCell:cell row:loc.row column:loc.column rowSpan:loc.rowSpan colSpan:loc.colSpan];
 }
 
 /**
@@ -500,6 +520,13 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     }
     self.needsLayoutChildren = true;
     self.needsLayout = true;
+}
+
+- (void)reformWithParams:(const WPLGridParams &)params locators:(NSDictionary<NSString *,WPLGridCellLocator *> *)locatorMap {
+    [self reformWithParams:params updateCell:^WPLCellPosition(id<IWPLCell> cell, WPLCellPosition pos) {
+        let loc = locatorMap[cell.name];
+        return [loc updateCell:cell position:pos];
+    }];
 }
 
 #pragma mark - レイアウト計算用

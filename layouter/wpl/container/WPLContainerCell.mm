@@ -100,6 +100,15 @@
     }
 }
 
+- (void) invalidateAllLayout {
+    _needsLayoutChildren = true;
+    for(id c in _cells) {
+        if([c conformsToProtocol:@protocol(IWPLContainerCell)]) {
+            [c invalidateAllLayout];
+        }
+    }
+}
+
 /**
  * 子モデルのサイズなどが変化した (IContainerCellDelegate i/f)
  */

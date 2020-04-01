@@ -14,6 +14,8 @@
 
 #if defined(__cplusplus)
 
+@class WPLGridCellLocator;
+
 class WPLGridDefinition {
 public:
     NSArray<NSNumber*>* rowDefs;
@@ -168,9 +170,12 @@ public:
     }
 };
 
+/**
+ * グリッドの構成変更にともない、グリッドセルの位置を再マップするためのコールバック型
+ */
 typedef WPLCellPosition (^WPLUpdateCellPosition)(id<IWPLCell>cell, WPLCellPosition pos);
 
-#endif
+#endif // cpp
 
 @interface WPLGrid : WPLContainerCell
 
@@ -247,11 +252,15 @@ typedef WPLCellPosition (^WPLUpdateCellPosition)(id<IWPLCell>cell, WPLCellPositi
                        params:(const WPLGridParams&) params;
 
 - (void) addCell:(id<IWPLCell>)cell position:(const WPLCellPosition&) pos;
+- (void) addCell:(id<IWPLCell>)cell locators:(NSDictionary<NSString*,WPLGridCellLocator*>*) locatorMap;
 - (void) moveCell:(id<IWPLCell>)cell position:(const WPLCellPosition&) pos;
+- (void) moveCell:(id<IWPLCell>)cell locators:(NSDictionary<NSString*,WPLGridCellLocator*>*) locatorMap;
 
 - (void) reformWithParams:(const WPLGridParams&) params updateCell:(WPLUpdateCellPosition) updateCellPosition;
+- (void) reformWithParams:(const WPLGridParams&) params locators:(NSDictionary<NSString*,WPLGridCellLocator*>*) locatorMap;
+
+
 
 #endif
 
 @end
-
