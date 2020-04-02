@@ -417,6 +417,14 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 
 #pragma mark - プロパティ
 
+- (void) setCachedSize:(CGSize)cachedSize {
+    _cachedSize = cachedSize;
+}
+- (CGSize) cachedSize {
+    return _cachedSize;
+}
+
+
 // 行数
 - (NSInteger) rows {
     return _table.count(ROW);
@@ -457,7 +465,9 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
         colSpan = 1;
     }
     if (row+rowSpan-1 >= self.rows || column+colSpan-1 >= self.columns) {
-        [NSException raise:NSRangeException format:@"WPLGrid.addCell(%@): out of range (%ld,%ld).", cell.name, (long)self.rows, (long)self.columns];
+        [NSException raise:NSRangeException format:@"WPLGrid.addCell(%@) to row=%ld (%ld), col=%ld (%ld): out of range (%ld,%ld).",
+         cell.name, (long)row, (long)rowSpan, (long)column, (long)colSpan,
+         (long)self.rows, (long)self.columns];
     }
     cell.extension = [[WPLGridExtension alloc] initWithPosition:WPLCellPosition(row, column, rowSpan, colSpan)];
 }
@@ -473,6 +483,9 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 
 - (void)addCell:(id<IWPLCell>)cell locators:(NSDictionary<NSString *,WPLGridCellLocator *> *)locatorMap {
     let loc = locatorMap[cell.name];
+    if(loc.updateCell!=nil) {
+        loc.updateCell(cell);
+    }
     [self addCell:cell row:loc.row column:loc.column rowSpan:loc.rowSpan colSpan:loc.colSpan];
 }
 
@@ -835,6 +848,11 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
  * @return  セルサイズ（マージンを含む
  */
 - (CGSize) layoutPrepare:(CGSize) regulatingCellSize {
+    if(self.visibility==WPLVisibilityCOLLAPSED) {
+        _cachedSize = CGSizeZero;
+        return MICSize::zero();
+    }
+
     MICSize regSize([self sizeWithoutMargin:regulatingCellSize]);
     if(self.needsLayoutChildren) {
         [self pass1_initParams];

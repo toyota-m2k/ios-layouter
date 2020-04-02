@@ -61,6 +61,10 @@
      * レイアウトやり直すために、すべてのコンテナのレイアウトを無効化する。
      */
     - (void) invalidateAllLayout;
+    /**
+     * キャッシュ済みレイアウト情報（サイズ）をクリアする
+     */
+    - (void) invalidateLayout;
 
 @end
 

@@ -96,12 +96,25 @@
 - (void) setNeedsLayoutChildren:(bool) v {
     _needsLayoutChildren = v;
     if(v) {
+        self.cachedSize = CGSizeZero;
         self.needsLayout = true;
     }
 }
 
-- (void) invalidateAllLayout {
+- (CGSize) cachedSize {
+    return CGSizeZero;
+}
+- (void) setCachedSize:(CGSize)cachedSize {
+    
+}
+
+- (void) invalidateLayout {
     _needsLayoutChildren = true;
+    self.cachedSize = CGSizeZero;
+}
+
+- (void) invalidateAllLayout {
+    [self invalidateLayout];
     for(id c in _cells) {
         if([c conformsToProtocol:@protocol(IWPLContainerCell)]) {
             [c invalidateAllLayout];

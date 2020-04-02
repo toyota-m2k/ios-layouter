@@ -57,6 +57,13 @@
     return [self frameWithName:name params:params containerDelegate:nil superview:nil];
 }
 
+- (void) setCachedSize:(CGSize)cachedSize {
+    _cachedSize = cachedSize;
+}
+- (CGSize) cachedSize {
+    return _cachedSize;
+}
+
 /**
  * @param fixedSize コンテナセルに対して与えたサイズ（もし、これが実際のセルサイズより小さければ、alignにしたがってoffsetを調整する必要がある。
  */
@@ -139,6 +146,11 @@ static inline MICSize positiveSize(const CGSize& size) {
  * @return  セルサイズ（マージンを含む
  */
 - (CGSize) layoutPrepare:(CGSize) regulatingCellSize {
+    if(self.visibility==WPLVisibilityCOLLAPSED) {
+        _cachedSize.setEmpty();
+        return CGSizeZero;
+    }
+
     MICSize regSize([self sizeWithoutMargin:regulatingCellSize]);
     if(self.needsLayoutChildren) {
         MICSize fixSize( (self.requestViewSize.width >= 0) ? self.requestViewSize.width  : regSize.width,

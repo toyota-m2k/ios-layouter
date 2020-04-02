@@ -84,6 +84,8 @@ enum Orientation {
 }
 
 - (void) sizePropertyChanged:(id<IMICKeyValueObserverItem>) info target:(id)target {
+    // サイズが変わったら、すべてのコンテナの配置を再計算する必要がある、
+    [_containerCell invalidateAllLayout];
     [self reserveRender];
 }
 
@@ -216,8 +218,7 @@ static inline void set_origin(Orientation o, MICRect& rect, CGFloat pos=0) {
     MICRect cellRect(viewRect);
     [self renderSub:HORZ  viewRect:viewRect cellSize:cellSize cellRect:cellRect];
     [self renderSub:VERT viewRect:viewRect cellSize:cellSize cellRect:cellRect];
-    
-    [_containerCell invalidateAllLayout];
+  
     [_containerCell layoutCompleted:cellRect];
     MICRect contentRect = _containerCell.view.frame;
     if([_view isKindOfClass:UIScrollView.class]) {

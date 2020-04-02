@@ -37,9 +37,16 @@ typedef void (^WPLUpdateCellParams)(id<IWPLCell>cell);
 + (instancetype) newRow:(NSInteger)row column:(NSInteger)col rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan;
 + (instancetype) newRow:(NSInteger)row column:(NSInteger)col rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan updateCell:(WPLUpdateCellParams)updateCell;
 
++ (instancetype) row:(NSInteger)row column:(NSInteger)col;
++ (instancetype) row:(NSInteger)row column:(NSInteger)col updateCell:(nullable WPLUpdateCellParams)updateCell;
++ (instancetype) row:(NSInteger)row column:(NSInteger)col rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan;
++ (instancetype) row:(NSInteger)row column:(NSInteger)col rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan updateCell:(WPLUpdateCellParams)updateCell;
+
 - (void) updateCell:(id<IWPLCell>)cell;
 - (WPLCellPosition) updateCell:(id<IWPLCell>)cell position:(WPLCellPosition)pos;
 
 @end
+
+typedef NSDictionary<NSString*,WPLGridCellLocator*>*   WPLGridCellLocatorsMap;
 
 NS_ASSUME_NONNULL_END

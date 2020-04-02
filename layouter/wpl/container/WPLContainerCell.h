@@ -24,4 +24,7 @@
  */
 @property (nonatomic) NSArray<id<IWPLCell>>* cells;
 
+
+@property (nonatomic) CGSize cachedSize;
+
 @end

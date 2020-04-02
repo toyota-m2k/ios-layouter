@@ -179,6 +179,12 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
 //    return [self stackPanelViewWithName:name margin:MICEdgeInsets() requestViewSize:MICSize() hAlignment:hAlignment vAlignment:vAlignment visibility:WPLVisibilityVISIBLE containerDelegate:containerDelegate orientation:orientation];
 //}
 
+- (void) setCachedSize:(CGSize)cachedSize {
+    _cachedSize = cachedSize;
+}
+- (CGSize) cachedSize {
+    return _cachedSize;
+}
 
 - (WPLOrientation) orientation {
     return _orientation;
@@ -287,6 +293,10 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
  * @return  セルサイズ（マージンを含む
  */
 - (CGSize) layoutPrepare:(CGSize) regulatingCellSize {
+    if(self.visibility==WPLVisibilityCOLLAPSED) {
+        _cachedSize = CGSizeZero;
+        return CGSizeZero;
+    }
     MICSize regSize([self sizeWithoutMargin:regulatingCellSize]);
     if(self.needsLayoutChildren) {
         CGFloat req = W(self, self.requestViewSize);

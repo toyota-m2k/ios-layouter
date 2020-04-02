@@ -58,6 +58,27 @@
     return [[self alloc] initRow:row column:col rowSpan:1 colSpan:1 updateCell:nil];
 }
 
+
++ (instancetype)row:(NSInteger)row
+                column:(NSInteger)col
+               rowSpan:(NSInteger)rowSpan
+               colSpan:(NSInteger)colSpan
+            updateCell:(WPLUpdateCellParams)updateCell {
+    return [[self alloc] initRow:row column:col rowSpan:rowSpan colSpan:colSpan updateCell:updateCell];
+}
+
++ (instancetype)row:(NSInteger)row column:(NSInteger)col updateCell:(WPLUpdateCellParams)updateCell {
+    return [[self alloc] initRow:row column:col rowSpan:1 colSpan:1 updateCell:updateCell];
+}
+
++ (instancetype)row:(NSInteger)row column:(NSInteger)col rowSpan:(NSInteger)rowSpan colSpan:(NSInteger)colSpan {
+    return [[self alloc] initRow:row column:col rowSpan:rowSpan colSpan:colSpan updateCell:nil];
+}
+
++ (instancetype)row:(NSInteger)row column:(NSInteger)col {
+    return [[self alloc] initRow:row column:col rowSpan:1 colSpan:1 updateCell:nil];
+}
+
 - (void) updateCell:(id<IWPLCell>)cell {
     if(nil!=_updateCell) {
         _updateCell(cell);

@@ -2,8 +2,8 @@
 //  WPLProgressCell.m
 //  Anytime
 //
-//  Created by Mitsuki Toyota on 2020/02/18.
-//  Copyright © 2020 MetaMoJi Corporation. All rights reserved.
+//  Created by @toyota-m2k on 2020/02/18.
+//  Copyright © 2020 @toyota-m2k Corporation. All rights reserved.
 //
 
 #import "WPLProgressCell.h"
