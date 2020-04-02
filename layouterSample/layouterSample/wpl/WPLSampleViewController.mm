@@ -15,6 +15,7 @@
 #import "WPLStackPanelSampleViewController.h"
 #import "WPLGridSampleViewController.h"
 #import "WPLGuidanceViewController.h"
+#import "WPLScrollCellViewController.h"
 
 @interface WPLSampleViewController ()
 
@@ -27,7 +28,7 @@
 enum {
     CMDStackPanel,
     CMDGridPanel,
-    
+    CMDScrollCell,
     CMDOtherTest,
     CMDGuidance,
 };
@@ -36,7 +37,7 @@ enum {
     [super viewDidLoad];
 
     self.view.backgroundColor = UIColor.whiteColor;
-    
+
     _stackPanel = [WPLStackPanelView stackPanelViewWithName:@"contentStack"
                                                      params:WPLStackPanelParams()
                                                             .orientation(WPLOrientationVERTICAL)
@@ -67,6 +68,14 @@ enum {
     [btn setTitle:@"Other Test" forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(onCommand:) forControlEvents:UIControlEventTouchUpInside];
     cell = [WPLCell newCellWithView:btn name:@"GridPanelButton" params:WPLCellParams()];
+    [_stackPanel.container addCell:cell];
+
+    btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    btn.frame = MICRect(200, 50);
+    btn.tag = CMDScrollCell;
+    [btn setTitle:@"Scroll Cell" forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(onCommand:) forControlEvents:UIControlEventTouchUpInside];
+    cell = [WPLCell newCellWithView:btn name:@"ScrollCellButton" params:WPLCellParams()];
     [_stackPanel.container addCell:cell];
 
     btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -109,10 +118,14 @@ enum {
         case CMDGuidance:
             controller = [[WPLGuidanceViewController alloc] init];
             break;
+        case CMDScrollCell:
+            controller = [[WPLScrollCellViewController alloc] init];
+            break;
         default:
             return;
     }
     if(nil!=controller) {
+        controller.modalPresentationStyle = UIModalPresentationFullScreen;
         [self presentViewController:controller animated:true completion:nil];
     }
 }

@@ -45,7 +45,7 @@
     [super viewDidLoad];
 
     self.view.backgroundColor = UIColor.whiteColor;
-    
+
     let rootView = [UIView new];
     [self.view addSubview:rootView];
     MICAutoLayoutBuilder lb(self.view);

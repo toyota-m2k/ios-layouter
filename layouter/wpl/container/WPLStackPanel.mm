@@ -335,4 +335,5 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
     }
     [super layoutCompleted:finalCellRect];
 }
+
 @end

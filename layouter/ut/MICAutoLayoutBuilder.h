@@ -292,7 +292,7 @@ public:
      * sibling(兄弟View)の向かい合う辺からの距離で指定
      * sibling == nil の時は、fit(nil)、すなわち、parent()として扱う（siblingsの先頭を特別扱いしなくてよくするため）。
      */
-    RALAttach& adjacent(UIView* sibling, CGFloat distance, NSLayoutRelation relation) {
+    RALAttach& adjacent(UIView* sibling, CGFloat distance, NSLayoutRelation relation=NSLayoutRelationEqual) {
         _attach = sibling!=nil ? ADJACENT : FIT;
         _related = sibling;
         _value = distance;
