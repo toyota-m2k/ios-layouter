@@ -225,46 +225,55 @@ typedef enum _CMD{
 
 - (void) navigateStackLayoutPage {
     StackViewController* controller = [[StackViewController alloc] init];
+    controller.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:controller animated:true completion:nil];
 }
 
 - (void) navigateGridLayoutPage {
     GridViewController* controller = [[GridViewController alloc] init];
+    controller.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:controller animated:true completion:nil];
 }
 
 - (void) navigateAccordionCellPage {
     AccordionCellViewController* controller = [[AccordionCellViewController alloc] init];
+    controller.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:controller animated:true completion:nil];
 }
 
 - (void) navigateAccordionPage {
     AccordionViewController* controller = [[AccordionViewController alloc] init];
+    controller.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:controller animated:true completion:nil];
 }
 
 - (void) navigateExDDViewPage {
     ExDDViewController* controller = [[ExDDViewController alloc] init];
+    controller.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:controller animated:true completion:nil];
 }
 
 - (void) navigateTabBarView {
     TabBarViewController* controller = [[TabBarViewController alloc] init];
+    controller.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:controller animated:true completion:nil];
 }
 
 - (void) navigateTabView {
     TabViewController* controller = [[TabViewController alloc] init];
+    controller.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:controller animated:true completion:nil];
 }
 
 - (void)navigateRelativeLayoutPage {
     RelativeViewController* controller = [[RelativeViewController alloc] init];
+    controller.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:controller animated:true completion:nil];
 }
 
 - (void) navigateWPLPage {
     let controller = [[WPLSampleViewController alloc] init];
+    controller.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:controller animated:true completion:nil];
 }
 

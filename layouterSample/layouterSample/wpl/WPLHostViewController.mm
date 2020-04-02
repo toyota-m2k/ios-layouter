@@ -45,6 +45,7 @@
     // Do any additional setup after loading the view.
     
     self.view.backgroundColor = UIColor.whiteColor;
+
     _hostView = [WPLCellHostingView new];
 //    MICEdgeInsets sa(30,30);
 //    MICRect rc(self.view.frame);
@@ -127,6 +128,7 @@
 
 - (void)goAhead:(id)_ {
     let vc = [[WPLConstraintController alloc] init];
+    vc.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:vc animated:true completion:nil];
 }
 

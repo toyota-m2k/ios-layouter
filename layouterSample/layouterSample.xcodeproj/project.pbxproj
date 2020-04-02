@@ -11,6 +11,9 @@
 		8411466923CD752B0041A769 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8411466823CD752B0041A769 /* XCTest.framework */; };
 		8411466C23CD75D10041A769 /* WPLCommandBinding.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8411466A23CD75D00041A769 /* WPLCommandBinding.mm */; };
 		8411466E23CD79760041A769 /* acomTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 845B5AB7230D50A00055A98A /* acomTests.mm */; };
+		841AABF72435C3920060BCDF /* WPLProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AABF52435C3920060BCDF /* WPLProperty.m */; };
+		841AABFA2435C3AB0060BCDF /* WPLGridCellLocator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AABF92435C3AB0060BCDF /* WPLGridCellLocator.mm */; };
+		841AABFD2435C4050060BCDF /* WPLScrollCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AABFC2435C4050060BCDF /* WPLScrollCell.mm */; };
 		841AD73622EE93AD00F9AB7D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 841AD73522EE93AD00F9AB7D /* AppDelegate.m */; };
 		841AD73922EE93AD00F9AB7D /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD73822EE93AD00F9AB7D /* ViewController.mm */; };
 		841AD73C22EE93AD00F9AB7D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 841AD73A22EE93AD00F9AB7D /* Main.storyboard */; };
@@ -103,6 +106,7 @@
 		841AD8BB230A3CF200F9AB7D /* WPLStackPanelSampleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8BA230A3CF200F9AB7D /* WPLStackPanelSampleViewController.mm */; };
 		841AD8BE230A704A00F9AB7D /* WPLGridSampleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8BD230A704A00F9AB7D /* WPLGridSampleViewController.mm */; };
 		841AD8C1230A71E300F9AB7D /* WPLGridScrollView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8C0230A71E300F9AB7D /* WPLGridScrollView.mm */; };
+		8459A0092435DBAB00EA178B /* WPLScrollCellViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8459A0082435DBAB00EA178B /* WPLScrollCellViewController.mm */; };
 		846DC31223667627006CD2CE /* WPLGuidanceViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 846DC31123667627006CD2CE /* WPLGuidanceViewController.mm */; };
 		847AFEA22313A506004809EB /* WPLPropBinding.mm in Sources */ = {isa = PBXBuildFile; fileRef = 847AFEA12313A506004809EB /* WPLPropBinding.mm */; };
 		84D1027B23EC11DA00203ADC /* MICUiDsCheckBox.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84D1027323EC11DA00203ADC /* MICUiDsCheckBox.mm */; };
@@ -147,6 +151,13 @@
 		8411466823CD752B0041A769 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		8411466A23CD75D00041A769 /* WPLCommandBinding.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLCommandBinding.mm; sourceTree = "<group>"; };
 		8411466B23CD75D10041A769 /* WPLCommandBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLCommandBinding.h; sourceTree = "<group>"; };
+		841AABF42435C37D0060BCDF /* WPLDef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLDef.h; sourceTree = "<group>"; };
+		841AABF52435C3920060BCDF /* WPLProperty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WPLProperty.m; sourceTree = "<group>"; };
+		841AABF62435C3920060BCDF /* WPLProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPLProperty.h; sourceTree = "<group>"; };
+		841AABF82435C3AB0060BCDF /* WPLGridCellLocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WPLGridCellLocator.h; path = ../WPLGridCellLocator.h; sourceTree = "<group>"; };
+		841AABF92435C3AB0060BCDF /* WPLGridCellLocator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = WPLGridCellLocator.mm; path = ../WPLGridCellLocator.mm; sourceTree = "<group>"; };
+		841AABFB2435C4050060BCDF /* WPLScrollCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLScrollCell.h; sourceTree = "<group>"; };
+		841AABFC2435C4050060BCDF /* WPLScrollCell.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLScrollCell.mm; sourceTree = "<group>"; };
 		841AD73122EE93AD00F9AB7D /* layouterSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = layouterSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		841AD73422EE93AD00F9AB7D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		841AD73522EE93AD00F9AB7D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -341,6 +352,8 @@
 		841AD8BD230A704A00F9AB7D /* WPLGridSampleViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridSampleViewController.mm; sourceTree = "<group>"; };
 		841AD8BF230A71E300F9AB7D /* WPLGridScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGridScrollView.h; sourceTree = "<group>"; };
 		841AD8C0230A71E300F9AB7D /* WPLGridScrollView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridScrollView.mm; sourceTree = "<group>"; };
+		8459A0072435DBAB00EA178B /* WPLScrollCellViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLScrollCellViewController.h; sourceTree = "<group>"; };
+		8459A0082435DBAB00EA178B /* WPLScrollCellViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLScrollCellViewController.mm; sourceTree = "<group>"; };
 		845B5AB7230D50A00055A98A /* acomTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = acomTests.mm; sourceTree = "<group>"; };
 		846DC31023667627006CD2CE /* WPLGuidanceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGuidanceViewController.h; sourceTree = "<group>"; };
 		846DC31123667627006CD2CE /* WPLGuidanceViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGuidanceViewController.mm; sourceTree = "<group>"; };
@@ -615,6 +628,7 @@
 		841AD81C22F52AEE00F9AB7D /* wpl */ = {
 			isa = PBXGroup;
 			children = (
+				841AABF42435C37D0060BCDF /* WPLDef.h */,
 				841AD81D22F52AEE00F9AB7D /* binding */,
 				841AD82322F52AEE00F9AB7D /* cell */,
 				841AD82B22F52AEE00F9AB7D /* container */,
@@ -626,6 +640,8 @@
 		841AD81D22F52AEE00F9AB7D /* binding */ = {
 			isa = PBXGroup;
 			children = (
+				841AABF62435C3920060BCDF /* WPLProperty.h */,
+				841AABF52435C3920060BCDF /* WPLProperty.m */,
 				84D1027F23EC11FC00203ADC /* WPLNamedValueBinding.h */,
 				84D1028023EC11FC00203ADC /* WPLNamedValueBinding.mm */,
 				8411466B23CD75D10041A769 /* WPLCommandBinding.h */,
@@ -688,6 +704,8 @@
 				841AD82E22F52AEE00F9AB7D /* WPLGridOld.mm */,
 				84DDAFB02371293B00232310 /* WPLGrid.h */,
 				84DDAFB12371293B00232310 /* WPLGrid.mm */,
+				841AABFB2435C4050060BCDF /* WPLScrollCell.h */,
+				841AABFC2435C4050060BCDF /* WPLScrollCell.mm */,
 			);
 			path = container;
 			sourceTree = "<group>";
@@ -713,6 +731,8 @@
 		841AD86622FD4EA200F9AB7D /* view */ = {
 			isa = PBXGroup;
 			children = (
+				841AABF82435C3AB0060BCDF /* WPLGridCellLocator.h */,
+				841AABF92435C3AB0060BCDF /* WPLGridCellLocator.mm */,
 				84D1028E23EC124500203ADC /* WPLFrameScrollView.h */,
 				84D1028F23EC124500203ADC /* WPLFrameScrollView.mm */,
 				841AD8B32309800300F9AB7D /* WPLCellHostingHelper.h */,
@@ -781,6 +801,8 @@
 				841AD8BD230A704A00F9AB7D /* WPLGridSampleViewController.mm */,
 				846DC31023667627006CD2CE /* WPLGuidanceViewController.h */,
 				846DC31123667627006CD2CE /* WPLGuidanceViewController.mm */,
+				8459A0072435DBAB00EA178B /* WPLScrollCellViewController.h */,
+				8459A0082435DBAB00EA178B /* WPLScrollCellViewController.mm */,
 			);
 			path = wpl;
 			sourceTree = "<group>";
@@ -977,6 +999,7 @@
 				841AD8892306434F00F9AB7D /* WPLSampleView.mm in Sources */,
 				8410A13D23A0B8710066C185 /* WPLSubject.m in Sources */,
 				841AD8C1230A71E300F9AB7D /* WPLGridScrollView.mm in Sources */,
+				841AABF72435C3920060BCDF /* WPLProperty.m in Sources */,
 				841AD7DA22EE93FA00F9AB7D /* MICUiDragView.m in Sources */,
 				841AD7D522EE93FA00F9AB7D /* MICUiAccordionCellViewSwicherProc.m in Sources */,
 				841AD88B2306434F00F9AB7D /* WPLConstraintController.mm in Sources */,
@@ -988,6 +1011,7 @@
 				846DC31223667627006CD2CE /* WPLGuidanceViewController.mm in Sources */,
 				841AD8B2230963D500F9AB7D /* WPLCellHostingScrollView.mm in Sources */,
 				841AD8B82309A88E00F9AB7D /* WPLStackPanelScrollView.mm in Sources */,
+				841AABFD2435C4050060BCDF /* WPLScrollCell.mm in Sources */,
 				841AD7CF22EE93FA00F9AB7D /* MICAsync.m in Sources */,
 				84D1029323EC125500203ADC /* WPLRxObservableData.mm in Sources */,
 				841AD8BE230A704A00F9AB7D /* WPLGridSampleViewController.mm in Sources */,
@@ -1007,6 +1031,7 @@
 				841AD7CE22EE93FA00F9AB7D /* MICSvgPath.mm in Sources */,
 				841AD85622F7BD7D00F9AB7D /* WPLGenericBinding.m in Sources */,
 				841AD83F22F52AEE00F9AB7D /* WPLValueCell.mm in Sources */,
+				841AABFA2435C3AB0060BCDF /* WPLGridCellLocator.mm in Sources */,
 				847AFEA22313A506004809EB /* WPLPropBinding.mm in Sources */,
 				841AD8B52309800300F9AB7D /* WPLCellHostingHelper.mm in Sources */,
 				841AD7E022EE93FA00F9AB7D /* MICUiDsSvgIconButton.mm in Sources */,
@@ -1016,6 +1041,7 @@
 				841AD8AB230648D700F9AB7D /* AccordionCellViewController.mm in Sources */,
 				841AD7EE22EE93FA00F9AB7D /* MICUiRelativeLayout.mm in Sources */,
 				841AD73622EE93AD00F9AB7D /* AppDelegate.m in Sources */,
+				8459A0092435DBAB00EA178B /* WPLScrollCellViewController.mm in Sources */,
 				841AD84322F52AEE00F9AB7D /* WPLObservableData.mm in Sources */,
 				841AD7D122EE93FA00F9AB7D /* MICArray.m in Sources */,
 				841AD7DB22EE93FA00F9AB7D /* MICUiCellDragHandler.m in Sources */,

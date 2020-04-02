@@ -141,6 +141,7 @@
         let vc = [[WPLGridTestViewController alloc] init];
         // [vc present]
         
+        vc.modalPresentationStyle = UIModalPresentationFullScreen;
         [viewController presentViewController:vc animated:true completion:nil];
     }
     

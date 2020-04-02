@@ -32,6 +32,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = UIColor.whiteColor;
+    
     MICRect rc(self.view.bounds);
     MICEdgeInsets sa(self.additionalSafeAreaInsets);
     rc -= sa;
