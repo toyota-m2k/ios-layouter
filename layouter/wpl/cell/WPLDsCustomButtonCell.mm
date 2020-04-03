@@ -14,12 +14,21 @@
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin
               requestViewSize:(CGSize) requestViewSize
+                    limitWidth:(WPLMinMax) limitWidth
+                   limitHeight:(WPLMinMax) limitHeight
                    hAlignment:(WPLCellAlignment)hAlignment
                    vAlignment:(WPLCellAlignment)vAlignment
-                   visibility:(WPLVisibility)visibility
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
+                   visibility:(WPLVisibility)visibility {
     NSAssert([view isKindOfClass:MICUiDsCustomButton.class], @"WPLSwitchCell: view must be instance of UISwitch");
-    self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:nil];
+    self = [super initWithView:view
+                          name:name
+                        margin:margin
+               requestViewSize:requestViewSize
+                    limitWidth:limitWidth
+                   limitHeight:limitHeight
+                    hAlignment:hAlignment
+                    vAlignment:vAlignment
+                    visibility:visibility];
     return self;
 }
 

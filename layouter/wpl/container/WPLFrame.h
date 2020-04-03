@@ -15,25 +15,7 @@
  */
 @interface WPLFrame : WPLContainerCell
 
-+ (instancetype) frameWithName:(NSString*) name
-                        margin:(UIEdgeInsets) margin
-               requestViewSize:(CGSize) requestViewSize
-                    hAlignment:(WPLCellAlignment)hAlignment
-                    vAlignment:(WPLCellAlignment)vAlignment
-                    visibility:(WPLVisibility)visibility
-             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
-                     superview:(UIView*)superview;
-
 #if defined(__cplusplus)
-
-/**
- * C++版インスタンス生成ヘルパー
- * (Root Container 用）
- */
-+ (instancetype) frameWithName:(NSString*)name
-                        params:(WPLCellParams) params
-             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
-                     superview:(UIView*)superview;
 
 /**
  * C++版インスタンス生成ヘルパー
@@ -42,11 +24,9 @@
 + (instancetype) frameWithName:(NSString*)name
                         params:(WPLCellParams) params;
 
-- (instancetype) initWithView:(UIView*)view
-                         name:(NSString*) name
-                       params:(const WPLCellParams&) params
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate;
-
++ (instancetype) frameWithView:(UIView*) view
+                          name:(NSString*)name
+                        params:(WPLCellParams) params;
 
 #endif
 

@@ -22,11 +22,21 @@
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin
               requestViewSize:(CGSize) requestViewSize
+                    limitWidth:(WPLMinMax) limitWidth
+                   limitHeight:(WPLMinMax) limitHeight
                    hAlignment:(WPLCellAlignment)hAlignment
                    vAlignment:(WPLCellAlignment)vAlignment
-                   visibility:(WPLVisibility)visibility
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
-    self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
+                   visibility:(WPLVisibility)visibility {
+    self = [super initWithView:view
+                          name:name
+                        margin:margin
+               requestViewSize:requestViewSize
+                    limitWidth:limitWidth
+                   limitHeight:limitHeight
+                    hAlignment:hAlignment
+                    vAlignment:vAlignment
+                    visibility:visibility];
+             
     if(nil!=self) {
         _cells = [NSMutableArray array];
         _needsLayoutChildren = true;
@@ -166,6 +176,16 @@
     // サブクラスで実装すること。
     return MICSize();
 }
+
+/**
+ * AUTO(==0), STRC(<0)の値を含むことを考慮して、サイズを制限する。
+ */
+- (CGSize) limitRegulatingSize:(CGSize) regulatingSize {
+    return MICSize(
+           regulatingSize.width>0 ? WPLCMinMax(self.limitWidth).trim(regulatingSize.width) : regulatingSize.width,
+           regulatingSize.height>0 ? WPLCMinMax(self.limitHeight).trim(regulatingSize.height) : regulatingSize.height);
+}
+
 
 @end
 

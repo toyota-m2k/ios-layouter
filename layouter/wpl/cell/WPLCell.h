@@ -42,15 +42,15 @@ public:
     MICSize _requestViewSize;
     WPLAlignment _align;
     WPLVisibility _visibility;
+    WPLCMinMax _limitWidth;
+    WPLCMinMax _limitHeight;
     
     /**
      * Constructor with full-parameters
      */
-    WPLCellParams(MICEdgeInsets margin=MICEdgeInsets(), MICSize requestViewSize=MICSize(), WPLAlignment align=WPLAlignment(), WPLVisibility visibility=WPLVisibilityVISIBLE)
-    : _margin(margin)
-    , _requestViewSize(requestViewSize)
-    , _align(align)
-    , _visibility(visibility) {}
+    WPLCellParams()
+    : _visibility(WPLVisibilityVISIBLE)
+    {}
     
     /**
      * Copy constructor
@@ -59,7 +59,10 @@ public:
     : _margin(src._margin)
     , _requestViewSize(src._requestViewSize)
     , _align(src._align)
-    , _visibility(src._visibility) {}
+    , _visibility(src._visibility)
+    , _limitWidth(src._limitWidth)
+    , _limitHeight(src._limitHeight)
+    {}
     
     // builder style methods ----
     
@@ -109,6 +112,31 @@ public:
         return *this;
     }
     
+    // Min/Max Width/Height
+    WPLCellParams& limitWidth(const WPLMinMax& v) {
+        _limitWidth = v;
+        return *this;
+    }
+    WPLCellParams& maxWidth(const CGFloat& v) {
+        _limitWidth.max = v;
+        return *this;
+    }
+    WPLCellParams& minWidth(const CGFloat& v) {
+        _limitWidth.min = v;
+        return *this;
+    }
+    WPLCellParams& limitHeight(const WPLMinMax& v) {
+        _limitHeight = v;
+        return *this;
+    }
+    WPLCellParams& maxHeight(const CGFloat& v) {
+        _limitHeight.max = v;
+        return *this;
+    }
+    WPLCellParams& minHeight(const CGFloat& v) {
+        _limitHeight.min = v;
+        return *this;
+    }
 };
 
 #endif
@@ -133,18 +161,11 @@ public:
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin
               requestViewSize:(CGSize) requestViewSize
+                   limitWidth:(WPLMinMax) limitWidth
+                  limitHeight:(WPLMinMax) limitHeight
                    hAlignment:(WPLCellAlignment)hAlignment
                    vAlignment:(WPLCellAlignment)vAlignment
-                   visibility:(WPLVisibility)visibility
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate;
-
-+ (instancetype) newCellWithView:(UIView*)view
-                            name:(NSString*) name
-                          margin:(UIEdgeInsets) margin
-                 requestViewSize:(CGSize) requestViewSize
-                      hAlignment:(WPLCellAlignment)hAlignment
-                      vAlignment:(WPLCellAlignment)vAlignment
-                      visibility:(WPLVisibility)visibility;
+                   visibility:(WPLVisibility)visibility;
 
 #if defined(__cplusplus)
 
@@ -164,6 +185,7 @@ public:
 - (CGRect) rectWithMargin:(CGRect)rect;
 - (CGRect) rectWithoutMargin:(CGRect)rect;
 
+- (CGSize) limitSize:(CGSize) size;
 
 @end
 

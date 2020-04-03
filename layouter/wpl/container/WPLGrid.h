@@ -56,10 +56,9 @@ public:
     WPLGridDefinition _dimension;
     MICSize _cellSpacing;
 
-    WPLGridParams(WPLGridDefinition dim = WPLGridDefinition(), CGSize cellMargin=MICSize(), UIEdgeInsets margin=MICEdgeInsets(), CGSize requestViewSize=MICSize(), WPLAlignment align=WPLAlignment(), WPLVisibility visibility=WPLVisibilityVISIBLE)
-    : WPLCellParams(margin, requestViewSize, align, visibility)
-    , _dimension(dim)
-    , _cellSpacing(cellMargin) {}
+    WPLGridParams(WPLGridDefinition dim = WPLGridDefinition())
+    : _dimension(dim)
+    , _cellSpacing(MICSize()) {}
     
     WPLGridParams(const WPLGridParams& src)
     : WPLCellParams(src)
@@ -180,39 +179,20 @@ typedef WPLCellPosition (^WPLUpdateCellPosition)(id<IWPLCell>cell, WPLCellPositi
 @interface WPLGrid : WPLContainerCell
 
 /**
- * Gridの正統なコンストラクタ
- */
-- (instancetype) initWithView:(UIView*)view
-                         name:(NSString*) name
-                       margin:(UIEdgeInsets) margin
-              requestViewSize:(CGSize) requestViewSize
-                   hAlignment:(WPLCellAlignment)hAlignment
-                   vAlignment:(WPLCellAlignment)vAlignment
-                   visibility:(WPLVisibility)visibility
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
-                      rowDefs:(NSArray<NSNumber*>*) rowDefs
-                      colDefs:(NSArray<NSNumber*>*) colDefs
-                  cellSpacing:(CGSize) cellSpacing;
-
-/**
- * インスタンス生成ヘルパー
- * Grid用UIViewを自動生成して、superviewにaddSubviewする。
- */
-+ (instancetype) gridWithName:(NSString*) name
-                       margin:(UIEdgeInsets) margin
-              requestViewSize:(CGSize) requestViewSize
-                   hAlignment:(WPLCellAlignment)hAlignment
-                   vAlignment:(WPLCellAlignment)vAlignment
-                   visibility:(WPLVisibility)visibility
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
-                      rowDefs:(NSArray<NSNumber*>*) rowDefs
-                      colDefs:(NSArray<NSNumber*>*) colDefs
-                  cellSpacing:(CGSize) cellSpacing
-                    superview:(UIView*)superview;
-
-//+ (instancetype) newGridOfRows:(NSArray<NSNumber*>*) rowDefs
-//                    andColumns:(NSArray<NSNumber*>*) colDefs
-//               requestViewSize:(CGSize) requestViewSize;
+* Gridの正統なコンストラクタ
+*/
+- (instancetype)initWithView:(UIView *)view
+                        name:(NSString *)name
+                      margin:(UIEdgeInsets)margin
+             requestViewSize:(CGSize)requestViewSize
+                  limitWidth:(WPLMinMax) limitWidth
+                 limitHeight:(WPLMinMax) limitHeight
+                  hAlignment:(WPLCellAlignment)hAlignment
+                  vAlignment:(WPLCellAlignment)vAlignment
+                  visibility:(WPLVisibility)visibility
+                     rowDefs:(NSArray<id> *)rowDefs
+                     colDefs:(NSArray<id> *)colDefs
+                 cellSpacing:(CGSize)cellSpacing;
 
 @property (nonatomic) CGSize cellSpacing;
 @property (nonatomic,readonly) NSInteger rows;
@@ -228,17 +208,7 @@ typedef WPLCellPosition (^WPLUpdateCellPosition)(id<IWPLCell>cell, WPLCellPositi
 
 #if defined(__cplusplus)
 
-- (instancetype)initWithView:(UIView*)view name:(NSString*)name params:(const WPLGridParams&) params containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate;
-
-/**
- * C++用インスタンス生成ヘルパー
- * (Root Container 用）
- * Grid用UIViewを自動生成して、superviewにaddSubviewする。
- */
-+ (instancetype) gridWithName:(NSString*) name
-                       params:(const WPLGridParams&) params
-                    superview:(UIView*)superview
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate;
+- (instancetype)initWithView:(UIView*)view name:(NSString*)name params:(const WPLGridParams&) params;
 
 /**
  * C++版インスタンス生成ヘルパー

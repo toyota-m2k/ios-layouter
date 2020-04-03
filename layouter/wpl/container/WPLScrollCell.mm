@@ -27,16 +27,17 @@
 
 #pragma mark - 構築・初期化
 /**
- * StackPanel の正統なコンストラクタ
+ * ScrollCell の正統なコンストラクタ
  */
 - (instancetype) initWithView:(UIView*)view
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin
               requestViewSize:(CGSize) requestViewSize
+                   limitWidth:(WPLMinMax) limitWidth
+                  limitHeight:(WPLMinMax) limitHeight
                    hAlignment:(WPLCellAlignment)hAlignment
                    vAlignment:(WPLCellAlignment)vAlignment
                    visibility:(WPLVisibility)visibility
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
             scrollOrientation:(WPLScrollOrientation) scrollOrientation {
     if(![view isKindOfClass:UIScrollView.class]) {
         NSAssert1(false, @"internal view of ScrollCell must be an instance of UIScrollView", name);
@@ -50,7 +51,15 @@
         requestViewSize.width = VSTRC;
     }
     
-    self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
+    self = [super initWithView:view
+                          name:name
+                        margin:margin
+               requestViewSize:requestViewSize
+                    limitWidth:limitWidth
+                   limitHeight:limitHeight
+                    hAlignment:hAlignment
+                    vAlignment:vAlignment
+                    visibility:visibility];
     if(nil!=self) {
         _scrollOrientation = scrollOrientation;
     }
@@ -60,30 +69,54 @@
 /**
  * newCellWithView で呼び出されたときに備えて WPLCell#initWithView をオーバーライドしておく。
  */
-- (instancetype) initWithView:(UIView *)view name:(NSString *)name margin:(UIEdgeInsets)margin requestViewSize:(CGSize)requestViewSize hAlignment:(WPLCellAlignment)hAlignment vAlignment:(WPLCellAlignment)vAlignment visibility:(WPLVisibility)visibility containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
-    return [self initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate scrollOrientation:WPLScrollOrientationBOTH];
+- (instancetype) initWithView:(UIView*)view
+                         name:(NSString*) name
+                       margin:(UIEdgeInsets) margin
+              requestViewSize:(CGSize) requestViewSize
+                   limitWidth:(WPLMinMax) limitWidth
+                  limitHeight:(WPLMinMax) limitHeight
+                   hAlignment:(WPLCellAlignment)hAlignment
+                   vAlignment:(WPLCellAlignment)vAlignment
+                   visibility:(WPLVisibility)visibility  {
+    return [self initWithView:view
+                         name:name
+                       margin:margin
+              requestViewSize:requestViewSize
+                   limitWidth:limitWidth
+                  limitHeight:limitHeight
+                   hAlignment:hAlignment
+                   vAlignment:vAlignment
+                   visibility:visibility
+            scrollOrientation:WPLScrollOrientationBOTH];
 }
 
 - (instancetype) initWithView:(UIView *)view
                          name:(NSString *)name
-                       params:(const WPLScrollCellParams&)params
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
-    return [self initWithView:view name:name margin:params._margin requestViewSize:params._requestViewSize hAlignment:params._align.horz vAlignment:params._align.vert visibility:params._visibility containerDelegate:containerDelegate scrollOrientation:params._scrollOrientation];
+                       params:(const WPLScrollCellParams&)params {
+    return [self initWithView:view
+                         name:name
+                       margin:params._margin
+              requestViewSize:params._requestViewSize
+                   limitWidth:params._limitWidth
+                  limitHeight:params._limitHeight
+                   hAlignment:params._align.horz
+                   vAlignment:params._align.vert
+                   visibility:params._visibility
+            scrollOrientation:params._scrollOrientation];
 }
 
 /**
  * C++版インスタンス生成ヘルパー
- * (Sub-Container 用）
  */
 + (instancetype) scrollCellWithName:(NSString*) name
                              params:(const WPLScrollCellParams&)params {
-    return [[self alloc] initWithView:[[WPLInternalScrollCellView alloc] init] name:name params:params containerDelegate:nil];
+    return [[self alloc] initWithView:[[WPLInternalScrollCellView alloc] init] name:name params:params];
 }
 
 + (instancetype) scrollCellWithName:(UIView*)view
                                name:(NSString*) name
                              params:(const WPLScrollCellParams&)params {
-    return [[self alloc] initWithView:view name:name params:params containerDelegate:nil];
+    return [[self alloc] initWithView:view name:name params:params];
 }
 
 
@@ -161,10 +194,10 @@
 
     MICRect finRect([self rectWithoutMargin:finalCellRect]);
     // layoutPrepareの計算結果とセルサイズが異なる場合、STRETCH 指定なら、与えられたサイズを使って配置を再計算する
-    if (self.requestViewSize.width <0 /* stretch */ && finRect.size.width  != _cachedSize.width ) {
+    if (self.requestViewSize.width <=0 /* stretch|auto */ && finRect.size.width  != _cachedSize.width ) {
         _cachedSize.width = finRect.size.width;
     }
-    if (self.requestViewSize.height<0 /* stretch */ && finRect.size.height != _cachedSize.height) {
+    if (self.requestViewSize.height<=0 /* stretch|auto */ && finRect.size.height != _cachedSize.height ) {
         _cachedSize.height = finRect.size.height;
     }
     // [super layoutCompleted:] は、auto-sizing のときにview のサイズを配置計算に使用するので、ここでサイズを設定しておく

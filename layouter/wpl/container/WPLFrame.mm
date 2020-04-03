@@ -23,38 +23,15 @@
     MICSize _cachedSize;
 }
 
-- (instancetype) initWithView:(UIView*)view
-                         name:(NSString*) name
-                       params:(const WPLCellParams&) params
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
-    return [self initWithView:view name:name margin:params._margin requestViewSize:params._requestViewSize hAlignment:params._align.horz vAlignment:params._align.vert visibility:params._visibility containerDelegate:containerDelegate];
-}
-
-+ (instancetype) frameWithName:(NSString*) name
-                        margin:(UIEdgeInsets) margin
-               requestViewSize:(CGSize) requestViewSize
-                    hAlignment:(WPLCellAlignment)hAlignment
-                    vAlignment:(WPLCellAlignment)vAlignment
-                    visibility:(WPLVisibility)visibility
-             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
-                     superview:(UIView*)superview {
-    let view = [WPLInternalFrameView new];
-    if(nil!=superview) {
-        [superview addSubview:view];
-    }
-    return [[WPLFrame alloc] initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
-}
-
-+ (instancetype) frameWithName:(NSString*)name
-                        params:(WPLCellParams) params
-             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
-                     superview:(UIView*)superview {
-    return [self frameWithName:name margin:params._margin requestViewSize:params._requestViewSize hAlignment:params._align.horz vAlignment:params._align.vert visibility:params._visibility containerDelegate:containerDelegate superview:superview];
-}
-
 + (instancetype) frameWithName:(NSString*)name
                         params:(WPLCellParams) params {
-    return [self frameWithName:name params:params containerDelegate:nil superview:nil];
+    return [self newCellWithView:[WPLInternalFrameView new] name:name params:params];
+}
+
++ (instancetype) frameWithView:(UIView*)view
+                        name:(NSString*)name
+                        params:(WPLCellParams) params {
+    return [self newCellWithView:view name:name params:params];
 }
 
 - (void) setCachedSize:(CGSize)cachedSize {
@@ -151,13 +128,13 @@ static inline MICSize positiveSize(const CGSize& size) {
         return CGSizeZero;
     }
 
-    MICSize regSize([self sizeWithoutMargin:regulatingCellSize]);
+    MICSize regSize([self limitRegulatingSize:[self sizeWithoutMargin:regulatingCellSize]]);
     if(self.needsLayoutChildren) {
         MICSize fixSize( (self.requestViewSize.width >= 0) ? self.requestViewSize.width  : regSize.width,
                          (self.requestViewSize.height>= 0) ? self.requestViewSize.height : regSize.height );
         [self innerLayout:positiveSize(fixSize)];
     }
-    return [self sizeWithMargin:_cachedSize];
+    return [self sizeWithMargin:[self limitSize:_cachedSize]];
 }
 
 /**
