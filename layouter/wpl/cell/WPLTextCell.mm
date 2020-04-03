@@ -8,6 +8,7 @@
 
 #import "WPLTextCell.h"
 #import "MICUiRectUtil.h"
+#import "MICListeners.h"
 #import "MICVar.h"
 
 /**
@@ -15,6 +16,7 @@
  */
 @implementation WPLTextCell {
     bool _textFieldReadOnly;
+    MICListeners* _commandListeners;
 }
 
 /**
@@ -30,7 +32,9 @@
             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
     self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
     if(nil!=self) {
+        _commandListeners = nil;
         _textFieldReadOnly = false;
+        _closeKeyboardOnReturn = true;
         if([view isKindOfClass:UITextView.class]) {
             ((UITextView*)view).delegate = self;
         } else if([view isKindOfClass:UITextField.class]) {
@@ -110,9 +114,15 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [self onValueChanging];
+    if(_closeKeyboardOnReturn) {
+        [textField resignFirstResponder];
+    }
     if(nil!=_actionOnReturn) {
         id me = self;
         [_actionOnReturn performWithParam:&me];
+    }
+    if(nil!=_commandListeners) {
+        [_commandListeners fire:self];
     }
     return false;
 }
@@ -156,8 +166,37 @@
     });
 }
 
+/**
+ * Viewへの入力が更新されたときのリスナー登録
+ * @param target        listener object
+ * @param selector      (cell)->Unit
+ * @return key  removeInputListenerに渡して解除する
+ */
+- (id) addCommandListener:(id)target selector:(SEL)selector {
+    if(_commandListeners==nil) {
+        _commandListeners = MICListeners.listeners;
+    }
+    return [_commandListeners addListener:(id)target action:selector];
+}
+
+/**
+* リスナーの登録を解除
+*/
+- (void)removeCommandListener:(id)key {
+    if(nil!=_commandListeners) {
+        [_commandListeners removeListener:key];
+    }
+}
+
+/**
+ * リソースを解放
+ */
 - (void)dispose {
     [super dispose];
     _actionOnReturn = nil;
+    if(nil!=_commandListeners) {
+        [_commandListeners removeAll];
+        _commandListeners = nil;
+    }
 }
 @end

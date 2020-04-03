@@ -19,7 +19,7 @@
                   enableSourceListener:false];
     if(self!=nil) {
         if([cell conformsToProtocol:@protocol(IWPLCellSupportCommand)]) {
-            [(id<IWPLCellSupportCommand>)cell addTappedListener:self selector:@selector(onTapped:)];
+            [(id<IWPLCellSupportCommand>)cell addCommandListener:self selector:@selector(onTapped:)];
         }
     }
     return self;

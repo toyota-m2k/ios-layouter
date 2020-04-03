@@ -1,6 +1,5 @@
 //
 //  WPLScrollCell.m
-//  layouterSample
 //
 //  Created by @toyota-m2k on 2020/04/02.
 //  Copyright © 2020 @toyota-m2k. All rights reserved.

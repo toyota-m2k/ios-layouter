@@ -148,11 +148,13 @@ typedef enum _WPLVisibility {
      * @param selector          (cell)->Unit
      * @return key
      */
-    - (id) addTappedListener:(id)target selector:(SEL)selector;
+    - (id) addCommandListener:(id)target selector:(SEL)selector;
+//    - (id) addTappedListener:(id)target selector:(SEL)selector  __attribute__((deprecated("use addCommandListener instead.")));
 
     /**
      * リスナーの登録を解除
      */
-    - (void) removeTappedListener:(id)key;
+    - (void) removeCommandListener:(id)key;
+//    - (void) removeTappedListener:(id)key  __attribute__((deprecated("use removeCommandListener instead.")));
 @end
 

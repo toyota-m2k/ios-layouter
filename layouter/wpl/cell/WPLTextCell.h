@@ -12,8 +12,10 @@
 /**
  * UITextView用のCellクラス
  */
-@interface WPLTextCell : WPLValueCell<IWPLCellSuportReadonly, UITextViewDelegate, UITextFieldDelegate>
+@interface WPLTextCell : WPLValueCell<IWPLCellSuportReadonly, IWPLCellSupportCommand, UITextViewDelegate, UITextFieldDelegate>
 
 @property (nonatomic) MICTargetSelector* actionOnReturn;    // UITextField で　Returnキーがタップされたことを通知
+
+@property (nonatomic) bool closeKeyboardOnReturn;  // UITextFieldでReturnキータップされたとき、Keyboardを閉じる（デフォルトtrue）
 
 @end

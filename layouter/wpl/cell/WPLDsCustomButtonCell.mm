@@ -41,11 +41,11 @@
     self.customButton.enabled = v;
 }
 
-- (id)addTappedListener:(id)target selector:(SEL)selector {
-    if(!self.tappedListenerRegistered) {
+- (id)addCommandListener:(id)target selector:(SEL)selector {
+    if(!self.commandListenerRegistered) {
         [(MICUiDsCustomButton*)self.view setTarget:self action:@selector(onButtonTapped:)];
     }
-    return [super addTappedListener:target selector:selector];
+    return [super addCommandListener:target selector:selector];
 }
 
 //- (void)onCustomButtonTapped:(MICUiDsCustomButton *)view {

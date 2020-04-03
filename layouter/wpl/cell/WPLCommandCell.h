@@ -12,7 +12,7 @@
 
 // protected
 - (void) onButtonTapped:(id)sender;
-@property (nonatomic,readonly) bool tappedListenerRegistered;
+@property (nonatomic,readonly) bool commandListenerRegistered;
 
 @end
 

@@ -13,7 +13,7 @@
 #import "MICUiDsCustomButton.h"
 
 @implementation WPLCommandCell {
-    MICListeners* _tappedListeners;
+    MICListeners* _commandListeners;
 }
 
 #pragma mark - 初期化・解放
@@ -28,22 +28,22 @@
             containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
     self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:nil];
     if(self!=nil) {
-        _tappedListeners = nil;
+        _commandListeners = nil;
     }
     return self;
 }
 
 - (void) dispose {
-    if(nil!=_tappedListeners) {
-        [_tappedListeners removeAll];
-        _tappedListeners = nil;
+    if(nil!=_commandListeners) {
+        [_commandListeners removeAll];
+        _commandListeners = nil;
     }
 }
 
 #pragma mark - タップイベントのハンドラ
 
-- (bool) tappedListenerRegistered {
-    return _tappedListeners!=nil;
+- (bool) commandListenerRegistered {
+    return _commandListeners!=nil;
 }
 
 /**
@@ -52,31 +52,31 @@
  * @param selector      (cell)->Unit
  * @return key  removeInputListenerに渡して解除する
  */
-- (id) addTappedListener:(id)target selector:(SEL)selector {
-    if(!self.tappedListenerRegistered) {
+- (id) addCommandListener:(id)target selector:(SEL)selector {
+    if(!self.commandListenerRegistered) {
         if([self.view isKindOfClass:UIButton.class]) {
             [(UIButton*)self.view addTarget:self action:@selector(onButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
         } else if([self.view isKindOfClass:MICUiDsCustomButton.class]) {
             [(MICUiDsCustomButton*)self.view setTarget:self action:@selector(onButtonTapped:)];
         }
-        _tappedListeners = MICListeners.listeners;
+        _commandListeners = MICListeners.listeners;
     }
     
-    return [_tappedListeners addListener:(id)target action:selector];
+    return [_commandListeners addListener:(id)target action:selector];
 }
 
 /**
 * リスナーの登録を解除
 */
-- (void)removeTappedListener:(id)key {
-    if(nil!=_tappedListeners) {
-        [_tappedListeners removeListener:key];
+- (void)removeCommandListener:(id)key {
+    if(nil!=_commandListeners) {
+        [_commandListeners removeListener:key];
     }
 }
 
 - (void) onButtonTapped:(id)sender {
-    if(nil!=_tappedListeners) {
-        [_tappedListeners fire:self];
+    if(nil!=_commandListeners) {
+        [_commandListeners fire:self];
     }
 }
 

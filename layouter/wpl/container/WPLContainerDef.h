@@ -8,6 +8,16 @@
 #import "WPLCellDef.h"
 
 /**
+ * スクロール方向
+ * WPLScrollCell, WPL*ScrollView で使用する
+ */
+typedef enum _WPLScrollOrientation {
+    WPLScrollOrientationHORZ = 1,
+    WPLScrollOrientationVERT = 2,
+    WPLScrollOrientationBOTH = 3,
+} WPLScrollOrientation;
+
+/**
  * コンテナセルのi/f定義
  *
  * レイアウト更新のデータフロー

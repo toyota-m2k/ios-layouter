@@ -2,18 +2,11 @@
 //  WPLScrollCell.h
 //  layouterSample
 //
-//  Created by Mitsuki Toyota on 2020/04/02.
-//  Copyright © 2020 Mitsuki Toyota. All rights reserved.
+//  Created by @toyota-m2k on 2020/04/02.
+//  Copyright © 2020 @toyota-m2k. All rights reserved.
 //
 
 #import "WPLContainerCell.h"
-
-typedef enum _WPLScrollOrientation {
-    WPLScrollOrientationHORZ = 1,
-    WPLScrollOrientationVERT = 2,
-    WPLScrollOrientationBOTH = 3,
-} WPLScrollOrientation;
-
 
 #if defined(__cplusplus)
 
