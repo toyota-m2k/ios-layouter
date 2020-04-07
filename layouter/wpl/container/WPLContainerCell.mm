@@ -15,6 +15,8 @@
     bool _needsLayoutChildren;
 }
 
+#pragma mark - 初期化・解放
+
 /**
  * WPLCell.initWithViewのオーバーライド
  */
@@ -22,11 +24,21 @@
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin
               requestViewSize:(CGSize) requestViewSize
+                    limitWidth:(WPLMinMax) limitWidth
+                   limitHeight:(WPLMinMax) limitHeight
                    hAlignment:(WPLCellAlignment)hAlignment
                    vAlignment:(WPLCellAlignment)vAlignment
-                   visibility:(WPLVisibility)visibility
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
-    self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
+                   visibility:(WPLVisibility)visibility {
+    self = [super initWithView:view
+                          name:name
+                        margin:margin
+               requestViewSize:requestViewSize
+                    limitWidth:limitWidth
+                   limitHeight:limitHeight
+                    hAlignment:hAlignment
+                    vAlignment:vAlignment
+                    visibility:visibility];
+             
     if(nil!=self) {
         _cells = [NSMutableArray array];
         _needsLayoutChildren = true;
@@ -34,6 +46,18 @@
     return self;
 }
 
+/**
+ * 自身とコンテントの子セルを解放する
+ */
+- (void) dispose {
+    [super dispose];
+    for(id<IWPLCell> c in self.cells) {
+        [c dispose];
+    }
+    [_cells removeAllObjects];
+}
+
+#pragma mark - グリッドセル管理
 
 - (NSArray<id<IWPLCell>>*) cells {
     return _cells;
@@ -76,53 +100,6 @@
 }
 
 /**
- * 自身とコンテントの子セルを解放する
- */
-- (void) dispose {
-    [super dispose];
-    for(id<IWPLCell> c in self.cells) {
-        [c dispose];
-    }
-    [_cells removeAllObjects];
-}
-
-/**
- * 子セルの再レイアウトが必要か？
- */
-- (bool) needsLayoutChildren {
-    return _needsLayoutChildren;
-}
-
-- (void) setNeedsLayoutChildren:(bool) v {
-    _needsLayoutChildren = v;
-    if(v) {
-        self.cachedSize = CGSizeZero;
-        self.needsLayout = true;
-    }
-}
-
-- (CGSize) cachedSize {
-    return CGSizeZero;
-}
-- (void) setCachedSize:(CGSize)cachedSize {
-    
-}
-
-- (void) invalidateLayout {
-    _needsLayoutChildren = true;
-    self.cachedSize = CGSizeZero;
-}
-
-- (void) invalidateAllLayout {
-    [self invalidateLayout];
-    for(id c in _cells) {
-        if([c conformsToProtocol:@protocol(IWPLContainerCell)]) {
-            [c invalidateAllLayout];
-        }
-    }
-}
-
-/**
  * 子モデルのサイズなどが変化した (IContainerCellDelegate i/f)
  */
 - (void) onChildCellModified:(id<IWPLCell>) cell {
@@ -159,6 +136,57 @@
     return cell;
 }
 
+
+
+#pragma mark - レンダリング
+
+/**
+ * 子セルの再レイアウトが必要か？
+ */
+- (bool) needsLayoutChildren {
+    return _needsLayoutChildren;
+}
+
+- (void) setNeedsLayoutChildren:(bool) v {
+    _needsLayoutChildren = v;
+    if(v) {
+        self.cachedSize = CGSizeZero;   // キャッシュをクリア
+        self.needsLayout = true;        // 自身も再レイアウトが必要
+    }
+}
+
+/**
+ * キャッシュされたサイズ
+ * サブクラスでオーバーライドする。
+ */
+- (CGSize) cachedSize {
+    return CGSizeZero;
+}
+
+- (void) setCachedSize:(CGSize)cachedSize {
+    
+}
+
+/**
+ * このコンテナに対する再レイアウト要求
+ */
+- (void) invalidateLayout {
+    _needsLayoutChildren = true;
+    self.cachedSize = CGSizeZero;
+}
+
+/**
+ * このコンテナ以下のすべてのレイアウトをやり直す。
+ */
+- (void) invalidateAllLayout {
+    [self invalidateLayout];
+    for(id c in _cells) {
+        if([c conformsToProtocol:@protocol(IWPLContainerCell)]) {
+            [c invalidateAllLayout];
+        }
+    }
+}
+
 /**
  * レイアウトを実行開始（ルートコンテナセルに対してのみ呼び出す）
  */
@@ -166,6 +194,16 @@
     // サブクラスで実装すること。
     return MICSize();
 }
+
+/**
+ * AUTO(==0), STRC(<0)の値を含むことを考慮して、サイズを制限する。
+ */
+- (CGSize) limitRegulatingSize:(CGSize) regulatingSize {
+    return MICSize(
+           regulatingSize.width>0 ? WPLCMinMax(self.limitWidth).trim(regulatingSize.width) : regulatingSize.width,
+           regulatingSize.height>0 ? WPLCMinMax(self.limitHeight).trim(regulatingSize.height) : regulatingSize.height);
+}
+
 
 @end
 

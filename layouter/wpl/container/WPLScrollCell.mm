@@ -27,16 +27,17 @@
 
 #pragma mark - 構築・初期化
 /**
- * StackPanel の正統なコンストラクタ
+ * ScrollCell の正統なコンストラクタ
  */
 - (instancetype) initWithView:(UIView*)view
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin
               requestViewSize:(CGSize) requestViewSize
+                   limitWidth:(WPLMinMax) limitWidth
+                  limitHeight:(WPLMinMax) limitHeight
                    hAlignment:(WPLCellAlignment)hAlignment
                    vAlignment:(WPLCellAlignment)vAlignment
                    visibility:(WPLVisibility)visibility
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
             scrollOrientation:(WPLScrollOrientation) scrollOrientation {
     if(![view isKindOfClass:UIScrollView.class]) {
         NSAssert1(false, @"internal view of ScrollCell must be an instance of UIScrollView", name);
@@ -50,7 +51,15 @@
         requestViewSize.width = VSTRC;
     }
     
-    self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
+    self = [super initWithView:view
+                          name:name
+                        margin:margin
+               requestViewSize:requestViewSize
+                    limitWidth:limitWidth
+                   limitHeight:limitHeight
+                    hAlignment:hAlignment
+                    vAlignment:vAlignment
+                    visibility:visibility];
     if(nil!=self) {
         _scrollOrientation = scrollOrientation;
     }
@@ -60,30 +69,54 @@
 /**
  * newCellWithView で呼び出されたときに備えて WPLCell#initWithView をオーバーライドしておく。
  */
-- (instancetype) initWithView:(UIView *)view name:(NSString *)name margin:(UIEdgeInsets)margin requestViewSize:(CGSize)requestViewSize hAlignment:(WPLCellAlignment)hAlignment vAlignment:(WPLCellAlignment)vAlignment visibility:(WPLVisibility)visibility containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
-    return [self initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate scrollOrientation:WPLScrollOrientationBOTH];
+- (instancetype) initWithView:(UIView*)view
+                         name:(NSString*) name
+                       margin:(UIEdgeInsets) margin
+              requestViewSize:(CGSize) requestViewSize
+                   limitWidth:(WPLMinMax) limitWidth
+                  limitHeight:(WPLMinMax) limitHeight
+                   hAlignment:(WPLCellAlignment)hAlignment
+                   vAlignment:(WPLCellAlignment)vAlignment
+                   visibility:(WPLVisibility)visibility  {
+    return [self initWithView:view
+                         name:name
+                       margin:margin
+              requestViewSize:requestViewSize
+                   limitWidth:limitWidth
+                  limitHeight:limitHeight
+                   hAlignment:hAlignment
+                   vAlignment:vAlignment
+                   visibility:visibility
+            scrollOrientation:WPLScrollOrientationBOTH];
 }
 
 - (instancetype) initWithView:(UIView *)view
                          name:(NSString *)name
-                       params:(const WPLScrollCellParams&)params
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
-    return [self initWithView:view name:name margin:params._margin requestViewSize:params._requestViewSize hAlignment:params._align.horz vAlignment:params._align.vert visibility:params._visibility containerDelegate:containerDelegate scrollOrientation:params._scrollOrientation];
+                       params:(const WPLScrollCellParams&)params {
+    return [self initWithView:view
+                         name:name
+                       margin:params._margin
+              requestViewSize:params._requestViewSize
+                   limitWidth:params._limitWidth
+                  limitHeight:params._limitHeight
+                   hAlignment:params._align.horz
+                   vAlignment:params._align.vert
+                   visibility:params._visibility
+            scrollOrientation:params._scrollOrientation];
 }
 
 /**
  * C++版インスタンス生成ヘルパー
- * (Sub-Container 用）
  */
 + (instancetype) scrollCellWithName:(NSString*) name
                              params:(const WPLScrollCellParams&)params {
-    return [[self alloc] initWithView:[[WPLInternalScrollCellView alloc] init] name:name params:params containerDelegate:nil];
+    return [[self alloc] initWithView:[[WPLInternalScrollCellView alloc] init] name:name params:params];
 }
 
 + (instancetype) scrollCellWithName:(UIView*)view
                                name:(NSString*) name
                              params:(const WPLScrollCellParams&)params {
-    return [[self alloc] initWithView:view name:name params:params containerDelegate:nil];
+    return [[self alloc] initWithView:view name:name params:params];
 }
 
 
@@ -105,40 +138,42 @@
  * セル内部の配置を計算し、セルサイズを返す。
  * このあと、親コンテナセルでレイアウトが確定すると、layoutCompleted: が呼び出されるので、そのときに、内部の配置を行う。
  * @param regulatingCellSize    stretch指定のセルサイズを決めるためのヒント
+ *
  *    セルサイズ決定の優先順位
+ *    　子セルの指定            親コンテナからの指定
  *      requestedViweSize       regulatingCellSize          内部コンテンツ(view/cell)サイズ
- *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズ
- *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしない
- *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない (regulatingCellSize の stretch 指定は無視する)
- *        負値(stretch)            ○ 正値 (fixed)               regulatingCellSize にリサイズ
+ *      -------------------     -------------------         -----------------------------------
+ *      ○ 正値(fixed)                 無視                      requestedViewSizeにリサイズ
+ *         ゼロ(auto)                  無視                   ○ 元のサイズのままリサイズしない
+ *         負値(stretch)               ゼロ (auto)            ○ 元のサイズのままリサイズしない
+ *         負値(stretch)            ○ 正値 (fixed)              regulatingCellSize にリサイズ
  * @return  セルサイズ（マージンを含む
  */
 - (CGSize) layoutPrepare:(CGSize) regulatingCellSize {
     if(self.visibility==WPLVisibilityCOLLAPSED) {
+        self.needsLayout = false;
         _cachedSize.setEmpty();
         return CGSizeZero;
     }
 
-    MICSize regSize([self sizeWithoutMargin:regulatingCellSize]);
-
     if(self.needsLayoutChildren) {
+        MICSize innerSize([self limitRegulatingSize:[self sizeWithoutMargin:regulatingCellSize]]);
         let content = self.contentCell;
         if(nil!=content) {
-            MICSize contentSize(regSize);
-            if((_scrollOrientation&WPLScrollOrientationHORZ)!=0) {
+            MICSize contentSize(innerSize);
+            if((_scrollOrientation&WPLScrollOrientationHORZ)!=0) {  // 横スクロール可
                 contentSize.width = 0;
             }
-            if((_scrollOrientation&WPLScrollOrientationVERT)!=0) {
+            if((_scrollOrientation&WPLScrollOrientationVERT)!=0) {  // 縦スクロール可
                 contentSize.height = 0;
             }
             _cachedContentSize = [content layoutPrepare:contentSize];
         }
+        _cachedSize = MICSize( (self.requestViewSize.width > 0) ? self.requestViewSize.width  : innerSize.width,
+                               (self.requestViewSize.height> 0) ? self.requestViewSize.height : innerSize.height );
         self.needsLayoutChildren = false;
     }
-    
-    _cachedSize = MICSize( (self.requestViewSize.width > 0) ? self.requestViewSize.width  : regSize.width,
-                           (self.requestViewSize.height> 0) ? self.requestViewSize.height : regSize.height );
-    return [self sizeWithMargin:_cachedSize];
+    return [self sizeWithMargin:[self limitSize:_cachedSize]];
 }
 
 /**
@@ -148,10 +183,11 @@
  *
  *  リサイズ＆配置ルール
  *      requestedViweSize       finalCellRect                 内部コンテンツ(view/cell)サイズ
- *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズし、alignmentに従ってfinalCellRect内に配置
- *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしないで、alignmentに従ってfinalCellRect内に配置
- *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない、alignmentに従ってfinalCellRect内に配置 (regulatingCellSize の stretch 指定は無視する)
- *        負値(stretch)            ○ 正値 (fixed)               finalCellSize にリサイズ（regulatingCellSize!=finalCellRect.sizeの場合は再計算）。alignmentは無視
+ *      -------------------     -------------------           -----------------------------------
+ *      ○ 正値(fixed)                無視                        requestedViewSizeにリサイズし、alignmentに従ってfinalCellRect内に配置
+ *         ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしないで、alignmentに従ってfinalCellRect内に配置
+ *         負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない、alignmentに従ってfinalCellRect内に配置 (regulatingCellSize の stretch 指定は無視する)
+ *         負値(stretch)           ○ 正値 (fixed)                finalCellSize にリサイズ（regulatingCellSize!=finalCellRect.sizeの場合は再計算）。alignmentは無視
  */
 - (void) layoutCompleted:(CGRect) finalCellRect {
     self.needsLayout = false;
@@ -161,10 +197,10 @@
 
     MICRect finRect([self rectWithoutMargin:finalCellRect]);
     // layoutPrepareの計算結果とセルサイズが異なる場合、STRETCH 指定なら、与えられたサイズを使って配置を再計算する
-    if (self.requestViewSize.width <0 /* stretch */ && finRect.size.width  != _cachedSize.width ) {
+    if (self.requestViewSize.width <=0 /* stretch|auto */ && finRect.size.width  != _cachedSize.width ) {
         _cachedSize.width = finRect.size.width;
     }
-    if (self.requestViewSize.height<0 /* stretch */ && finRect.size.height != _cachedSize.height) {
+    if (self.requestViewSize.height<=0 /* stretch|auto */ && finRect.size.height != _cachedSize.height ) {
         _cachedSize.height = finRect.size.height;
     }
     // [super layoutCompleted:] は、auto-sizing のときにview のサイズを配置計算に使用するので、ここでサイズを設定しておく

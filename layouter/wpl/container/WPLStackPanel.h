@@ -22,10 +22,9 @@ public:
     WPLOrientation _orientation;
     CGFloat _cellSpacing;
     
-    WPLStackPanelParams(WPLOrientation orientation=WPLOrientationVERTICAL, MICEdgeInsets margin=MICEdgeInsets(), MICSize requestViewSize=MICSize(), WPLAlignment align=WPLAlignment(), CGFloat cellSpacing=0, WPLVisibility visibility=WPLVisibilityVISIBLE)
-    : WPLCellParams(margin,requestViewSize,align,visibility)
-    , _orientation(orientation)
-    , _cellSpacing(cellSpacing) {}
+    WPLStackPanelParams(WPLOrientation orientation=WPLOrientationVERTICAL)
+    : _orientation(orientation)
+    , _cellSpacing(0) {}
     
     WPLStackPanelParams(const WPLStackPanelParams& src)
     : WPLCellParams(src)
@@ -87,6 +86,33 @@ public:
         _cellSpacing = v;
         return *this;
     }
+    
+    // Min/Max Width/Height
+    WPLStackPanelParams& limitWidth(const WPLMinMax& v) {
+        _limitWidth = v;
+        return *this;
+    }
+    WPLStackPanelParams& maxWidth(const CGFloat& v) {
+        _limitWidth.max = v;
+        return *this;
+    }
+    WPLStackPanelParams& minWidth(const CGFloat& v) {
+        _limitWidth.min = v;
+        return *this;
+    }
+    WPLStackPanelParams& limitHeight(const WPLMinMax& v) {
+        _limitHeight = v;
+        return *this;
+    }
+    WPLStackPanelParams& maxHeight(const CGFloat& v) {
+        _limitHeight.max = v;
+        return *this;
+    }
+    WPLStackPanelParams& minHeight(const CGFloat& v) {
+        _limitHeight.min = v;
+        return *this;
+    }
+
 };
 
 #endif
@@ -109,44 +135,19 @@ public:
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin
               requestViewSize:(CGSize) requestViewSize
+                   limitWidth:(WPLMinMax) limitWidth
+                  limitHeight:(WPLMinMax) limitHeight
                    hAlignment:(WPLCellAlignment)hAlignment
                    vAlignment:(WPLCellAlignment)vAlignment
                    visibility:(WPLVisibility)visibility
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
                   orientation:(WPLOrientation) orientation
                   cellSpacing:(CGFloat)cellSpacing;
-
-/**
- * インスタンス生成ヘルパー
- * StackPanel用のUIViewは、自動的に作成され、superviewにaddSubviewされる。
- */
-+ (instancetype) stackPanelWithName:(NSString*) name
-                             margin:(UIEdgeInsets) margin
-                    requestViewSize:(CGSize) requestViewSize
-                         hAlignment:(WPLCellAlignment)hAlignment
-                         vAlignment:(WPLCellAlignment)vAlignment
-                         visibility:(WPLVisibility)visibility
-                  containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
-                        orientation:(WPLOrientation) orientation
-                        cellSpacing:(CGFloat)cellSpacing
-                          superview:(UIView*)superview;
 
 #if defined(__cplusplus)
 
 - (instancetype) initWithView:(UIView *)view
                          name:(NSString *)name
-                       params:(const WPLStackPanelParams&)params
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate;
-
-
-/**
- * C++版インスタンス生成ヘルパー
- * (Root Container 用）
- */
-+ (instancetype) stackPanelWithName:(NSString*) name
-                             params:(const WPLStackPanelParams&)params
-                          superview:(UIView*)superview
-                  containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate;
+                       params:(const WPLStackPanelParams&)params;
 
 /**
  * C++版インスタンス生成ヘルパー

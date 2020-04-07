@@ -14,9 +14,8 @@ class WPLScrollCellParams : public WPLCellParams {
 public:
     WPLScrollOrientation _scrollOrientation;
     
-    WPLScrollCellParams(WPLScrollOrientation scrollOrientation=WPLScrollOrientationVERT, MICEdgeInsets margin=MICEdgeInsets(), MICSize requestViewSize=MICSize(-1,-1), WPLAlignment align=WPLAlignment(), CGFloat cellSpacing=0, WPLVisibility visibility=WPLVisibilityVISIBLE)
-    : WPLCellParams(margin,requestViewSize,align,visibility)
-    , _scrollOrientation(scrollOrientation) {}
+    WPLScrollCellParams(WPLScrollOrientation scrollOrientation=WPLScrollOrientationVERT)
+    : _scrollOrientation(scrollOrientation) {}
     
     WPLScrollCellParams(const WPLScrollCellParams& src)
     : WPLCellParams(src)
@@ -86,8 +85,7 @@ public:
 
 - (instancetype) initWithView:(UIView *)view
                          name:(NSString *)name
-                       params:(const WPLScrollCellParams&)params
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate;
+                       params:(const WPLScrollCellParams&)params;
 
 /**
  * C++版インスタンス生成ヘルパー

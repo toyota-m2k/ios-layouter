@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "WPLRangedSize.h"
 #import "WPLDef.h"
 
 #define WPL_CELL_SIZING_AUTO 0           // Auto  中身に合わせてサイズを決定する
@@ -46,8 +47,8 @@ typedef enum _WPLVisibility {
  * セルの基底 i/f
  */
 @protocol IWPLCell    <IWPLDisposable>
-    @property(nonatomic) NSString* name;                        // 名前（任意）
-    @property(nonatomic,readonly) UIView* view;               // セルに配置するビュー
+    @property(nonatomic) NSString* name;                    // 名前（任意）
+    @property(nonatomic,readonly) UIView* view;             // セルに配置するビュー
     - (void) dispose;                                       // 破棄
 
     // For rendering
@@ -55,8 +56,10 @@ typedef enum _WPLVisibility {
     @property(nonatomic) UIEdgeInsets margin;               // マージン
     @property(nonatomic) WPLCellAlignment hAlignment;       // 横方向配置指示
     @property(nonatomic) WPLCellAlignment vAlignment;       // 縦方向配置指示
-    @property(nonatomic, readonly) CGSize actualViewSize;     // view.frame.size と同じ
-    @property(nonatomic) CGSize requestViewSize;              // 要求サイズ
+    @property(nonatomic, readonly) CGSize actualViewSize;   // view.frame.size と同じ
+    @property(nonatomic) CGSize requestViewSize;            // 要求サイズ
+    @property(nonatomic) WPLMinMax limitWidth;              // 最大・最小幅
+    @property(nonatomic) WPLMinMax limitHeight;             // 最大・最小高さ
     @property(nonatomic, weak) id<IWPLContainerCellDelegate> containerDelegate;  // 親コンテナにサイズ変更を通知するためのデリゲート
     @property(nonatomic) id extension;                      // 親コンテナが自由に利用するメンバー
 
@@ -66,12 +69,13 @@ typedef enum _WPLVisibility {
      * このあと、親コンテナセルでレイアウトが確定すると、layoutCompleted: が呼び出されるので、そのときに、内部の配置を行う。
      * @param regulatingCellSize    stretch指定のセルサイズを決めるためのヒント
      *    セルサイズ決定の優先順位
-     *      requestedViweSize       regulatingCellSize          内部コンテンツ(view/cell)サイズ
-     *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズ
-     *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしない
-     *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない (regulatingCellSize の stretch 指定は無視する)
-     *        負値(stretch)            ○ 正値 (fixed)               regulatingCellSize にリサイズ
-     * @return  セルサイズ（マージンを含む
+     *      requestedViweSize       regulatingCellSize            内部コンテンツ(view/cell)サイズ
+     *      ○ 正値(fixed)                無視                        requestedViewSizeにリサイズ
+     *         ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしない
+     *         負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない (regulatingCellSize の stretch 指定は無視する)
+     *         負値(stretch)           ○ 正値 (fixed)                regulatingCellSize にリサイズ
+     *
+     * @return セルサイズ（マージンを含む
      */
     - (CGSize) layoutPrepare:(CGSize) regulatingCellSize;
 
@@ -82,10 +86,10 @@ typedef enum _WPLVisibility {
      *
      *  リサイズ＆配置ルール
      *      requestedViweSize       finalCellRect                 内部コンテンツ(view/cell)サイズ
-     *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズし、alignmentに従ってfinalCellRect内に配置
-     *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしないで、alignmentに従ってfinalCellRect内に配置
-     *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない、alignmentに従ってfinalCellRect内に配置 (regulatingCellSize の stretch 指定は無視する)
-     *        負値(stretch)            ○ 正値 (fixed)               finalCellSize にリサイズ（regulatingCellSize!=finalCellRect.sizeの場合は再計算）。alignmentは無視
+     *      ○ 正値(fixed)                無視                        requestedViewSizeにリサイズし、alignmentに従ってfinalCellRect内に配置
+     *         ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしないで、alignmentに従ってfinalCellRect内に配置
+     *         負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない、alignmentに従ってfinalCellRect内に配置 (regulatingCellSize の stretch 指定は無視する)
+     *         負値(stretch)           ○ 正値 (fixed)                finalCellSize にリサイズ（regulatingCellSize!=finalCellRect.sizeの場合は再計算）。alignmentは無視
      */
     - (void) layoutCompleted:(CGRect) finalCellRect;
 

@@ -10,7 +10,7 @@
 
 #import "MICUiRelativeLayout.h"
 #import "MICUiRectUtil.h"
-#import "MICSpan.h"
+//#import "MICSpan.h"
 
 //------------------------------------------------------------------------------------------
 #pragma mark - Attach情報

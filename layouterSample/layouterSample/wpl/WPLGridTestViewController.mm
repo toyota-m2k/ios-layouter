@@ -170,8 +170,7 @@
     [rootGrid addCell:swcell1 row:0 column:0];
     
     let subGrid1 = [WPLGrid gridWithName:@"subGrid1"
-                                  params:WPLGridParams().requestViewSize(MICSize(100,200))
-                               superview:nil containerDelegate:nil];
+                                  params:WPLGridParams().requestViewSize(MICSize(100,200))];
 
     [rootGrid addCell:subGrid1 row:1 column:0];
     
@@ -234,7 +233,7 @@
 - (void) execTest4:(id)_ {
     [self cleanup];
     _binder = [WPLBinder new];
-    var gridParams = WPLGridParams(WPLGridDefinition(),MICSize(1,1))
+    var gridParams = WPLGridParams()
     .colDefs(@[AUTO,STRC,STRC,STRCx(2),AUTO])
     .rowDefs(@[AUTO,STRC,STRCx(2),STRCx(3),AUTO])
     .cellSpacing(MICSize(5,10))

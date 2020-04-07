@@ -22,11 +22,20 @@
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin
               requestViewSize:(CGSize) requestViewSize
+                   limitWidth:(WPLMinMax) limitWidth
+                  limitHeight:(WPLMinMax) limitHeight
                    hAlignment:(WPLCellAlignment)hAlignment
                    vAlignment:(WPLCellAlignment)vAlignment
-                   visibility:(WPLVisibility)visibility
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
-    self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:nil];
+                   visibility:(WPLVisibility)visibility {
+    self = [super initWithView:view
+                          name:name
+                        margin:margin
+               requestViewSize:requestViewSize
+                    limitWidth:limitWidth
+                   limitHeight:limitHeight
+                    hAlignment:hAlignment
+                    vAlignment:vAlignment
+                    visibility:visibility];
     if(self!=nil) {
         _commandListeners = nil;
     }

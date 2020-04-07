@@ -27,4 +27,9 @@
 
 @property (nonatomic) CGSize cachedSize;
 
+/**
+* AUTO(==0), STRC(<0)の値を含むことを考慮して、サイズを制限する。
+*/
+- (CGSize) limitRegulatingSize:(CGSize) regulatingSize;
+
 @end

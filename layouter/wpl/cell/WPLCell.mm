@@ -19,6 +19,8 @@
     MICSize _requestViewSize;
     WPLCellAlignment _hAlignment;
     WPLCellAlignment _vAlignment;
+    WPLCMinMax _limitWidth;
+    WPLCMinMax _limitHeight;
 }
 
 @synthesize containerDelegate = _containerDelegate, name = _name, extension = _extension, view = _view;
@@ -46,10 +48,11 @@
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin
               requestViewSize:(CGSize) requestViewSize
+                    limitWidth:(WPLMinMax) limitWidth
+                   limitHeight:(WPLMinMax) limitHeight
                    hAlignment:(WPLCellAlignment)hAlignment
                    vAlignment:(WPLCellAlignment)vAlignment
-                   visibility:(WPLVisibility)visibility
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
+                   visibility:(WPLVisibility)visibility {
     self = [super init];
     if(nil!=self) {
         _view = view;
@@ -57,8 +60,10 @@
         _margin = margin;
         _hAlignment = hAlignment;
         _vAlignment = vAlignment;
+        _limitWidth = limitWidth;
+        _limitHeight = limitHeight;
         _requestViewSize = requestViewSize;
-        _containerDelegate = containerDelegate;
+        _containerDelegate = nil;
         _extension = nil;
         _visibility = visibility;
         view.hidden = (_visibility != WPLVisibilityVISIBLE);
@@ -86,27 +91,19 @@
 }
 
 /**
- * インスタンス生成ヘルパー
- * 通常、containerDelegate は、ContainerCellへの addCell で設定されるため、ここでは nil にしておく。
- */
-+ (instancetype) newCellWithView:(UIView*)view
-                            name:(NSString*) name
-                          margin:(UIEdgeInsets) margin
-                 requestViewSize:(CGSize) requestViewSize
-                      hAlignment:(WPLCellAlignment)hAlignment
-                      vAlignment:(WPLCellAlignment)vAlignment
-                      visibility:(WPLVisibility)visibility {
-    
-    return [[self alloc] initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:nil];
-}
-
-/**
  * C＋＋版　インスタンス生成ヘルパー
  */
 + (instancetype)newCellWithView:(UIView *)view
                            name:(NSString *)name
                          params:(const WPLCellParams&)params {
-    return [[self alloc] initWithView:view name:name margin:params._margin requestViewSize:params._requestViewSize hAlignment:params._align.horz vAlignment:params._align.vert visibility:params._visibility containerDelegate:nil];
+    return [[self alloc] initWithView:view
+                                 name:name
+                               margin:params._margin
+                      requestViewSize:params._requestViewSize
+                           limitWidth:params._limitWidth limitHeight:params._limitHeight
+                           hAlignment:params._align.horz
+                           vAlignment:params._align.vert
+                           visibility:params._visibility];
 }
 
 /**
@@ -148,6 +145,30 @@
 - (void) setRequestViewSize:(CGSize) size {
     if(MICSize(_requestViewSize)!=size) {
         _requestViewSize = size;
+        [self updateViewSizeOnRequested];
+        self.needsLayout = true;
+    }
+}
+
+- (WPLMinMax)limitWidth {
+    return _limitWidth;
+}
+
+- (void)setLimitWidth:(WPLMinMax)limitWidth {
+    if(_limitWidth!=limitWidth) {
+        _limitWidth = limitWidth;
+        [self updateViewSizeOnRequested];
+        self.needsLayout = true;
+    }
+}
+
+- (WPLMinMax)limitHeight {
+    return _limitHeight;
+}
+
+- (void)setLimitHeight:(WPLMinMax)limitHeight {
+    if(_limitHeight!=limitHeight) {
+        _limitHeight = limitHeight;
         [self updateViewSizeOnRequested];
         self.needsLayout = true;
     }
@@ -309,6 +330,10 @@
     return MICRect(rect) - self.margin;
 }
 
+- (CGSize) limitSize:(CGSize) size {
+    return MICSize(_limitWidth.trim(size.width), _limitHeight.trim(size.height));
+}
+
 
 /**
  * レイアウト準備（仮配置）
@@ -317,11 +342,11 @@
  * @param regulatingCellSize    stretch指定のセルサイズを決めるためのヒント(セルマージンを含む)
  *    セルサイズ決定の優先順位
  *      requestedViweSize       regulatingCellSize          内部コンテンツ(view/cell)サイズ
- *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズ
- *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしない
- *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない (regulatingCellSize の stretch 指定は無視する)
- *        負値(stretch)            ○ 正値 (fixed)               regulatingCellSize にリサイズ
- *        負値(stretch)              負値 (stretch)             ここではゼロを返し、layoutCompletedでの親コンテナによる指示に従う
+ *      ○ 正値(fixed)                無視                        requestedViewSizeにリサイズ
+ *         ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしない
+ *         負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない (regulatingCellSize の stretch 指定は無視する)
+ *         負値(stretch)           ○ 正値 (fixed)                regulatingCellSize にリサイズ
+ *         負値(stretch)              負値 (stretch)              ここではゼロを返し、layoutCompletedでの親コンテナによる指示に従う
  * @return  セルサイズ（マージンを含む
  */
 - (CGSize) layoutPrepare:(CGSize) regulatingCellSize {
@@ -347,7 +372,7 @@
             size.height = self.view.frame.size.height;
         }
     }
-    return [self sizeWithMargin:size];
+    return [self sizeWithMargin:[self limitSize:size]];
 }
 
 /**
@@ -358,9 +383,11 @@
  *  リサイズ＆配置ルール
  *      requestedViweSize       finalCellRect                 内部コンテンツ(view/cell)サイズ
  *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズし、alignmentに従ってfinalCellRect内に配置
- *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしないで、alignmentに従ってfinalCellRect内に配置
- *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない、alignmentに従ってfinalCellRect内に配置 (regulatingCellSize の stretch 指定は無視する)
- *        負値(stretch)            ○ 正値 (fixed)               finalCellSize にリサイズ（regulatingCellSize!=finalCellRect.sizeの場合は再計算）。alignmentは無視
+ *         ゼロ(auto)                 無視                    ○ 元のサイズのままリサイズしないで、alignmentに従ってfinalCellRect内に配置
+ *         負値(stretch)              ゼロ (auto)             ○ 元のサイズのままリサイズしない、alignmentに従ってfinalCellRect内に配置
+ *                                                                (regulatingCellSize の stretch 指定は無視する)
+ *         負値(stretch)           ○ 正値 (fixed)               finalCellSizeにリサイズalignmentは無視
+ *         （regulatingCellSize!=finalCellRect.sizeの場合は再計算）。
  */
 - (void) layoutCompleted:(CGRect) finalCellRect {
     self.needsLayout = false;

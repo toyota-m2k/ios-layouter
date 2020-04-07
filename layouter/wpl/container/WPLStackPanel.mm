@@ -78,26 +78,28 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
 }
 
 /**
- * newCellWithView で呼び出されたときに備えて WPLCell#initWithView をオーバーライドしておく。
- */
-- (instancetype) initWithView:(UIView *)view name:(NSString *)name margin:(UIEdgeInsets)margin requestViewSize:(CGSize)requestViewSize hAlignment:(WPLCellAlignment)hAlignment vAlignment:(WPLCellAlignment)vAlignment visibility:(WPLVisibility)visibility containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
-    return [self initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate orientation:(WPLOrientationVERTICAL) cellSpacing:0];
-}
-
-/**
  * StackPanel の正統なコンストラクタ
  */
 - (instancetype) initWithView:(UIView*)view
                          name:(NSString*) name
                        margin:(UIEdgeInsets) margin
               requestViewSize:(CGSize) requestViewSize
+                   limitWidth:(WPLMinMax) limitWidth
+                  limitHeight:(WPLMinMax) limitHeight
                    hAlignment:(WPLCellAlignment)hAlignment
                    vAlignment:(WPLCellAlignment)vAlignment
                    visibility:(WPLVisibility)visibility
-            containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
                   orientation:(WPLOrientation) orientation
                   cellSpacing:(CGFloat)cellSpacing {
-    self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment:hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate];
+    self = [super initWithView:view
+                          name:name
+                        margin:margin
+               requestViewSize:requestViewSize
+                    limitWidth:limitWidth
+                   limitHeight:limitHeight
+                    hAlignment:hAlignment
+                    vAlignment:vAlignment
+                    visibility:visibility];
     if(nil!=self) {
         _orientation = orientation;
         _cellSpacing = cellSpacing;
@@ -106,78 +108,67 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
     return self;
 }
 
+/**
+ * newCellWithView で呼び出されたときに備えて WPLCell#initWithView をオーバーライドしておく。
+ */
 - (instancetype) initWithView:(UIView *)view
                          name:(NSString *)name
-                       params:(const WPLStackPanelParams&)params
-          containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
+                       margin:(UIEdgeInsets)margin
+              requestViewSize:(CGSize)requestViewSize
+                   limitWidth:(WPLMinMax) limitWidth
+                  limitHeight:(WPLMinMax) limitHeight
+                   hAlignment:(WPLCellAlignment)hAlignment
+                   vAlignment:(WPLCellAlignment)vAlignment
+                   visibility:(WPLVisibility)visibility {
+    NSAssert(false, @"WPLStackPanel.newCellWithView is not recommended.");
+    return [self initWithView:view
+                         name:name
+                       margin:margin
+              requestViewSize:requestViewSize
+                   limitWidth:limitWidth
+                  limitHeight:limitHeight
+                   hAlignment:hAlignment
+                   vAlignment:vAlignment
+                   visibility:visibility
+                  orientation:WPLOrientationVERTICAL
+                  cellSpacing:0];
+}
+
+/**
+ * C++用コンストラクタ
+ */
+- (instancetype) initWithView:(UIView *)view
+                         name:(NSString *)name
+                       params:(const WPLStackPanelParams&)params {
     return [self initWithView:view
                          name:name
                        margin:params._margin
               requestViewSize:params._requestViewSize
+                   limitWidth:params._limitWidth
+                  limitHeight:params._limitHeight
                    hAlignment:params._align.horz
                    vAlignment:params._align.vert
                    visibility:params._visibility
-            containerDelegate:containerDelegate
                   orientation:params._orientation
                   cellSpacing:params._cellSpacing];
 }
 
-
-/*
- * インスタンス生成ヘルパー
- * StackPanel用のUIViewは、自動的に作成され、superviewにaddSubviewされる。
- */
-+ (instancetype) stackPanelWithName:(NSString*) name
-                             margin:(UIEdgeInsets) margin
-                    requestViewSize:(CGSize) requestViewSize
-                         hAlignment:(WPLCellAlignment)hAlignment
-                         vAlignment:(WPLCellAlignment)vAlignment
-                         visibility:(WPLVisibility)visibility
-                  containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate
-                        orientation:(WPLOrientation) orientation
-                        cellSpacing:(CGFloat)cellSpacing
-                          superview:(UIView*)superview {
-    let view = [WPLInternalStackPanelView new];
-    if(nil!=superview) {
-        [superview addSubview:view];
-    }
-    return [[WPLStackPanel alloc] initWithView:view name:name margin:margin requestViewSize:requestViewSize hAlignment: hAlignment vAlignment:vAlignment visibility:visibility containerDelegate:containerDelegate orientation:orientation cellSpacing:cellSpacing];
-}
-
 /**
  * C++版インスタンス生成ヘルパー
- */
-+ (instancetype) stackPanelWithName:(NSString*) name
-                             params:(const WPLStackPanelParams&)params
-                            superview:(UIView*)superview
-                    containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
-
-    return [self stackPanelWithName:name margin:params._margin requestViewSize:params._requestViewSize hAlignment:params._align.horz vAlignment:params._align.vert visibility:params._visibility containerDelegate:containerDelegate orientation:params._orientation cellSpacing:params._cellSpacing superview:superview];
-}
-
-/**
- * C++版インスタンス生成ヘルパー
- * (Sub-Container 用）
  */
 + (instancetype) stackPanelWithName:(NSString*) name
                              params:(const WPLStackPanelParams&)params {
-    return [self stackPanelWithName:name params:params superview:nil containerDelegate:nil];
+    return [[self alloc] initWithView:[WPLInternalStackPanelView new] name:name params:params];
 }
 
+/**
+ * C++版インスタンス生成ヘルパー
+ */
 + (instancetype) stackPanelWithView:(UIView*)view
                                name:(NSString*) name
                              params:(const WPLStackPanelParams&)params {
-    return [[self alloc] initWithView:view name:name params:params containerDelegate:nil];
+    return [[self alloc] initWithView:view name:name params:params];
 }
-
-//+ (instancetype)stackPanelViewWithName:(NSString*) name
-//                           orientation:(WPLOrientation)orientation
-//                             xalignment:(WPLCellAlignment)xalignment
-//                     containerDelegate:(id<IWPLContainerCellDelegate>)containerDelegate {
-//    let hAlignment = (orientation==WPLOrientationVERTICAL) ? xalignment : WPLCellAlignmentSTART;
-//    let vAlignment = (orientation==WPLOrientationVERTICAL) ? WPLCellAlignmentSTART : xalignment;
-//    return [self stackPanelViewWithName:name margin:MICEdgeInsets() requestViewSize:MICSize() hAlignment:hAlignment vAlignment:vAlignment visibility:WPLVisibilityVISIBLE containerDelegate:containerDelegate orientation:orientation];
-//}
 
 - (void) setCachedSize:(CGSize)cachedSize {
     _cachedSize = cachedSize;
@@ -285,25 +276,27 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
  * このあと、親コンテナセルでレイアウトが確定すると、layoutCompleted: が呼び出されるので、そのときに、内部の配置を行う。
  * @param regulatingCellSize    stretch指定のセルサイズを決めるためのヒント
  *    セルサイズ決定の優先順位
- *      requestedViweSize       regulatingCellSize          内部コンテンツ(view/cell)サイズ
- *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズ
- *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしない
- *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない (regulatingCellSize の stretch 指定は無視する)
- *        負値(stretch)            ○ 正値 (fixed)               regulatingCellSize にリサイズ
- * @return  セルサイズ（マージンを含む
+ *      requestedViweSize       regulatingCellSize             内部コンテンツ(view/cell)サイズ
+ *      -------------------     -------------------            -----------------------------------
+ *      ○ 正値(fixed)                 無視                        requestedViewSizeにリサイズ
+ *         ゼロ(auto)                  無視                     ○ 元のサイズのままリサイズしない
+ *         負値(stretch)               ゼロ (auto)              ○ 元のサイズのままリサイズしない (regulatingCellSize の stretch 指定は無視する)
+ *         負値(stretch)            ○ 正値 (fixed)                regulatingCellSize にリサイズ
+ * @return セルサイズ（マージンを含む
  */
 - (CGSize) layoutPrepare:(CGSize) regulatingCellSize {
     if(self.visibility==WPLVisibilityCOLLAPSED) {
+        self.needsLayout = false;
         _cachedSize = CGSizeZero;
         return CGSizeZero;
     }
-    MICSize regSize([self sizeWithoutMargin:regulatingCellSize]);
+    MICSize regSize([self limitRegulatingSize:[self sizeWithoutMargin:regulatingCellSize]]);
     if(self.needsLayoutChildren) {
         CGFloat req = W(self, self.requestViewSize);
         CGFloat fix = (req>=0) ? req : W(self, regSize);
         [self innerLayout:fix];
     }
-    return [self sizeWithMargin:_cachedSize];
+    return [self sizeWithMargin:[self limitSize:_cachedSize]];
 }
 
 /**
@@ -313,10 +306,11 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
  *
  *  リサイズ＆配置ルール
  *      requestedViweSize       finalCellRect                 内部コンテンツ(view/cell)サイズ
- *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズし、alignmentに従ってfinalCellRect内に配置
- *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしないで、alignmentに従ってfinalCellRect内に配置
- *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない、alignmentに従ってfinalCellRect内に配置 (regulatingCellSize の stretch 指定は無視する)
- *        負値(stretch)            ○ 正値 (fixed)               finalCellSize にリサイズ（regulatingCellSize!=finalCellRect.sizeの場合は再計算）。alignmentは無視
+ *      -------------------     -------------------           -----------------------------------
+ *      ○ 正値(fixed)                無視                        requestedViewSizeにリサイズし、alignmentに従ってfinalCellRect内に配置
+ *         ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしないで、alignmentに従ってfinalCellRect内に配置
+ *         負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない、alignmentに従ってfinalCellRect内に配置 (regulatingCellSize の stretch 指定は無視する)
+ *         負値(stretch)           ○ 正値 (fixed)                finalCellSize にリサイズ（regulatingCellSize!=finalCellRect.sizeの場合は再計算）。alignmentは無視
  */
 - (void) layoutCompleted:(CGRect) finalCellRect {
     self.needsLayout = false;

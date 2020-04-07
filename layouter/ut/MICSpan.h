@@ -10,6 +10,40 @@
 
 #if defined(__cplusplus)
 
+template <typename T> inline T MICMaxValue();
+template <> inline NSInteger MICMaxValue() {
+    return NSIntegerMax;
+}
+template <> inline NSUInteger MICMaxValue() {
+    return NSUIntegerMax;
+}
+template <> inline CGFloat MICMaxValue() {
+    return CGFLOAT_MAX;
+}
+template <> inline int MICMaxValue() {
+    return INT_MAX;
+}
+template <> inline uint MICMaxValue() {
+    return UINT_MAX;
+}
+
+template <typename T> inline T MICMinValue();
+template <> inline NSInteger MICMinValue() {
+    return NSIntegerMin;
+}
+template <> inline NSUInteger MICMinValue() {
+    return 0;
+}
+template <> inline CGFloat MICMinValue() {
+    return CGFLOAT_MIN;
+}
+template <> inline int MICMinValue() {
+    return INT_MIN;
+}
+template <> inline uint MICMinValue() {
+    return 0;
+}
+
 /**
  * 最大値/最小値を管理するクラス
  */
@@ -23,13 +57,20 @@ public:
      * デフォルトコンストラクタ
      */
     MICSpan<T>() {
-        _min = _max = 0;
+        reset();
     }
     /**
      * 最小値と最大値を与えて初期化
      */
     MICSpan<T>(T min, T max) {
         set(min,max);
+    }
+    
+    bool isMaxSpacified() {
+        return _max < MICMaxValue<T>();
+    }
+    bool isMinSpecified() {
+        return _min > MICMinValue<T>();
     }
 //    /**
 //     * コピーコンストラクタ
@@ -59,7 +100,12 @@ public:
     }
     
     /**
-     * 最大値＞最小値となることを保証する
+     * 最大値＞最小値となることを保証する    bool reset() {
+         _min = MICMinValue<T>();
+         _max = MICMaxValue<T>();
+     }
+     
+
      */
     MICSpan<T>& normalize() {
         if(_min>_max) {
@@ -70,6 +116,11 @@ public:
         return *this;
     }
     
+    void reset() {
+        _min = MICMinValue<T>();
+        _max = MICMaxValue<T>();
+    }
+
     /**
      * 最小値、最大値を設定
      */
@@ -80,21 +131,31 @@ public:
     }
     
     /**
-     * 最小値を設定
+     * 最小値を単純に設定
      *  最小値を変更したら（必要に応じて） normalize() または setMaxBySpan()を呼ぶこと。
      */
     MICSpan<T>& _setMin(T min) {
         _min = min;
         return *this;
     }
+
+    MICSpan<T>& setMin(T min) {
+        _min = min;
+        return normalize();
+    }
     
     /**
-     * 最大値を設定
+     * 最大値を単純に設定
      *  最大値を変更したら（必要に応じて） normalize() または setMinBySpan()を呼ぶこと。
      */
     MICSpan<T>& _setMax(T max) {
         _max = max;
         return *this;
+    }
+    
+    MICSpan<T>& setMax(T max) {
+        _max = max;
+        return normalize();
     }
     
     /**
@@ -183,41 +244,47 @@ public:
 /**
  * NSInteger の min/max 管理
  */
-class MICSpanI : public MICSpan<NSInteger> {
-public:
-    /** 空の範囲のインスタンスを作成：update()して、spanを構築していくことを想定 */
-    MICSpanI() {_min=NSIntegerMax;_max=NSIntegerMin; }
-    /** 有効な範囲を指定してインスタンスを作成 */
-    MICSpanI(NSInteger min, NSInteger max):MICSpan<NSInteger>(min,max) {}
-    /** コピーコンストラクタ */
-    MICSpanI(const MICSpanI& src):MICSpan<NSInteger>(src.min(), src.max()) {}
-};
+typedef MICSpan<NSInteger> MICSpanI;
+
+//class MICSpanI : public MICSpan<NSInteger> {
+//public:
+//    /** 空の範囲のインスタンスを作成：update()して、spanを構築していくことを想定 */
+//    MICSpanI() {_min=NSIntegerMax;_max=NSIntegerMin; }
+//    /** 有効な範囲を指定してインスタンスを作成 */
+//    MICSpanI(NSInteger min, NSInteger max):MICSpan<NSInteger>(min,max) {}
+//    /** コピーコンストラクタ */
+//    MICSpanI(const MICSpanI& src):MICSpan<NSInteger>(src.min(), src.max()) {}
+//};
 
 /**
  * NSUInteger の min/max 管理
  */
-class MICSpanU : public MICSpan<NSUInteger> {
-public:
-    /** 空の範囲のインスタンスを作成：update()して、spanを構築していくことを想定 */
-    MICSpanU() {_min=NSUIntegerMax; _max=0; }
-    /** 有効な範囲を指定してインスタンスを作成 */
-    MICSpanU(NSUInteger min, NSUInteger max):MICSpan<NSUInteger>(min,max) {}
-    /** コピーコンストラクタ */
-    MICSpanU(const MICSpanU& src):MICSpan<NSUInteger>(src.min(), src.max()) {}
-};
+typedef MICSpan<NSUInteger> MICSpanU;
+
+//class MICSpanU : public MICSpan<NSUInteger> {
+//public:
+//    /** 空の範囲のインスタンスを作成：update()して、spanを構築していくことを想定 */
+//    MICSpanU() {_min=NSUIntegerMax; _max=0; }
+//    /** 有効な範囲を指定してインスタンスを作成 */
+//    MICSpanU(NSUInteger min, NSUInteger max):MICSpan<NSUInteger>(min,max) {}
+//    /** コピーコンストラクタ */
+//    MICSpanU(const MICSpanU& src):MICSpan<NSUInteger>(src.min(), src.max()) {}
+//};
 
 /**
- * NSInteger の min/max 管理
+ * int の min/max 管理
  */
-class MICSpanInt : public MICSpan<int> {
-public:
-    /** 空の範囲のインスタンスを作成：update()して、spanを構築していくことを想定 */
-    MICSpanInt() {_min=INT_MAX;_max=INT_MIN; }
-    /** 有効な範囲を指定してインスタンスを作成 */
-    MICSpanInt(int min, int max):MICSpan<int>(min,max) {}
-    /** コピーコンストラクタ */
-    MICSpanInt(const MICSpanInt& src):MICSpan<int>(src.min(), src.max()) {}
-};
+typedef MICSpan<int> MICSpanInt;
+
+//class MICSpanInt : public MICSpan<int> {
+//public:
+//    /** 空の範囲のインスタンスを作成：update()して、spanを構築していくことを想定 */
+//    MICSpanInt() {_min=INT_MAX;_max=INT_MIN; }
+//    /** 有効な範囲を指定してインスタンスを作成 */
+//    MICSpanInt(int min, int max):MICSpan<int>(min,max) {}
+//    /** コピーコンストラクタ */
+//    MICSpanInt(const MICSpanInt& src):MICSpan<int>(src.min(), src.max()) {}
+//};
 
 /**
  * NSRangeのラッパ。

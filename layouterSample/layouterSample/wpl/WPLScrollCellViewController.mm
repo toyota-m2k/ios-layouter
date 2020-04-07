@@ -31,10 +31,10 @@ inline UIColor* nextColor(NSArray<UIColor*>* colors, int& index) {
 }
 
 - (void)createScrollerContents:(WPLScrollCell*) scroller {
-//    let row = 10, column = 10;
+    let row = 10, column = 10;
 //    let row=2, column=2;
 //    let row=10, column=2;
-    let row=2, column=10;
+//    let row=2, column=10;
     let grid = [WPLGrid gridWithName:[NSString stringWithFormat:@"Grid(%@)", scroller.name] params:WPLGridParams().requestViewSize(VAUTO,VAUTO).cellSpacing(10,10).rowDefs(@[AUTO,AUTO,AUTO,AUTO, AUTO,AUTO,AUTO,AUTO, AUTO,AUTO]).colDefs(@[AUTO,AUTO,AUTO,AUTO, AUTO,AUTO,AUTO,AUTO, AUTO,AUTO]).align(A_CENTER,A_CENTER)];
     let colors = @[UIColor.blueColor, UIColor.brownColor, UIColor.cyanColor, UIColor.greenColor, UIColor.magentaColor, UIColor.orangeColor, UIColor.purpleColor, UIColor.redColor, UIColor.yellowColor];
     int index = 0;
