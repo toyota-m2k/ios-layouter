@@ -173,6 +173,12 @@ public:
                             name:(NSString*) name
                           params:(const WPLCellParams&) params;
 
+// サブクラスで定義するWPLCellParams派生クラスを引数にとるコンストラクタと衝突するので、これは定義しない。
+//- (instancetype) initWithView:(UIView*) view
+//                         name:(NSString*)name
+//                       params:(WPLCellParams) params;
+
+
 - (void) setParams:(const WPLCellParams&) params;
 - (WPLCellParams) currentParams;
 

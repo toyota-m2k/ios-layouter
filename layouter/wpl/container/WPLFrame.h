@@ -17,6 +17,10 @@
 
 #if defined(__cplusplus)
 
+- (instancetype) initWithView:(UIView*) view
+                         name:(NSString*)name
+                       params:(WPLCellParams) params;
+
 /**
  * C++版インスタンス生成ヘルパー
  * (Sub-Container 用）
