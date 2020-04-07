@@ -15,6 +15,8 @@
     bool _needsLayoutChildren;
 }
 
+#pragma mark - 初期化・解放
+
 /**
  * WPLCell.initWithViewのオーバーライド
  */
@@ -44,6 +46,18 @@
     return self;
 }
 
+/**
+ * 自身とコンテントの子セルを解放する
+ */
+- (void) dispose {
+    [super dispose];
+    for(id<IWPLCell> c in self.cells) {
+        [c dispose];
+    }
+    [_cells removeAllObjects];
+}
+
+#pragma mark - グリッドセル管理
 
 - (NSArray<id<IWPLCell>>*) cells {
     return _cells;
@@ -86,53 +100,6 @@
 }
 
 /**
- * 自身とコンテントの子セルを解放する
- */
-- (void) dispose {
-    [super dispose];
-    for(id<IWPLCell> c in self.cells) {
-        [c dispose];
-    }
-    [_cells removeAllObjects];
-}
-
-/**
- * 子セルの再レイアウトが必要か？
- */
-- (bool) needsLayoutChildren {
-    return _needsLayoutChildren;
-}
-
-- (void) setNeedsLayoutChildren:(bool) v {
-    _needsLayoutChildren = v;
-    if(v) {
-        self.cachedSize = CGSizeZero;
-        self.needsLayout = true;
-    }
-}
-
-- (CGSize) cachedSize {
-    return CGSizeZero;
-}
-- (void) setCachedSize:(CGSize)cachedSize {
-    
-}
-
-- (void) invalidateLayout {
-    _needsLayoutChildren = true;
-    self.cachedSize = CGSizeZero;
-}
-
-- (void) invalidateAllLayout {
-    [self invalidateLayout];
-    for(id c in _cells) {
-        if([c conformsToProtocol:@protocol(IWPLContainerCell)]) {
-            [c invalidateAllLayout];
-        }
-    }
-}
-
-/**
  * 子モデルのサイズなどが変化した (IContainerCellDelegate i/f)
  */
 - (void) onChildCellModified:(id<IWPLCell>) cell {
@@ -167,6 +134,57 @@
     self.needsLayoutChildren = true;
     cell.extension = nil;
     return cell;
+}
+
+
+
+#pragma mark - レンダリング
+
+/**
+ * 子セルの再レイアウトが必要か？
+ */
+- (bool) needsLayoutChildren {
+    return _needsLayoutChildren;
+}
+
+- (void) setNeedsLayoutChildren:(bool) v {
+    _needsLayoutChildren = v;
+    if(v) {
+        self.cachedSize = CGSizeZero;   // キャッシュをクリア
+        self.needsLayout = true;        // 自身も再レイアウトが必要
+    }
+}
+
+/**
+ * キャッシュされたサイズ
+ * サブクラスでオーバーライドする。
+ */
+- (CGSize) cachedSize {
+    return CGSizeZero;
+}
+
+- (void) setCachedSize:(CGSize)cachedSize {
+    
+}
+
+/**
+ * このコンテナに対する再レイアウト要求
+ */
+- (void) invalidateLayout {
+    _needsLayoutChildren = true;
+    self.cachedSize = CGSizeZero;
+}
+
+/**
+ * このコンテナ以下のすべてのレイアウトをやり直す。
+ */
+- (void) invalidateAllLayout {
+    [self invalidateLayout];
+    for(id c in _cells) {
+        if([c conformsToProtocol:@protocol(IWPLContainerCell)]) {
+            [c invalidateAllLayout];
+        }
+    }
 }
 
 /**

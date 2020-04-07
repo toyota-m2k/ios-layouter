@@ -11,6 +11,7 @@
 #import "MICVar.h"
 #import "WPLContainersL.h"
 #import "WPLGridCellLocator.h"
+#import "MICDicUtil.h"
 #import <vector>
 
 #ifdef DEBUG
@@ -113,6 +114,7 @@ enum RowColumn {
 
 @end
 
+#ifdef GRID_CELL_MIN_MAX_SUPPORT
 class CellInfo {
 private:
     CGFloat def;
@@ -140,6 +142,29 @@ public:
         return min_max;
     }
 };
+#else
+class CellInfo {
+private:
+    CGFloat def;
+public:
+    CGFloat size;
+    bool completed;
+public:
+    CellInfo(CGFloat defSize) {
+        def = defSize;
+        size = 0;
+        completed = false;
+    }
+    CellInfo(const CellInfo& src) {
+        def = src.def;
+        size = src.size;
+        completed = src.completed;
+    }
+    CGFloat defSize() const {
+        return def;
+    }
+};
+#endif
 
 class CellTable {
     std::vector<CellInfo> _cols;
@@ -151,21 +176,34 @@ public:
     }
     
     void init(NSArray<id>* rowDefs, NSArray<id>* colDefs) {
+#ifdef GRID_CELL_MIN_MAX_SUPPORT
         _rows.assign(rowDefs.count, CellInfo(S_AUTO, WPLCMinMax()));
         _cols.assign(colDefs.count, CellInfo(S_AUTO, WPLCMinMax()));
-        WPLCMinMax span;
+        WPLCMinMax minmax;
         for(NSInteger i=0 ; i<rowDefs.count ; i++) {
             CGFloat v = [WPLRangedSize toSize:rowDefs[i] span:span];
             if(v!=S_AUTO||span.isSpecified()) {
-                _rows[i] = CellInfo(v,span);
+                _rows[i] = CellInfo(v,minmax);
             }
         }
         for(NSInteger i=0 ; i<colDefs.count ; i++) {
             CGFloat v = [WPLRangedSize toSize:colDefs[i] span:span];
             if(v!=S_AUTO||span.isSpecified()) {
-                _cols[i] = CellInfo(v,span);
+                _cols[i] = CellInfo(v,minmax);
             }
         }
+#else
+        _rows.assign(rowDefs.count, CellInfo(S_AUTO));
+        _cols.assign(colDefs.count, CellInfo(S_AUTO));
+        for(NSInteger i=0 ; i<rowDefs.count ; i++) {
+            CGFloat v = number_to_cgfloat(rowDefs[i]);
+            _rows[i] = CellInfo(v);
+        }
+        for(NSInteger i=0 ; i<colDefs.count ; i++) {
+            CGFloat v = number_to_cgfloat(colDefs[i]);
+            _cols[i] = CellInfo(v);
+        }
+#endif
     }
     
     void reset(RowColumn rc) {
@@ -215,13 +253,16 @@ public:
         }
     }
     
-    const WPLCMinMax getSpan(RowColumn rc, NSInteger index) const {
+#ifdef GRID_CELL_MIN_MAX_SUPPORT
+    const WPLCMinMax getMinMax(RowColumn rc, NSInteger index) const {
         if(rc==COL) {
             return _cols[index].getMinMax();
         } else {
             return _rows[index].getMinMax();
         }
     }
+#endif
+    
 
     CGFloat getDefSize(RowColumn rc, NSInteger index, NSInteger span, CGFloat spacing) const {
         if(span==1) {
@@ -592,10 +633,10 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
         
         // 固定サイズ指定のセルはサイズを確定する
         ex.size = size;
-        if(cell.requestViewSize.width >=0 || regSize.width>=0) {
+        if(cell.requestViewSize.width >0 || regSize.width>0) {
             ex.colComp = true;
         }
-        if(cell.requestViewSize.height>=0 || regSize.height>=0) {
+        if(cell.requestViewSize.height>0 || regSize.height>0) {
             ex.rowComp = true;
         }
     } else {
@@ -832,21 +873,41 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 }
 
 /**
- * キャッシュサイズが確定していない場合（cachedSize.width/height==0f）には、サイズを計算する(Pass2 ～ Pass4)。
- * 計算結果に基づいて、セルを配置する(Pass5)。
+ * レイアウト内部処理
+ *
+ * @param innerRegulatingSize   親コンテナによって要求されるセルサイズ（マージンを含まない＝ビューのサイズ）
+ *                              負値(STRC)は入らず、STRCの場合は親コンテナのサイズが入っている。
+ *                              親がAUTOの場合はゼロが入っている。
  */
-- (CGSize) innerLayout:(CGSize) fixedSize {
-//    NSAssert(fixedSize.width>=0 && fixedSize.height>=0, @"Grid.innerLayout: fix < 0");
+- (CGSize) innerLayout:(CGSize) innerRegulatingSize {
+    //        MICSize fixSize( (self.requestViewSize.width>=0)  ? self.requestViewSize.width  : regSize.width,
+    //                         (self.requestViewSize.height>=0) ? self.requestViewSize.height : regSize.height );
+
     if(_cachedSize.width==0) {
-        _cachedSize.width = [self calcGridSize:COL fixedSize:fixedSize.width];
+        CGFloat width = self.requestViewSize.width>=0 ? self.requestViewSize.width : innerRegulatingSize.width;
+        _cachedSize.width = [self calcGridSize:COL fixedSize:width];
     }
     if(_cachedSize.height==0) {
-        _cachedSize.height = [self calcGridSize:ROW fixedSize:fixedSize.height];
+        CGFloat height = self.requestViewSize.height>=0 ? self.requestViewSize.height : innerRegulatingSize.height;
+        _cachedSize.height = [self calcGridSize:ROW fixedSize:height];
     }
     [self pass4_finalize];
     self.needsLayoutChildren = false;
     return _cachedSize;
 }
+
+//- (CGSize) innerLayout:(CGSize) fixedSize {
+////    NSAssert(fixedSize.width>=0 && fixedSize.height>=0, @"Grid.innerLayout: fix < 0");
+//    if(_cachedSize.width==0) {
+//        _cachedSize.width = [self calcGridSize:COL fixedSize:fixedSize.width];
+//    }
+//    if(_cachedSize.height==0) {
+//        _cachedSize.height = [self calcGridSize:ROW fixedSize:fixedSize.height];
+//    }
+//    [self pass4_finalize];
+//    self.needsLayoutChildren = false;
+//    return _cachedSize;
+//}
 
 /**
  * レイアウトを開始（ルートコンテナの場合のみ呼び出される）
@@ -867,13 +928,22 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
  * レイアウト準備（仮配置）
  * セル内部の配置を計算し、セルサイズを返す。
  * このあと、親コンテナセルでレイアウトが確定すると、layoutCompleted: が呼び出されるので、そのときに、内部の配置を行う。
+ *
  * @param regulatingCellSize    stretch指定のセルサイズを決めるためのヒント
+ *                              通常、親コンテナ（またはグリッドセル）のサイズが入っている（STRC=トップダウンor FIXEDによるレイアウト用）
+ *                              親コンテナ（またはグリッドセル）がAUTO の場合はゼロが入っている。
+ *                              負値は入らない。
+ *
+ *
  *    セルサイズ決定の優先順位
+ *    　子セルの指定            親コンテナからの指定
  *      requestedViweSize       regulatingCellSize          内部コンテンツ(view/cell)サイズ
- *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズ
- *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしない
- *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない (regulatingCellSize の stretch 指定は無視する)
- *        負値(stretch)            ○ 正値 (fixed)               regulatingCellSize にリサイズ
+ *      -------------------     -------------------         -----------------------------------
+ *      ○ 正値(fixed)                 無視                      requestedViewSizeにリサイズ
+ *         ゼロ(auto)                  無視                   ○ 元のサイズのままリサイズしない
+ *         負値(stretch)               ゼロ (auto)            ○ 元のサイズのままリサイズしない
+ *         負値(stretch)            ○ 正値 (fixed)              regulatingCellSize にリサイズ
+ *
  * @return  セルサイズ（マージンを含む
  */
 - (CGSize) layoutPrepare:(CGSize) regulatingCellSize {
@@ -882,16 +952,29 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
         return MICSize::zero();
     }
 
-    MICSize regSize([self limitRegulatingSize:[self sizeWithoutMargin:regulatingCellSize]]);
     if(self.needsLayoutChildren) {
         [self pass1_initParams];
-        MICSize fixSize( (self.requestViewSize.width>=0)  ? self.requestViewSize.width  : regSize.width,
-                         (self.requestViewSize.height>=0) ? self.requestViewSize.height : regSize.height );
-        
-        [self innerLayout:[self sizeWithoutMargin:fixSize]];
+        MICSize innerSize([self limitRegulatingSize:[self sizeWithoutMargin:regulatingCellSize]]);
+        [self innerLayout:innerSize];
     }
     return [self sizeWithMargin:[self limitSize:_cachedSize]];
 }
+//- (CGSize) layoutPrepare:(CGSize) regulatingCellSize {
+//    if(self.visibility==WPLVisibilityCOLLAPSED) {
+//        _cachedSize = CGSizeZero;
+//        return MICSize::zero();
+//    }
+//
+//    MICSize regSize([self limitRegulatingSize:[self sizeWithoutMargin:regulatingCellSize]]);
+//    if(self.needsLayoutChildren) {
+//        [self pass1_initParams];
+//        MICSize fixSize( (self.requestViewSize.width>=0)  ? self.requestViewSize.width  : regSize.width,
+//                         (self.requestViewSize.height>=0) ? self.requestViewSize.height : regSize.height );
+//
+//        [self innerLayout:[self sizeWithoutMargin:fixSize]];
+//    }
+//    return [self sizeWithMargin:[self limitSize:_cachedSize]];
+//}
 
 
 /**

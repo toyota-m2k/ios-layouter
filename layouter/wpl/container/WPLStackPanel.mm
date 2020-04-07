@@ -277,6 +277,7 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
  * @param regulatingCellSize    stretch指定のセルサイズを決めるためのヒント
  *    セルサイズ決定の優先順位
  *      requestedViweSize       regulatingCellSize             内部コンテンツ(view/cell)サイズ
+ *      -------------------     -------------------            -----------------------------------
  *      ○ 正値(fixed)                 無視                        requestedViewSizeにリサイズ
  *         ゼロ(auto)                  無視                     ○ 元のサイズのままリサイズしない
  *         負値(stretch)               ゼロ (auto)              ○ 元のサイズのままリサイズしない (regulatingCellSize の stretch 指定は無視する)
@@ -285,6 +286,7 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
  */
 - (CGSize) layoutPrepare:(CGSize) regulatingCellSize {
     if(self.visibility==WPLVisibilityCOLLAPSED) {
+        self.needsLayout = false;
         _cachedSize = CGSizeZero;
         return CGSizeZero;
     }
@@ -304,6 +306,7 @@ static inline void Y(WPLStackPanel* me, CGPoint& point, CGFloat v) {
  *
  *  リサイズ＆配置ルール
  *      requestedViweSize       finalCellRect                 内部コンテンツ(view/cell)サイズ
+ *      -------------------     -------------------           -----------------------------------
  *      ○ 正値(fixed)                無視                        requestedViewSizeにリサイズし、alignmentに従ってfinalCellRect内に配置
  *         ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしないで、alignmentに従ってfinalCellRect内に配置
  *         負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない、alignmentに従ってfinalCellRect内に配置 (regulatingCellSize の stretch 指定は無視する)

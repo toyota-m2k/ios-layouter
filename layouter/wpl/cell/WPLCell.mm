@@ -342,11 +342,11 @@
  * @param regulatingCellSize    stretch指定のセルサイズを決めるためのヒント(セルマージンを含む)
  *    セルサイズ決定の優先順位
  *      requestedViweSize       regulatingCellSize          内部コンテンツ(view/cell)サイズ
- *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズ
- *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしない
- *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない (regulatingCellSize の stretch 指定は無視する)
- *        負値(stretch)            ○ 正値 (fixed)               regulatingCellSize にリサイズ
- *        負値(stretch)              負値 (stretch)             ここではゼロを返し、layoutCompletedでの親コンテナによる指示に従う
+ *      ○ 正値(fixed)                無視                        requestedViewSizeにリサイズ
+ *         ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしない
+ *         負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない (regulatingCellSize の stretch 指定は無視する)
+ *         負値(stretch)           ○ 正値 (fixed)                regulatingCellSize にリサイズ
+ *         負値(stretch)              負値 (stretch)              ここではゼロを返し、layoutCompletedでの親コンテナによる指示に従う
  * @return  セルサイズ（マージンを含む
  */
 - (CGSize) layoutPrepare:(CGSize) regulatingCellSize {
@@ -383,9 +383,11 @@
  *  リサイズ＆配置ルール
  *      requestedViweSize       finalCellRect                 内部コンテンツ(view/cell)サイズ
  *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズし、alignmentに従ってfinalCellRect内に配置
- *        ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしないで、alignmentに従ってfinalCellRect内に配置
- *        負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない、alignmentに従ってfinalCellRect内に配置 (regulatingCellSize の stretch 指定は無視する)
- *        負値(stretch)            ○ 正値 (fixed)               finalCellSize にリサイズ（regulatingCellSize!=finalCellRect.sizeの場合は再計算）。alignmentは無視
+ *         ゼロ(auto)                 無視                    ○ 元のサイズのままリサイズしないで、alignmentに従ってfinalCellRect内に配置
+ *         負値(stretch)              ゼロ (auto)             ○ 元のサイズのままリサイズしない、alignmentに従ってfinalCellRect内に配置
+ *                                                                (regulatingCellSize の stretch 指定は無視する)
+ *         負値(stretch)           ○ 正値 (fixed)               finalCellSizeにリサイズalignmentは無視
+ *         （regulatingCellSize!=finalCellRect.sizeの場合は再計算）。
  */
 - (void) layoutCompleted:(CGRect) finalCellRect {
     self.needsLayout = false;
