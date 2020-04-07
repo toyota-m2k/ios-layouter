@@ -14,22 +14,50 @@ Rendering
 
 コンテナのネスト
 
-    STRC > AUTO/FIXED
+                親（コンテナ）
+                STRC                            FIXED							AUTO                                
+                ----------------------------    ---------------------------     -----------------------------       
+    子  STRC    TopDown                         TopDown                         Complex                            
+                                                                                
+        FIXED   Independent                     Independent                     BottomUp                           
+                                                                                
+        AUTO    Independent                     Independent                     BottomUp                           
 
-        AUTO 指定の子セルorコンテナは、それ自身のサイズで確定し、
-        それを、STRC で指定された親コンテナの中に、Alignmentの指定にしたがって配置
-    
-    FIXED > STRC
 
-        親コンテナのサイズをFIXEDで確定し、
+
+
+    STRC/FIXED > AUTO/FIXED
+
+        Type: Independent
+
+        子は、親サイズから独立してサイズを決定（AUTO/FIXED）。
+        親も子サイズから独立してサイズを決定(STRC/FIXED)し、その内部に、子セルを(子の)Alignmentに従って配置する。
+
+    STRC/FIXED > STRC
+
+        Type: TopDown
+
+        親コンテナのサイズを確定し、
         子セルorコンテナを、そのサイズに合わせて伸縮する。
 
+    AUTO > AUTO/FIXED
+
+        Type: BottomUp
+
+        子セルのサイズを確定し、
+        それに合わせて親コンテナのサイズを、伸縮する。
+
     AUTO > STRC
+
+        Type: Complex
 
         こいつがややこしい。
         親は子のサイズに合わせようとする、子は親のサイズに合わせようとする。本来はエラー。
         原則的には、子のSTRCを無視して、AUTOとしてサイズを決定する。
         ただし、他の子を配置した結果、親のサイズが確定する場合は、それに合わせてSTRCする。　＜－－ここ、コンテナの種類に依存
+
+
+
 
 MAX/MIN
 
