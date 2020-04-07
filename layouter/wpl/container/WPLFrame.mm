@@ -23,6 +23,18 @@
     MICSize _cachedSize;
 }
 
+- (instancetype)initWithView:(UIView *)view name:(NSString *)name params:(WPLCellParams)params {
+    return [self initWithView:view
+                         name:name
+                       margin:params._margin
+              requestViewSize:params._requestViewSize
+                   limitWidth:params._limitWidth
+                  limitHeight:params._limitHeight
+                   hAlignment:params._align.horz
+                   vAlignment:params._align.vert
+                   visibility:params._visibility];
+}
+
 + (instancetype) frameWithName:(NSString*)name
                         params:(WPLCellParams) params {
     return [self newCellWithView:[WPLInternalFrameView new] name:name params:params];

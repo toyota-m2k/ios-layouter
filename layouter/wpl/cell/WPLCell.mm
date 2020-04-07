@@ -74,6 +74,15 @@
     return self;
 }
 
+//- (instancetype) initWithView:(UIView*) view
+//                         name:(NSString*)name
+//                       params:(WPLCellParams) params {
+//    return [self initWithView:view name:name margin:params._margin requestViewSize:params._requestViewSize
+//                   limitWidth:params._limitWidth limitHeight:params._limitHeight
+//                   hAlignment:params._align.horz vAlignment:params._align.vert
+//                   visibility:params._visibility];
+//}
+
 - (void)setParams:(const WPLCellParams &)params {
     self.margin = params._margin;
     self.hAlignment = params._align.horz;
