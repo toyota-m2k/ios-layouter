@@ -2,8 +2,8 @@
 //  frameTest.m
 //  layouterSampleTests
 //
-//  Created by Mitsuki Toyota on 2020/04/09.
-//  Copyright © 2020 Mitsuki Toyota. All rights reserved.
+//  Created by @toyota-m2k on 2020/04/09.
+//  Copyright (c) 2020 @toyota-m2k. All rights reserved.
 //
 
 #import <XCTest/XCTest.h>
