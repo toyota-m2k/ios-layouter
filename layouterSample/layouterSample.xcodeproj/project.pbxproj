@@ -109,7 +109,6 @@
 		8459A0092435DBAB00EA178B /* WPLScrollCellViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8459A0082435DBAB00EA178B /* WPLScrollCellViewController.mm */; };
 		8459A0232437010000EA178B /* WPLRangedSize.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8459A0222437010000EA178B /* WPLRangedSize.mm */; };
 		8459A036243F369C00EA178B /* frameTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8459A035243F369C00EA178B /* frameTest.mm */; };
-		8459A03924403A9D00EA178B /* WPLContainerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8459A03824403A9D00EA178B /* WPLContainerView.mm */; };
 		8459A03B2440417700EA178B /* scrollCellTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8459A03A2440417700EA178B /* scrollCellTest.mm */; };
 		846DC31223667627006CD2CE /* WPLGuidanceViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 846DC31123667627006CD2CE /* WPLGuidanceViewController.mm */; };
 		847AFEA22313A506004809EB /* WPLPropBinding.mm in Sources */ = {isa = PBXBuildFile; fileRef = 847AFEA12313A506004809EB /* WPLPropBinding.mm */; };
@@ -361,8 +360,6 @@
 		8459A0212437010000EA178B /* WPLRangedSize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLRangedSize.h; sourceTree = "<group>"; };
 		8459A0222437010000EA178B /* WPLRangedSize.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLRangedSize.mm; sourceTree = "<group>"; };
 		8459A035243F369C00EA178B /* frameTest.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = frameTest.mm; sourceTree = "<group>"; };
-		8459A03724403A9D00EA178B /* WPLContainerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLContainerView.h; sourceTree = "<group>"; };
-		8459A03824403A9D00EA178B /* WPLContainerView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLContainerView.mm; sourceTree = "<group>"; };
 		8459A03A2440417700EA178B /* scrollCellTest.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = scrollCellTest.mm; sourceTree = "<group>"; };
 		845B5AB7230D50A00055A98A /* acomTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = acomTests.mm; sourceTree = "<group>"; };
 		846DC31023667627006CD2CE /* WPLGuidanceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGuidanceViewController.h; sourceTree = "<group>"; };
@@ -765,8 +762,6 @@
 				841AD87422FD6DA300F9AB7D /* WPLStackPanelView.mm */,
 				841AD8B62309A88E00F9AB7D /* WPLStackPanelScrollView.h */,
 				841AD8B72309A88E00F9AB7D /* WPLStackPanelScrollView.mm */,
-				8459A03724403A9D00EA178B /* WPLContainerView.h */,
-				8459A03824403A9D00EA178B /* WPLContainerView.mm */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -1081,7 +1076,6 @@
 				8411466E23CD79760041A769 /* acomTests.mm in Sources */,
 				8459A036243F369C00EA178B /* frameTest.mm in Sources */,
 				8459A03B2440417700EA178B /* scrollCellTest.mm in Sources */,
-				8459A03924403A9D00EA178B /* WPLContainerView.mm in Sources */,
 				841AD84A22F53C4E00F9AB7D /* layouterSampleTests.mm in Sources */,
 				841AD85C22FB203700F9AB7D /* bindingTests.mm in Sources */,
 				84DDAFAC2371104100232310 /* gridTest.mm in Sources */,

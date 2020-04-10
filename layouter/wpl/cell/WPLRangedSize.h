@@ -121,7 +121,7 @@ public:
 //+ (instancetype) rangedSize:(CGFloat)size span:(WPLMinMax)span;
 
 + (instancetype) rangedAutoMin:(CGFloat) min max:(CGFloat)max;
-+ (instancetype) rangedStretchMin:(CGFloat) min max:(CGFloat)max;
++ (instancetype) rangedStretch:(CGFloat)scale min:(CGFloat) min max:(CGFloat)max;
 
 #ifdef __cplusplus
 @property (nonatomic) WPLMinMax span;

@@ -272,5 +272,3 @@ typedef WPLCellPosition (^WPLUpdateCellPosition)(id<IWPLCell>cell, WPLCellPositi
 
 @end
 
-@interface WPLGrid (WHRendering) <IWPLCellWH>
-@end

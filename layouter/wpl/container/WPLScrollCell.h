@@ -140,6 +140,3 @@ public:
 @end
 
 
-@interface WPLScrollCell (WHRendering) <IWPLCellWH>
-
-@end

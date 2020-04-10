@@ -50,11 +50,11 @@ const WPLCMinMax WPLCMinMax::empty() {
     return [self rangedSize:0 min:min max:max];
 }
 
-+ (instancetype) rangedStretch:(CGFloat)v min:(CGFloat) min max:(CGFloat)max {
-    if(v>0) {
-        v = -v;
++ (instancetype) rangedStretch:(CGFloat)scale min:(CGFloat) min max:(CGFloat)max {
+    if(scale>0) {
+        scale = -scale;
     }
-    return [self rangedSize:v min:min max:max];
+    return [self rangedSize:scale min:min max:max];
 }
 
 - (bool)isMaxSpecified {

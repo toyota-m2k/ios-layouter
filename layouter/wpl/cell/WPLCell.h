@@ -194,18 +194,14 @@ public:
 
 #endif
 
-@property (nonatomic,readonly) CGSize requestCellSize;
-
-- (CGSize) sizeWithMargin:(CGSize)size;
-- (CGSize) sizeWithoutMargin:(CGSize)size;
-- (CGRect) rectWithMargin:(CGRect)rect;
-- (CGRect) rectWithoutMargin:(CGRect)rect;
-
-- (CGSize) limitSize:(CGSize) size;
-
-@end
-
-@interface WPLCell (WHRendering) <IWPLCellWH>
+//@property (nonatomic,readonly) CGSize requestCellSize;
+//
+//- (CGSize) sizeWithMargin:(CGSize)size;
+//- (CGSize) sizeWithoutMargin:(CGSize)size;
+//- (CGRect) rectWithMargin:(CGRect)rect;
+//- (CGRect) rectWithoutMargin:(CGRect)rect;
+//
+//- (CGSize) limitSize:(CGSize) size;
 
 @end
 

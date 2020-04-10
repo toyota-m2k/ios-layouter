@@ -87,7 +87,7 @@ enum Orientation {
 
 - (void) sizePropertyChanged:(id<IMICKeyValueObserverItem>) info target:(id)target {
     // サイズが変わったら、すべてのコンテナの配置を再計算する必要がある、
-    [_containerCell invalidateAllLayout];
+//    [_containerCell invalidateAllLayout];
     [self reserveRender:WPLRenderingSIZING];
 }
 
@@ -208,7 +208,6 @@ static inline void set_origin(Orientation o, MICRect& rect, CGFloat pos=0) {
     }
 }
 
-//#define USE_ORG_LAYOUT_SYSTEM
 /**
  * コンテナ内の再配置処理
  */
@@ -221,7 +220,6 @@ static inline void set_origin(Orientation o, MICRect& rect, CGFloat pos=0) {
         return;
     }
     
-#ifndef USE_ORG_LAYOUT_SYSTEM
     MICRect frameRect(_view.bounds);
     [_containerCell beginRendering:mode];
     if([_view isKindOfClass:UIScrollView.class]) {
@@ -229,24 +227,12 @@ static inline void set_origin(Orientation o, MICRect& rect, CGFloat pos=0) {
         contentSize.width = MAX(contentSize.width, frameRect.width());
         contentSize.height = MAX(contentSize.height, frameRect.height());
         ((UIScrollView*)_view).contentSize = contentSize;
-        [_containerCell endRenderingInRect:MICRect(contentSize)];
+        [_containerCell endRendering:MICRect(contentSize)];
     } else {
         [_containerCell calcCellWidth:frameRect.width()];
         [_containerCell calcCellHeight:frameRect.height()];
-        [_containerCell endRenderingInRect:frameRect];
+        [_containerCell endRendering:frameRect];
     }
-#else
-    MICSize cellSize([_containerCell layoutPrepare:viewRect.size]);
-    MICRect cellRect(viewRect);
-    [self renderSub:HORZ  viewRect:viewRect cellSize:cellSize cellRect:cellRect];
-    [self renderSub:VERT viewRect:viewRect cellSize:cellSize cellRect:cellRect];
-  
-    [_containerCell layoutCompleted:cellRect];
-    MICRect contentRect = _containerCell.view.frame;
-    if([_view isKindOfClass:UIScrollView.class]) {
-        ((UIScrollView*)_view).contentSize = contentRect.size;
-    }
-#endif
 
     if(nil!=_layoutCompletionListener) {
         id p = _view;

@@ -150,58 +150,8 @@
 - (void) setNeedsLayoutChildren:(bool) v {
     _needsLayoutChildren = v;
     if(v) {
-        self.cachedSize = CGSizeZero;   // キャッシュをクリア
         self.needsLayout = true;        // 自身も再レイアウトが必要
     }
-}
-
-/**
- * キャッシュされたサイズ
- * サブクラスでオーバーライドする。
- */
-- (CGSize) cachedSize {
-    return CGSizeZero;
-}
-
-- (void) setCachedSize:(CGSize)cachedSize {
-    
-}
-
-/**
- * このコンテナに対する再レイアウト要求
- */
-- (void) invalidateLayout {
-    _needsLayoutChildren = true;
-    self.cachedSize = CGSizeZero;
-}
-
-/**
- * このコンテナ以下のすべてのレイアウトをやり直す。
- */
-- (void) invalidateAllLayout {
-    [self invalidateLayout];
-    for(id c in _cells) {
-        if([c conformsToProtocol:@protocol(IWPLContainerCell)]) {
-            [c invalidateAllLayout];
-        }
-    }
-}
-
-/**
- * レイアウトを実行開始（ルートコンテナセルに対してのみ呼び出す）
- */
-- (CGSize) layout {
-    // サブクラスで実装すること。
-    return MICSize();
-}
-
-/**
- * AUTO(==0), STRC(<0)の値を含むことを考慮して、サイズを制限する。
- */
-- (CGSize) limitRegulatingSize:(CGSize) regulatingSize {
-    return MICSize(
-           regulatingSize.width>0 ? WPLCMinMax(self.limitWidth).clip(regulatingSize.width) : regulatingSize.width,
-           regulatingSize.height>0 ? WPLCMinMax(self.limitHeight).clip(regulatingSize.height) : regulatingSize.height);
 }
 
 - (void)beginRendering:(WPLRenderingMode)mode {
@@ -212,8 +162,8 @@
     }
 }
 
-- (void)endRenderingInRect:(CGRect)finalCellRect {
-    [super endRenderingInRect:finalCellRect];
+- (void)endRendering:(CGRect)finalCellRect {
+    [super endRendering:finalCellRect];
     self.needsLayoutChildren = false;
 }
 

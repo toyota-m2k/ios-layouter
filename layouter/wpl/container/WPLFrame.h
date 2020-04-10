@@ -36,7 +36,3 @@
 
 @end
 
-@interface WPLFrame (WHRendering)
-
-@end
-

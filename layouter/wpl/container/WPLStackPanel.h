@@ -172,6 +172,3 @@ public:
 
 @end
 
-@interface WPLStackPanel (WHRendering) <IWPLCellWH>
-
-@end

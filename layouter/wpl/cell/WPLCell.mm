@@ -301,158 +301,11 @@
     }
 }
 
-- (CGSize) requestCellSize {
-    return [self sizeWithMargin:_requestViewSize];
-}
-
-- (CGSize) sizeWithMargin:(CGSize)size {
-    MICSize s(size);
-    if(s.width>0) {
-        s.width += _margin.dw();
-    }
-    if(s.height>0) {
-        s.height += _margin.dh();
-    }
-    return s;
-}
-
-- (CGSize) sizeWithoutMargin:(CGSize)size {
-    MICSize s(size);
-    if(s.width>0) {
-        s.width -= _margin.dw();
-        if(s.width<0) {
-            s.width = 0;
-        }
-    }
-    if(s.height>0) {
-        s.height -= _margin.dh();
-        if(s.height<0) {
-            s.height = 0;
-        }
-    }
-    return s;
-}
-
-- (CGRect) rectWithMargin:(CGRect)rect {
-    return MICRect(rect) + self.margin;
-}
-- (CGRect) rectWithoutMargin:(CGRect)rect {
-    return MICRect(rect) - self.margin;
-}
-
-- (CGSize) limitSize:(CGSize) size {
-    return MICSize(_limitWidth.clip(size.width), _limitHeight.clip(size.height));
-}
-
-
-/**
- * レイアウト準備（仮配置）
- * セル内部の配置を計算し、セルサイズを返す。
- * このあと、親コンテナセルでレイアウトが確定すると、layoutCompleted: が呼び出されるので、そのときに、内部の配置を行う。
- * @param regulatingCellSize    stretch指定のセルサイズを決めるためのヒント(セルマージンを含む)
- *    セルサイズ決定の優先順位
- *      requestedViweSize       regulatingCellSize          内部コンテンツ(view/cell)サイズ
- *      ○ 正値(fixed)                無視                        requestedViewSizeにリサイズ
- *         ゼロ(auto)                 無視                     ○ 元のサイズのままリサイズしない
- *         負値(stretch)              ゼロ (auto)              ○ 元のサイズのままリサイズしない (regulatingCellSize の stretch 指定は無視する)
- *         負値(stretch)           ○ 正値 (fixed)                regulatingCellSize にリサイズ
- *         負値(stretch)              負値 (stretch)              ここではゼロを返し、layoutCompletedでの親コンテナによる指示に従う
- * @return  セルサイズ（マージンを含む
- */
-- (CGSize) layoutPrepare:(CGSize) regulatingCellSize {
-    // width
-    MICSize size(self.requestViewSize);
-    MICSize regSize([self sizeWithoutMargin:regulatingCellSize]);
-    if(size.width<=0) {
-        if(regSize.width>0) {
-            size.width = regSize.width;
-        } else if(regSize.width<0 && size.width<0){
-            size.width = 0;
-        } else {
-            size.width = self.view.frame.size.width;
-        }
-    }
-    // height
-    if(size.height<=0) {
-        if(regSize.height>0) {
-            size.height = regSize.height;
-        } else if(regSize.height<0 && size.height<0){
-            size.height = 0;
-        } else {
-            size.height = self.view.frame.size.height;
-        }
-    }
-    return [self sizeWithMargin:[self limitSize:size]];
-}
-
-/**
- * レイアウトを確定する。
- * layoutPrepareが呼ばれた後に呼び出される。
- * @param finalCellRect     確定したセル領域（マージンを含む）
- *
- *  リサイズ＆配置ルール
- *      requestedViweSize       finalCellRect                 内部コンテンツ(view/cell)サイズ
- *      ○ 正値(fixed)                無視                       requestedViewSizeにリサイズし、alignmentに従ってfinalCellRect内に配置
- *         ゼロ(auto)                 無視                    ○ 元のサイズのままリサイズしないで、alignmentに従ってfinalCellRect内に配置
- *         負値(stretch)              ゼロ (auto)             ○ 元のサイズのままリサイズしない、alignmentに従ってfinalCellRect内に配置
- *                                                                (regulatingCellSize の stretch 指定は無視する)
- *         負値(stretch)           ○ 正値 (fixed)               finalCellSizeにリサイズalignmentは無視
- *         （regulatingCellSize!=finalCellRect.sizeの場合は再計算）。
- */
-- (void) layoutCompleted:(CGRect) finalCellRect {
-    self.needsLayout = false;
-    if(self.visibility==WPLVisibilityCOLLAPSED) {
-        return;
-    }
-    MICRect finRect([self rectWithoutMargin:finalCellRect]);
-    MICRect viewRect(finRect);
-    if(self.requestViewSize.width>=0) { // !stretch
-        if(self.requestViewSize.width>0) {
-            viewRect.size.width = self.requestViewSize.width;
-        } else {
-            viewRect.size.width = self.view.frame.size.width;
-        }
-        if(viewRect.width()<finRect.width()) {
-            if(self.hAlignment==WPLCellAlignmentCENTER) {
-                viewRect.moveToHCenterOfOuterRect(finRect);
-            } else if(self.hAlignment == WPLCellAlignmentEND){
-                viewRect.move(finRect.RB().x-viewRect.RB().x, 0);
-            }
-        }
-    }
-    if(self.requestViewSize.height>=0) { // !stretch
-        if(self.requestViewSize.height>0) {
-            viewRect.size.height = self.requestViewSize.height;
-        } else {
-            viewRect.size.height = self.view.frame.size.height;
-        }
-        if(viewRect.height()<finRect.height()) {
-            if(self.vAlignment==WPLCellAlignmentCENTER) {
-                viewRect.moveToVCenterOfOuterRect(finRect);
-            } else if(self.vAlignment == WPLCellAlignmentEND){
-                viewRect.move(0, finRect.RB().y-viewRect.RB().y);
-            }
-        }
-    }
-    MICRect orgFrame(self.view.frame);
-    if(viewRect!=orgFrame) {
-        CGFloat animDuration = self.animationDuration;
-        if(animDuration>0) {
-            [UIView animateWithDuration:animDuration delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{self.view.frame=viewRect;} completion:nil];
-        } else {
-            self.view.frame = viewRect;
-        }
-    }
-}
-
-
-@end
-
-@implementation WPLCell (WHRendering)
+#pragma mark - Rendering
 
 /**
  * レンダリング開始を伝える。
- * beginRenderingとendRenderingInRectは必ずペアで呼ばれるが、calcCellWidth/calcCellHeight は
+ * beginRenderingとendRenderingは必ずペアで呼ばれるが、calcCellWidth/calcCellHeight は
  * 必ずしも呼ばれない。従って、calcCell* の中で状態を保存し、endRenderingで利用するようなコードは不可。
  */
 - (void)beginRendering:(WPLRenderingMode)mode {
@@ -588,7 +441,7 @@
  * セルの位置、サイズを確定し、ビューを再配置する。
  * @param   finalCellRect  セルを配置可能な矩形領域（親ビュー座標系）
  */
-- (void) endRenderingInRect:(CGRect) finalCellRect {
+- (void) endRendering:(CGRect) finalCellRect {
     self.needsLayout = false;
     if(self.visibility==WPLVisibilityCOLLAPSED) {
         return;
@@ -610,3 +463,4 @@
 }
 
 @end
+
