@@ -10,6 +10,6 @@
 #import "MICUiAccordionCellView.h"
 #import "MICUiSwitchingViewMediator.h"
 
-@interface TabViewController : UIViewController // <MMJUiAccordionCellDelegate,MMJUiViewVisibilityDelegate, MMJUiSwitchingViewDelegate>
+@interface TabViewController : UIViewController
 
 @end
