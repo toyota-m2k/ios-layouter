@@ -12,6 +12,7 @@
  * WPLScrollCell, WPL*ScrollView で使用する
  */
 typedef enum _WPLScrollOrientation {
+    WPLScrollNone = 0,
     WPLScrollOrientationHORZ = 1,
     WPLScrollOrientationVERT = 2,
     WPLScrollOrientationBOTH = 3,

@@ -23,6 +23,8 @@
 #define WPLInternalGridView UIView
 #endif
 
+#define GRID_CELL_MIN_MAX_SUPPORT
+
 /**
  * Row/Columnを区別する定義
  * ... bool でもよいのだが、視認性が悪いので、あえてラベルを定義
@@ -141,6 +143,9 @@ public:
     const WPLCMinMax getMinMax() const {
         return min_max;
     }
+    void clipSize() {
+        size = min_max.clip(size);
+    }
 };
 #else
 class CellInfo {
@@ -181,14 +186,14 @@ public:
         _cols.assign(colDefs.count, CellInfo(S_AUTO, WPLCMinMax()));
         WPLCMinMax minmax;
         for(NSInteger i=0 ; i<rowDefs.count ; i++) {
-            CGFloat v = [WPLRangedSize toSize:rowDefs[i] span:span];
-            if(v!=S_AUTO||span.isSpecified()) {
+            CGFloat v = [WPLRangedSize toSize:rowDefs[i] span:minmax];
+            if(v!=S_AUTO||minmax.isSpecified()) {
                 _rows[i] = CellInfo(v,minmax);
             }
         }
         for(NSInteger i=0 ; i<colDefs.count ; i++) {
-            CGFloat v = [WPLRangedSize toSize:colDefs[i] span:span];
-            if(v!=S_AUTO||span.isSpecified()) {
+            CGFloat v = [WPLRangedSize toSize:colDefs[i] span:minmax];
+            if(v!=S_AUTO||minmax.isSpecified()) {
                 _cols[i] = CellInfo(v,minmax);
             }
         }
@@ -367,6 +372,218 @@ private:
 
 };
 
+class CellList {
+private:
+    std::vector<CellInfo> _list;
+    bool finished;
+    CGFloat fixedSize;
+public:
+#ifdef GRID_CELL_MIN_MAX_SUPPORT
+    void init(NSArray<id>* defs) {
+        _list.assign(defs.count, CellInfo(S_AUTO, WPLCMinMax::empty()));
+        finished = false;
+        fixedSize = 0;
+        WPLCMinMax minmax;
+        for(NSInteger i=0, ci = defs.count ; i<ci ; i++) {
+            CGFloat v = [WPLRangedSize toSize:defs[i] span:minmax];
+            if(v!=S_AUTO||minmax.isSpecified()) {
+                _list[i] = CellInfo(v,minmax);
+            }
+        }
+    }
+#else
+    void init(NSArray<id>* defs) {
+        _list.assign(defs.count, CellInfo(S_AUTO));
+        WPLCMinMax minmax;
+        for(NSInteger i=0, ci = defs.count ; i<ci ; i++) {
+            CGFloat v = number_to_cgfloat(defs[i]);
+            if(v!=S_AUTO) {
+                _list[i] = CellInfo(v);
+            }
+        }
+    }
+#endif
+       
+    void reset() {
+        finished = false;
+        fixedSize = 0;
+        for(NSInteger i=_list.size()-1 ; i>=0 ; i--) {
+            _list[i].completed = false;
+            _list[i].size = 0;
+        }
+    }
+    void finish() {
+        finished = true;
+    }
+    bool isFinished() {
+        return finished;
+    }
+    void setFixedSize(CGFloat s) {
+        fixedSize = s;
+    }
+    CGFloat getFixedSize() {
+        return fixedSize;
+    }
+        
+    NSInteger count() const {
+        return _list.size();
+    }
+        
+    void setSize(NSInteger index, CGFloat value) {
+        _list[index].size = value;
+    }
+    
+    void updateSize(NSInteger index, CGFloat value) {
+        _list[index].size = MAX(_list[index].size, value);
+    }
+        
+    CGFloat getSize(NSInteger index) const {
+        return _list[index].size;
+    }
+        
+    CGFloat getDefSize(NSInteger index) const {
+        return _list[index].defSize();
+    }
+        
+#ifdef GRID_CELL_MIN_MAX_SUPPORT
+    const WPLCMinMax getMinMax(NSInteger index) const {
+        return _list[index].getMinMax();
+    }
+    CGFloat clipSize(NSInteger index, CGFloat size) const {
+        return _list[index].getMinMax().clip(size);
+    }
+    void clipAll() {
+        for(NSInteger i=0,ci=_list.size() ; i<ci ; i++) {
+            _list[i].clipSize();
+        }
+    }
+#endif
+
+    CGFloat getDefSize(NSInteger index, NSInteger span, CGFloat spacing) const {
+        if(span==1) {
+            return getDefSize(index);
+        }
+        return sumDefSize(index, span, spacing);
+    }
+
+    bool isCompleted(NSInteger index) const{
+        return _list[index].completed;
+    }
+    
+    bool isCompleted(NSInteger index, NSInteger span) const {
+        for(NSInteger i=0 ; i<span ; i++) {
+            if(!_list[index+i].completed) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    bool isCompleted() const {
+        return isCompleted(0,_list.size());
+    }
+    
+    void completed(NSInteger index, bool completed) {
+        _list[index].completed = completed;
+    }
+        
+    NSInteger uncompletedCount(NSInteger index, NSInteger span) const {
+        NSInteger count = 0;
+        for(NSInteger i=0 ; i<span ; i++) {
+            if(!_list[index+i].completed) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    NSInteger uncompletedCount() const {
+        return uncompletedCount(0, count());
+    }
+    
+    NSInteger firstUncompletedIndex(NSInteger index, NSInteger span) {
+        for(NSInteger i=0 ; i<span ; i++) {
+            if(!_list[index+i].completed) {
+                return index+i;
+            }
+        }
+        return -1;
+    }
+    
+    CGFloat sizeRange(NSInteger index, NSInteger span, CGFloat spacing) {
+        CGFloat value = 0;
+        for(NSInteger i=0 ; i<span ; i++) {
+            CGFloat v = getSize(index+i);
+            if(v>0) {
+                if(value!=0) {
+                    value+=spacing;
+                }
+                value += v;
+            }
+        }
+        return value;
+    }
+
+    CGFloat sizeRangeOnlyCompleted(NSInteger index, NSInteger span, CGFloat spacing) {
+        CGFloat value = 0;
+        for(NSInteger i=0 ; i<span ; i++) {
+            if(isCompleted(index+i)) {
+                CGFloat v = getSize(index+i);
+                if(v>0) {
+                    if(value!=0) {
+                        value+=spacing;
+                    }
+                    value += v;
+                }
+            }
+        }
+        return value;
+    }
+
+    CGFloat totalSize(CGFloat spacing) {
+        return sizeRange(0, count(), spacing);
+    }
+    
+    CGFloat getFinalSize(CGFloat spacing) {
+        if(fixedSize>0) {
+            return fixedSize;
+        }
+        return totalSize(spacing);
+    }
+    
+    CGFloat offsetAt(NSInteger index, CGFloat spacing) {
+        CGFloat value = sizeRange(0, index, spacing);
+        if(value>0) {
+            value += spacing;
+        }
+        return value;
+    }
+   
+   
+    CGFloat sumDefSize(NSInteger index, NSInteger span, CGFloat spacing) const {
+        CGFloat value = 0;
+        bool a = false;
+        for(NSInteger i=0 ; i<span ; i++) {
+            CGFloat v = _list[i+index].defSize();
+            if(v < 0) {
+                return -1;
+            } else if(v==0) {
+                a = true;
+            } else {
+                if(value!=0) {
+                    value+=spacing;
+                }
+                value += v;
+            }
+        }
+        if(a) {
+            return 0;
+        } else {
+            return value;
+        }
+    }
+};
+
 static NSArray<NSNumber*>* s_single_def_auto = @[@(0)];
 static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 
@@ -377,6 +594,9 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 
     // Row/Column definitions
     CellTable _table;
+
+    CellList _listRow;
+    CellList _listColumn;
 }
 
 #pragma mark - 初期化
@@ -417,6 +637,8 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
         rowDefs = (rowDefs!=nil&&rowDefs.count>0) ? rowDefs : (requestViewSize.height>0 ? s_single_def_stretch : s_single_def_auto);
         colDefs = (colDefs!=nil&&colDefs.count>0) ? colDefs : (requestViewSize.width>0  ? s_single_def_stretch : s_single_def_auto);
         _table.init(rowDefs,colDefs);
+        _listColumn.init(colDefs);
+        _listRow.init(rowDefs);
     }
     return self;
 }
@@ -595,6 +817,8 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
     rowDefs = (rowDefs!=nil&&rowDefs.count>0) ? rowDefs : (params._requestViewSize.height>0 ? s_single_def_stretch : s_single_def_auto);
     colDefs = (colDefs!=nil&&colDefs.count>0) ? colDefs : (params._requestViewSize.width>0  ? s_single_def_stretch : s_single_def_auto);
     _table.init(rowDefs,colDefs);
+    _listRow.init(rowDefs);
+    _listColumn.init(colDefs);
 
     for(id<IWPLCell> cell in self.cells) {
         WPLCellPosition pos(updateCellPosition(cell, ((WPLGridExtension*)(cell.extension)).cellPosition));
@@ -1017,5 +1241,445 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
 
 
 
+
+@end
+
+
+
+
+@implementation WPLGrid (WHRendering)
+
+static inline WPLGridExtension* EXT(id<IWPLCell>cell) {
+    return (WPLGridExtension*)cell.extension;
+}
+
+class RCAccessor {
+public:
+    RowColumn rc;
+    CellList& list;
+    RCAccessor(RowColumn rc_, CellList& list_)
+    :rc(rc_)
+    ,list(list_)
+    {}
+    
+    ~RCAccessor() {
+        list.finish();
+    }
+    
+    CGFloat span(id<IWPLCell> cell) {
+        if(rc==COL) {
+            return EXT(cell).colSpan;
+        } else {
+            return EXT(cell).rowSpan;
+        }
+    }
+    CGFloat index(id<IWPLCell>cell) {
+        if(rc==COL) {
+            return EXT(cell).column;
+        } else {
+            return EXT(cell).row;
+        }
+    }
+    CGFloat calcSize(id<IWPLCell> cell, CGFloat regulationSize) {
+        if(rc==COL) {
+            return [cell calcCellWidth:regulationSize];
+        } else {
+            return [cell calcCellHeight:regulationSize];
+        }
+    }
+    CGFloat recalcSize(id<IWPLCell> cell, CGFloat regulationSize) {
+        if(rc==COL) {
+            return [cell recalcCellWidth:regulationSize];
+        } else {
+            return [cell recalcCellHeight:regulationSize];
+        }
+    }
+
+//    void comp(id<IWPLCell> cell, bool flag=true) {
+//        if(rc==COL) {
+//            EXT(cell).colComp = flag;
+//        } else {
+//            EXT(cell).rowComp = flag;
+//        }
+//    }
+//    bool isComp(id<IWPLCell> cell) {
+//        if(rc==COL) {
+//            return EXT(cell).colComp;
+//        } else {
+//            return EXT(cell).rowComp;
+//        }
+//    }
+    void setExtSize(id<IWPLCell>cell, CGFloat size) {
+        let ext = EXT(cell);
+        MICSize exSize(ext.size);
+        if(rc==COL) {
+            exSize.width = size;
+        } else {
+            exSize.height = size;
+        }
+        ext.size = exSize;
+    }
+    CGFloat extSize(id<IWPLCell>cell) {
+        if(rc==COL) {
+            return EXT(cell).size.width;
+        } else {
+            return EXT(cell).size.height;
+        }
+    }
+    
+    NSString* keyForSpan(id<IWPLCell>cell) {
+        return [EXT(cell) keyForSpan:rc];
+    }
+    
+    CGFloat requestedSize(id<IWPLCell> cell) {
+        if(rc==COL) {
+            return cell.requestViewSize.width;
+        } else {
+            return cell.requestViewSize.height;
+        }
+    }
+    
+    CGFloat sizeFrom(CGSize sp) {
+        if(rc==COL) {
+            return sp.width;
+        } else {
+            return sp.height;
+        }
+    }
+    
+    CGFloat spacing(WPLGrid* g) {
+        return sizeFrom(g.cellSpacing);
+    }
+    
+    CGFloat margin(id<IWPLCell> cell) {
+        if(rc==COL) {
+            return MICEdgeInsets::dw(cell.margin);
+        } else {
+            return MICEdgeInsets::dh(cell.margin);
+        }
+    }
+    
+    CGFloat getFixedSize() const {
+        return list.getFixedSize();
+    }
+    void setFixedSize(CGFloat s) {
+        list.setFixedSize(s);
+    }
+    
+    CGFloat getGridSize(WPLGrid* grid, id<IWPLCell> cell) {
+        let ex = EXT(cell);
+        if(rc==COL) {
+            return list.sizeRange(ex.column, ex.colSpan, spacing(grid));
+        } else {
+            return list.sizeRange(ex.row, ex.rowSpan, spacing(grid));
+        }
+    }
+};
+
+- (void)beginRendering:(WPLRenderingMode)mode {
+    if(self.needsLayoutChildren||mode!=WPLRenderingNORMAL) {
+        _listColumn.reset();
+        _listRow.reset();
+    }
+    [super beginRendering:mode];
+}
+
+- (void)endRenderingInRect:(CGRect)finalCellRect {
+    if(self.visibility!=WPLVisibilityCOLLAPSED) {
+        for(id<IWPLCell>cell in self.cells) {
+            let ex = EXT(cell);
+            MICSize size(_listColumn.sizeRange(ex.column, ex.colSpan, _cellSpacing.width),
+                         _listRow.sizeRange(ex.row, ex.rowSpan, _cellSpacing.height));
+            MICPoint point(_listColumn.offsetAt(ex.column, _cellSpacing.width),
+                           _listRow.offsetAt(ex.row, _cellSpacing.height));
+            [cell endRenderingInRect:MICRect(point,size)];
+        }
+    }
+    [super endRenderingInRect:finalCellRect];
+}
+
+- (CGFloat)calcCellWidth:(CGFloat)regulatingWidth {
+    if(!_listColumn.isFinished()) {
+        RCAccessor acc(COL,_listColumn);
+        [self calcCellSzie:acc regulatingSize:regulatingWidth];
+    }
+    let width = _listColumn.getFinalSize(self.cellSpacing.width);
+
+    // 最小・最大サイズでクリップして、マージンを追加
+    return WPLCMinMax(self.limitWidth).clip(width) + MICEdgeInsets::dw(self.margin);
+}
+
+- (CGFloat)calcCellHeight:(CGFloat)regulatingHeight {
+    if(!_listRow.isFinished()) {
+        RCAccessor acc(ROW,_listRow);
+        [self calcCellSzie:acc regulatingSize:regulatingHeight];
+    }
+    let height = _listRow.getFinalSize(self.cellSpacing.height);
+
+    // 最小・最大サイズでクリップして、マージンを追加
+    return WPLCMinMax(self.limitHeight).clip(height) + MICEdgeInsets::dh(self.margin);
+}
+
+- (CGFloat)recalcCellWidth:(CGFloat)regulatingWidth {
+    _listColumn.reset();
+    return [self calcCellWidth:regulatingWidth];
+}
+
+- (CGFloat)recalcCellHeight:(CGFloat)regulatingHeight {
+    _listRow.reset();
+    return [self calcCellHeight:regulatingHeight];
+}
+
+/**
+ * セルサイズ計算のエントリポイント（縦横共通）
+ */
+- (void) calcCellSzie:(RCAccessor&)acc regulatingSize:(CGFloat)regulatingSize {
+    acc.list.reset();
+    [self phase_0_getPanelSize:acc regulatingSize:regulatingSize];
+    do {
+        if([self phase_1_apply_def_cells:acc]) {
+            break;
+        }
+        if([self phase_2_calc_simple_cells:acc]) {
+            break;
+        }
+        if([self phase_3_calc_simple_spanned_cells:acc]) {
+            break;
+        }
+    } while(false);
+
+    if(acc.getFixedSize()>0) {
+        [self topDown_calc_stretch:acc];
+    } else {
+        [self bottomUp_calc_stretch:acc];
+    }
+    
+    [self phase_4_finalize_cells:acc];
+}
+
+/**
+ * Phase-0： トップダウン的にサイズが決定できるかどうか試す。
+ * グリッド全体のサイズがFIXED、または、STRCの場合は、中身を計算しなくても、グリッドサイズが確定する。
+ * @return true:  TopDown レイアウトへ
+ *         false: BottomUp レイアウトへ
+ */
+- (bool) phase_0_getPanelSize:(RCAccessor&)acc
+                  regulatingSize:(CGFloat) regulatingSize {   // マージンを含まない
+    CGFloat size = 0;
+    CGFloat requestedSize = acc.requestedSize(self);
+    if(requestedSize>0) {
+        // Any > FIXED
+        // Independent | BottomUp
+        size = requestedSize;
+    }
+    if(requestedSize<0 && regulatingSize>0) {
+        // STRC|FIXED > STRC
+        size = regulatingSize;
+    }
+    acc.setFixedSize(size);
+    return size>0;
+}
+
+/**
+ * Phase-1： グリッドセルサイズの計算において、グリッドセルのサイズがFIXED指定のものを最優先で確定
+ */
+- (bool) phase_1_apply_def_cells:(RCAccessor&) acc {
+    for(NSInteger i=0, ci=acc.list.count() ; i<ci ; i++) {
+        let defs = acc.list.getDefSize(i);
+        if(defs>0) {
+            acc.list.setSize(i, defs);
+            acc.list.completed(i, true);
+        }
+    }
+    return acc.list.isCompleted();
+}
+
+/**
+ * phase_1 で未確定の（＝rowDefs/colDefsでサイズが決定しなかった）グリッドセルについて、
+ * colSpan/rowSpan == 1 のセルのサイズを計算して更新する。
+ */
+- (bool) phase_2_calc_simple_cells:(RCAccessor&) acc {
+    for(id<IWPLCell>cell in self.cells) {
+        if(cell.visibility!=WPLVisibilityCOLLAPSED) {
+            let index = acc.index(cell);
+            let defSize = acc.list.getDefSize(index);
+            if(acc.span(cell)==1) {
+                if( defSize==0 /*AUTO*/ ||
+                   (defSize< 0 /*STRC*/ && acc.getFixedSize()==0 /*親AUTO*/ )) { // 全体のサイズがAUTOなのに、STRCなグリッドがある：矛盾する指定-->グリッドもAUTOとして処理
+                    let size = acc.calcSize(cell, 0);
+                    acc.list.updateSize(index, size);
+                    if(acc.requestedSize(cell)>=0) {
+                        // STRCなcellのautoとしての計算結果は参考値
+                        // phase-3 に影響しないよう、completedフラグは立てない。
+                        acc.list.completed(index, true);
+                    }
+                }
+            }
+        }
+    }
+    return acc.list.isCompleted();
+}
+
+/**
+ * spanを持つセルのサイズによって、未決定のグリッドセルのサイズが決定されるケースに対応
+ */
+- (bool) phase_3_calc_simple_spanned_cells:(RCAccessor&) acc {
+    bool modified = false;
+    do {
+        modified = false;
+        for(id<IWPLCell>cell in self.cells) {
+            let span = acc.span(cell);
+            if(span>1 && cell.visibility!=WPLVisibilityCOLLAPSED && acc.requestedSize(cell)>=0) {
+                let index = acc.index(cell);
+                let uncomp = acc.list.uncompletedCount(index,span);
+                if(uncomp==1) {
+                    // のこり１つ
+                    let ui = acc.list.firstUncompletedIndex(index, span);
+                    if(ui>=0 && (acc.getFixedSize()==0 || acc.list.getDefSize(ui)==0)) {
+                        let cs = acc.calcSize(cell, 0);
+                        let spacing = acc.spacing(self);
+                        let sum = acc.list.sizeRangeOnlyCompleted(index, span, spacing);
+                        acc.list.setSize(ui, MAX(0,cs-sum-spacing));
+                        acc.list.completed(ui, true);
+                        modified = true;
+                    }
+                }
+            }
+        }
+    } while(modified);
+    return acc.list.isCompleted();
+}
+
+/**
+ * 計算結果のグリッドサイズをすべてのセルに伝達し、必要に応じてサイズの再計算を要求する。
+ */
+- (void) phase_4_finalize_cells:(RCAccessor&) acc {
+    // セルに反映する前に、グリッド毎のmin/maxを反映する。
+    acc.list.clipAll();
+
+    for(id<IWPLCell>cell in self.cells) {
+        let size = acc.getGridSize(self, cell);
+        if(acc.requestedSize(cell)<0) {
+            acc.recalcSize(cell, size);
+        } else {
+            acc.calcSize(cell, size);
+        }
+    }
+}
+
+/**
+ * グリッド全体のサイズが固定できる場合のSTRCセルサイズ解決
+ */
+- (void) topDown_calc_stretch:(RCAccessor&) acc {
+    CGFloat fixed = 0;
+    CGFloat stretch = 0;
+    NSInteger stretchCount = 0;
+    CGFloat spacing = acc.spacing(self);
+    // STRCグリッドセルの情報を集める
+    for(NSInteger i=0, ci=acc.list.count() ; i<ci ; i++) {
+        let defs = acc.list.getDefSize(i);
+        if(defs<0) {
+            stretch += ABS(defs);
+            stretchCount++;
+        } else {
+            fixed += acc.list.getSize(i);
+        }
+    }
+    if(stretchCount>0 && stretch>0) {
+        CGFloat remain = acc.getFixedSize() - fixed - spacing*(acc.list.count()-1);
+        for(NSInteger i=0, ci=acc.list.count() ; i<ci ; i++) {
+            let defs = acc.list.getDefSize(i);
+            if(defs<0) {
+                acc.list.setSize(i, MAX(0, remain*ABS(defs)/stretch));
+                acc.list.completed(i, true);
+            }
+        }
+    }
+}
+
+- (void) bottomUp_calc_stretch:(RCAccessor&) acc {
+    let dic = [self bottomUp_1_groupSpannedCell:acc];
+    if(nil!=dic) {
+        for(id key in dic.allKeys) {
+            [self bottomUp_2_tryResolveSize:dic[key] acc:acc];
+        }
+    }
+}
+
+
+/**
+ *
+ */
+- (NSMutableDictionary<NSString*,id<IWPLCell>>*) bottomUp_1_groupSpannedCell:(RCAccessor&) acc {
+    NSMutableDictionary<NSString*,id<IWPLCell>>* dic = nil;
+    for(id<IWPLCell> cell in self.cells) {
+        let span = acc.span(cell);
+        if(span>1 && acc.requestedSize(cell)>=0) {
+            let key = acc.keyForSpan(cell);
+            let size = acc.calcSize(cell, 0);
+            if(dic==nil) {
+                dic = [NSMutableDictionary dictionaryWithCapacity:acc.list.count()];
+            }
+            let org = [dic objectForKey:key];
+            if(nil==org || acc.extSize(org)<size) {
+                acc.setExtSize(cell, size);
+                [dic setObject:cell forKey:key];
+            }
+        }
+    }
+    return dic;
+}
+
+- (void) bottomUp_2_tryResolveSize:(id<IWPLCell>)cell acc:(RCAccessor&) acc {
+    let index = acc.index(cell);
+    let span = acc.span(cell);
+    let spacing = acc.sizeFrom(self.cellSpacing);
+    var size = acc.extSize(cell) + spacing;      // すべてのセルサイズにspacingが含まれている前提で計算するので、最初に右側のspacingを足しておく
+    CGFloat totalStretch = 0;
+    NSInteger stretchCount = 0;
+
+    for(NSInteger i=0, ci=span ; i<ci ; i++) {
+        NSInteger pos = index+i;
+        CGFloat defSize = acc.list.getDefSize(pos);
+        if(defSize<0) {
+            // STRC
+            totalStretch += ABS(defSize);
+            stretchCount++;
+        } else {
+            CGFloat v = acc.list.getSize(pos);
+            if(v>0) {
+                size -= (v+spacing);
+            }
+        }
+    }
+
+    // 得られた計算結果をセルサイズテーブルに反映
+    CGFloat totalSize = size - spacing * (stretchCount-1);
+    [self bottomUp_2_2_completeStretched:acc index:index span:span totalSize:totalSize totalStretch:totalStretch];
+}
+
+/**
+ * indexからspanの範囲の未確定なセルに、totalSizeとtotalStretchから按分されるサイズを設定する。
+ */
+- (void) bottomUp_2_2_completeStretched:(RCAccessor&)acc index:(NSInteger)index span:(NSInteger)span totalSize:(CGFloat) size totalStretch:(CGFloat) totalStretch {
+    if(totalStretch<=0) {
+        // stretchなセルはなかった
+        return;
+    }
+    
+    // stretchの比率に合わせて、サイズを決定
+    for(NSInteger i=0, ci=span ; i<ci ; i++) {
+        NSInteger pos = index+i;
+        CGFloat defSize = acc.list.getDefSize(pos);
+        if(defSize<0) {
+            if(size>0) {
+                acc.list.setSize(pos, ABS(defSize)*size/totalStretch);
+            } else {
+                acc.list.setSize(pos, 0);
+            }
+            acc.list.completed(pos, true);
+        }
+    }
+}
 
 @end

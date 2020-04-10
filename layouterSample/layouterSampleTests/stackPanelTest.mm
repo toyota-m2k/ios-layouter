@@ -199,4 +199,53 @@
     XCTAssertEqual(cell.view.frame.origin.y, 160);
 }
 
+
+- (void) testMinMax {
+    let rootView = [[WPLCellHostingView alloc] init];
+    let container = [WPLStackPanel stackPanelWithName:@"root"
+                                               params:WPLStackPanelParams().orientation(WPLOrientationVERTICAL)
+                     .margin(MICEdgeInsets(20,10)).minHeight(400).maxWidth(200)];
+    rootView.containerCell = container;
+
+    [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize(100,20)] name:@"0"
+                                         params:WPLCellParams().margin(MICEdgeInsets(10,20))]];
+    [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize(200,40)] name:@"1"
+                                         params:WPLCellParams().margin(MICEdgeInsets(10,20)).minWidth(250).minHeight(140)]];
+    [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize(150,30)] name:@"2"
+                                         params:WPLCellParams().horzAlign(A_CENTER)]];
+
+    rootView.frame = MICRect(200,100);
+    [rootView render];
+    
+    MICRect rc;
+    
+    rc = container.view.frame;
+    XCTAssertEqual(rc.width(), 200);
+    XCTAssertEqual(rc.height(),400);
+    XCTAssertEqual(rc.top(), 10);
+    XCTAssertEqual(rc.left(), 20);
+    
+    id<IWPLCell> cell;
+    cell = [container findByName:@"0"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.left(), 10);
+    XCTAssertEqual(rc.top(), 20);
+    XCTAssertEqual(rc.width(), 100);
+    XCTAssertEqual(rc.height(), 20);
+
+    cell = [container findByName:@"1"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.left(), 10);
+    XCTAssertEqual(rc.top(), 80);
+    XCTAssertEqual(rc.width(), 250);
+    XCTAssertEqual(rc.height(), 140);
+
+    cell = [container findByName:@"2"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.left(), (200-150)/2+20);
+    XCTAssertEqual(rc.top(), 80+140+20);
+    XCTAssertEqual(rc.width(), 150);
+    XCTAssertEqual(rc.height(), 30);
+}
+
 @end

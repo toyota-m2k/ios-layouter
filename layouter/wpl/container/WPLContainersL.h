@@ -10,10 +10,25 @@
 //
 #import "WPLCellL.h"
 #import "WPLContainerDef.h"
+#import "WPLRangedSize.h"
 
 #define AUTO        @(WPL_CELL_SIZING_AUTO)
 #define STRC        @(WPL_CELL_SIZING_STRETCH)
 #define STRCx(x)    @(WPL_CELL_SIZING_STRETCH*(x))
 
+#define AUTO_MIN(min)           [WPLRangedSize rangedAutoMin:min max:CGFLOAT_MAX];
+#define AUTO_MAX(ax)            [WPLRangedSize rangedAutoMin:CGFLOAT_MIN max:max];
+#define AUTO_MIN_MAX(min,max)   [WPLRangedSize rangedAutoMin:min max:max];
+
+#define STRC_MIN(min)           [WPLRangedSize rangedStretch:1 min:min max:CGFLOAT_MAX];
+#define STRC_MAX(max)           [WPLRangedSize rangedStretch:1 min:CGFLOAT_MIN max:max];
+#define STRC_MIN_MAX(min,max)   [WPLRangedSize rangedStretch:1 min:min max:max];
+
+#define STRCx_MIN(s,min)           [WPLRangedSize rangedStretch:s min:min max:CGFLOAT_MAX];
+#define STRCx_MAX(s,max)           [WPLRangedSize rangedStretch:s min:CGFLOAT_MIN max:max];
+#define STRCx_MIN_MAX(s,min,max)   [WPLRangedSize rangedStretch:s min:min max:max];
+
 #define VAUTO       WPL_CELL_SIZING_AUTO
 #define VSTRC       WPL_CELL_SIZING_STRETCH
+
+

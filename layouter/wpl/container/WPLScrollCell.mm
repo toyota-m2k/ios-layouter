@@ -23,6 +23,8 @@
 @implementation WPLScrollCell {
     MICSize _cachedSize;
     MICSize _cachedContentSize;
+    bool _cacheVert;
+    bool _cacheHorz;
 }
 
 #pragma mark - 構築・初期化
@@ -42,14 +44,14 @@
     if(![view isKindOfClass:UIScrollView.class]) {
         NSAssert1(false, @"internal view of ScrollCell must be an instance of UIScrollView", name);
     }
-    if(requestViewSize.height == VAUTO && (scrollOrientation&WPLScrollOrientationVERT)!=0) {
-        NSLog(@"WARNING: AUTO-sizing to height of vertical scrollable ScrollCell (%@) is not allowd, assume it as STRETCH.", name);
-        requestViewSize.height = VSTRC;
-    }
-    if(requestViewSize.width == VAUTO && (scrollOrientation&WPLScrollOrientationHORZ)!=0) {
-        NSLog(@"WARNING: AUTO-sizing to width of horizontal scrollable ScrollCell (%@) is not allowd, assume it as STRETCH.", name);
-        requestViewSize.width = VSTRC;
-    }
+//    if(requestViewSize.height == VAUTO && (scrollOrientation&WPLScrollOrientationVERT)!=0) {
+//        NSLog(@"WARNING: AUTO-sizing to height of vertical scrollable ScrollCell (%@) is not allowd, assume it as STRETCH.", name);
+//        requestViewSize.height = VSTRC;
+//    }
+//    if(requestViewSize.width == VAUTO && (scrollOrientation&WPLScrollOrientationHORZ)!=0) {
+//        NSLog(@"WARNING: AUTO-sizing to width of horizontal scrollable ScrollCell (%@) is not allowd, assume it as STRETCH.", name);
+//        requestViewSize.width = VSTRC;
+//    }
     
     self = [super initWithView:view
                           name:name
@@ -62,6 +64,7 @@
                     visibility:visibility];
     if(nil!=self) {
         _scrollOrientation = scrollOrientation;
+        _cacheHorz = _cacheVert = false;
     }
     return self;
 }
@@ -226,6 +229,118 @@
 - (CGSize)layout {
     NSAssert(false, @"really?");
     return CGSizeZero;
+}
+
+@end
+
+@implementation WPLScrollCell (WHRendering)
+
+class SCAccessor {
+private:
+    bool horz;
+public:
+    CGFloat cellSize;
+    CGFloat contentSize;
+    
+    enum Orientation {
+        HORZ, VERT,
+    };
+    SCAccessor(Orientation o)
+    : horz(o==HORZ)
+    , cellSize(0)
+    , contentSize(0){}
+
+    CGFloat requestedSize(id<IWPLCell>cell) {
+        return horz ? cell.requestViewSize.width : cell.requestViewSize.height;
+    }
+    CGFloat isScrollable(WPLScrollCell* cell) {
+        let mask = horz ?WPLScrollOrientationHORZ : WPLScrollOrientationVERT;
+        return (cell.scrollOrientation & mask) !=0;
+    }
+    CGFloat calcSize(id<IWPLCell> cell, CGFloat regulatingSize) {
+        return horz ? [cell calcCellWidth:regulatingSize] : [cell calcCellHeight:regulatingSize];
+    }
+    
+};
+
+- (void)beginRendering:(WPLRenderingMode)mode {
+    if(self.needsLayoutChildren || mode!=WPLRenderingNORMAL) {
+        _cacheHorz = false;
+        _cacheVert = false;
+    }
+    [super beginRendering:mode];
+}
+
+- (CGFloat)calcCellWidth:(CGFloat)regulatingWidth {
+    if(!_cacheHorz) {
+        SCAccessor acc(SCAccessor::HORZ);
+        [self calcCellSize:regulatingWidth-MICEdgeInsets::dw(self.margin) acc:acc];
+        _cachedSize.width = acc.cellSize;
+        _cachedContentSize.width = acc.contentSize;
+        _cacheHorz = true;
+    }
+    // 最小・最大サイズでクリップして、マージンを追加
+    return WPLCMinMax(self.limitWidth).clip(_cachedSize.width) + MICEdgeInsets::dw(self.margin);
+}
+
+- (CGFloat)calcCellHeight:(CGFloat)regulatingHeight {
+    if(!_cacheVert) {
+        SCAccessor acc(SCAccessor::VERT);
+        [self calcCellSize:regulatingHeight-MICEdgeInsets::dh(self.margin) acc:acc];
+        _cachedSize.height = acc.cellSize;
+        _cachedContentSize.height = acc.contentSize;
+        _cacheVert = true;
+    }
+    // 最小・最大サイズでクリップして、マージンを追加
+    return WPLCMinMax(self.limitHeight).clip(_cachedSize.height) + MICEdgeInsets::dh(self.margin);
+}
+
+- (CGFloat)recalcCellWidth:(CGFloat)regulatingWidth {
+    _cacheHorz = false;
+    return [self calcCellWidth:regulatingWidth];
+}
+
+- (CGFloat)recalcCellHeight:(CGFloat)regulatingHeight {
+    _cacheVert = false;
+    return [self calcCellHeight:regulatingHeight];
+}
+
+/**
+ * ビューサイズ（マージンを含まない）を計算
+ */
+- (void)calcCellSize:(CGFloat) regulatingSize    // マージンを含まない
+                 acc:(SCAccessor&) acc {
+    acc.cellSize = 0;
+    let requestedSize = acc.requestedSize(self);
+    if(requestedSize>0) {
+        // Any > FIXED
+        // Independent | BottomUp
+        acc.cellSize = requestedSize;
+    }
+    if(requestedSize<0 && regulatingSize>0) {
+        // STRC|FIXED > STRC
+        acc.cellSize = regulatingSize;
+    }
+
+    // Content Size
+    acc.contentSize = acc.calcSize(self.contentCell, acc.isScrollable(self) ? 0/*AUTO*/ : acc.cellSize);
+    if(acc.cellSize==0 /*auto*/) {
+        acc.cellSize = acc.contentSize;
+    } else {
+        if(acc.contentSize<acc.cellSize || !acc.isScrollable(self)) {
+            acc.contentSize = acc.cellSize;
+        }
+    }
+}
+
+- (void)endRenderingInRect:(CGRect)finalCellRect {
+    [self calcCellWidth:finalCellRect.size.width];
+    [self calcCellHeight:finalCellRect.size.height];
+    
+    MICRect contentRect(_cachedContentSize);
+    [self.contentCell endRenderingInRect:contentRect];
+    [(UIScrollView*)self.view setContentSize:_cachedContentSize];
+    [super endRenderingInRect:finalCellRect];
 }
 
 @end

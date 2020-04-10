@@ -10,6 +10,7 @@
 #import "MICVar.h"
 #import "MICUiRectUtil.h"
 #import "MICUiDsCustomButton.h"
+#import "WPLContainersL.h"
 
 @implementation WPLCell {
     bool _needsLayout;
@@ -340,7 +341,7 @@
 }
 
 - (CGSize) limitSize:(CGSize) size {
-    return MICSize(_limitWidth.trim(size.width), _limitHeight.trim(size.height));
+    return MICSize(_limitWidth.clip(size.width), _limitHeight.clip(size.height));
 }
 
 
@@ -447,3 +448,165 @@
 
 @end
 
+@implementation WPLCell (WHRendering)
+
+/**
+ * レンダリング開始を伝える。
+ * beginRenderingとendRenderingInRectは必ずペアで呼ばれるが、calcCellWidth/calcCellHeight は
+ * 必ずしも呼ばれない。従って、calcCell* の中で状態を保存し、endRenderingで利用するようなコードは不可。
+ */
+- (void)beginRendering:(WPLRenderingMode)mode {
+    // nothing to do.
+    // override in sub-classes if needs.
+}
+
+/**
+ * ビューサイズ（マージンを含まない）を計算
+ */
++ (CGFloat)calcViewSizeWithRegulatingSize:(CGFloat) regulatingSize    // マージンを含まない
+                            requestedSize:(CGFloat) requestedSize     // マージンを含まない
+                                 viewSize:(CGFloat) viewSize {
+    if(requestedSize>0) {
+        // Any > FIXED
+        // Independent | BottomUp
+        return requestedSize;
+    }
+    if(requestedSize<0 && regulatingSize>0) {
+        // STRC|FIXED > STRC
+        return regulatingSize;
+    }
+    // AUTO
+    return viewSize;
+
+// 上の分岐を詳しく書くと↓
+//
+//    CGFloat result = 0;
+//    if(regulatingSize>0) {
+//        // 親が　STRC|FIXED
+//        if(requestedSize<0) {
+//            // 子がSTRC ... TopDown
+//            result = regulatingSize;
+//        } else if(requestedSize==0) {
+//            // 子がAUTO ... Independent （Viewサイズをそのまま使用）
+//            result = viewSize;
+//        } else /*requestSize>0*/ {
+//            // 子がFIXED ... Independent
+//            result = requestedSize;
+//        }
+//    } else {
+//        // 親がAUTO
+//        if(requestedSize<0) {
+//            // 子がSTRC ... Complex --> AUTOとして扱う
+//            result = viewSize;
+//        } else if(requestedSize==0) {
+//            // 子がAUTO ... BottomUp （Viewサイズをそのまま使用）
+//            result = viewSize;
+//        } else /*requestSize>0*/ {
+//            // 子がFIXED ... BottomUp;
+//            result = requestedSize;
+//        }
+//    }
+//    return result;
+}
+
+/**
+ * セル幅（マージンを含む）を計算
+ * @param regulatingWidth   親からのサイズ指定（マージンを含む）
+ */
+- (CGFloat)calcCellWidth:(CGFloat)regulatingWidth {
+    CGFloat margin = MICEdgeInsets(self.margin).dw();
+    CGFloat viewWidth = [self.class calcViewSizeWithRegulatingSize:MAX(0,regulatingWidth-margin)
+                                                     requestedSize:self.requestViewSize.width
+                                                          viewSize:self.view.frame.size.width];
+    return WPLCMinMax(self.limitWidth).clip(viewWidth) + margin;
+}
+
+/**
+ * セル高さ（マージンを含む）を計算
+ * @param regulatingHeight   親からのサイズ指定（マージンを含む）
+ */
+- (CGFloat)calcCellHeight:(CGFloat)regulatingHeight {
+    CGFloat margin = MICEdgeInsets(self.margin).dh();
+    CGFloat viewHeight = [self.class calcViewSizeWithRegulatingSize:MAX(0,regulatingHeight-margin)
+                                                      requestedSize:self.requestViewSize.height
+                                                           viewSize:self.view.frame.size.height];
+    return WPLCMinMax(self.limitHeight).clip(viewHeight) + margin;
+}
+
+- (CGFloat)recalcCellWidth:(CGFloat)regulatingWidth {
+    return [self calcCellWidth:regulatingWidth];
+}
+- (CGFloat)recalcCellHeight:(CGFloat)regulatingHeight {
+    return [self calcCellHeight:regulatingHeight];
+}
+
+/**
+ * セルをalignmentに従って、parentRect内に配置したときのセル領域を計算
+ * @param cellSize      マージンをを含まないセルのサイズ
+ * @param parentRect    セルを配置可能なマージンを含まない領域
+ * @return マージンを含まないセル領域
+ */
+- (CGRect) alignCellSize:(const MICSize&)cellSize inRect:(const MICRect&) parentRect {
+    MICRect cellRect(cellSize);
+    // STRC指定の反映
+    // STRCは、alignmentではなく、requestedSizeに持たせたので、alignmentの適用前に反映しておく。
+    let req = self.requestViewSize;
+    if(req.width<0) {
+        cellRect.setWidth(WPLCMinMax::clip(self.limitWidth, parentRect.width()));
+    }
+    if(req.height<0) {
+        cellRect.setHeight(WPLCMinMax::clip(self.limitHeight, parentRect.height()));
+    }
+    switch(self.hAlignment) {
+        default:
+        case WPLCellAlignmentSTART:
+            cellRect.moveLeft(parentRect.left());
+            break;
+        case WPLCellAlignmentCENTER:
+            cellRect.moveToHCenterOfOuterRect(parentRect);
+            break;
+        case WPLCellAlignmentEND:
+            cellRect.moveRight(parentRect.right());
+            break;
+    }
+    switch(self.vAlignment) {
+        default:
+        case WPLCellAlignmentSTART:
+            cellRect.moveTop(parentRect.top());
+            break;
+        case WPLCellAlignmentCENTER:
+            cellRect.moveToVCenterOfOuterRect(parentRect);
+            break;
+        case WPLCellAlignmentEND:
+            cellRect.moveBottom(parentRect.bottom());
+            break;
+    }
+    return cellRect;
+}
+
+/**
+ * セルの位置、サイズを確定し、ビューを再配置する。
+ * @param   finalCellRect  セルを配置可能な矩形領域（親ビュー座標系）
+ */
+- (void) endRenderingInRect:(CGRect) finalCellRect {
+    self.needsLayout = false;
+    if(self.visibility==WPLVisibilityCOLLAPSED) {
+        return;
+    }
+    // calcCellWidth/Heightを呼び出して、マージンを含むセルサイズを取得
+    MICSize outerCellSize ([self calcCellWidth:0],
+                           [self calcCellHeight:0]);
+
+    // 上記のサイズのセルを alignment の指定に従って、finalCellRect 内に配置する。
+    MICRect viewRect([self alignCellSize:outerCellSize-self.margin inRect:finalCellRect-self.margin]);
+    if(viewRect!=self.view.frame) {
+        CGFloat animDuration = self.animationDuration;
+        if(animDuration>0) {
+            [UIView animateWithDuration:animDuration delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{self.view.frame=viewRect;} completion:nil];
+        } else {
+            self.view.frame = viewRect;
+        }
+    }
+}
+
+@end

@@ -52,7 +52,13 @@ inline UIColor* nextColor(NSArray<UIColor*>* colors, int& index) {
     [super viewDidLoad];
     self.view.backgroundColor = UIColor.whiteColor;
     
-    let gridView = [WPLGridView gridViewWithName:@"rootGrid" params:WPLGridParams().requestViewSize(VSTRC,VSTRC).rowDefs(@[AUTO,STRC,AUTO]).colDefs(@[STRC,STRC,STRC]).margin(MICEdgeInsets(10)).cellSpacing(MICSize(20,0))];
+    let gridView = [WPLGridView gridViewWithName:@"rootGrid"
+                                          params:WPLGridParams()
+                                                .requestViewSize(VSTRC,VSTRC)
+                                                .rowDefs(@[AUTO,STRC,AUTO])
+                                                .colDefs(@[STRC,STRC,STRC])
+                                                .margin(MICEdgeInsets(10))
+                                                .cellSpacing(MICSize(20,0))];
 
     let header = [[UILabel alloc] init];
     header.text = @"Scroll Cell Test";
@@ -73,11 +79,11 @@ inline UIColor* nextColor(NSArray<UIColor*>* colors, int& index) {
     let backCell = [WPLCommandCell newCellWithView:btn name:@"backButton" params:WPLCellParams().align(A_RIGHT, A_CENTER)];
     [gridView.container addCell:backCell row:0 column:2];
     
-    let scrollerV = [WPLScrollCell scrollCellWithName:@"ScrollerVert" params:WPLScrollCellParams(WPLScrollOrientationVERT).align(A_CENTER,A_CENTER)];
+    let scrollerV = [WPLScrollCell scrollCellWithName:@"ScrollerVert" params:WPLScrollCellParams(WPLScrollOrientationVERT).align(A_CENTER,A_CENTER).requestViewSize(VSTRC, VSTRC)];
     [self createScrollerContents:scrollerV];
-    let scrollerH = [WPLScrollCell scrollCellWithName:@"ScrollerHorz" params:WPLScrollCellParams(WPLScrollOrientationHORZ).align(A_CENTER,A_CENTER)];
+    let scrollerH = [WPLScrollCell scrollCellWithName:@"ScrollerHorz" params:WPLScrollCellParams(WPLScrollOrientationHORZ).align(A_CENTER,A_CENTER).requestViewSize(VSTRC, VSTRC)];
     [self createScrollerContents:scrollerH];
-    let scrollerB = [WPLScrollCell scrollCellWithName:@"ScrollerBoth" params:WPLScrollCellParams(WPLScrollOrientationBOTH).align(A_CENTER,A_CENTER)];
+    let scrollerB = [WPLScrollCell scrollCellWithName:@"ScrollerBoth" params:WPLScrollCellParams(WPLScrollOrientationBOTH).align(A_CENTER,A_CENTER).requestViewSize(VSTRC, VSTRC)];
     [self createScrollerContents:scrollerB];
 
     [gridView.container addCell:scrollerV row:1 column:0];

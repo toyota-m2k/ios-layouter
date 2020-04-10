@@ -117,11 +117,16 @@ public:
         _limitWidth = v;
         return *this;
     }
-    WPLCellParams& maxWidth(const CGFloat& v) {
+    WPLCellParams& limitWidth(CGFloat min, CGFloat max) {
+        _limitWidth.min = min;
+        _limitWidth.max = max;
+        return *this;
+    }
+    WPLCellParams& maxWidth(CGFloat v) {
         _limitWidth.max = v;
         return *this;
     }
-    WPLCellParams& minWidth(const CGFloat& v) {
+    WPLCellParams& minWidth(CGFloat v) {
         _limitWidth.min = v;
         return *this;
     }
@@ -129,11 +134,16 @@ public:
         _limitHeight = v;
         return *this;
     }
-    WPLCellParams& maxHeight(const CGFloat& v) {
+    WPLCellParams& limitHeight(CGFloat min, CGFloat max) {
+        _limitHeight.min = min;
+        _limitHeight.max = max;
+        return *this;
+    }
+    WPLCellParams& maxHeight(CGFloat v) {
         _limitHeight.max = v;
         return *this;
     }
-    WPLCellParams& minHeight(const CGFloat& v) {
+    WPLCellParams& minHeight(CGFloat v) {
         _limitHeight.min = v;
         return *this;
     }
@@ -192,6 +202,10 @@ public:
 - (CGRect) rectWithoutMargin:(CGRect)rect;
 
 - (CGSize) limitSize:(CGSize) size;
+
+@end
+
+@interface WPLCell (WHRendering) <IWPLCellWH>
 
 @end
 

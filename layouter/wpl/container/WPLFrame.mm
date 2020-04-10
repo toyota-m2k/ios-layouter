@@ -21,7 +21,19 @@
 
 @implementation WPLFrame {
     MICSize _cachedSize;
+    bool _cacheHorz;
+    bool _cacheVert;
 }
+
+- (instancetype)initWithView:(UIView *)view name:(NSString *)name margin:(UIEdgeInsets)margin requestViewSize:(CGSize)requestViewSize limitWidth:(WPLMinMax)limitWidth limitHeight:(WPLMinMax)limitHeight hAlignment:(WPLCellAlignment)hAlignment vAlignment:(WPLCellAlignment)vAlignment visibility:(WPLVisibility)visibility {
+    self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize limitWidth:limitWidth limitHeight:limitHeight hAlignment:hAlignment vAlignment:vAlignment visibility:visibility];
+    if(nil!=self) {
+        _cacheVert = false;
+        _cacheHorz = false;
+    }
+    return self;
+}
+
 
 - (instancetype)initWithView:(UIView *)view name:(NSString *)name params:(WPLCellParams)params {
     return [self initWithView:view
@@ -233,5 +245,149 @@ static inline MICSize positiveSize(const CGSize& size) {
     }
     [super layoutCompleted:finalCellRect];
 }
+
+@end
+
+@implementation WPLFrame (WHRendering)
+
+- (void)beginRendering:(WPLRenderingMode)mode {
+    if(self.needsLayoutChildren || mode!=WPLRenderingNORMAL) {
+        _cacheHorz = false;
+        _cacheVert = false;
+    }
+    [super beginRendering:mode];
+}
+
+//typedef CGFloat (^GetCellSizeProc)(id<IWPLCell> cell, CGFloat regulatingSize);
+
+class FRAccessor {
+public:
+    enum Orientation { HORZ, VERT };
+    Orientation orientation;
+    
+    FRAccessor(Orientation orientation_) {
+        orientation = orientation_;
+    }
+    
+    CGFloat calcSize(id<IWPLCell>cell, CGFloat regulatingSize) {
+        if(orientation==HORZ) {
+            return [cell calcCellWidth:regulatingSize];
+        } else {
+            return [cell calcCellHeight:regulatingSize];
+        }
+    }
+    
+    CGFloat requestedSize(id<IWPLCell> cell) {
+        if(orientation==HORZ) {
+            return cell.requestViewSize.width;
+        } else {
+            return cell.requestViewSize.height;
+        }
+    }
+    
+};
+
+/**
+ * ビューサイズ（マージンを含まない）を計算
+ */
+- (CGFloat)calcCellSize:(CGFloat) regulatingSize    // マージンを含まない
+                    acc:(FRAccessor&)acc {
+    let requestedSize = acc.requestedSize(self);
+    CGFloat fixedSize = 0;
+    if(requestedSize>0) {
+        // Any > FIXED
+        // Independent | BottomUp
+        fixedSize = requestedSize;
+    }
+    if(requestedSize<0 && regulatingSize>0) {
+        // STRC|FIXED > STRC
+        fixedSize =  regulatingSize;
+    }
+
+    if(fixedSize>0) {
+        // FIXED|STRC
+        for(id<IWPLCell>cell in self.cells) {
+            acc.calcSize(cell, fixedSize);
+        }
+        return fixedSize;
+    } else {
+        // AUTO sizing
+        CGFloat size = 0;
+        int stretchCount = 0;
+        for(id<IWPLCell>cell in self.cells) {
+            if(acc.requestedSize(cell)<0) {
+                // STRC cell
+                if(fixedSize>0) {
+                    // FIXED|STRC > STRC
+                    acc.calcSize(cell, fixedSize);
+                } else {
+                    // AUTO > STRC ... 他のサイズが決まるまで保留
+                    stretchCount++;
+                }
+            } else {
+                // ANY > FIXED|AUTO
+                size = MAX(size, acc.calcSize(cell,regulatingSize));
+            }
+        }
+        if(stretchCount>0) {
+            // AUTO > STRC
+            // 1) size >0: STRCでないセルによってサイズが確定できた --> STRCなセルはそのサイズに合わせる
+            // 2) size==0: すべてがSTRC --> AUTOとしてレイアウト（sizeを更新）
+            CGFloat size2 = 0;  // 2)のケースのsize更新用
+            for(id<IWPLCell>cell in self.cells) {
+                if(acc.requestedSize(cell)<0) {
+                    size2 = MAX(size2, acc.calcSize(cell, size));
+                }
+            }
+            if(size==0) {
+                size = size2;
+            }
+        }
+        return size;
+    }
+}
+
+
+- (CGFloat) calcCellWidth:(CGFloat)regulatingWidth {
+    if(!_cacheHorz) {
+        FRAccessor acc(FRAccessor::HORZ);
+        _cachedSize.width = [self calcCellSize:regulatingWidth - MICEdgeInsets::dw(self.margin) acc:acc];
+        _cacheHorz = true;
+    }
+    // 最小・最大サイズでクリップして、マージンを追加
+    return WPLCMinMax(self.limitWidth).clip(_cachedSize.width) + MICEdgeInsets::dw(self.margin);
+}
+
+- (CGFloat) calcCellHeight:(CGFloat)regulatingHeight {
+    if(!_cacheVert) {
+        FRAccessor acc(FRAccessor::VERT);
+        _cachedSize.height = [self calcCellSize:regulatingHeight - MICEdgeInsets::dh(self.margin) acc:acc];
+        _cacheVert = true;
+    }
+    // 最小・最大サイズでクリップして、マージンを追加
+    return WPLCMinMax(self.limitHeight).clip(_cachedSize.height) + MICEdgeInsets::dh(self.margin);
+}
+
+- (CGFloat)recalcCellWidth:(CGFloat)regulatingWidth {
+    _cacheHorz = false;
+    return [self calcCellWidth:regulatingWidth];
+}
+
+- (CGFloat)recalcCellHeight:(CGFloat)regulatingHeight {
+    _cacheVert = false;
+    return [self calcCellHeight:regulatingHeight];
+}
+
+
+- (void)endRenderingInRect:(CGRect)finalCellRect {
+    if(self.visibility!=WPLVisibilityCOLLAPSED) {
+        MICRect panelRect([self calcCellWidth:0]-MICEdgeInsets::dw(self.margin), [self calcCellHeight:0]-MICEdgeInsets::dh(self.margin));
+        for(id<IWPLCell> cell in self.cells) {
+            [cell endRenderingInRect:panelRect];
+        }
+    }
+    [super endRenderingInRect:finalCellRect];
+}
+
 
 @end

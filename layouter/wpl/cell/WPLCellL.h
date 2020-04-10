@@ -22,3 +22,4 @@
 
 #define S_AUTO      WPL_CELL_SIZING_AUTO
 #define S_STRC      WPL_CELL_SIZING_STRETCH
+

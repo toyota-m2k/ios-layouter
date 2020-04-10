@@ -14,6 +14,7 @@
 #import "WPLSwitchCell.h"
 #import "WPLBinder.h"
 #import "WPLContainersL.h"
+#import "WPLCommandCell.h"
 
 @interface WPLGridSampleViewController ()
 
@@ -45,6 +46,73 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
 #define PROP_GRID_C_VISIBLE @"GridC"
 #define PROP_GRID_D_VISIBLE @"GridD"
 
+- (void)viewDidLoad_dbg {
+    [super viewDidLoad];
+
+    self.view.backgroundColor = UIColor.whiteColor;
+    
+    let gs = [WPLGridScrollView gridViewWithName:@"rootScroller"
+                                          params:WPLGridParams()
+                                              .requestViewSize(VSTRC,VAUTO)
+                                              .align(WPLCellAlignmentCENTER)
+                                              .cellSpacing(10,10)
+                                              .margin(MICEdgeInsets(20))
+                                              .colDefs(@[AUTO,STRC,AUTO])
+                                              .rowDefs(@[AUTO,AUTO,AUTO, AUTO,AUTO,AUTO, AUTO,AUTO,AUTO, AUTO])];
+
+    [self.view addSubview:gs];
+    
+    MICAutoLayoutBuilder(self.view)
+    .fitToSafeArea(gs, MICUiPosExALL)
+    .activate();
+    
+    let grid = gs.container;
+    WPLBinderBuilder bb(gs.binder);
+
+    let back = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [back setTitle:@"Back" forState:UIControlStateNormal];
+    [back addTarget:self action:@selector(goBack:) forControlEvents:UIControlEventTouchUpInside];
+    [back sizeToFit];
+    let bcell = [WPLCell newCellWithView:back name:@"Back" params:WPLCellParams().horzAlign(WPLCellAlignmentEND)];
+    [grid addCell:bcell row:0 column:2];
+    
+    
+    id<IWPLCell> cell;
+    UILabel* label = [UILabel new];
+    label.text = @"Grid-A";
+    [label sizeToFit];
+    [grid addCell:[WPLCell newCellWithView:label name:@"Grid-A-Label" params:WPLCellParams().horzAlign(WPLCellAlignmentEND)] row:1 column:0];
+
+    let sw1 = [UISwitch new];
+    [sw1 sizeToFit];
+    cell = [WPLSwitchCell newCellWithView:sw1 name:@"A-switch" params:WPLCellParams().horzAlign(WPLCellAlignmentSTART)];
+    bb.property(PROP_GRID_A_VISIBLE,true)
+      .bind(PROP_GRID_A_VISIBLE, (WPLSwitchCell*)cell, WPLBindingModeVIEW_TO_SOURCE_WITH_INIT);
+    [grid addCell:cell row:1 column:1];
+    
+    let g1 = [WPLGrid gridWithName:@"g1" params:WPLGridParams()
+              .requestViewSize(VSTRC,VAUTO)
+              .rowDefs(@[AUTO,AUTO,AUTO])
+              .colDefs(@[STRC,STRCx(2),STRCx(3),STRCx(4)])
+              ];
+
+    for(NSInteger i=0;i<3;i++) {
+        for(NSInteger j=0;j<4;j++) {
+            label = [UILabel new];
+            label.backgroundColor = colors[(i*3+j)%colorCount];
+            label.textColor = UIColor.whiteColor;
+            label.textAlignment = NSTextAlignmentCenter;
+            label.text = [NSString stringWithFormat:@"R%ld-C%ld", (long)i+1, (long)j+1];
+            [label sizeToFit];
+            label.frame = MICRect(label.frame).inflate(0,0,30,30);
+            [g1 addCell:[WPLCell newCellWithView:label name:@"" params:WPLCellParams().requestViewSize(VSTRC,VAUTO)] row:i column:j];
+        }
+    }
+    [grid addCell:g1 row:2 column:1];
+    bb.bind(PROP_GRID_A_VISIBLE, g1, WPLBoolStateActionTypeVISIBLE_COLLAPSED, false);
+
+
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -53,7 +121,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     
     let gs = [WPLGridScrollView gridViewWithName:@"rootScroller"
                                           params:WPLGridParams()
-                                              .requestViewSize(-1,0)
+                                              .requestViewSize(VSTRC,VAUTO)
                                               // 0: auto
                                               // -1:stretch にすると、ビューのサイズに合わせてコンテントが伸縮してしまうので、スクロールしなくなるので注意）
                                               .align(WPLCellAlignmentCENTER)
@@ -169,7 +237,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     // Inner Grid-2
     row++;
     let g2 = [WPLGrid gridWithName:@"g2" params:WPLGridParams()
-              .requestViewSize(VAUTO,VAUTO)
+              .requestViewSize(400,VAUTO)   // STRCを指定するのでFIXED or STRCでなければならない
               .rowDefs(@[AUTO,AUTO,AUTO])
               .colDefs(@[STRC,STRCx(2),STRCx(3)])
               ];
@@ -212,6 +280,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
               .requestViewSize(VAUTO,VAUTO)
               .rowDefs(@[AUTO,AUTO,AUTO])
               .colDefs(@[AUTO,AUTO,AUTO])
+              .align(A_CENTER)
               ];
     for(NSInteger i=0;i<3;i++) {
         for(NSInteger j=0;j<3;j++) {
@@ -262,6 +331,7 @@ static int colorCount = sizeof(colors)/sizeof(colors[0]);
     let g4 = [WPLGrid gridWithName:@"g4" params:WPLGridParams()
               .requestViewSize(VAUTO,VAUTO)
               .cellSpacing(10,10)
+              .align(A_CENTER)
               .rowDefs(@[AUTO,AUTO,AUTO,AUTO,AUTO])
               .colDefs(@[AUTO,AUTO,AUTO,AUTO,AUTO])
               ];

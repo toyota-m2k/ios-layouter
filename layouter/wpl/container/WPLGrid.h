@@ -139,6 +139,43 @@ public:
         _cellSpacing = MICSize(width, height);
         return *this;
     }
+    
+    // Min/Max Width/Height
+    WPLGridParams& limitWidth(const WPLMinMax& v) {
+        _limitWidth = v;
+        return *this;
+    }
+    WPLGridParams& limitWidth(CGFloat min, CGFloat max) {
+        _limitWidth.min = min;
+        _limitWidth.max = max;
+        return *this;
+    }
+    WPLGridParams& maxWidth(const CGFloat& v) {
+        _limitWidth.max = v;
+        return *this;
+    }
+    WPLGridParams& minWidth(const CGFloat& v) {
+        _limitWidth.min = v;
+        return *this;
+    }
+    WPLGridParams& limitHeight(const WPLMinMax& v) {
+        _limitHeight = v;
+        return *this;
+    }
+    WPLGridParams& limitHeight(CGFloat min, CGFloat max) {
+        _limitHeight.min = min;
+        _limitHeight.max = max;
+        return *this;
+    }
+    WPLGridParams& maxHeight(const CGFloat& v) {
+        _limitHeight.max = v;
+        return *this;
+    }
+    WPLGridParams& minHeight(const CGFloat& v) {
+        _limitHeight.min = v;
+        return *this;
+    }
+
 };
 
 class WPLCellPosition {
@@ -233,4 +270,7 @@ typedef WPLCellPosition (^WPLUpdateCellPosition)(id<IWPLCell>cell, WPLCellPositi
 
 #endif
 
+@end
+
+@interface WPLGrid (WHRendering) <IWPLCellWH>
 @end

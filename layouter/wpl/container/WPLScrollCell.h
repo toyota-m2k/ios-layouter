@@ -71,6 +71,43 @@ public:
         _scrollOrientation = v;
         return *this;
     }
+    
+    // Min/Max Width/Height
+    WPLScrollCellParams& limitWidth(const WPLMinMax& v) {
+        _limitWidth = v;
+        return *this;
+    }
+    WPLScrollCellParams& limitWidth(CGFloat min, CGFloat max) {
+        _limitWidth.min = min;
+        _limitWidth.max = max;
+        return *this;
+    }
+    WPLScrollCellParams& maxWidth(const CGFloat& v) {
+        _limitWidth.max = v;
+        return *this;
+    }
+    WPLScrollCellParams& minWidth(const CGFloat& v) {
+        _limitWidth.min = v;
+        return *this;
+    }
+    WPLScrollCellParams& limitHeight(const WPLMinMax& v) {
+        _limitHeight = v;
+        return *this;
+    }
+    WPLScrollCellParams& limitHeight(CGFloat min, CGFloat max) {
+        _limitHeight.min = min;
+        _limitHeight.max = max;
+        return *this;
+    }
+    WPLScrollCellParams& maxHeight(const CGFloat& v) {
+        _limitHeight.max = v;
+        return *this;
+    }
+    WPLScrollCellParams& minHeight(const CGFloat& v) {
+        _limitHeight.min = v;
+        return *this;
+    }
+
 };
 
 #endif
@@ -99,5 +136,10 @@ public:
                              params:(const WPLScrollCellParams&)params;
 
 #endif
+
+@end
+
+
+@interface WPLScrollCell (WHRendering) <IWPLCellWH>
 
 @end

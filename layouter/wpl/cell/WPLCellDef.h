@@ -43,10 +43,48 @@ typedef enum _WPLVisibility {
     @property (nonatomic,readonly) CGFloat animationDuration;
 @end
 
+typedef enum _WPLRenderingMode {
+    WPLRenderingNORMAL = 0,     // 通常のセルツリー構成変更などに起因するレンダリング
+    WPLRenderingSIZING = 1,     // ルートのサイズ変更に追従するためのレンダリング
+    WPLRenderingFORCE  = 2,     // 強制的な再レンダリング
+} WPLRenderingMode;
+
+@protocol IWPLCellWH   <NSObject>
+
+/**
+ * レンダリング開始を伝える。
+ * beginRenderingとendRenderingInRectは必ずペアで呼ばれるが、calcCellWidth/calcCellHeight は
+ * 必ずしも呼ばれない。従って、calcCell* の中で状態を保存し、endRenderingで利用するようなコードは不可。
+ */
+- (void) beginRendering:(WPLRenderingMode) mode;
+
+/**
+ * セル幅（マージンを含む）を計算
+ * @param regulatingWidth   親からのサイズ指定（マージンを含む）
+ */
+- (CGFloat)calcCellWidth:(CGFloat)regulatingWidth;
+
+/**
+ * セル高さ（マージンを含む）を計算
+ * @param regulatingHeight   親からのサイズ指定（マージンを含む）
+ */
+- (CGFloat)calcCellHeight:(CGFloat)regulatingHeight;
+
+- (CGFloat)recalcCellWidth:(CGFloat)regulatingWidth;
+- (CGFloat)recalcCellHeight:(CGFloat)regulatingHeight;
+
+/**
+ * セルの位置、サイズを確定し、ビューを再配置する。
+ * @param   finalCellRect  セルを配置可能な矩形領域（親ビュー座標系）
+ */
+- (void) endRenderingInRect:(CGRect) finalCellRect;
+
+@end
+
 /**
  * セルの基底 i/f
  */
-@protocol IWPLCell    <IWPLDisposable>
+@protocol IWPLCell    <IWPLDisposable, IWPLCellWH>
     @property(nonatomic) NSString* name;                    // 名前（任意）
     @property(nonatomic,readonly) UIView* view;             // セルに配置するビュー
     - (void) dispose;                                       // 破棄

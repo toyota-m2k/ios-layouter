@@ -200,10 +200,22 @@
  */
 - (CGSize) limitRegulatingSize:(CGSize) regulatingSize {
     return MICSize(
-           regulatingSize.width>0 ? WPLCMinMax(self.limitWidth).trim(regulatingSize.width) : regulatingSize.width,
-           regulatingSize.height>0 ? WPLCMinMax(self.limitHeight).trim(regulatingSize.height) : regulatingSize.height);
+           regulatingSize.width>0 ? WPLCMinMax(self.limitWidth).clip(regulatingSize.width) : regulatingSize.width,
+           regulatingSize.height>0 ? WPLCMinMax(self.limitHeight).clip(regulatingSize.height) : regulatingSize.height);
 }
 
+- (void)beginRendering:(WPLRenderingMode)mode {
+    if(self.visibility!=WPLVisibilityCOLLAPSED) {
+        for(id<IWPLCell> cell in self.cells) {
+            [cell beginRendering:mode];
+        }
+    }
+}
+
+- (void)endRenderingInRect:(CGRect)finalCellRect {
+    [super endRenderingInRect:finalCellRect];
+    self.needsLayoutChildren = false;
+}
 
 @end
 
