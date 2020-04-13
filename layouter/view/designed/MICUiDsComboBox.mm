@@ -274,7 +274,10 @@
           .bind(lv.label, cell, WPLPropTypeSELECTED);
         [container addCell:cell];
     }
-    MICSize size([container layoutPrepare:MICSize()]);
+    [container beginRendering:WPLRenderingNORMAL];
+    MICSize size([container calcCellWidth:0], [container calcCellHeight:0]);
+    [container endRendering:MICRect(size)];
+    
     if(self.maxDropDownHeight>0 &&  self.maxDropDownHeight<size.height) {
         size.height = self.maxDropDownHeight;
     }

@@ -2,8 +2,8 @@
 //  gridTest.m
 //  layouterSampleTests
 //
-//  Created by Mitsuki Toyota on 2019/11/05.
-//  Copyright © 2019 Mitsuki Toyota. All rights reserved.
+//  Created by @toyota-m2k on 2019/11/05.
+//  Copyright (c) 2019 @toyota-m2k. All rights reserved.
 //
 
 #import <XCTest/XCTest.h>
@@ -158,7 +158,10 @@
                   .cols(@[AUTO,STRC,AUTO]))
     .requestViewSize(MICSize(S_AUTO,S_AUTO))];
     rootView.containerCell = container;
-    
+   
+    // | 40 | S | 60 |
+    // |  S |  150   |
+   
     // cell(0,0) :size:40,20 --> AUTO (no-size)
     [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize(40,20)] name:@"0,0" params:WPLCellParams()] row:0 column:0];
     
@@ -171,7 +174,7 @@
     // cell(1,0) : size:0,30 --> Stretch, auto
     [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize(0,30)] name:@"1,0" params:WPLCellParams().requestViewSize(MICSize(S_STRC, S_AUTO))] row:1 column:0];
 
-    // cell(1,1) :size:0,30 --> Stretch, AUTO (no-size)
+    // cell(1,1) :size:150,0 --> Stretch, AUTO (no-size)
     [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize(150,0)] name:@"1,1" params:WPLCellParams().requestViewSize(MICSize(S_AUTO,S_STRC))] row:1 column:1 rowSpan:1 colSpan:2];
 
     rootView.frame = MICRect(200,100);
@@ -411,6 +414,255 @@
     XCTAssertEqual(frame.height(), 30);
     XCTAssertEqual(frame.left(), 0);
     XCTAssertEqual(frame.top(), 30);
+
+}
+
+- (void) testAutoAuto {
+    let rootView = [[WPLCellHostingView alloc] init];
+    let container = [WPLGrid gridWithName:@"root"  params:WPLGridParams()
+                     .dimension(WPLGridDefinition()
+                          .rows(@[AUTO, AUTO])
+                          .cols(@[AUTO,AUTO,AUTO,AUTO]))
+                    .requestViewSize(MICSize(S_AUTO,S_AUTO))];
+    rootView.containerCell = container;
+    rootView.frame = MICRect(500,500);
+
+    [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize(100,200)] name:@"0,0" params:WPLCellParams().requestViewSize(VSTRC, VAUTO)] row:0 column:0];
+    [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize(300,100)] name:@"0,1" params:WPLCellParams().vertAlign(A_CENTER)] row:0 column:1];
+    
+    [rootView render];
+    
+    id<IWPLCell> cell;
+    MICRect rc;
+    
+    rc = container.view.frame;
+    XCTAssertEqual(rc.width(), 400);
+    XCTAssertEqual(rc.height(), 200);
+    
+    cell = [container findByName:@"0,0"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), 100);
+    XCTAssertEqual(rc.height(), 200);
+    XCTAssertEqual(rc.left(), 0);
+    XCTAssertEqual(rc.top(), 0);
+
+    cell = [container findByName:@"0,1"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), 300);
+    XCTAssertEqual(rc.height(), 100);
+    XCTAssertEqual(rc.left(), 100);
+    XCTAssertEqual(rc.top(), 50);
+
+    //  200         300
+    //  100,200     300,100     200
+    //  200,100     100,400     400
+    
+    [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize(200,100)] name:@"1,0" params:WPLCellParams().vertAlign(A_CENTER)] row:1 column:0];
+    [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize(100,400)] name:@"1,1" params:WPLCellParams().align(A_CENTER)] row:1 column:1];
+    [rootView render];
+    
+    rc = container.view.frame;
+    XCTAssertEqual(rc.width(), 500);
+    XCTAssertEqual(rc.height(), 600);
+    
+    cell = [container findByName:@"0,0"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), 200);
+    XCTAssertEqual(rc.height(), 200);
+    XCTAssertEqual(rc.left(), 0);
+    XCTAssertEqual(rc.top(), 0);
+
+    cell = [container findByName:@"0,1"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), 300);
+    XCTAssertEqual(rc.height(), 100);
+    XCTAssertEqual(rc.left(), 200);
+    XCTAssertEqual(rc.top(), 50);
+
+    cell = [container findByName:@"1,0"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), 200);
+    XCTAssertEqual(rc.height(), 100);
+    XCTAssertEqual(rc.left(), 0);
+    XCTAssertEqual(rc.top(), 200+150);
+
+    cell = [container findByName:@"1,1"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), 100);
+    XCTAssertEqual(rc.height(), 400);
+    XCTAssertEqual(rc.left(), 200+(300-100)/2);
+    XCTAssertEqual(rc.top(), 200);
+}
+
+// spanを持つセルのサイズによって、未決定のグリッドセルのサイズが決定されるケースのテスト
+- (void) testSubSpan {
+    let rootView = [[WPLCellHostingView alloc] init];
+    let container = [WPLGrid gridWithName:@"root"  params:WPLGridParams()
+                     .dimension(WPLGridDefinition()
+                          .rows(@[AUTO, AUTO])
+                          .cols(@[AUTO,AUTO,AUTO]))
+                    .requestViewSize(MICSize(S_AUTO,S_AUTO))];
+    rootView.containerCell = container;
+    rootView.frame = MICRect(500,500);
+
+    [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize()] name:@"0,0-2" params:WPLCellParams().requestViewSize(400,100).vertAlign(A_CENTER)] row:0 column:0 rowSpan:1 colSpan:2];
+    [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize()] name:@"1,0" params:WPLCellParams().requestViewSize(VSTRC,100)] row:1 column:0];
+    [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize()] name:@"1,1" params:WPLCellParams().requestViewSize(100,VSTRC)] row:1 column:1];
+
+    [rootView render];
+    
+    id<IWPLCell> cell;
+    MICRect rc;
+    
+    rc = container.view.frame;
+    XCTAssertEqual(rc.width(), 400);
+    XCTAssertEqual(rc.height(), 200);
+
+    cell = [container findByName:@"0,0-2"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), 400);
+    XCTAssertEqual(rc.height(), 100);
+    XCTAssertEqual(rc.left(), 0);
+    XCTAssertEqual(rc.top(), 0);
+
+    cell = [container findByName:@"1,0"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), 300);
+    XCTAssertEqual(rc.height(), 100);
+    XCTAssertEqual(rc.left(), 0);
+    XCTAssertEqual(rc.top(), 100);
+    
+    cell = [container findByName:@"1,1"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), 100);
+    XCTAssertEqual(rc.height(), 100);
+    XCTAssertEqual(rc.left(), 300);
+    XCTAssertEqual(rc.top(), 100);
+    
+    container.cellSpacing = MICSize(10,0);
+    [rootView render];
+    
+    rc = container.view.frame;
+    XCTAssertEqual(rc.width(), 400);
+    XCTAssertEqual(rc.height(), 200);
+
+    cell = [container findByName:@"0,0-2"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), 400);
+    XCTAssertEqual(rc.height(), 100);
+    XCTAssertEqual(rc.left(), 0);
+    XCTAssertEqual(rc.top(), 0);
+
+    cell = [container findByName:@"1,0"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), 290);
+    XCTAssertEqual(rc.height(), 100);
+    XCTAssertEqual(rc.left(), 0);
+    XCTAssertEqual(rc.top(), 100);
+
+    cell = [container findByName:@"1,1"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), 100);
+    XCTAssertEqual(rc.height(), 100);
+    XCTAssertEqual(rc.left(), 300);
+    XCTAssertEqual(rc.top(), 100);
+}
+
+- (void) testStretch {
+    // (S,A) (S2,A) (A,A)
+    // (S,S) (S2,S) (A,S)
+
+    let rootView = [[WPLCellHostingView alloc] init];
+    let container = [WPLGrid gridWithName:@"root"  params:WPLGridParams()
+                     .dimension(WPLGridDefinition()
+                          .cols(@[STRC,STRCx(2),AUTO])
+                          .rows(@[AUTO, STRC]))
+                    .requestViewSize(MICSize(VSTRC,VSTRC))];
+    rootView.containerCell = container;
+    rootView.frame = MICRect(600,400);
+
+    [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize()] name:@"0,0" params:WPLCellParams().requestViewSize(50,100)] row:0 column:0];
+    [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize()] name:@"1,0" params:WPLCellParams().requestViewSize(VSTRC,VSTRC)] row:1 column:0];
+
+    [rootView render];
+
+    id<IWPLCell> cell;
+    MICRect rc;
+
+    rc = container.view.frame;
+    XCTAssertEqual(rc.width(), 600);
+    XCTAssertEqual(rc.height(), 400);
+    
+    cell = [container findByName:@"0,0"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), 50);
+    XCTAssertEqual(rc.height(), 100);
+    XCTAssertEqual(rc.left(), 0);
+    XCTAssertEqual(rc.top(), 0);
+    
+    cell = [container findByName:@"1,0"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), 200);
+    XCTAssertEqual(rc.height(), 400-100);
+    XCTAssertEqual(rc.left(), 0);
+    XCTAssertEqual(rc.top(), 100);
+    
+    [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize()] name:@"1,2" params:WPLCellParams().requestViewSize(120,VSTRC)] row:1 column:2];
+    [rootView render];
+    
+    rc = container.view.frame;
+    XCTAssertEqual(rc.width(), 600);
+    XCTAssertEqual(rc.height(), 400);
+    
+    cell = [container findByName:@"0,0"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), 50);
+    XCTAssertEqual(rc.height(), 100);
+    XCTAssertEqual(rc.left(), 0);
+    XCTAssertEqual(rc.top(), 0);
+    
+    cell = [container findByName:@"1,0"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), (600-120)/3);
+    XCTAssertEqual(rc.height(), 400-100);
+    XCTAssertEqual(rc.left(), 0);
+    XCTAssertEqual(rc.top(), 100);
+
+    cell = [container findByName:@"1,2"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), 120);
+    XCTAssertEqual(rc.height(), 400-100);
+    XCTAssertEqual(rc.left(), 600-120);
+    XCTAssertEqual(rc.top(), 100);
+    
+    container.cellSpacing = MICSize(30,60);
+    [rootView render];
+    
+    rc = container.view.frame;
+    XCTAssertEqual(rc.width(), 600);
+    XCTAssertEqual(rc.height(), 400);
+    
+    cell = [container findByName:@"0,0"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), 50);
+    XCTAssertEqual(rc.height(), 100);
+    XCTAssertEqual(rc.left(), 0);
+    XCTAssertEqual(rc.top(), 0);
+    
+    cell = [container findByName:@"1,0"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), (600-120-30*2)/3);
+    XCTAssertEqual(rc.height(), 400-100-60);
+    XCTAssertEqual(rc.left(), 0);
+    XCTAssertEqual(rc.top(), 100+60);
+
+    cell = [container findByName:@"1,2"];
+    rc = cell.view.frame;
+    XCTAssertEqual(rc.width(), 120);
+    XCTAssertEqual(rc.height(), 400-100-60);
+    XCTAssertEqual(rc.left(), 600-120);
+    XCTAssertEqual(rc.top(), 100+60);
+
 
 }
 

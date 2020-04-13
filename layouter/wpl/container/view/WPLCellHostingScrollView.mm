@@ -44,7 +44,7 @@
  *  配置の更新が実行される前に、子セルが一瞬見えてしまってブサイクなことがあるので、その場合は、addCell後に、明示的にこのメソッドを呼ぶことで回避できる（かも）。
  */
 - (void) render {
-    [_hosting renderCell];
+    [_hosting renderCell:WPLRenderingFORCE];
 }
 
 /**

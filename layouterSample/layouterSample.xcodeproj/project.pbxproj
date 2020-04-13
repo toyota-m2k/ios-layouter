@@ -108,6 +108,8 @@
 		841AD8C1230A71E300F9AB7D /* WPLGridScrollView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8C0230A71E300F9AB7D /* WPLGridScrollView.mm */; };
 		8459A0092435DBAB00EA178B /* WPLScrollCellViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8459A0082435DBAB00EA178B /* WPLScrollCellViewController.mm */; };
 		8459A0232437010000EA178B /* WPLRangedSize.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8459A0222437010000EA178B /* WPLRangedSize.mm */; };
+		8459A036243F369C00EA178B /* frameTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8459A035243F369C00EA178B /* frameTest.mm */; };
+		8459A03B2440417700EA178B /* scrollCellTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8459A03A2440417700EA178B /* scrollCellTest.mm */; };
 		846DC31223667627006CD2CE /* WPLGuidanceViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 846DC31123667627006CD2CE /* WPLGuidanceViewController.mm */; };
 		847AFEA22313A506004809EB /* WPLPropBinding.mm in Sources */ = {isa = PBXBuildFile; fileRef = 847AFEA12313A506004809EB /* WPLPropBinding.mm */; };
 		84D1027B23EC11DA00203ADC /* MICUiDsCheckBox.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84D1027323EC11DA00203ADC /* MICUiDsCheckBox.mm */; };
@@ -357,6 +359,8 @@
 		8459A0082435DBAB00EA178B /* WPLScrollCellViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLScrollCellViewController.mm; sourceTree = "<group>"; };
 		8459A0212437010000EA178B /* WPLRangedSize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLRangedSize.h; sourceTree = "<group>"; };
 		8459A0222437010000EA178B /* WPLRangedSize.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLRangedSize.mm; sourceTree = "<group>"; };
+		8459A035243F369C00EA178B /* frameTest.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = frameTest.mm; sourceTree = "<group>"; };
+		8459A03A2440417700EA178B /* scrollCellTest.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = scrollCellTest.mm; sourceTree = "<group>"; };
 		845B5AB7230D50A00055A98A /* acomTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = acomTests.mm; sourceTree = "<group>"; };
 		846DC31023667627006CD2CE /* WPLGuidanceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGuidanceViewController.h; sourceTree = "<group>"; };
 		846DC31123667627006CD2CE /* WPLGuidanceViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGuidanceViewController.mm; sourceTree = "<group>"; };
@@ -472,6 +476,8 @@
 				845B5AB7230D50A00055A98A /* acomTests.mm */,
 				84DDAFAB2371104100232310 /* gridTest.mm */,
 				84DDAFB323728D7E00232310 /* stackPanelTest.mm */,
+				8459A035243F369C00EA178B /* frameTest.mm */,
+				8459A03A2440417700EA178B /* scrollCellTest.mm */,
 			);
 			path = layouterSampleTests;
 			sourceTree = "<group>";
@@ -736,12 +742,12 @@
 		841AD86622FD4EA200F9AB7D /* view */ = {
 			isa = PBXGroup;
 			children = (
+				841AD8B32309800300F9AB7D /* WPLCellHostingHelper.h */,
+				841AD8B42309800300F9AB7D /* WPLCellHostingHelper.mm */,
 				841AABF82435C3AB0060BCDF /* WPLGridCellLocator.h */,
 				841AABF92435C3AB0060BCDF /* WPLGridCellLocator.mm */,
 				84D1028E23EC124500203ADC /* WPLFrameScrollView.h */,
 				84D1028F23EC124500203ADC /* WPLFrameScrollView.mm */,
-				841AD8B32309800300F9AB7D /* WPLCellHostingHelper.h */,
-				841AD8B42309800300F9AB7D /* WPLCellHostingHelper.mm */,
 				841AD86722FD513C00F9AB7D /* WPLCellHostingView.h */,
 				841AD86822FD513C00F9AB7D /* WPLCellHostingView.mm */,
 				841AD8B0230963D500F9AB7D /* WPLCellHostingScrollView.h */,
@@ -1068,6 +1074,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8411466E23CD79760041A769 /* acomTests.mm in Sources */,
+				8459A036243F369C00EA178B /* frameTest.mm in Sources */,
+				8459A03B2440417700EA178B /* scrollCellTest.mm in Sources */,
 				841AD84A22F53C4E00F9AB7D /* layouterSampleTests.mm in Sources */,
 				841AD85C22FB203700F9AB7D /* bindingTests.mm in Sources */,
 				84DDAFAC2371104100232310 /* gridTest.mm in Sources */,

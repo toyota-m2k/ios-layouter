@@ -92,6 +92,11 @@ public:
         _limitWidth = v;
         return *this;
     }
+    WPLStackPanelParams& limitWidth(CGFloat min, CGFloat max) {
+        _limitWidth.min = min;
+        _limitWidth.max = max;
+        return *this;
+    }
     WPLStackPanelParams& maxWidth(const CGFloat& v) {
         _limitWidth.max = v;
         return *this;
@@ -102,6 +107,11 @@ public:
     }
     WPLStackPanelParams& limitHeight(const WPLMinMax& v) {
         _limitHeight = v;
+        return *this;
+    }
+    WPLStackPanelParams& limitHeight(CGFloat min, CGFloat max) {
+        _limitHeight.min = min;
+        _limitHeight.max = max;
         return *this;
     }
     WPLStackPanelParams& maxHeight(const CGFloat& v) {
@@ -116,8 +126,6 @@ public:
 };
 
 #endif
-
-
 
 /**
  * StackPanel セル-コンテナ クラス
@@ -163,3 +171,4 @@ public:
 #endif
 
 @end
+

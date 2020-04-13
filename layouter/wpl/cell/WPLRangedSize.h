@@ -35,6 +35,14 @@ public:
         }
         return *this;
     }
+    WPLCMinMax& setMin(CGFloat min_) {
+        min = min_;
+        return normalize();
+    }
+    WPLCMinMax& setMax(CGFloat max_) {
+        max = max_;
+        return normalize();
+    }
     bool isMaxSpecified() const {
         return max < CGFLOAT_MAX;
     }
@@ -45,16 +53,20 @@ public:
         return isMaxSpecified()||isMinSpecified();
     }
     
-    CGFloat trim(CGFloat s) {
-        if(isMaxSpecified()) {
-            s = MIN(s, max);
+    static CGFloat clip(const WPLMinMax& r, CGFloat s) {
+        if(r.max<CGFLOAT_MAX) {
+            s = MIN(s, r.max);
         }
-        if(isMinSpecified()) {
-            s = MAX(s, min);
+        if(r.min>CGFLOAT_MIN) {
+            s = MAX(s, r.min);
         }
         return s;
     }
     
+    CGFloat clip(CGFloat s) const {
+        return clip(*this, s);
+    }
+
     bool operator == (const WPLMinMax& s) const {
         return min==s.min && max==s.max;
     }
@@ -62,8 +74,31 @@ public:
     bool operator != (const WPLMinMax& s) const {
         return min!=s.min || max!=s.max;
     }
+    
+    WPLCMinMax intersect(const WPLMinMax& s) const {
+        if(max<s.min || min>s.max) {
+            // 重なりがなければ、this側を採用
+            return *this;
+        }
+        return WPLCMinMax(MAX(min,s.min), MIN(max,s.max));
+    }
 
+    static inline WPLCMinMax intersect(const WPLMinMax& a, const WPLMinMax& b) {
+        WPLCMinMax r(a);
+        if(a.max<b.min || b.max <a.min) {
+            // 重なりがなければ第１引数を採用
+            return r;
+        }
+        return r.intersect(b);
+    }
+    
+    static const WPLCMinMax empty();
 };
+
+
+
+
+
 #endif
 
 @interface WPLRangedSize : NSObject
@@ -75,12 +110,18 @@ public:
 @property (nonatomic,readonly) bool isMinSpecified;
 @property (nonatomic,readonly) bool isMaxSpecified;
 
-- (instancetype) initSize:(CGFloat)size min:(CGFloat) min max:(CGFloat)max;
+- (instancetype)init    NS_UNAVAILABLE;
++ (instancetype)new     NS_UNAVAILABLE;
 
-+ (instancetype) rangedSize:(CGFloat)size min:(CGFloat)min;
-+ (instancetype) rangedSize:(CGFloat)size max:(CGFloat)max;
-+ (instancetype) rangedSize:(CGFloat)size min:(CGFloat)min max:(CGFloat)max;
-+ (instancetype) rangedSize:(CGFloat)size span:(WPLMinMax)span;
+//- (instancetype) initSize:(CGFloat)size min:(CGFloat) min max:(CGFloat)max;
+
+//+ (instancetype) rangedSize:(CGFloat)size min:(CGFloat)min;
+//+ (instancetype) rangedSize:(CGFloat)size max:(CGFloat)max;
+//+ (instancetype) rangedSize:(CGFloat)size min:(CGFloat)min max:(CGFloat)max;
+//+ (instancetype) rangedSize:(CGFloat)size span:(WPLMinMax)span;
+
++ (instancetype) rangedAutoMin:(CGFloat) min max:(CGFloat)max;
++ (instancetype) rangedStretch:(CGFloat)scale min:(CGFloat) min max:(CGFloat)max;
 
 #ifdef __cplusplus
 @property (nonatomic) WPLMinMax span;
@@ -89,3 +130,4 @@ public:
 #endif
 
 @end
+

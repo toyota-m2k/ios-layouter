@@ -9,6 +9,11 @@
 #import "MICDicUtil.h"
 #import "MICVar.h"
 
+
+const WPLCMinMax WPLCMinMax::empty() {
+    static WPLCMinMax _empty;
+    return _empty;
+}
 /**
  * WPLGridCell の rowDefs/colDefs で使用する、size/min/maxを保持できるクラス。
  * min/max を指定する時は、通常、sizeは、AUTO(0)または、STRC(<0) とする。>0な値をしていした場合はAUTOとして扱う。
@@ -39,6 +44,17 @@
 
 + (instancetype) rangedSize:(CGFloat)size span:(WPLMinMax)span {
     return [self rangedSize:size min:span.min max:span.max];
+}
+
++ (instancetype) rangedAutoMin:(CGFloat) min max:(CGFloat)max {
+    return [self rangedSize:0 min:min max:max];
+}
+
++ (instancetype) rangedStretch:(CGFloat)scale min:(CGFloat) min max:(CGFloat)max {
+    if(scale>0) {
+        scale = -scale;
+    }
+    return [self rangedSize:scale min:min max:max];
 }
 
 - (bool)isMaxSpecified {

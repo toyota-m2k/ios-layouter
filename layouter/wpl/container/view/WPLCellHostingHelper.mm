@@ -25,6 +25,7 @@ enum Orientation {
     WPLBinder* _binder;
     CGFloat _animationDuration;
     MICTargetSelector* _layoutCompletionListener;
+    WPLRenderingMode _renderingMode;
 }
 
 - (WPLBinder*) binder {
@@ -49,6 +50,7 @@ enum Orientation {
         _binder = nil;
         _animationDuration = 0;
         _layoutCompletionListener = nil;
+        _renderingMode = WPLRenderingNORMAL;
         if(nil!=container) {
             self.containerCell = container;
         }
@@ -69,7 +71,7 @@ enum Orientation {
 
 - (void) attach {
     if(_observer==nil && _view!=nil) {
-        [self renderCell];
+        [self renderCell:WPLRenderingSIZING];
         _observer = [[MICKeyValueObserver alloc] initWithActor:_view];
         [_observer add:@"frame" listener:self handler:@selector(sizePropertyChanged:target:)];
         [_observer add:@"bounds" listener:self handler:@selector(sizePropertyChanged:target:)];
@@ -85,8 +87,8 @@ enum Orientation {
 
 - (void) sizePropertyChanged:(id<IMICKeyValueObserverItem>) info target:(id)target {
     // サイズが変わったら、すべてのコンテナの配置を再計算する必要がある、
-    [_containerCell invalidateAllLayout];
-    [self reserveRender];
+//    [_containerCell invalidateAllLayout];
+    [self reserveRender:WPLRenderingSIZING];
 }
 
 - (void)dealloc {
@@ -120,7 +122,7 @@ enum Orientation {
         _containerCell = containerCell;
         _containerCell.containerDelegate = self;
         [_view addSubview:_containerCell.view];
-        [self reserveRender];
+        [self reserveRender:WPLRenderingSIZING];
     }
 }
 
@@ -187,17 +189,20 @@ static inline void set_origin(Orientation o, MICRect& rect, CGFloat pos=0) {
     _disableLayout = !sw;
     if(sw && _layoutReserved) {
         _layoutReserved = false;
-        [self reserveRender];
+        [self reserveRender:_renderingMode];
     }
 }
 
-- (void) reserveRender {
+- (void) reserveRender:(WPLRenderingMode)mode {
     if(!_layoutReserved) {
         _layoutReserved = true;
+        _renderingMode = MAX(mode,_renderingMode);
         if(!_disableLayout) {
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                 self->_layoutReserved = false;
-                [self renderCell];
+                let mode = self->_renderingMode;
+                self->_renderingMode = WPLRenderingNORMAL;
+                [self renderCell:mode];
             }];
         }
     }
@@ -206,7 +211,7 @@ static inline void set_origin(Orientation o, MICRect& rect, CGFloat pos=0) {
 /**
  * コンテナ内の再配置処理
  */
-- (void) renderCell {
+- (void) renderCell:(WPLRenderingMode)mode {
     if(_containerCell==nil) {
         return;
     }
@@ -214,16 +219,21 @@ static inline void set_origin(Orientation o, MICRect& rect, CGFloat pos=0) {
     if(viewRect.isEmpty()) {
         return;
     }
-    MICSize cellSize([_containerCell layoutPrepare:viewRect.size]);
-    MICRect cellRect(viewRect);
-    [self renderSub:HORZ  viewRect:viewRect cellSize:cellSize cellRect:cellRect];
-    [self renderSub:VERT viewRect:viewRect cellSize:cellSize cellRect:cellRect];
-  
-    [_containerCell layoutCompleted:cellRect];
-    MICRect contentRect = _containerCell.view.frame;
+    
+    MICRect frameRect(_view.bounds);
+    [_containerCell beginRendering:mode];
     if([_view isKindOfClass:UIScrollView.class]) {
-        ((UIScrollView*)_view).contentSize = contentRect.size;
+        MICSize contentSize([_containerCell calcCellWidth:frameRect.width()],[_containerCell calcCellHeight:frameRect.height()]);
+        contentSize.width = MAX(contentSize.width, frameRect.width());
+        contentSize.height = MAX(contentSize.height, frameRect.height());
+        ((UIScrollView*)_view).contentSize = contentSize;
+        [_containerCell endRendering:MICRect(contentSize)];
+    } else {
+        [_containerCell calcCellWidth:frameRect.width()];
+        [_containerCell calcCellHeight:frameRect.height()];
+        [_containerCell endRendering:frameRect];
     }
+
     if(nil!=_layoutCompletionListener) {
         id p = _view;
         [_layoutCompletionListener performWithParam:&p];
@@ -290,7 +300,7 @@ static inline void set_origin(Orientation o, MICRect& rect, CGFloat pos=0) {
  * IWPLContainerCellDelegate
  */
 - (void)onChildCellModified:(id<IWPLCell>)cell {
-    [self reserveRender];
+    [self reserveRender:WPLRenderingNORMAL];
 }
 
 - (CGFloat)animationDuration {

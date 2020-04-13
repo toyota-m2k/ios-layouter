@@ -26,6 +26,8 @@
 @synthesize vAlignment;
 @synthesize view;
 @synthesize visibility;
+@synthesize limitHeight;
+@synthesize limitWidth;
 
 - (instancetype)init {
     self = [super init];
@@ -40,12 +42,33 @@
     
 }
 
-- (void)layoutCompleted:(CGRect)finalCellRect {
+- (void)beginRendering:(WPLRenderingMode)mode {
     
 }
 
-- (CGSize)layoutPrepare:(CGSize)regulatingCellSize {
-    return MICSize();
+
+- (CGFloat)calcCellHeight:(CGFloat)regulatingHeight {
+    return 0;
+}
+
+
+- (CGFloat)calcCellWidth:(CGFloat)regulatingWidth {
+    return 0;
+}
+
+
+- (void)endRendering:(CGRect)finalCellRect {
+    
+}
+
+
+- (CGFloat)recalcCellHeight:(CGFloat)regulatingHeight {
+    return 0;
+}
+
+
+- (CGFloat)recalcCellWidth:(CGFloat)regulatingWidth {
+    return 0;
 }
 
 @end
