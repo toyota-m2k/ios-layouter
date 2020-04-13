@@ -693,6 +693,8 @@ public:
 
 - (void)endRendering:(CGRect)finalCellRect {
     if(self.visibility!=WPLVisibilityCOLLAPSED) {
+        [self calcCellWidth:0];
+        [self calcCellHeight:0];
         for(id<IWPLCell>cell in self.cells) {
             let ex = EXT(cell);
             MICSize size(_listColumn.sizeRange(ex.column, ex.colSpan, _cellSpacing.width),

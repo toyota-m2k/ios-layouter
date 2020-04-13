@@ -39,11 +39,6 @@ typedef enum _WPLScrollOrientation {
     @property (nonatomic, readonly) bool needsLayoutChildren;
 
     /**
-     * レイアウトを実行開始（ルートコンテナセルに対してのみ呼び出す）
-     */
-    - (CGSize) layout;
-
-    /**
      * セルを追加
      */
     - (void) addCell:(id<IWPLCell>) cell;

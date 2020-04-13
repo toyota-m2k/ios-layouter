@@ -225,30 +225,31 @@
  */
 - (CGFloat) calcFixedSide:(CGFloat)regulatingSize
             requestedSize:(CGFloat)requestedSize {
+    CGFloat fixed = 0;
     if(requestedSize>0 /*this.FIXED*/) {
         // BottomUp || Independent
         // 自身がFIXEDなら、そのサイズを採用
-        return requestedSize;
+        fixed = requestedSize;
     }
     if(requestedSize<0 && regulatingSize>0) {
         // TopDown
         // 自身がSTRCで親がAUTOでない --> 親のサイズを採用（ただし、marginを含むのでそれを除外する）
-        return regulatingSize;
+        fixed = regulatingSize;
     }
-    // Auto --> 子セルに委ねる
+    // fixed==0: Auto --> 子セルに委ねる
     CGFloat max = 0;
     for(id<IWPLCell>cell in self.cells) {
         if(cell.visibility!=WPLVisibilityCOLLAPSED) {
             CGFloat s;
             if(self.orientation == WPLOrientationVERTICAL) {
-                s = [cell calcCellWidth:0/*AUTO*/];
+                s = [cell calcCellWidth:fixed];
             } else {
-                s = [cell calcCellHeight:0/*AUTO*/];
+                s = [cell calcCellHeight:fixed];
             }
             max = MAX(max,s);
         }
     }
-    return max;
+    return fixed>0 ? fixed : max;
 }
 
 /**

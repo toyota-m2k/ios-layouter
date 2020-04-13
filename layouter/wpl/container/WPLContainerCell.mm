@@ -136,8 +136,6 @@
     return cell;
 }
 
-
-
 #pragma mark - レンダリング
 
 /**
@@ -165,6 +163,25 @@
 - (void)endRendering:(CGRect)finalCellRect {
     [super endRendering:finalCellRect];
     self.needsLayoutChildren = false;
+}
+
+- (CGFloat)calcCellHeight:(CGFloat)regulatingHeight {
+    return 0;
+}
+
+
+- (CGFloat)calcCellWidth:(CGFloat)regulatingWidth {
+    return 0;
+}
+
+
+- (CGFloat)recalcCellHeight:(CGFloat)regulatingHeight {
+    return 0;
+}
+
+
+- (CGFloat)recalcCellWidth:(CGFloat)regulatingWidth {
+    return 0;
 }
 
 @end
