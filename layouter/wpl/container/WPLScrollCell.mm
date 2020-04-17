@@ -16,7 +16,7 @@
 @implementation WPLInternalScrollCellView
 @end
 #else
-#define WPLInternalGridView UIScrollView
+#define WPLInternalScrollCellView UIScrollView
 #endif
 
 #pragma mark -
@@ -41,6 +41,9 @@
                    vAlignment:(WPLCellAlignment)vAlignment
                    visibility:(WPLVisibility)visibility
             scrollOrientation:(WPLScrollOrientation) scrollOrientation {
+    if(nil==view) {
+        view = [WPLInternalScrollCellView new];
+    }
     if(![view isKindOfClass:UIScrollView.class]) {
         NSAssert1(false, @"internal view of ScrollCell must be an instance of UIScrollView", name);
     }
@@ -105,7 +108,7 @@
  */
 + (instancetype) scrollCellWithName:(NSString*) name
                              params:(const WPLScrollCellParams&)params {
-    return [[self alloc] initWithView:[[WPLInternalScrollCellView alloc] init] name:name params:params];
+    return [[self alloc] initWithView:nil name:name params:params];
 }
 
 + (instancetype) scrollCellWithName:(UIView*)view

@@ -45,6 +45,9 @@
                    visibility:(WPLVisibility)visibility
                   orientation:(WPLOrientation) orientation
                   cellSpacing:(CGFloat)cellSpacing {
+    if(nil==view) {
+        view = [WPLInternalStackPanelView new];
+    }
     self = [super initWithView:view
                           name:name
                         margin:margin
@@ -115,7 +118,7 @@
  */
 + (instancetype) stackPanelWithName:(NSString*) name
                              params:(const WPLStackPanelParams&)params {
-    return [[self alloc] initWithView:[WPLInternalStackPanelView new] name:name params:params];
+    return [[self alloc] initWithView:nil name:name params:params];
 }
 
 /**

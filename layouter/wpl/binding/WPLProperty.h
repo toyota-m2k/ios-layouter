@@ -128,7 +128,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (instancetype) commandAsName:(NSString*) name initialValue:(nullable id)initialValue;
 
-
 @end
 
 NS_ASSUME_NONNULL_END

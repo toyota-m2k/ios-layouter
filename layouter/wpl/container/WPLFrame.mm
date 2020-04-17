@@ -26,6 +26,9 @@
 }
 
 - (instancetype)initWithView:(UIView *)view name:(NSString *)name margin:(UIEdgeInsets)margin requestViewSize:(CGSize)requestViewSize limitWidth:(WPLMinMax)limitWidth limitHeight:(WPLMinMax)limitHeight hAlignment:(WPLCellAlignment)hAlignment vAlignment:(WPLCellAlignment)vAlignment visibility:(WPLVisibility)visibility {
+    if(nil==view) {
+        view = [WPLInternalFrameView new];
+    }
     self = [super initWithView:view name:name margin:margin requestViewSize:requestViewSize limitWidth:limitWidth limitHeight:limitHeight hAlignment:hAlignment vAlignment:vAlignment visibility:visibility];
     if(nil!=self) {
         _cacheVert = false;
@@ -49,7 +52,7 @@
 
 + (instancetype) frameWithName:(NSString*)name
                         params:(WPLCellParams) params {
-    return [self newCellWithView:[WPLInternalFrameView new] name:name params:params];
+    return [self newCellWithView:nil name:name params:params];
 }
 
 + (instancetype) frameWithView:(UIView*)view

@@ -373,7 +373,9 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
                      rowDefs:(NSArray<id> *)rowDefs
                      colDefs:(NSArray<id> *)colDefs
                  cellSpacing:(CGSize)cellSpacing {
-
+    if(nil==view) {
+        view = [WPLInternalGridView new];
+    }
     self = [super initWithView:view
                           name:name
                         margin:margin
@@ -453,7 +455,7 @@ static NSArray<NSNumber*>* s_single_def_stretch = @[@(-1)];
  */
 + (instancetype) gridWithName:(NSString*) name
                        params:(const WPLGridParams&) params {
-    return [self gridWithView:[WPLInternalGridView new] name:name params:params];
+    return [self gridWithView:nil name:name params:params];
 }
 
 + (instancetype) gridWithView:(UIView*) view
@@ -710,7 +712,7 @@ public:
 - (CGFloat)calcCellWidth:(CGFloat)regulatingWidth {
     if(!_listColumn.isFinished()) {
         RCAccessor acc(COL,_listColumn);
-        [self calcCellSzie:acc regulatingSize:regulatingWidth];
+        [self calcCellSzie:acc regulatingSize:regulatingWidth - MICEdgeInsets::dw(self.margin)];
     }
     let width = _listColumn.getFinalSize(self.cellSpacing.width);
 
@@ -721,7 +723,7 @@ public:
 - (CGFloat)calcCellHeight:(CGFloat)regulatingHeight {
     if(!_listRow.isFinished()) {
         RCAccessor acc(ROW,_listRow);
-        [self calcCellSzie:acc regulatingSize:regulatingHeight];
+        [self calcCellSzie:acc regulatingSize:regulatingHeight - MICEdgeInsets::dh(self.margin)];
     }
     let height = _listRow.getFinalSize(self.cellSpacing.height);
 

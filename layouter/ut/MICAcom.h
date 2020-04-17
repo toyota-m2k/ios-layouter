@@ -48,6 +48,8 @@ typedef id<IMICAcomResolver> MICAcomix;
 @end
 typedef id<IMICAcom> MICPromise;
 
+#define MIC_PROMISE(type) (MICPromise)
+
 /**
  * IMICAcomFlammable
  * バックグラウンドで実行を開始できるタスクのi/f

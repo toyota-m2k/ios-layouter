@@ -64,9 +64,9 @@
     return (nil!=r && [r respondsToSelector:@selector(doubleValue)]) ? [r doubleValue] : 0;
 }
 
-- (CGFloat) floatValue {
-    id v = self.value;
-    return number_to_cgfloat(v);
+- (float) floatValue {
+    id r = self.value;
+    return (nil!=r && [r respondsToSelector:@selector(floatValue)]) ? [r floatValue] : 0;
 }
 
 - (bool) boolValue {
