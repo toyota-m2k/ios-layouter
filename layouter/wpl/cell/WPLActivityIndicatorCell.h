@@ -11,6 +11,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface WPLActivityIndicatorCell : WPLValueCell
 
+#ifdef __cplusplus
++ (instancetype) indicatorCellNamed:(NSString*)name style:(UIActivityIndicatorViewStyle)style params:(const WPLCellParams&) params;
+#endif
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -6,9 +6,16 @@
 //
 
 #import "WPLActivityIndicatorCell.h"
+#import "MICVar.h"
 
 @implementation WPLActivityIndicatorCell {
     
+}
+
++ (instancetype) indicatorCellNamed:(NSString*)name style:(UIActivityIndicatorViewStyle)style
+                             params:(const WPLCellParams&) params {
+    let view = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:style];
+    return [self newCellWithView:view name:name params:params];
 }
 
 - (instancetype) initWithView:(UIView*)view
