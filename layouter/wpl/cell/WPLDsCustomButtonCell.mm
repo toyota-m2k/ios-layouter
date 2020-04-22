@@ -50,12 +50,12 @@
     self.customButton.enabled = v;
 }
 
-- (id)addCommandListener:(id)target selector:(SEL)selector {
-    if(!self.commandListenerRegistered) {
-        [(MICUiDsCustomButton*)self.view setTarget:self action:@selector(onButtonTapped:)];
-    }
-    return [super addCommandListener:target selector:selector];
-}
+//- (id)addCommandListener:(id)target selector:(SEL)selector {
+//    if(!self.commandListenerRegistered) {
+//        [(MICUiDsCustomButton*)self.view setTarget:self action:@selector(onButtonTapped:)];
+//    }
+//    return [super addCommandListener:target selector:selector];
+//}
 
 //- (void)onCustomButtonTapped:(MICUiDsCustomButton *)view {
 //

@@ -130,4 +130,23 @@ typedef id<IMICAwaiterResult> _Nullable (^MICAwaitProc)(id awaitable);
 #define MIC_ASSERT_SUB_THREAD    NSAssert(!NSThread.isMainThread, @"must be called in sub-thread.")
 #define MIC_ASSERT_MAIN_THREAD   NSAssert(NSThread.isMainThread, @"must be called in main-thread.")
 
+#ifdef __cplusplus
+class MICMainThread {
+public:
+    MICMainThread() {}
+    
+    void run(void(^action)(void)) {
+        [MICAsync mainThread:action];
+    }
+    
+    void runAsync(void(^action)(void)) {
+        [MICAsync mainThreadAsync:action];
+    }
+    
+    id run(id(^func)(void)) {
+        return [MICAsync mainThreadFunc:func];
+    }
+};
+#endif
+
 NS_ASSUME_NONNULL_END
