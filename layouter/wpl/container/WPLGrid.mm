@@ -683,6 +683,14 @@ public:
             return list.sizeRange(ex.row, ex.rowSpan, spacing(grid));
         }
     }
+    
+    NSString* orientationName() const {
+        if(rc==COL) {
+            return @"X";
+        } else {
+            return @"Y";
+        }
+    }
 };
 
 - (void)beginRendering:(WPLRenderingMode)mode {
@@ -782,10 +790,14 @@ public:
         // Any > FIXED
         // Independent | BottomUp
         size = requestedSize;
-    }
-    if(requestedSize<0 && regulatingSize>0) {
+    } else if (regulatingSize>0 && requestedSize<0) {
         // STRC|FIXED > STRC
         size = regulatingSize;
+    } else if(regulatingSize==0 && requestedSize<0) {
+        // AUTO > STRC ... 問題のやつ
+        WPLOG(@"WPL-CAUTION:%@ -<%@>- AUTO > STRC", self.description, acc.orientationName());
+    } else {
+        // Any > AUTO
     }
     acc.setFixedSize(size);
     return size>0;

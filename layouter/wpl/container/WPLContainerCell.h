@@ -24,4 +24,11 @@
  */
 @property (nonatomic) NSArray<id<IWPLCell>>* cells;
 
+#ifdef WPL_ENABLE_LOG
+- (void) dumpCells:(NSString*)prefix;
+#define WPL_DUMP(container) [((WPLContainerCell*)container) dumpCells:@""]
+#else
+#define WPL_DUMP(container) {}
+#endif
+
 @end

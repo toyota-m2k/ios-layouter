@@ -184,5 +184,20 @@
     return 0;
 }
 
+#ifdef WPL_ENABLE_LOG
+- (void) dumpCells:(NSString*)prefix {
+    WPLOG(@"%@%@", prefix, self.description);
+    NSString* next = [prefix stringByAppendingString:@"  "];
+    for(id<IWPLCell> cell in self.cells) {
+        if([cell isKindOfClass:WPLContainerCell.class]) {
+            [(WPLContainerCell*)cell dumpCells:next];
+        } else {
+            WPLOG(@"%@%@", next, cell.description);
+        }
+    }
+}
+#endif
+
+
 @end
 

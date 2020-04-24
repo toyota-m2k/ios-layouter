@@ -24,6 +24,10 @@
     WPLCMinMax _limitHeight;
 }
 
+- (NSString *)description {
+    return [NSString stringWithFormat:@"%@ (%@)", self.name, NSStringFromClass(self.class)];
+}
+
 @synthesize containerDelegate = _containerDelegate, name = _name, extension = _extension, view = _view;
 
 /**
@@ -313,23 +317,77 @@
     // override in sub-classes if needs.
 }
 
-/**
- * ビューサイズ（マージンを含まない）を計算
- */
-+ (CGFloat)calcViewSizeWithRegulatingSize:(CGFloat) regulatingSize    // マージンを含まない
-                            requestedSize:(CGFloat) requestedSize     // マージンを含まない
-                                 viewSize:(CGFloat) viewSize {
+class BCAccessor {
+public:
+    enum Orientation { HORZ, VERT };
+private:
+    Orientation orientation;
+public:
+    BCAccessor(Orientation orientation_) {
+        orientation = orientation_;
+    }
+    CGFloat requestedSize(id<IWPLCell> cell) const {
+        if(orientation==HORZ) {
+            return cell.requestViewSize.width;
+        } else {
+            return cell.requestViewSize.height;
+        }
+    }
+    
+    CGFloat viewSize(id<IWPLCell> cell) const {
+        if(orientation==HORZ) {
+            return cell.view.frame.size.width;
+        } else {
+            return cell.view.frame.size.height;
+        }
+    }
+    
+    NSString* orientationName() const {
+        if(orientation==HORZ) {
+            return @"X";
+        } else {
+            return @"Y";
+        }
+    }
+};
+
+- (CGFloat) calcCellSize:(CGFloat) regulatingSize    // マージンを含まない
+                     acc:(const BCAccessor&) acc {
+    let requestedSize = acc.requestedSize(self);
     if(requestedSize>0) {
         // Any > FIXED
         // Independent | BottomUp
         return requestedSize;
-    }
-    if(requestedSize<0 && regulatingSize>0) {
+    } else if(regulatingSize>0 && requestedSize<0) {
         // STRC|FIXED > STRC
+        // TopDown
         return regulatingSize;
+    } else if(regulatingSize==0 && requestedSize<0) {
+        // AUTO > STRC ... 問題のやつ
+        WPLOG(@"WPL-CAUTION:%@ -<%@>- AUTO > STRC", self.description, acc.orientationName());
+    } else {
+        // Any > AUTO
     }
-    // AUTO
-    return viewSize;
+    return acc.viewSize(self);
+}
+
+/**
+ * ビューサイズ（マージンを含まない）を計算
+ */
+//+ (CGFloat)calcViewSizeWithRegulatingSize:(CGFloat) regulatingSize    // マージンを含まない
+//                            requestedSize:(CGFloat) requestedSize     // マージンを含まない
+//                                 viewSize:(CGFloat) viewSize {
+//    if(requestedSize>0) {
+//        // Any > FIXED
+//        // Independent | BottomUp
+//        return requestedSize;
+//    }
+//    if(regulatingSize>0 && requestedSize<0) {
+//        // STRC|FIXED > STRC
+//        return regulatingSize;
+//    }
+//    // AUTO
+//    return viewSize;
 
 // 上の分岐を詳しく書くと↓
 //
@@ -360,17 +418,17 @@
 //        }
 //    }
 //    return result;
-}
+//}
 
 /**
  * セル幅（マージンを含む）を計算
  * @param regulatingWidth   親からのサイズ指定（マージンを含む）
  */
 - (CGFloat)calcCellWidth:(CGFloat)regulatingWidth {
+    BCAccessor acc(BCAccessor::HORZ);
     CGFloat margin = MICEdgeInsets(self.margin).dw();
-    CGFloat viewWidth = [self.class calcViewSizeWithRegulatingSize:MAX(0,regulatingWidth-margin)
-                                                     requestedSize:self.requestViewSize.width
-                                                          viewSize:self.view.frame.size.width];
+    CGFloat viewWidth = [self calcCellSize:MAX(0,regulatingWidth-margin)
+                                       acc:acc];
     return WPLCMinMax(self.limitWidth).clip(viewWidth) + margin;
 }
 
@@ -379,10 +437,10 @@
  * @param regulatingHeight   親からのサイズ指定（マージンを含む）
  */
 - (CGFloat)calcCellHeight:(CGFloat)regulatingHeight {
+    BCAccessor acc(BCAccessor::VERT);
     CGFloat margin = MICEdgeInsets(self.margin).dh();
-    CGFloat viewHeight = [self.class calcViewSizeWithRegulatingSize:MAX(0,regulatingHeight-margin)
-                                                      requestedSize:self.requestViewSize.height
-                                                           viewSize:self.view.frame.size.height];
+    CGFloat viewHeight = [self calcCellSize:MAX(0,regulatingHeight-margin)
+                                        acc:acc];
     return WPLCMinMax(self.limitHeight).clip(viewHeight) + margin;
 }
 
@@ -452,6 +510,7 @@
 
     // 上記のサイズのセルを alignment の指定に従って、finalCellRect 内に配置する。
     MICRect viewRect([self alignCellSize:outerCellSize-self.margin inRect:finalCellRect-self.margin]);
+    WPLOG(@"endRendering:%@ -- viewRect=%@ / cellRect=%@", self.name, viewRect.toString(), MICRect(finalCellRect).toString() );
     if(viewRect!=self.view.frame) {
         CGFloat animDuration = self.animationDuration;
         if(animDuration>0) {
@@ -460,6 +519,17 @@
             self.view.frame = viewRect;
         }
     }
+}
+
++ (void)log:(NSString *)fmt, ... {
+    va_list args;
+    va_start(args, fmt);
+    [self log:fmt arguments:args];
+    va_end(args);
+}
+
++ (void)log:(NSString *)fmt arguments:(va_list)argList {
+    NSLogv(fmt, argList);
 }
 
 @end

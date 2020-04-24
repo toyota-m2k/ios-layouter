@@ -9,6 +9,8 @@
 #import "WPLCellDef.h"
 #import "MICUiRectUtil.h"
 
+//#define WPL_ENABLE_LOG
+
 #if defined(__cplusplus)
 
 class WPLAlignment {
@@ -202,6 +204,14 @@ public:
 //- (CGRect) rectWithoutMargin:(CGRect)rect;
 //
 //- (CGSize) limitSize:(CGSize) size;
+
+#ifdef WPL_ENABLE_LOG
++ (void)log:(NSString *)fmt, ...;
++ (void)log:(NSString *)fmt arguments:(va_list)argList;
+#define WPLOG(fmt,...) [WPLCell log:fmt, ##__VA_ARGS__]
+#else
+#define WPLOG(fmt,...) {}
+#endif
 
 @end
 

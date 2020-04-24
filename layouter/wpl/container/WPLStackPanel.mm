@@ -187,7 +187,7 @@
             _cachedSize.width = [self calcFixedSide:MAX(0,regulatingWidth-MICEdgeInsets::dw(self.margin)) requestedSize:self.requestViewSize.width];
         } else {
             // Growing Side
-            _cachedSize.width = [self calcGrowingSide];
+            _cachedSize.width = [self calcGrowingSide:MAX(0,regulatingWidth-MICEdgeInsets::dw(self.margin)) requestedSize:self.requestViewSize.width];
         }
         _cacheHorz = true;
     }
@@ -205,7 +205,7 @@
             _cachedSize.height =[self calcFixedSide:MAX(0,regulatingHeight-MICEdgeInsets::dh(self.margin)) requestedSize:self.requestViewSize.height];
         } else {
             // Growing Side
-            _cachedSize.height = [self calcGrowingSide];
+            _cachedSize.height = [self calcGrowingSide:MAX(0,regulatingHeight-MICEdgeInsets::dh(self.margin)) requestedSize:self.requestViewSize.height];
         }
         _cacheVert = true;
     }
@@ -230,14 +230,21 @@
             requestedSize:(CGFloat)requestedSize {
     CGFloat fixed = 0;
     if(requestedSize>0 /*this.FIXED*/) {
-        // BottomUp || Independent
+        // Any > FIXED
+        // Independent | BottomUp
         // 自身がFIXEDなら、そのサイズを採用
         fixed = requestedSize;
-    }
-    if(requestedSize<0 && regulatingSize>0) {
+    } else if(regulatingSize>0 && requestedSize<0) {
+        // STRC|FIXED > STRC
         // TopDown
         // 自身がSTRCで親がAUTOでない --> 親のサイズを採用（ただし、marginを含むのでそれを除外する）
         fixed = regulatingSize;
+    } else if(regulatingSize==0 && requestedSize<0) {
+        // AUTO > STRC ... 問題のやつ
+        NSString* ori = (self.orientation==WPLOrientationHORIZONTAL) ? @"V" : @"H";
+        WPLOG(@"WPL-CAUTION:%@ -<%@>- AUTO > STRC", self.description, ori);
+    } else {
+        // Any > AUTO
     }
     // fixed==0: Auto --> 子セルに委ねる
     CGFloat max = 0;
@@ -258,7 +265,27 @@
 /**
  * 伸長側のサイズ（マージンを含まない）を計算
  */
-- (CGFloat) calcGrowingSide {
+- (CGFloat) calcGrowingSide:(CGFloat)regulatingSize
+              requestedSize:(CGFloat)requestedSize {
+    CGFloat fixed = 0;
+    if(requestedSize>0 /*this.FIXED*/) {
+        // Any > FIXED
+        // Independent | BottomUp
+        // 自身がFIXEDなら、そのサイズを採用
+        fixed = requestedSize;
+    } else if(regulatingSize>0 && requestedSize<0) {
+        // STRC|FIXED > STRC
+        // TopDown
+        // 自身がSTRCで親がAUTOでない --> 親のサイズを採用（ただし、marginを含むのでそれを除外する）
+        fixed = regulatingSize;
+    } else if(regulatingSize==0 && requestedSize<0) {
+        // AUTO > STRC ... 問題のやつ
+        NSString* ori = (self.orientation==WPLOrientationHORIZONTAL) ? @"H" : @"V";
+        WPLOG(@"WPL-CAUTION:%@ -<%@>- AUTO > STRC", self.description, ori);
+    } else {
+        // Any > AUTO
+    }
+    
     CGFloat len = 0;
     for(id<IWPLCell>cell in self.cells) {
         if(cell.visibility!=WPLVisibilityCOLLAPSED) {
@@ -275,7 +302,7 @@
     if(len>0) {
         len -= _cellSpacing;
     }
-    return len;
+    return fixed>0 ? fixed : len;
 }
 
 - (CGFloat) getFixedSideCell:(id<IWPLCell>)cell

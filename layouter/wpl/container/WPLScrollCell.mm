@@ -156,6 +156,9 @@ public:
         return horz ? [cell calcCellWidth:regulatingSize] : [cell calcCellHeight:regulatingSize];
     }
     
+    NSString* orientationName() {
+        return horz ? @"H" : @"V";
+    }
 };
 
 - (void)beginRendering:(WPLRenderingMode)mode {
@@ -211,10 +214,14 @@ public:
         // Any > FIXED
         // Independent | BottomUp
         acc.cellSize = requestedSize;
-    }
-    if(requestedSize<0 && regulatingSize>0) {
+    } else if(regulatingSize>0 && requestedSize<0) {
         // STRC|FIXED > STRC
         acc.cellSize = regulatingSize;
+    } else if(regulatingSize==0 && requestedSize<0) {
+        // AUTO > STRC ... 問題のやつ
+        WPLOG(@"WPL-CAUTION:%@ -<%@>- AUTO > STRC", self.description, acc.orientationName());
+    } else {
+        // Any > AUTO
     }
 
     // Content Size

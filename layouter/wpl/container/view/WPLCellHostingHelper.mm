@@ -11,6 +11,7 @@
 #import "MICVar.h"
 #import "MICKeyValueObserver.h"
 #import "MICTargetSelector.h"
+#import "WPLContainerCell.h"    // for dump
 
 enum Orientation {
     VERT=0,
@@ -219,6 +220,8 @@ static inline void set_origin(Orientation o, MICRect& rect, CGFloat pos=0) {
     if(viewRect.isEmpty()) {
         return;
     }
+    
+    WPL_DUMP(_containerCell);
     
     MICRect frameRect(_view.bounds);
     [_containerCell beginRendering:mode];

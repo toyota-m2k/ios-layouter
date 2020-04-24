@@ -79,7 +79,7 @@ public:
         orientation = orientation_;
     }
     
-    CGFloat calcSize(id<IWPLCell>cell, CGFloat regulatingSize) {
+    CGFloat calcSize(id<IWPLCell>cell, CGFloat regulatingSize) const {
         if(orientation==HORZ) {
             return [cell calcCellWidth:regulatingSize];
         } else {
@@ -87,7 +87,7 @@ public:
         }
     }
     
-    CGFloat requestedSize(id<IWPLCell> cell) {
+    CGFloat requestedSize(id<IWPLCell> cell) const {
         if(orientation==HORZ) {
             return cell.requestViewSize.width;
         } else {
@@ -95,25 +95,36 @@ public:
         }
     }
     
+    NSString* orientationName() const {
+        if(orientation==HORZ) {
+            return @"X";
+        } else {
+            return @"Y";
+        }
+    }
 };
 
 /**
  * ビューサイズ（マージンを含まない）を計算
  */
 - (CGFloat)calcCellSize:(CGFloat) regulatingSize    // マージンを含まない
-                    acc:(FRAccessor&)acc {
+                    acc:(const FRAccessor&)acc {
     let requestedSize = acc.requestedSize(self);
     CGFloat fixedSize = 0;
     if(requestedSize>0) {
         // Any > FIXED
         // Independent | BottomUp
         fixedSize = requestedSize;
-    }
-    if(requestedSize<0 && regulatingSize>0) {
+    } else if(regulatingSize>0 && requestedSize<0) {
         // STRC|FIXED > STRC
         fixedSize =  regulatingSize;
+    } else if(regulatingSize==0 && requestedSize<0) {
+        // AUTO > STRC ... 問題のやつ
+        WPLOG(@"WPL-CAUTION:%@ -<%@>- AUTO > STRC", self.description, acc.orientationName());
+    } else {
+        // Any > AUTO
     }
-
+    
     if(fixedSize>0) {
         // FIXED|STRC
         for(id<IWPLCell>cell in self.cells) {

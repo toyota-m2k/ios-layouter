@@ -541,6 +541,10 @@ public:
         *this = (CGRectApplyAffineTransform(*this, tr));
         return *this;
     }
+    
+    NSString* toString() {
+        return [NSString stringWithFormat:@"(%ld,%ld)-(%ld,%ld) : %ldWx%ldH", (long)left(), (long)top(), (long)right(), (long)bottom(), (long)width(), (long)height()];
+    }
 };
 
 inline CGRect operator +(const CGRect& rc, const UIEdgeInsets& margin) {
@@ -696,6 +700,10 @@ public:
     
     static CGSize max(const CGSize& s1, const CGSize& s2);
     static CGSize min(const CGSize& s1, const CGSize& s2);
+
+    NSString* toString() {
+        return [NSString stringWithFormat:@"%ldWx%ldH", (long)width, (long)height];
+    }
 };
 
 inline CGSize operator +(const CGSize& size, const UIEdgeInsets& margin) {
@@ -814,6 +822,10 @@ public:
     MICPoint& transform(const CGAffineTransform& tr) {
         *this = (CGPointApplyAffineTransform(*this, tr));
         return *this;
+    }
+
+    NSString* toString() {
+        return [NSString stringWithFormat:@"(%ld,%ld)", (long)x, (long)y];
     }
 };
 
