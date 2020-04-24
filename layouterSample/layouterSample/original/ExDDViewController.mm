@@ -116,7 +116,7 @@
         gridview.gridLayout.cellSize = MICSize(80,80);
         gridview.gridLayout.cellSpacingHorz =15;
         gridview.gridLayout.cellSpacingVert =15;
-        gridview.gridLayout.name = MICString(@"AccCell-%d", j+1);
+        gridview.gridLayout.name = MICString::format(@"AccCell-%d", j+1);
         gridview.backgroundColor = [UIColor blackColor];
         
         UILabel* label;
