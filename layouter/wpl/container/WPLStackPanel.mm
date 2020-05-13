@@ -241,8 +241,7 @@
         fixed = regulatingSize;
     } else if(regulatingSize==0 && requestedSize<0) {
         // AUTO > STRC ... 問題のやつ
-        NSString* ori = (self.orientation==WPLOrientationHORIZONTAL) ? @"V" : @"H";
-        WPLOG(@"WPL-CAUTION:%@ -<%@>- AUTO > STRC", self.description, ori);
+        WPLOG(@"WPL-CAUTION:%@ -<%@>- AUTO > STRC", self.description, ((self.orientation==WPLOrientationHORIZONTAL) ? @"V" : @"H"));
     } else {
         // Any > AUTO
     }
@@ -280,8 +279,7 @@
         fixed = regulatingSize;
     } else if(regulatingSize==0 && requestedSize<0) {
         // AUTO > STRC ... 問題のやつ
-        NSString* ori = (self.orientation==WPLOrientationHORIZONTAL) ? @"H" : @"V";
-        WPLOG(@"WPL-CAUTION:%@ -<%@>- AUTO > STRC", self.description, ori);
+        WPLOG(@"WPL-CAUTION:%@ -<%@>- AUTO > STRC", self.description, ((self.orientation==WPLOrientationHORIZONTAL) ? @"H" : @"V"));
     } else {
         // Any > AUTO
     }

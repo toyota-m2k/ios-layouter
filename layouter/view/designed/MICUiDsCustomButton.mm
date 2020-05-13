@@ -70,8 +70,8 @@
         MICUiViewState oldState = _buttonState;
         _buttonState = (MICUiViewState)state;
         [self setNeedsDisplay];
-        if(nil!=_customButtonDelegate) {
-            [_customButtonDelegate onCustomButtonStateChangedAt:self from:oldState to:_buttonState];
+        if(nil!=self.customButtonDelegate) {
+            [self.customButtonDelegate onCustomButtonStateChangedAt:self from:oldState to:_buttonState];
         }
     }
 }
@@ -183,8 +183,8 @@
     if(_enabled && !_inert) {
         UITouch* touch = [touches anyObject];
         if(touch.view == self) {
-            if(nil!=_customButtonDelegate) {
-                [_customButtonDelegate onCustomButtonTapped:self];
+            if(nil!=self.customButtonDelegate) {
+                [self.customButtonDelegate onCustomButtonTapped:self];
             }
             if(nil!=_targetSelector) {
                 id me = self;
