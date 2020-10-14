@@ -57,7 +57,7 @@
 @property (nonatomic) CGFloat lineSpacing;                                          ///< 複数行表示の場合の行間（行の高さに対する比率で指定）
 @property (nonatomic) bool autoScaleToBounds;                                       ///< true:ビューのサイズに収まらない場合に自動的に縮小する (default:false)
 
-@property (nonatomic) id<MICUiDsCustomButtonDelegate> customButtonDelegate;         ///< イベントリスナー
+@property (nonatomic,weak) id<MICUiDsCustomButtonDelegate> customButtonDelegate;    ///< イベントリスナー
 @property (nonatomic) NSString* key;
 
 /**

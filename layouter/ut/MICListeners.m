@@ -63,5 +63,9 @@
     }
 }
 
+- (bool) isEmpty {
+    return nil==_listeners || _listeners.count==0;
+}
+
 
 @end

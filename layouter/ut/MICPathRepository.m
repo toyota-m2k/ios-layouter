@@ -96,5 +96,7 @@
     [_dic removeAllObjects];
 }
 
-
+- (void)dealloc {
+    [self dispose];
+}
 @end

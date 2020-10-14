@@ -34,7 +34,11 @@
     if(![_resources isKindOfClass:NSMutableDictionary.class]) {
         _resources = [NSMutableDictionary dictionaryWithDictionary:_resources];
     }
-    [(NSMutableDictionary*)_resources setObject:res forKey:name];
+    if(res!=nil) {
+        [(NSMutableDictionary*)_resources setObject:res forKey:name];
+    } else {
+        [(NSMutableDictionary*)_resources removeObjectForKey:name];
+    }
 }
 
 - (void)complementResource:(id)res forName:(NSString *)name {
@@ -100,6 +104,8 @@
                     return MICUiStatefulBgColorNORMAL;
                 case MICUiViewStateDISABLED_SELECTED:
                     return MICUiStatefulBgColorDISABLED_SELECTED;
+                case MICUiViewStateACTIVATED_SELECTED:
+                    return MICUiStatefulBgColorACTIVATED_SELECTED;
                 default:
                     break;
             }
@@ -116,6 +122,8 @@
                     return MICUiStatefulFgColorNORMAL;
                 case MICUiViewStateDISABLED_SELECTED:
                     return MICUiStatefulFgColorDISABLED_SELECTED;
+                case MICUiViewStateACTIVATED_SELECTED:
+                    return MICUiStatefulFgColorACTIVATED_SELECTED;
                 default:
                     break;
             }
@@ -132,6 +140,8 @@
                     return MICUiStatefulBorderColorNORMAL;
                 case MICUiViewStateDISABLED_SELECTED:
                     return MICUiStatefulBorderColorDISABLED_SELECTED;
+                case MICUiViewStateACTIVATED_SELECTED:
+                    return MICUiStatefulBorderColorACTIVATED_SELECTED;
                 default:
                     break;
             }
@@ -148,6 +158,8 @@
                     return MICUiStatefulBgImageNORMAL;
                 case MICUiViewStateDISABLED_SELECTED:
                     return MICUiStatefulBgImageDISABLED_SELECTED;
+                case MICUiViewStateACTIVATED_SELECTED:
+                    return MICUiStatefulBgImageACTIVATED_SELECTED;
                 default:
                     break;
             }
@@ -164,6 +176,8 @@
                     return MICUiStatefulIconNORMAL;
                 case MICUiViewStateDISABLED_SELECTED:
                     return MICUiStatefulIconDISABLED_SELECTED;
+                case MICUiViewStateACTIVATED_SELECTED:
+                    return MICUiStatefulIconACTIVATED_SELECTED;
                 default:
                     break;
             }
@@ -180,6 +194,8 @@
                     return MICUiStatefulSvgPathNORMAL;
                 case MICUiViewStateDISABLED_SELECTED:
                     return MICUiStatefulSvgPathDISABLED_SELECTED;
+                case MICUiViewStateACTIVATED_SELECTED:
+                    return MICUiStatefulSvgPathACTIVATED_SELECTED;
                 default:
                     break;
             }
@@ -196,6 +212,8 @@
                     return MICUiStatefulSvgColorNORMAL;
                 case MICUiViewStateDISABLED_SELECTED:
                     return MICUiStatefulSvgColorDISABLED_SELECTED;
+                case MICUiViewStateACTIVATED_SELECTED:
+                    return MICUiStatefulSvgColorACTIVATED_SELECTED;
                 default:
                     break;
             }
@@ -211,6 +229,8 @@
                     return MICUiStatefulSvgBgPathNORMAL;
                 case MICUiViewStateDISABLED_SELECTED:
                     return MICUiStatefulSvgBgPathDISABLED_SELECTED;
+                case MICUiViewStateACTIVATED_SELECTED:
+                    return MICUiStatefulSvgBgPathACTIVATED_SELECTED;
                 default:
                     break;
             }
@@ -227,6 +247,80 @@
                     return MICUiStatefulSvgBgColorNORMAL;
                 case MICUiViewStateDISABLED_SELECTED:
                     return MICUiStatefulSvgBgColorDISABLED_SELECTED;
+                case MICUiViewStateACTIVATED_SELECTED:
+                    return MICUiStatefulSvgBgColorACTIVATED_SELECTED;
+                default:
+                    break;
+            }
+            break;
+        case MICUiResTypeSVG_STROKE_COLOR:
+            switch(state) {
+                case MICUiViewStateACTIVATED_:
+                    return MICUiStatefulSvgStrokeColorACTIVATED;
+                case MICUiViewStateDISABLED_:
+                    return MICUiStatefulSvgStrokeColorDISABLED;
+                case MICUiViewStateSELECTED_:
+                    return MICUiStatefulSvgStrokeColorSELECTED;
+                case MICUiViewStateNORMAL:
+                    return MICUiStatefulSvgStrokeColorNORMAL;
+                case MICUiViewStateDISABLED_SELECTED:
+                    return MICUiStatefulSvgStrokeColorDISABLED_SELECTED;
+                case MICUiViewStateACTIVATED_SELECTED:
+                    return MICUiStatefulSvgStrokeColorACTIVATED_SELECTED;
+                default:
+                    break;
+            }
+            break;
+        case MICUiResTypeSVG_STROKE_BGCOLOR:
+            switch(state) {
+                case MICUiViewStateACTIVATED_:
+                    return MICUiStatefulSvgStrokeBgColorACTIVATED;
+                case MICUiViewStateDISABLED_:
+                    return MICUiStatefulSvgStrokeBgColorDISABLED;
+                case MICUiViewStateSELECTED_:
+                    return MICUiStatefulSvgStrokeBgColorSELECTED;
+                case MICUiViewStateNORMAL:
+                    return MICUiStatefulSvgStrokeBgColorNORMAL;
+                case MICUiViewStateDISABLED_SELECTED:
+                    return MICUiStatefulSvgStrokeBgColorDISABLED_SELECTED;
+                case MICUiViewStateACTIVATED_SELECTED:
+                    return MICUiStatefulSvgStrokeBgColorACTIVATED_SELECTED;
+                default:
+                    break;
+            }
+            break;
+        case MICUiResTypeSVG_STROKE_WIDTH:
+            switch(state) {
+                case MICUiViewStateACTIVATED_:
+                    return MICUiStatefulSvgStrokeWidthACTIVATED;
+                case MICUiViewStateDISABLED_:
+                    return MICUiStatefulSvgStrokeWidthDISABLED;
+                case MICUiViewStateSELECTED_:
+                    return MICUiStatefulSvgStrokeWidthSELECTED;
+                case MICUiViewStateNORMAL:
+                    return MICUiStatefulSvgStrokeWidthNORMAL;
+                case MICUiViewStateDISABLED_SELECTED:
+                    return MICUiStatefulSvgStrokeWidthDISABLED_SELECTED;
+                case MICUiViewStateACTIVATED_SELECTED:
+                    return MICUiStatefulSvgStrokeWidthACTIVATED_SELECTED;
+                default:
+                    break;
+            }
+            break;
+        case MICUiResTypeSVG_STROKE_BG_WIDTH:
+            switch(state) {
+                case MICUiViewStateACTIVATED_:
+                    return MICUiStatefulSvgStrokeBgWidthACTIVATED;
+                case MICUiViewStateDISABLED_:
+                    return MICUiStatefulSvgStrokeBgWidthDISABLED;
+                case MICUiViewStateSELECTED_:
+                    return MICUiStatefulSvgStrokeBgWidthSELECTED;
+                case MICUiViewStateNORMAL:
+                    return MICUiStatefulSvgStrokeBgWidthNORMAL;
+                case MICUiViewStateDISABLED_SELECTED:
+                    return MICUiStatefulSvgStrokeBgWidthDISABLED_SELECTED;
+                case MICUiViewStateACTIVATED_SELECTED:
+                    return MICUiStatefulSvgStrokeBgWidthACTIVATED_SELECTED;
                 default:
                     break;
             }

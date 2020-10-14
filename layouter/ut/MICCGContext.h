@@ -756,7 +756,7 @@ public:
      * drawPath(kCGPathEOFill) と等価だと思う。
      * EOF == even odd fill / != end of file
      */
-    void eofFillPath() {
+    void eoFillPath() {
         CGContextEOFillPath(_res);
     }
     
