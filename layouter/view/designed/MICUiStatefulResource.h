@@ -36,8 +36,12 @@ typedef enum _micUiResType {
     MICUiResTypeICON,
     MICUiResTypeSVG_PATH,       // SVG Path
     MICUiResTypeSVG_BGPATH,     // SVG BGPath
-    MICUiResTypeSVG_COLOR,      // fill color of SVG path
-    MICUiResTypeSVG_BGCOLOR,    // bg color of SVG Path
+    MICUiResTypeSVG_COLOR,      // fill color of fg SVG path
+    MICUiResTypeSVG_BGCOLOR,    // fill color of bg SVG Path
+    MICUiResTypeSVG_STROKE_COLOR,      // stroke color of fg SVG path
+    MICUiResTypeSVG_STROKE_BGCOLOR,    // stroke color of bg SVG Path
+    MICUiResTypeSVG_STROKE_WIDTH,      // stroke width of fg SVG path
+    MICUiResTypeSVG_STROKE_BG_WIDTH,   // stroke width of bg SVG Path
     ////
     __MICUIRESTYPECOUNT
 } MICUiResType;
@@ -104,6 +108,35 @@ typedef enum _micUiResType {
 #define MICUiStatefulSvgBgColorDISABLED  @"SvgBgColorDisabled"
 #define MICUiStatefulSvgBgColorDISABLED_SELECTED  @"SvgBgColorDisabledSelected"
 #define MICUiStatefulSvgBgColorACTIVATED_SELECTED @"SvgBgColorActivatedSelected"
+
+#define MICUiStatefulSvgStrokeColorNORMAL    @"SvgStrokeColorNormal"
+#define MICUiStatefulSvgStrokeColorSELECTED  @"SvgStrokeColorSelected"
+#define MICUiStatefulSvgStrokeColorACTIVATED @"SvgStrokeColorActivated"
+#define MICUiStatefulSvgStrokeColorDISABLED  @"SvgStrokeColorDisabled"
+#define MICUiStatefulSvgStrokeColorDISABLED_SELECTED  @"SvgStrokeColorDisabledSelected"
+#define MICUiStatefulSvgStrokeColorACTIVATED_SELECTED @"SvgStrokeColorActivatedSelected"
+
+#define MICUiStatefulSvgStrokeBgColorNORMAL    @"SvgStrokeBgColorNormal"
+#define MICUiStatefulSvgStrokeBgColorSELECTED  @"SvgStrokeBgColorSelected"
+#define MICUiStatefulSvgStrokeBgColorACTIVATED @"SvgStrokeBgColorActivated"
+#define MICUiStatefulSvgStrokeBgColorDISABLED  @"SvgStrokeBgColorDisabled"
+#define MICUiStatefulSvgStrokeBgColorDISABLED_SELECTED  @"SvgStrokeBgColorDisabledSelected"
+#define MICUiStatefulSvgStrokeBgColorACTIVATED_SELECTED @"SvgStrokeBgColorActivatedSelected"
+
+#define MICUiStatefulSvgStrokeWidthNORMAL    @"SvgStrokeWidthNormal"
+#define MICUiStatefulSvgStrokeWidthSELECTED  @"SvgStrokeWidthSelected"
+#define MICUiStatefulSvgStrokeWidthACTIVATED @"SvgStrokeWidthActivated"
+#define MICUiStatefulSvgStrokeWidthDISABLED  @"SvgStrokeWidthDisabled"
+#define MICUiStatefulSvgStrokeWidthDISABLED_SELECTED  @"SvgStrokeWidthDisabledSelected"
+#define MICUiStatefulSvgStrokeWidthACTIVATED_SELECTED @"SvgStrokeWidthActivatedSelected"
+
+#define MICUiStatefulSvgStrokeBgWidthNORMAL    @"SvgStrokeBgWidthNormal"
+#define MICUiStatefulSvgStrokeBgWidthSELECTED  @"SvgStrokeBgWidthSelected"
+#define MICUiStatefulSvgStrokeBgWidthACTIVATED @"SvgStrokeBgWidthActivated"
+#define MICUiStatefulSvgStrokeBgWidthDISABLED  @"SvgStrokeBgWidthDisabled"
+#define MICUiStatefulSvgStrokeBgWidthDISABLED_SELECTED  @"SvgStrokeBgWidthDisabledSelected"
+#define MICUiStatefulSvgStrokeBgWidthACTIVATED_SELECTED @"SvgStrokeBgWidthActivatedSelected"
+
 
 /**
  * 状態依存リソースのi/f定義

@@ -10,3 +10,6 @@
 - (void) dispose;
 @end
 
+#define WPL_DISPOSE(d) if(d!=nil) { [d dispose]; d=nil; }
+
+

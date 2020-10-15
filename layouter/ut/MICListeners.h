@@ -18,7 +18,7 @@
 - (void) removeAll;
 - (void) fire:(id)param;
 - (void) forEach:(void (^)(MICTargetSelector*))cb;
-
+- (bool) isEmpty;
 
 @end
 

@@ -59,24 +59,62 @@
 
 - (MICSvgPath*) getSvgPathForState:(MICUiViewState)state {
     NSString* path = [self resource:self.colorResources onStateForType:MICUiResTypeSVG_PATH];
+    if(path==nil) {
+        return nil;
+    }
     return [_pathRepo getPath:path viewboxSize:_viewboxSize];
 }
 
-- (UIColor*) getIconColorForState:(MICUiViewState)state {
-    UIColor* color = [self resource:self.colorResources onStateForType:MICUiResTypeSVG_COLOR];
-    if(nil==color) {
-        color = [self resource:self.colorResources onStateForType:MICUiResTypeFGCOLOR];
-    }
+//- (UIColor*) getIconColorForState:(MICUiViewState)state {
+//    UIColor* color = [self resource:self.colorResources onStateForType:MICUiResTypeSVG_COLOR];
+//    if(nil==color) {
+//        color = [self resource:self.colorResources onStateForType:MICUiResTypeFGCOLOR];
+//    }
+//    return color;
+//}
+
+- (UIColor*) getFgColor:(MICUiViewState) state {
+    UIColor* color = [self resource:self.colorResources onStateForType:MICUiResTypeFGCOLOR];
     return color;
 }
+- (UIColor*) currentFgColor {
+    return [self getFgColor:self.buttonState];
+}
+
+- (UIColor*) getSvgColor:(MICUiViewState)state {
+    UIColor* color = [self resource:self.colorResources onStateForType:MICUiResTypeSVG_COLOR];
+    return color;
+}
+
+- (UIColor*) getSvgStrokeColor:(MICUiViewState)state {
+    UIColor* color = [self resource:self.colorResources onStateForType:MICUiResTypeSVG_STROKE_COLOR];
+    return color;
+}
+
+- (CGFloat) getSvgStrokeWidth:(MICUiViewState)state {
+    id v = [self resource:self.colorResources onStateForType:MICUiResTypeSVG_STROKE_WIDTH];
+    return v==nil ? 0 : [v floatValue];
+}
+
 
 - (MICSvgPath*) currentSvgPath {
     return [self getSvgPathForState:self.buttonState];
 }
 
-- (UIColor*) currentIconColor {
-    return [self getIconColorForState:self.buttonState];
+- (UIColor*) currentSvgColor {
+    return [self getSvgColor:self.buttonState];
 }
+
+- (UIColor*) currentSvgStrokeColor {
+    return [self getSvgStrokeColor:self.buttonState];
+}
+
+- (CGFloat) currentSvgStrokeWidth {
+    return [self getSvgStrokeWidth:self.buttonState];
+}
+//- (UIColor*) currentIconColor {
+//    return [self getIconColorForState:self.buttonState];
+//}
 
 //- (CGRect) calcIconRect {
 //    MICRect rcContent(self.bounds);
@@ -162,14 +200,20 @@
 - (void)drawIcon:(CGContextRef)rctx icon:(UIImage *)icon rect:(CGRect)rect {
     let svgBgPath = self.currentSvgBgPath;
     if(nil!=svgBgPath) {
-        let svgBgColor = self.currentSvgBgColor;
-        if(nil!=svgBgColor) {
-            [svgBgPath fill:rctx dstRect:[self getIconBgRect:rect] fillColor:svgBgColor];
-        }
+        let fillColor = self.currentSvgBgColor;
+        let strokeColor = self.currentSvgBgStrokeColor;
+        let strokeWidth = self.currentSvgBgStrokeWidth;
+        [svgBgPath draw:rctx dstRect:[self getIconBgRect:rect] fillColor:fillColor stroke:strokeColor strokeWidth:strokeWidth];
     }
     let svgPath = self.currentSvgPath;
     if(nil!=svgPath) {
-        [svgPath fill:rctx dstRect:[self getIconFgRect:rect] fillColor:self.currentIconColor];
+        var fillColor = self.currentSvgColor;
+        if(fillColor==nil) {
+            fillColor = self.currentFgColor;
+        }
+        let strokeColor = self.currentSvgStrokeColor;
+        let strokeWidth = self.currentSvgStrokeWidth;
+        [svgPath draw:rctx dstRect:[self getIconFgRect:rect] fillColor:fillColor stroke:strokeColor strokeWidth:strokeWidth];
     }
 }
 
@@ -201,10 +245,17 @@
 
 - (UIColor*) getSvgBgColorForState:(MICUiViewState)state {
     UIColor* color = [self resource:self.colorResources onStateForType:MICUiResTypeSVG_BGCOLOR];
-//    if(nil==color) {
-//        color = [self resource:self.colorResources onStateForType:MICUiResTypeFGCOLOR];
-//    }
     return color;
+}
+
+- (UIColor*) getSvgBgStrokeColor:(MICUiViewState)state {
+    UIColor* color = [self resource:self.colorResources onStateForType:MICUiResTypeSVG_STROKE_BGCOLOR];
+    return color;
+}
+
+- (CGFloat) getSvgBgStrokeWidth:(MICUiViewState)state {
+    id v = [self resource:self.colorResources onStateForType:MICUiResTypeSVG_STROKE_BG_WIDTH];
+    return v==nil ? 0 : [v floatValue];
 }
 
 - (MICSvgPath*) currentSvgBgPath {
@@ -213,6 +264,13 @@
 
 - (UIColor*) currentSvgBgColor {
     return [self getSvgBgColorForState:self.buttonState];
+}
+
+- (UIColor*) currentSvgBgStrokeColor {
+    return [self getSvgBgStrokeColor:self.buttonState];
+}
+- (CGFloat) currentSvgBgStrokeWidth {
+    return [self getSvgBgStrokeWidth:self.buttonState];
 }
 
 @end

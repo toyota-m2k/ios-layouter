@@ -43,6 +43,7 @@
 
 @end
 
-@interface MICUiDsChackBoxCell : WPLValueCell
+@interface MICUiDsChackBoxCell : WPLValueCell<IWPLCellSupportCommand>
 
 @end
+

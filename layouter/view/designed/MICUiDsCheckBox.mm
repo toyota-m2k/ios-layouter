@@ -9,8 +9,10 @@
 #import "MICUiDsCheckBox.h"
 #import "MICVar.h"
 #import "MICUiColorUtil.h"
+#import "MICListeners.h"
 
 @implementation MICUiDsCheckBox {
+    MICTargetSelector* _actionOnTapped;
     MICTargetSelector* _actionOnChecked;
     bool _radioButton;
 }
@@ -25,6 +27,13 @@
 #define PATH_ROUND @"M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
 
 #pragma mark - Initialization / Termination
+
+- (id<MICUiDsCustomButtonDelegate>)customButtonDelegate {
+    return self;
+}
+- (void)setCustomButtonDelegate:(id<MICUiDsCustomButtonDelegate>)customButtonDelegate {
+    NSAssert(false, @"cannot set customButtonDelegate to MICUiDsCheckBox");
+}
 
 - (instancetype)initWithFrame:(CGRect)frame
                         label:(NSString *)label
@@ -49,16 +58,29 @@
         _radioButton = radioButton;
         self.text = label;
         if(_radioButton) {
+            // ラジオボタン
             // 丸いチェックボックス
             [resource setResource:PATH_ROUND_BG forName:MICUiStatefulSvgBgPathNORMAL];
             [resource setResource:PATH_ROUND forName:MICUiStatefulSvgPathNORMAL];
         } else {
-            // 四角いチェックボックス
-            [resource setResource:PATH_SQUARE_BG forName:MICUiStatefulSvgBgPathNORMAL];
-            [resource setResource:PATH_SQUARE forName:MICUiStatefulSvgPathNORMAL];
-            [resource setResource:PATH_SQUARE_CHECKED forName:MICUiStatefulSvgPathSELECTED];
+            if([colorResource resourceOf:MICUiResTypeSVG_PATH forState:MICUiViewStateNORMAL]!=nil) {
+                id fg = [colorResource resourceOf:MICUiResTypeSVG_PATH forState:MICUiViewStateNORMAL];
+                [resource setResource:fg forName:MICUiStatefulSvgPathNORMAL];
+                id bg = [colorResource resourceOf:MICUiResTypeSVG_BGPATH forState:MICUiViewStateNORMAL];
+                if(bg!=nil) {
+                    [resource setResource:bg forName:MICUiStatefulSvgBgPathNORMAL];
+                }
+                id sl = [colorResource resourceOf:MICUiResTypeSVG_PATH forState:MICUiViewStateSELECTED_];
+                if(sl!=nil && sl !=fg) {
+                    [resource setResource:sl forName:MICUiStatefulSvgPathSELECTED];
+                }
+            } else {
+                // 四角いチェックボックス
+                [resource setResource:PATH_SQUARE_BG forName:MICUiStatefulSvgBgPathNORMAL];
+                [resource setResource:PATH_SQUARE forName:MICUiStatefulSvgPathNORMAL];
+                [resource setResource:PATH_SQUARE_CHECKED forName:MICUiStatefulSvgPathSELECTED];
+            }
         }
-        
         [resource mergeWithDictionary:@{
                       MICUiStatefulFgColorNORMAL: UIColor.blackColor,
                       MICUiStatefulFgColorDISABLED: UIColor.grayColor,
@@ -70,7 +92,7 @@
                       } overwrite:false];
 
         self.colorResources = resource;
-        self.customButtonDelegate = self;
+        //self.customButtonDelegate = self;
         self.textHorzAlignment = MICUiAlignLEFT;
     }
     return self;
@@ -125,6 +147,20 @@
 - (void)setCheckedListener:(id)target action:(SEL)action {
     if(target!=nil && action!=nil) {
         _actionOnChecked = [[MICTargetSelector alloc] initWithTarget:target selector:action];
+    } else {
+        _actionOnChecked = nil;
+    }
+}
+
+/**
+ * チェックボタンがタップされたときのイベント
+ * @param action    (void)onChanged:(MICUiDsCheckBox*)sender
+ */
+- (void)setTappedListener:(id)target action:(SEL)action {
+    if(target!=nil && action!=nil) {
+        _actionOnTapped = [[MICTargetSelector alloc] initWithTarget:target selector:action];
+    } else {
+        _actionOnTapped = nil;
     }
 }
 
@@ -180,13 +216,19 @@
         id me = self;
         [_actionOnChecked performWithParam:&me];
     }
+    if(nil!=_actionOnTapped) {
+        id me = self;
+        [_actionOnTapped performWithParam:&me];
+    }
 }
 
 @end
 
 #pragma mark - IWPLCell Supports
 
-@implementation MICUiDsChackBoxCell
+@implementation MICUiDsChackBoxCell {
+    MICListeners* _commandListeners;
+}
 
 - (instancetype) initWithView:(UIView*)view
                          name:(NSString*) name
@@ -208,9 +250,18 @@
                     vAlignment:vAlignment
                     visibility:visibility];
     if(nil!=self) {
+        _commandListeners = nil;
         [(MICUiDsCheckBox*)view setCheckedListener:self action:@selector(onSwitchChanged:)];
     }
     return self;
+}
+
+- (void)dispose {
+    [(MICUiDsCheckBox*)self.view setCheckedListener:nil action:nil];
+    [(MICUiDsCheckBox*)self.view setTappedListener:nil action:nil];
+    if(_commandListeners!=nil) {
+        [_commandListeners removeAll];
+    }
 }
 
 - (id) value {
@@ -228,4 +279,30 @@
     [self onValueChanged];
 }
 
+- (id)addCommandListener:(id)target selector:(SEL)selector {
+    if(nil==_commandListeners) {
+        _commandListeners = MICListeners.listeners;
+        [(MICUiDsCheckBox*)self.view setTappedListener:self action:@selector(onTapped:)];
+    }
+    return [_commandListeners addListener:target action:selector];
+}
+
+- (void) onTapped:(id)sender {
+    if(_commandListeners) {
+        [_commandListeners fire:self];
+    }
+}
+
+- (void)removeCommandListener:(id)key {
+    if(nil!=_commandListeners) {
+    [_commandListeners removeListener:key];
+        if(_commandListeners.isEmpty) {
+            _commandListeners = nil;
+            [(MICUiDsCheckBox*)self.view setTappedListener:nil action:nil];
+        }
+    }
+}
+
 @end
+
+

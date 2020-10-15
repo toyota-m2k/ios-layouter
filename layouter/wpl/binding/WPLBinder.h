@@ -15,6 +15,9 @@
 #import "WPLProperty.h"
 #import "MICVar.h"
 
+#define WPL_NEGATIVE    (true)
+#define WPL_POSITIVE    (false)
+
 @interface WPLBinder : NSObject
 
 #pragma mark - control auto-disposing behavier
@@ -473,7 +476,7 @@ public:
     /**
      * nameで指定されたプロパティを、cellのboolState（visible/enabled/readonly）にバインドする
      */
-    WPLBinderBuilder& bind(NSString* name, id<IWPLCell> cell, WPLBoolStateActionType actionType, bool negation=false, WPLBindingCustomAction customAction=nil ) {
+    WPLBinderBuilder& bind(NSString* name, id<IWPLCell> cell, WPLBoolStateActionType actionType, bool negation=WPL_POSITIVE, WPLBindingCustomAction customAction=nil ) {
         [_binder bindProperty:name withBoolStateOfCell:cell actionType:actionType negation:negation customActin:customAction];
         return *this;
     }
@@ -533,6 +536,9 @@ public:
      * nameで指定されたプロパティを、cellのvalue にバインドする
      */
     WPLBinderBuilder& bind(WPLProperty* prop, id<IWPLCellSupportValue> cell, WPLBindingMode mode=WPLBindingModeSOURCE_TO_VIEW, WPLBindingCustomAction customAction=nil) {
+        if(nil==[_binder propertyForKey:prop.name]) {
+            property(prop);
+        }
         return bind(prop.name, cell, mode, customAction);
     }
 
@@ -540,17 +546,26 @@ public:
      * nameで指定されたプロパティを、cellのnamedValue にバインドする
      */
     WPLBinderBuilder& bind(WPLProperty* prop, id<IWPLCellSupportNamedValue> cell, NSString* valueName, WPLBindingMode mode=WPLBindingModeSOURCE_TO_VIEW, WPLBindingCustomAction customAction=nil) {
+        if(nil==[_binder propertyForKey:prop.name]) {
+            property(prop);
+        }
         return bind(prop.name, cell, valueName, mode, customAction);
     }
 
     /**
      * nameで指定されたプロパティを、cellのboolState（visible/enabled/readonly）にバインドする
      */
-    WPLBinderBuilder& bind(WPLProperty* prop, id<IWPLCell> cell, WPLBoolStateActionType actionType, bool negation=false, WPLBindingCustomAction customAction=nil ) {
+    WPLBinderBuilder& bind(WPLProperty* prop, id<IWPLCell> cell, WPLBoolStateActionType actionType, bool negation=WPL_POSITIVE, WPLBindingCustomAction customAction=nil ) {
+        if(nil==[_binder propertyForKey:prop.name]) {
+            property(prop);
+        }
         return bind(prop.name, cell, actionType, negation, customAction);
     }
 
     WPLBinderBuilder& bind(WPLProperty* prop, id<IWPLCell> cell, WPLBoolStateActionType actionType, id referenceValue, bool equals=true, WPLBindingCustomAction customAction=nil ) {
+        if(nil==[_binder propertyForKey:prop.name]) {
+            property(prop);
+        }
         return bind(prop.name, cell, actionType, referenceValue, equals, customAction);
     }
 
@@ -559,6 +574,9 @@ public:
      * 現在バインド可能なプロパティは、enum WPLPropType で定義されている。
      */
     WPLBinderBuilder& bind(WPLProperty* prop, id<IWPLCell> cell, WPLPropType propType, WPLBindingCustomAction customAction=nil ) {
+        if(nil==[_binder propertyForKey:prop.name]) {
+            property(prop);
+        }
         return bind(prop.name, cell, propType, customAction);
     }
     
@@ -566,6 +584,9 @@ public:
      * nameで指定されたプロパティをcellに対してバインドし、その動作をcustomActionで定義する。
      */
     WPLBinderBuilder& bindCustom(WPLProperty* prop, id<IWPLCell> cell, WPLBindingCustomAction customAction) {
+        if(nil==[_binder propertyForKey:prop.name]) {
+            property(prop);
+        }
         return bindCustom(prop.name, cell, customAction);
     }
     

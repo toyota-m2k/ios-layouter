@@ -503,7 +503,7 @@ public:
     ctx.createPath().addPath(_path);
     if(fillColor!=nil) {
         ctx.setFillColor(fillColor);
-        ctx.fillPath();
+        ctx.eoFillPath();
     }
     if(strokeColor!=nil&&strokeWidth>0) {
         ctx.setStrokeColor(strokeColor);

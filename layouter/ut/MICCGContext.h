@@ -14,10 +14,15 @@
 #pragma mark - Releasing Resources function
 
 template<typename T> inline void MICReleaseResource(T r) {
+    NSCAssert(false, @"cannot release resource.");
     return;
 }
 
 template <> inline void MICReleaseResource<CGPathRef>(CGPathRef r) {
+    CGPathRelease(r);
+}
+
+template <> inline void MICReleaseResource<CGMutablePathRef>(CGMutablePathRef r) {
     CGPathRelease(r);
 }
 
@@ -751,7 +756,7 @@ public:
      * drawPath(kCGPathEOFill) と等価だと思う。
      * EOF == even odd fill / != end of file
      */
-    void eofFillPath() {
+    void eoFillPath() {
         CGContextEOFillPath(_res);
     }
     

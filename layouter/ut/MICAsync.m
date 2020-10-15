@@ -185,10 +185,16 @@
 
 
 + (instancetype) error:(id)error {
+    if(error==nil) {
+        error = @false;
+    }
     return [[MICAwaiterResultImpl alloc] initWithResult:nil error:error];
 }
 
 + (instancetype) result:(id)result {
+    if(result==nil) {
+        result = @true;
+    }
     return [[MICAwaiterResultImpl alloc] initWithResult:result error:nil];
 }
 @end
