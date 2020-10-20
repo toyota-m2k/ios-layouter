@@ -24,7 +24,10 @@
     return [self initWithFrame:frame iconSize:MICSize(24,24) pathViewboxSize:MICSize(24,24) pathRepositiory:nil];
 }
 
-- (instancetype) initWithFrame:(CGRect) frame iconSize:(CGSize)iconSize pathViewboxSize:(CGSize)viewboxSize pathRepositiory:(MICPathRepository*) repo {
+- (instancetype) initWithFrame:(CGRect) frame
+                      iconSize:(CGSize)iconSize
+               pathViewboxSize:(CGSize)viewboxSize
+               pathRepositiory:(MICPathRepository*) repo {
     self = [super initWithFrame:frame];
     if(nil!=self) {
         self.backgroundColor = UIColor.clearColor;

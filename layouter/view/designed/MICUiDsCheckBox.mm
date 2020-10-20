@@ -12,8 +12,6 @@
 #import "MICListeners.h"
 
 @implementation MICUiDsCheckBox {
-    MICTargetSelector* _actionOnTapped;
-    MICTargetSelector* _actionOnChecked;
     bool _radioButton;
 }
 
@@ -40,59 +38,35 @@
                forRadioButton:(bool)radioButton
               pathRepositiory:(MICPathRepository*) repo
           customColorResource:(id<MICUiStatefulResourceProtocol>)colorResource {
-    self = [super initWithFrame:frame iconSize:MICSize(24) pathViewboxSize:MICSize(24) pathRepositiory:repo];
+    self = [super initWithFrame:MICRect::zero() iconSize:MICSize(24) pathViewboxSize:MICSize(24) pathRepositiory:repo];
     if(nil!=self) {
-        var resource = [[MICUiStatefulResource alloc] init];
-        if(colorResource!=nil) {
-            // color customize
-            [resource mergeWith:colorResource type:MICUiResTypeBGCOLOR state:MICUiViewStateNORMAL overwrite:true];
-            [resource mergeWith:colorResource type:MICUiResTypeFGCOLOR state:MICUiViewStateNORMAL overwrite:true];
-            [resource mergeWith:colorResource type:MICUiResTypeFGCOLOR state:MICUiViewStateDISABLED_ overwrite:true];
-            [resource mergeWith:colorResource type:MICUiResTypeSVG_COLOR state:MICUiViewStateNORMAL overwrite:true];
-            [resource mergeWith:colorResource type:MICUiResTypeSVG_COLOR state:MICUiViewStateSELECTED_ overwrite:true];
-            [resource mergeWith:colorResource type:MICUiResTypeSVG_COLOR state:MICUiViewStateDISABLED_ overwrite:true];
-            [resource mergeWith:colorResource type:MICUiResTypeSVG_BGCOLOR state:MICUiViewStateNORMAL overwrite:true];
-            [resource mergeWith:colorResource type:MICUiResTypeSVG_BGCOLOR state:MICUiViewStateSELECTED_ overwrite:true];
-            [resource mergeWith:colorResource type:MICUiResTypeSVG_BGCOLOR state:MICUiViewStateDISABLED_ overwrite:true];
+        if(colorResource==nil) {
+            let resource = [[MICUiStatefulResource alloc] init];
+            if(radioButton) {
+                // ラジオボタン
+                // 丸いチェックボックス
+                [resource complementResource:PATH_ROUND_BG forName:MICUiStatefulSvgBgPathNORMAL];
+                [resource complementResource:PATH_ROUND forName:MICUiStatefulSvgPathNORMAL];
+            } else {
+                // 四角いチェックボックス
+                [resource complementResource:PATH_SQUARE_BG forName:MICUiStatefulSvgBgPathNORMAL];
+                [resource complementResource:PATH_SQUARE forName:MICUiStatefulSvgPathNORMAL];
+                [resource complementResource:PATH_SQUARE_CHECKED forName:MICUiStatefulSvgPathSELECTED];
+            }
+            [resource mergeWithDictionary:@{
+                          MICUiStatefulFgColorNORMAL: UIColor.blackColor,
+                          MICUiStatefulFgColorDISABLED: UIColor.grayColor,
+                          MICUiStatefulBgColorNORMAL: UIColor.clearColor,
+                          MICUiStatefulSvgBgColorNORMAL: UIColor.whiteColor,
+                          MICUiStatefulSvgColorNORMAL: UIColor.blackColor,
+                          MICUiStatefulSvgColorSELECTED: MICUiColorRGB(0x0080FF),
+                          MICUiStatefulSvgColorDISABLED:UIColor.grayColor
+                          } overwrite:false];
+            colorResource = resource;
         }
         _radioButton = radioButton;
         self.text = label;
-        if(_radioButton) {
-            // ラジオボタン
-            // 丸いチェックボックス
-            [resource setResource:PATH_ROUND_BG forName:MICUiStatefulSvgBgPathNORMAL];
-            [resource setResource:PATH_ROUND forName:MICUiStatefulSvgPathNORMAL];
-        } else {
-            if([colorResource resourceOf:MICUiResTypeSVG_PATH forState:MICUiViewStateNORMAL]!=nil) {
-                id fg = [colorResource resourceOf:MICUiResTypeSVG_PATH forState:MICUiViewStateNORMAL];
-                [resource setResource:fg forName:MICUiStatefulSvgPathNORMAL];
-                id bg = [colorResource resourceOf:MICUiResTypeSVG_BGPATH forState:MICUiViewStateNORMAL];
-                if(bg!=nil) {
-                    [resource setResource:bg forName:MICUiStatefulSvgBgPathNORMAL];
-                }
-                id sl = [colorResource resourceOf:MICUiResTypeSVG_PATH forState:MICUiViewStateSELECTED_];
-                if(sl!=nil && sl !=fg) {
-                    [resource setResource:sl forName:MICUiStatefulSvgPathSELECTED];
-                }
-            } else {
-                // 四角いチェックボックス
-                [resource setResource:PATH_SQUARE_BG forName:MICUiStatefulSvgBgPathNORMAL];
-                [resource setResource:PATH_SQUARE forName:MICUiStatefulSvgPathNORMAL];
-                [resource setResource:PATH_SQUARE_CHECKED forName:MICUiStatefulSvgPathSELECTED];
-            }
-        }
-        [resource mergeWithDictionary:@{
-                      MICUiStatefulFgColorNORMAL: UIColor.blackColor,
-                      MICUiStatefulFgColorDISABLED: UIColor.grayColor,
-                      MICUiStatefulBgColorNORMAL: UIColor.clearColor,
-                      MICUiStatefulSvgBgColorNORMAL: UIColor.whiteColor,
-                      MICUiStatefulSvgColorNORMAL: UIColor.blackColor,
-                      MICUiStatefulSvgColorSELECTED: MICUiColorRGB(0x0080FF),
-                      MICUiStatefulSvgColorDISABLED:UIColor.grayColor
-                      } overwrite:false];
-
-        self.colorResources = resource;
-        //self.customButtonDelegate = self;
+        self.colorResources = colorResource;
         self.textHorzAlignment = MICUiAlignLEFT;
     }
     return self;
@@ -145,23 +119,7 @@
  * @param action    (void)onChanged:(MICUiDsCheckBox*)sender
  */
 - (void)setCheckedListener:(id)target action:(SEL)action {
-    if(target!=nil && action!=nil) {
-        _actionOnChecked = [[MICTargetSelector alloc] initWithTarget:target selector:action];
-    } else {
-        _actionOnChecked = nil;
-    }
-}
-
-/**
- * チェックボタンがタップされたときのイベント
- * @param action    (void)onChanged:(MICUiDsCheckBox*)sender
- */
-- (void)setTappedListener:(id)target action:(SEL)action {
-    if(target!=nil && action!=nil) {
-        _actionOnTapped = [[MICTargetSelector alloc] initWithTarget:target selector:action];
-    } else {
-        _actionOnTapped = nil;
-    }
+    [super setSelectedListener:target action:action];
 }
 
 #pragma mark - Internals ... drawing
@@ -194,114 +152,11 @@
     }
 }
 
-#pragma mark - MICUiDsCustomButtonDelegate i/f
-
-/**
- * ボタンの状態(buttonStateプロパティ)が変更されたときの通知
- */
-- (void) onCustomButtonStateChangedAt:(MICUiDsCustomButton*)view from:(MICUiViewState)before to:(MICUiViewState)after {
-    
-}
-
-/**
- * ボタンがタップされたときの通知
- */
-- (void) onCustomButtonTapped:(MICUiDsCustomButton*)view {
-    if(_radioButton && self.selected) {
-        return; // onのラジオボタンをタップしてもオフにしない
-    }
-    // トグル
-    self.selected = !self.selected;
-    if(nil!=_actionOnChecked) {
-        id me = self;
-        [_actionOnChecked performWithParam:&me];
-    }
-    if(nil!=_actionOnTapped) {
-        id me = self;
-        [_actionOnTapped performWithParam:&me];
-    }
-}
-
 @end
 
 #pragma mark - IWPLCell Supports
 
-@implementation MICUiDsChackBoxCell {
-    MICListeners* _commandListeners;
-}
-
-- (instancetype) initWithView:(UIView*)view
-                         name:(NSString*) name
-                       margin:(UIEdgeInsets) margin
-              requestViewSize:(CGSize) requestViewSize
-                   limitWidth:(WPLMinMax) limitWidth
-                  limitHeight:(WPLMinMax) limitHeight
-                   hAlignment:(WPLCellAlignment)hAlignment
-                   vAlignment:(WPLCellAlignment)vAlignment
-                   visibility:(WPLVisibility)visibility {
-    NSAssert([view isKindOfClass:MICUiDsCheckBox.class], @"MICTmChackBoxCell: view must be instance of MICUiDsCheckBox");
-    self = [super initWithView:view
-                          name:name
-                        margin:margin
-               requestViewSize:requestViewSize
-                    limitWidth:limitWidth
-                   limitHeight:limitHeight
-                    hAlignment:hAlignment
-                    vAlignment:vAlignment
-                    visibility:visibility];
-    if(nil!=self) {
-        _commandListeners = nil;
-        [(MICUiDsCheckBox*)view setCheckedListener:self action:@selector(onSwitchChanged:)];
-    }
-    return self;
-}
-
-- (void)dispose {
-    [(MICUiDsCheckBox*)self.view setCheckedListener:nil action:nil];
-    [(MICUiDsCheckBox*)self.view setTappedListener:nil action:nil];
-    if(_commandListeners!=nil) {
-        [_commandListeners removeAll];
-    }
-}
-
-- (id) value {
-    return @(((MICUiDsCheckBox*)self.view).checked);
-}
-
-- (void) setValue:(id)v {
-    bool bv = ([v isKindOfClass:NSNumber.class]) ? ((NSNumber*)v).boolValue : false;
-    if(!(((MICUiDsCheckBox*)self.view).checked)!=!bv) {
-        ((MICUiDsCheckBox*)self.view).checked = bv;
-    }
-}
-
-- (void) onSwitchChanged:(id) _ {
-    [self onValueChanged];
-}
-
-- (id)addCommandListener:(id)target selector:(SEL)selector {
-    if(nil==_commandListeners) {
-        _commandListeners = MICListeners.listeners;
-        [(MICUiDsCheckBox*)self.view setTappedListener:self action:@selector(onTapped:)];
-    }
-    return [_commandListeners addListener:target action:selector];
-}
-
-- (void) onTapped:(id)sender {
-    if(_commandListeners) {
-        [_commandListeners fire:self];
-    }
-}
-
-- (void)removeCommandListener:(id)key {
-    if(nil!=_commandListeners) {
-    [_commandListeners removeListener:key];
-        if(_commandListeners.isEmpty) {
-            _commandListeners = nil;
-            [(MICUiDsCheckBox*)self.view setTappedListener:nil action:nil];
-        }
-    }
-}
+@implementation MICUiDsChackBoxCell
 
 @end
 
