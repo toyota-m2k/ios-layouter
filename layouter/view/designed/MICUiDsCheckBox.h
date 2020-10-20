@@ -1,14 +1,14 @@
 //
 //  MICUiDsCheckBox.h
+//  チェックボックス/ラジオボタン用にデザインされたトグルボタンの特殊型
 //
 //  Created by @toyota-m2k on 2020/02/04.
 //  Copyright (c) 2020 @toyota-m2k. All rights reserved.
 //
 
-#import "MICUiDsSvgIconButton.h"
-#import "WPLValueCell.h"
+#import "MICUiDsToggleButton.h"
 
-@interface MICUiDsCheckBox : MICUiDsSvgIconButton<MICUiDsCustomButtonDelegate>
+@interface MICUiDsCheckBox : MICUiDsToggleButton
 
 /**
  * @param radioButton false:四角いチェックボックス / true: 丸いチェックボックス（ラジオボタンとして利用）
@@ -19,7 +19,7 @@
               pathRepositiory:(MICPathRepository*) repo
           customColorResource:(id<MICUiStatefulResourceProtocol>)colorResource;
 
-@property (nonatomic) bool checked;                                         // チェックボタンの状態(true: on / false:off：デフォルト）
+@property (nonatomic) bool checked;         // selectedのエイリアス：チェックボタンの状態(true: on / false:off：デフォルト）
 
 /**
  * checkboxを作成
@@ -36,6 +36,7 @@
                   customColorResource:(id<MICUiStatefulResourceProtocol>)colorResource;
 /**
  * チェックボタンの状態が変化したときのイベント
+ * ToggleButton#setSelectedListener のエイリアス
  */
 - (void)setCheckedListener:(id)target action:(SEL)action;
 
@@ -43,7 +44,7 @@
 
 @end
 
-@interface MICUiDsChackBoxCell : WPLValueCell<IWPLCellSupportCommand>
+@interface MICUiDsChackBoxCell : MICUiDsToggleButtonCell
 
 @end
 

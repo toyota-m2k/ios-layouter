@@ -137,7 +137,6 @@ typedef enum _micUiResType {
 #define MICUiStatefulSvgStrokeBgWidthDISABLED_SELECTED  @"SvgStrokeBgWidthDisabledSelected"
 #define MICUiStatefulSvgStrokeBgWidthACTIVATED_SELECTED @"SvgStrokeBgWidthActivatedSelected"
 
-
 /**
  * 状態依存リソースのi/f定義
  */
@@ -145,6 +144,7 @@ typedef enum _micUiResType {
 
 - (id)resourceOf:(MICUiResType)type forState:(MICUiViewState)state;
 - (id)resourceOf:(MICUiResType)type forState:(MICUiViewState)state fallbackState:(MICUiViewState)fallback;
+- (NSDictionary*) asDictionary;
 
 @end
 
@@ -154,7 +154,7 @@ typedef enum _micUiResType {
 @interface MICUiStatefulResource : NSObject<MICUiStatefulResourceProtocol>
 
 - (instancetype) init;
-- (instancetype) initWithDictionary:(NSDictionary*)definition;
+- (instancetype) initWithDictionary:(NSDictionary*)definitions;
 
 - (void)setResource:(id)res forName:(NSString *)name;
 - (void)complementResource:(id)res forName:(NSString *)name;
@@ -169,29 +169,4 @@ typedef enum _micUiResType {
 + (NSString*)getStateName:(MICUiResType)type forState:(MICUiViewState)state;
 
 @end
-
-/**
- * 状態依存リソースi/fを継承する、状態やタイプに依存しない固定リソース。
- * 状態依存リソースを要求するプロパティなどに、状態に依存しないリソース（アイコンなど）を指定する場合に使用。
- */
-@interface MICUiMonoResource : NSObject<MICUiStatefulResourceProtocol>
-
-- (instancetype) init;
-- (instancetype) initWithResource:(id)res;
-
-@property (nonatomic) id resource;
-@end
-
-/**
- * 状態依存リソースi/fを継承する、状態に依存しない
- * 状態依存リソースを要求するプロパティなどに、状態に依存しないリソース（アイコンなど）を指定する場合に使用。
- */
-@interface MICUiUnstatefulResource : NSObject<MICUiStatefulResourceProtocol>
-
-- (instancetype) init;
-- (instancetype) initWithBackground:(id)bg foreground:(id)fg border:(id)border bgimage:(id)bgimage icon:(id)icon;
-
-
-@end
-
 

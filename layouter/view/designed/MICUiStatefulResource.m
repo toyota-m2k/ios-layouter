@@ -15,19 +15,23 @@
 }
 
 - (instancetype)init {
+    return [self initWithDictionary:nil];
+}
+
+- (instancetype)initWithDictionary:(NSDictionary *)definitions {
     self = [super init];
     if(nil!=self){
-        _resources = [[NSMutableDictionary alloc] init];
+        if(definitions!=nil) {
+            _resources = definitions;
+        } else {
+            _resources = [[NSMutableDictionary alloc] init];
+        }
     }
     return self;
 }
 
-- (instancetype)initWithDictionary:(NSDictionary *)definition {
-    self = [super init];
-    if(nil!=self){
-        _resources = definition;
-    }
-    return self;
+- (NSDictionary *)asDictionary {
+    return [NSMutableDictionary dictionaryWithDictionary:_resources];
 }
 
 - (void)setResource:(id)res forName:(NSString *)name {
@@ -42,12 +46,13 @@
 }
 
 - (void)complementResource:(id)res forName:(NSString *)name {
-    if(_resources[name]==nil) {
+    if(_resources[name]==nil && res!=nil) {
         [self setResource:res forName:name];
     }
 }
 
 - (void)mergeWithDictionary:(NSDictionary*) src overwrite:(bool)overwrite {
+    if(nil==src) return;
     for(id key in src.keyEnumerator) {
         if(overwrite||_resources[key]==nil) {
             [self setResource:src[key] forName:key];
@@ -56,6 +61,7 @@
 }
 
 - (void)mergeResource:(MICUiStatefulResource*) src overwrite:(bool)overwrite {
+    if(nil==src) return;
     [self mergeWithDictionary:src->_resources overwrite:overwrite];
 }
 
@@ -64,6 +70,7 @@
              type:(MICUiResType)type
             state:(MICUiViewState)state
         overwrite:(bool)overwrite {
+    if(nil==src) return;
     let name = [self.class getStateName:type forState:state];
     if(overwrite || _resources[name]==nil) {
         [self setResource:[src resourceOf:type forState:state] forName:name];
@@ -330,65 +337,5 @@
     }
     return nil;
 }
-
-@end
-
-
-@implementation MICUiMonoResource
-
-- (instancetype)init {
-    return [self initWithResource:nil];
-}
-
-- (instancetype)initWithResource:(id)res {
-    self = [super init];
-    if( nil!=self) {
-        _resource = res;
-    }
-    return self;
-}
-
-- (id)resourceOf:(MICUiResType)type forState:(MICUiViewState)state {
-    return _resource;
-}
-
-- (id)resourceOf:(MICUiResType)type forState:(MICUiViewState)state fallbackState:(MICUiViewState)fallback{
-    return _resource;
-}
-
-@end
-
-@implementation MICUiUnstatefulResource {
-    id _resources[__MICUIRESTYPECOUNT];
-}
-
-- (instancetype)init {
-    return [self initWithBackground:nil foreground:nil border:nil bgimage:nil icon:nil];
-}
-
-- (instancetype) initWithBackground:(id)bg foreground:(id)fg border:(id)border bgimage:(id)bgimage icon:(id)icon {
-    self = [super init];
-    if(nil!=self){
-        _resources[MICUiResTypeBGCOLOR] = bg;
-        _resources[MICUiResTypeFGCOLOR] = fg;
-        _resources[MICUiResTypeBORDERCOLOR] = border;
-        _resources[MICUiResTypeBGIMAGE] = bgimage;
-        _resources[MICUiResTypeICON] = icon;
-    }
-    return self;
-}
-
-- (id)resourceOf:(MICUiResType)type forState:(MICUiViewState)state {
-    return (type<__MICUIRESTYPECOUNT) ? _resources[type] : nil;
-}
-
-- (id)resourceOf:(MICUiResType)type forState:(MICUiViewState)state fallbackState:(MICUiViewState)fallback{
-    id r = [self resourceOf:type forState:state];
-    if( nil==r && state != fallback) {
-        r = [self resourceOf:type forState:fallback];
-    }
-    return r;
-}
-
 
 @end
