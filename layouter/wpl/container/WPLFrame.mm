@@ -136,18 +136,20 @@ public:
         CGFloat size = 0;
         int stretchCount = 0;
         for(id<IWPLCell>cell in self.cells) {
-            if(acc.requestedSize(cell)<0) {
-                // STRC cell
-                if(fixedSize>0) {
-                    // FIXED|STRC > STRC
-                    acc.calcSize(cell, fixedSize);
+            if(cell.visibility!=WPLVisibilityCOLLAPSED) {
+                if(acc.requestedSize(cell)<0) {
+                    // STRC cell
+                    if(fixedSize>0) {
+                        // FIXED|STRC > STRC
+                        acc.calcSize(cell, fixedSize);
+                    } else {
+                        // AUTO > STRC ... 他のサイズが決まるまで保留
+                        stretchCount++;
+                    }
                 } else {
-                    // AUTO > STRC ... 他のサイズが決まるまで保留
-                    stretchCount++;
+                    // ANY > FIXED|AUTO
+                    size = MAX(size, acc.calcSize(cell,regulatingSize));
                 }
-            } else {
-                // ANY > FIXED|AUTO
-                size = MAX(size, acc.calcSize(cell,regulatingSize));
             }
         }
         if(stretchCount>0) {
