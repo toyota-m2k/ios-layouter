@@ -106,6 +106,8 @@
 		841AD8BB230A3CF200F9AB7D /* WPLStackPanelSampleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8BA230A3CF200F9AB7D /* WPLStackPanelSampleViewController.mm */; };
 		841AD8BE230A704A00F9AB7D /* WPLGridSampleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8BD230A704A00F9AB7D /* WPLGridSampleViewController.mm */; };
 		841AD8C1230A71E300F9AB7D /* WPLGridScrollView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 841AD8C0230A71E300F9AB7D /* WPLGridScrollView.mm */; };
+		8426A902253EEF4B0009A3ED /* MICUiDsToggleButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8426A8FE253EEF4B0009A3ED /* MICUiDsToggleButton.mm */; };
+		8426A903253EEF4B0009A3ED /* MICUiResTypeState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8426A900253EEF4B0009A3ED /* MICUiResTypeState.mm */; };
 		8459A0092435DBAB00EA178B /* WPLScrollCellViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8459A0082435DBAB00EA178B /* WPLScrollCellViewController.mm */; };
 		8459A0232437010000EA178B /* WPLRangedSize.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8459A0222437010000EA178B /* WPLRangedSize.mm */; };
 		8459A036243F369C00EA178B /* frameTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8459A035243F369C00EA178B /* frameTest.mm */; };
@@ -355,6 +357,10 @@
 		841AD8BD230A704A00F9AB7D /* WPLGridSampleViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridSampleViewController.mm; sourceTree = "<group>"; };
 		841AD8BF230A71E300F9AB7D /* WPLGridScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLGridScrollView.h; sourceTree = "<group>"; };
 		841AD8C0230A71E300F9AB7D /* WPLGridScrollView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLGridScrollView.mm; sourceTree = "<group>"; };
+		8426A8FE253EEF4B0009A3ED /* MICUiDsToggleButton.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MICUiDsToggleButton.mm; sourceTree = "<group>"; };
+		8426A8FF253EEF4B0009A3ED /* MICUiResTypeState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MICUiResTypeState.h; sourceTree = "<group>"; };
+		8426A900253EEF4B0009A3ED /* MICUiResTypeState.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MICUiResTypeState.mm; sourceTree = "<group>"; };
+		8426A901253EEF4B0009A3ED /* MICUiDsToggleButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MICUiDsToggleButton.h; sourceTree = "<group>"; };
 		8459A0072435DBAB00EA178B /* WPLScrollCellViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLScrollCellViewController.h; sourceTree = "<group>"; };
 		8459A0082435DBAB00EA178B /* WPLScrollCellViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WPLScrollCellViewController.mm; sourceTree = "<group>"; };
 		8459A0212437010000EA178B /* WPLRangedSize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WPLRangedSize.h; sourceTree = "<group>"; };
@@ -610,6 +616,10 @@
 		841AD7A622EE93FA00F9AB7D /* designed */ = {
 			isa = PBXGroup;
 			children = (
+				8426A901253EEF4B0009A3ED /* MICUiDsToggleButton.h */,
+				8426A8FE253EEF4B0009A3ED /* MICUiDsToggleButton.mm */,
+				8426A8FF253EEF4B0009A3ED /* MICUiResTypeState.h */,
+				8426A900253EEF4B0009A3ED /* MICUiResTypeState.mm */,
 				84D1027623EC11DA00203ADC /* MICUiDsCheckBox.h */,
 				84D1027323EC11DA00203ADC /* MICUiDsCheckBox.mm */,
 				84D1027523EC11DA00203ADC /* MICUiDsComboBox.h */,
@@ -987,6 +997,7 @@
 				841AD8AC230648D700F9AB7D /* TabBarViewController.mm in Sources */,
 				841AD7C722EE93FA00F9AB7D /* MICTargetSelector.m in Sources */,
 				841AD7C822EE93FA00F9AB7D /* MICImageUtil.mm in Sources */,
+				8426A903253EEF4B0009A3ED /* MICUiResTypeState.mm in Sources */,
 				841AD7DC22EE93FA00F9AB7D /* MICUiBaseLayout.m in Sources */,
 				841AD7D022EE93FA00F9AB7D /* MICSortedArray.mm in Sources */,
 				841AD7C522EE93FA00F9AB7D /* MICAcom.m in Sources */,
@@ -1009,6 +1020,7 @@
 				84D1027E23EC11DA00203ADC /* MICUiDsComboBox.mm in Sources */,
 				841AD7E922EE93FA00F9AB7D /* MICUiAccordionCellView.mm in Sources */,
 				841AD8892306434F00F9AB7D /* WPLSampleView.mm in Sources */,
+				8426A902253EEF4B0009A3ED /* MICUiDsToggleButton.mm in Sources */,
 				8410A13D23A0B8710066C185 /* WPLSubject.m in Sources */,
 				841AD8C1230A71E300F9AB7D /* WPLGridScrollView.mm in Sources */,
 				841AABF72435C3920060BCDF /* WPLProperty.m in Sources */,

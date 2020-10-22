@@ -662,8 +662,48 @@
     XCTAssertEqual(rc.height(), 400-100-60);
     XCTAssertEqual(rc.left(), 600-120);
     XCTAssertEqual(rc.top(), 100+60);
+}
 
+- (void) testCellSpacingWithCollaplsed {
+    let rootView = [[WPLCellHostingView alloc] init];
+    let container = [WPLGrid gridWithName:@"root"  params:WPLGridParams()
+                     .align(A_LEFT, A_TOP)
+                     .dimension(WPLGridDefinition()
+                          .cols(@[AUTO,AUTO,AUTO])
+                          .rows(@[AUTO]))
+                     .cellSpacing(20,30)
+                    .requestViewSize(MICSize(VAUTO,VAUTO))];
+    rootView.containerCell = container;
+    rootView.frame = MICRect(600,400);
 
+    [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize(100,100)] name:@"0,0" params:WPLCellParams()] row:0 column:0];
+    [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize(200,100)] name:@"1,0" params:WPLCellParams()] row:0 column:1];
+    [container addCell:[WPLCell newCellWithView:[self viewOfSize:MICSize(300,100)] name:@"2,0" params:WPLCellParams()] row:0 column:2];
+    [rootView render];
+
+    MICRect rc = container.view.frame;
+    XCTAssertEqual(rc.width(), 640);
+    
+    id<IWPLCell> cell = [container findByName:@"2,0"];
+    cell.visibility = WPLVisibilityCOLLAPSED;
+    [rootView render];
+
+    rc = container.view.frame;
+    XCTAssertEqual(rc.width(), 320);
+    
+    cell.visibility = WPLVisibilityINVISIBLE;
+    cell = [container findByName:@"1,0"];
+    cell.visibility = WPLVisibilityCOLLAPSED;
+    [rootView render];
+    rc = container.view.frame;
+    XCTAssertEqual(rc.width(), 420);
+
+    cell.visibility = WPLVisibilityVISIBLE;
+    cell = [container findByName:@"0,0"];
+    cell.visibility = WPLVisibilityCOLLAPSED;
+    [rootView render];
+    rc = container.view.frame;
+    XCTAssertEqual(rc.width(), 520);
 }
 
 @end

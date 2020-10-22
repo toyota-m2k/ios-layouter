@@ -99,7 +99,7 @@
         MICUiGridLayout* layouter = [[MICUiGridLayout alloc] initWithCellSize:MICSize(100,100) growingOrientation:MICUiVertical fixedCount:3];
         layouter.cellSpacingHorz = 5;
         layouter.cellSpacingVert = 5;
-        layouter.name = MICString(@"AccCell-%d", j+1);
+        layouter.name = MICString::format(@"AccCell-%d", j+1);
         
         // マージンは、AccordionCellが自動的に設定するので指定不可。
         
