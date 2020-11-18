@@ -128,7 +128,7 @@ public:
      * @param margin        親ビューのからのマージン（posで指定されていない部分のマージンは無視される）
      */
     MICAutoLayoutBuilder&
-    fitToParent(UIView* target, MICUiPosEx pos, const UIEdgeInsets& margin, NSLayoutRelation relativity=NSLayoutRelationEqual);
+    fitToParent(UIView* target, MICUiPosEx pos = MICUiPosExALL, const UIEdgeInsets& margin=MICEdgeInsets(), NSLayoutRelation relativity=NSLayoutRelationEqual);
 
     /**
      * 縦方向に兄弟ビューを並べる

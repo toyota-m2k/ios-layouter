@@ -9,6 +9,6 @@
 #import "WPLCommandCell.h"
 #import "MICUiDsCustomButton.h"
 
-@interface WPLDsCustomButtonCell : WPLCommandCell
+@interface WPLDsCustomButtonCell : WPLCommandCell<IWPLCellSupportValue>
 
 @end

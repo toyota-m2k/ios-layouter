@@ -280,6 +280,14 @@
     }
 }
 
++ (void) mainThreadEnqueue:(void(^)(void)) action {
+    [NSOperationQueue.mainQueue addOperationWithBlock:action];
+}
+
++ (void) mainThreadDelay:(double)delayInSec action:(void(^)(void)) action {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSec*NSEC_PER_SEC)), dispatch_get_main_queue(), action);
+}
+
 + (id<IMICAwaiterResult>) resultError:(id)error {
     return [MICAwaiterResultImpl error:error];
 }

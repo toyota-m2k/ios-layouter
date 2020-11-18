@@ -32,8 +32,8 @@
     return self;
 }
 
-- (WPLDsCustomButtonCell*) customButton {
-    return [self.view isKindOfClass:MICUiDsCustomButton.class] ? (WPLDsCustomButtonCell*)self.view : nil;
+- (MICUiDsCustomButton*) customButton {
+    return [self.view isKindOfClass:MICUiDsCustomButton.class] ? (MICUiDsCustomButton*)self.view : nil;
 }
 
 /**
@@ -64,4 +64,35 @@
 //- (void)onCustomButtonStateChangedAt:(MICUiDsCustomButton *)view from:(MICUiViewState)before to:(MICUiViewState)after {
 //
 //}
+
+- (id)value {
+    return self.customButton.text;
+}
+
+- (void)setValue:(id)v {
+    id current = self.value;
+    if(nil==current) {
+        current = @"";
+    }
+    if(nil==v) {
+        v = @"";
+    }
+
+    if([v isKindOfClass:NSString.class] && ![v isEqual:current]) {
+        self.customButton.text = v;
+        // サイズの自動調整が要求されていれば、変更後の文字列のサイズに合わせてリサイズする
+        if(self.requestViewSize.width==WPL_CELL_SIZING_AUTO||self.requestViewSize.height==WPL_CELL_SIZING_AUTO) {
+            [self.customButton sizeToFit];
+            self.needsLayout = true;
+        }
+    }
+}
+
+- (id)addInputChangedListener:(id)target selector:(SEL)selector {
+    return nil;
+}
+
+- (void)removeInputListener:(id)key {
+    
+}
 @end

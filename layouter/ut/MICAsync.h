@@ -122,6 +122,18 @@ typedef id<IMICAwaiterResult> _Nullable (^MICAwaitProc)(id awaitable);
  */
 + (id) mainThreadFunc:(id(^)(void)) func;
 
+/**
+ * actionをメインスレッドのキューに積む
+ * （現在のメインスレッドのコールスタックを抜けた後で実行する）
+ */
++ (void) mainThreadEnqueue:(void(^)(void)) action;
+
+
+/**
+ * delayInSec後にメインスレッドで実行
+ */
++ (void) mainThreadDelay:(double)delayInSec action:(void(^)(void)) action;
+
 + (id<IMICAwaiterResult>) resultError:(id)error;
 + (id<IMICAwaiterResult>) resultSuccess:(nullable id)result;
 
@@ -145,6 +157,14 @@ public:
     
     id run(id(^func)(void)) {
         return [MICAsync mainThreadFunc:func];
+    }
+    
+    void enqueue(void(^action)(void)) {
+        [MICAsync mainThreadEnqueue:action];
+    }
+    
+    void delay(double sec, void(^action)(void)) {
+        [MICAsync mainThreadDelay:sec action:action];
     }
 };
 #endif
