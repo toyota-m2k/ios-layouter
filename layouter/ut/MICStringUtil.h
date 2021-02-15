@@ -20,20 +20,24 @@ public:
     MICString(NSString* src) {
         _str = (nil!=src) ? src : @"";
     }
-    MICString(const MICString& src) {
-        _str = src._str;
-    }
     ~MICString() {
         _str = nil;
     }
-//    MICString(NSString* format, ...) {
-//        va_list arg;
-//        va_start(arg, format);
-//        _str = [[NSString alloc] initWithFormat:format arguments:arg];
-//    }
+    MICString(NSString* format, ...) {
+        va_list arg;
+        va_start(arg, format);
+        _str = [[NSString alloc] initWithFormat:format arguments:arg];
+    }
     
     MICString& append(NSString* src) {
         _str = [_str stringByAppendingString:src];
+        return *this;
+    }
+    
+    MICString& format(NSString* format, ...) {
+        va_list arg;
+        va_start(arg, format);
+        _str = [[NSString alloc] initWithFormat:format arguments:arg];
         return *this;
     }
     
@@ -44,10 +48,15 @@ public:
         return *this;
     }
     
-    operator NSString* () const {
+    MICString& trim() {
+        _str = [_str stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        return *this;
+    }
+    
+    operator NSString* () {
         return _str;
     }
-
+    
     MICString& operator +=(NSString* src) {
         return append(src);
     }
@@ -59,18 +68,7 @@ public:
     bool operator !=(NSString* src) const {
         return ![_str isEqualToString:src];
     }
-    
-    static MICString format(NSString* format, ...) {
-        va_list arg;
-        va_start(arg, format);
-        return MICString([[NSString alloc] initWithFormat:format arguments:arg]);
-    }
 };
-
-inline NSString* operator +(const MICString& src, NSString* add) {
-    return [src stringByAppendingString:add];
-}
-
 
 class MICStringBuffer {
 private:
@@ -119,6 +117,13 @@ public:
         return append(str);
     }
 };
+
+inline NSString* MICTrimString(NSString* str) {
+    return [str stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+#else
+
+#define MICTrimString(str)  [(str) stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
 
 #endif
 

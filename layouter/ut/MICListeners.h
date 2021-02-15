@@ -16,6 +16,7 @@
 - (id) addListener:(MICTargetSelector*)listener;
 - (void) removeListener:(id)key;
 - (void) removeAll;
+- (void) trim;
 - (void) fire:(id)param;
 - (void) forEach:(void (^)(MICTargetSelector*))cb;
 - (bool) isEmpty;

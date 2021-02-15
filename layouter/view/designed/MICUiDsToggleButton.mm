@@ -108,18 +108,22 @@
     return @(((MICUiDsToggleButton*)self.view).selected);
 }
 
+inline bool boolIsEquals(bool a, bool b) {
+    return (a && b) || (!a && !b);
+}
+
 - (void) setValue:(id)v {
     bool bv = ([v isKindOfClass:NSNumber.class]) ? ((NSNumber*)v).boolValue : false;
-    if(!(((MICUiDsToggleButton*)self.view).selected)!=!bv) {
+    if(!boolIsEquals(((MICUiDsToggleButton*)self.view).selected, bv)) {
         ((MICUiDsToggleButton*)self.view).selected = bv;
     }
 }
 
 - (void) onSelectionChanged:(id) _ {
+    [self onValueChanged];
     if(nil!=_commandListeners) {
         [_commandListeners fire:self];
     }
-    [self onValueChanged];
 }
 
 - (id)addCommandListener:(id)target selector:(SEL)selector {
