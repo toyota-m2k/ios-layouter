@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
  * WPLBinderBuilder.property(WPLProperty*) メソッドで、バインダーに追加して使う。
  */
 
-@interface WPLProperty : NSObject
+@interface WPLProperty<T> : NSObject
 
 @property (nonatomic,readonly) id<IWPLObservableData> data;
 @property (nonatomic,readonly) NSString* name;
@@ -99,7 +99,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface WPLMutableProperty : WPLProperty
+@interface WPLMutableProperty<T> : WPLProperty
 
 @property (nonatomic,readonly) id<IWPLObservableMutableData> mutableData;
 

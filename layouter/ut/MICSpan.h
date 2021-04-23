@@ -11,11 +11,11 @@
 #if defined(__cplusplus)
 
 template <typename T> inline T MICMaxValue();
-template <> inline NSInteger MICMaxValue() {
-    return NSIntegerMax;
+template <> inline long MICMaxValue() {
+    return LONG_MAX;
 }
-template <> inline NSUInteger MICMaxValue() {
-    return NSUIntegerMax;
+template <> inline u_long MICMaxValue() {
+    return ULONG_MAX;
 }
 template <> inline CGFloat MICMaxValue() {
     return CGFLOAT_MAX;
@@ -28,10 +28,10 @@ template <> inline uint MICMaxValue() {
 }
 
 template <typename T> inline T MICMinValue();
-template <> inline NSInteger MICMinValue() {
-    return NSIntegerMin;
+template <> inline long MICMinValue() {
+    return LONG_MIN;
 }
-template <> inline NSUInteger MICMinValue() {
+template <> inline u_long MICMinValue() {
     return 0;
 }
 template <> inline CGFloat MICMinValue() {
@@ -244,7 +244,7 @@ public:
 /**
  * NSInteger の min/max 管理
  */
-typedef MICSpan<NSInteger> MICSpanI;
+//typedef MICSpan<NSInteger> MICSpanI;
 
 //class MICSpanI : public MICSpan<NSInteger> {
 //public:
@@ -259,7 +259,7 @@ typedef MICSpan<NSInteger> MICSpanI;
 /**
  * NSUInteger の min/max 管理
  */
-typedef MICSpan<NSUInteger> MICSpanU;
+//typedef MICSpan<NSUInteger> MICSpanU;
 
 //class MICSpanU : public MICSpan<NSUInteger> {
 //public:
@@ -274,7 +274,7 @@ typedef MICSpan<NSUInteger> MICSpanU;
 /**
  * int の min/max 管理
  */
-typedef MICSpan<int> MICSpanInt;
+//typedef MICSpan<int> MICSpanInt;
 
 //class MICSpanInt : public MICSpan<int> {
 //public:
@@ -302,7 +302,7 @@ public:
         location = s.location;
         length = s.length;
     }
-    MICRange(const MICSpanU& s) {
+    MICRange(const MICSpan<NSUInteger>& s) {
         location = s.min();
         length = s.span()+1;
         
@@ -314,14 +314,14 @@ public:
         return *this;
     }
 
-    MICRange& set(const MICSpanU& s) {
+    MICRange& set(const MICSpan<NSUInteger>& s) {
         location = s.min();
         length = s.span()+1;
         return *this;
     }
     
     MICRange& setStartEnd(NSUInteger s, NSUInteger e) {
-        return set(MICSpanU(s,e));
+        return set(MICSpan<NSUInteger>(s,e));
     }
     
     bool equals(const NSRange& r) const {

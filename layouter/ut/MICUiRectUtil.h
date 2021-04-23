@@ -97,18 +97,22 @@ public:
     CGFloat height() const {
         return size.height;
     }
-    void setX(CGFloat x) {
+    MICRect& setX(CGFloat x) {
         origin.x = x;
+        return *this;
     }
-    void setY(CGFloat y) {
+    MICRect& setY(CGFloat y) {
         origin.y = y;
+        return *this;
     }
     
-    void setHeight(CGFloat v) {
+    MICRect& setHeight(CGFloat v) {
         size.height = v;
+        return *this;
     }
-    void setWidth(CGFloat v) {
+    MICRect& setWidth(CGFloat v) {
         size.width = v;
+        return *this;
     }
     
     CGFloat left() const {
