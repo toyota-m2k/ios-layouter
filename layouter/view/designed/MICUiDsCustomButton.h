@@ -40,6 +40,7 @@
 @property (nonatomic) id<MICUiStatefulResourceProtocol> iconResources;              ///< アイコン定義用リソース
 
 @property (nonatomic) MICUiAlign    textHorzAlignment;                              ///< キャプションの横方向アラインメント
+@property (nonatomic) MICUiAlign    iconHorzAlignment;                              ///< アイコンの横方向アラインメント（text==nullの場合にのみ考慮される）default=CENTER
 @property (nonatomic) CGFloat borderWidth;                                          ///< 枠線の幅
 @property (nonatomic) CGFloat fontSize;                                             ///< フォントサイズ
 @property (nonatomic) bool boldFont;                                                ///< true:Bold (default)

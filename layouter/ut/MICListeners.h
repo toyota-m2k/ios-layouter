@@ -1,4 +1,4 @@
-//
+﻿//
 //  MICListeners.h
 //
 //  Created by toyota-m2k on 2019/12/17.
@@ -18,7 +18,7 @@
 - (void) removeAll;
 - (void) trim;
 - (void) fire:(id)param;
-- (void) forEach:(void (^)(MICTargetSelector*))cb;
+//- (void) forEach:(void (^)(MICTargetSelector*))cb;
 - (bool) isEmpty;
 
 @end

@@ -6,6 +6,7 @@
 //
 
 #import "WPLSubject.h"
+#import "MICVar.h"
 
 /**
  * valueプロパティのセッターで、値が変化していなくても、valueChangedを発行する点を除いて、
@@ -28,10 +29,14 @@
 
 - (void)dispose {
     [super dispose];
-    if(nil!=_subscribers) {
-        [_subscribers removeAllObjects];
         _subscribers = nil;
-    }
+    // _subscriber の中身はクリアしないことにする。#15216
+    // subscriberが onEmit の処理の中で dispose を呼ぶと、subscriber (subscribe block)が解放されてしまって BAD_ACCESS が発生する。
+  
+//    if(nil!=_subscribers) {
+//        [_subscribers removeAllObjects];
+//        _subscribers = nil;
+//    }
 }
 
 - (void)setValue:(id)value {
@@ -81,9 +86,12 @@
 }
 
 - (void) onEmit:(id)_ {
-    if(_subscribers!=nil) {
-        for(WPLSubjectActionProc fn in _subscribers) {
-            fn(self.value);
+    // #15216 onEmit中に dispose されても安全にループできるよう、ローカル変数にキャプチャする。
+    let subscribers = _subscribers;
+    if(subscribers!=nil) {
+        id value = self.value;
+        for(WPLSubjectActionProc fn in subscribers) {
+            fn(value);
         }
     }
 }

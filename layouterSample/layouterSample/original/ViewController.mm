@@ -1,13 +1,13 @@
-//
+﻿//
 //  ViewController.m
 //  DTable
 //
-//  Created by 豊田 光樹 on 2014/10/15.
-//  Copyright (c) 2014年 豊田 光樹. All rights reserved.
+//  Created by Mitsuki Toyota on 2014/10/15.
+//  Copyright © 2025 toyota-m2k Corporation. All rights reserved.
 //
 
 #import "ViewController.h"
-#import "MMJUiStackLayout.h"
+#import "MICUiStackLayout.h"
 #import "GridViewController.h"
 #import "StackViewController.h"
 #import "AccordionCellViewController.h"
@@ -17,13 +17,13 @@
 #import "RelativeViewController.h"
 #import "NoteDemoViewController.h"
 #import "TabViewController.h"
-#import "MMJUiRectUtil.h"
-#import "MMJUiStackView.h"
+#import "MICUiRectUtil.h"
+#import "MICUiStackView.h"
 #import "CollectionViewController.h"
 
 @interface ViewController () {
-//    MMJUiStackLayout* _layouter;
-    MMJUiStackView* _stackView;
+//    MICUiStackLayout* _layouter;
+    MICUiStackView* _stackView;
 }
 @end
 
@@ -48,12 +48,12 @@ typedef enum _CMD{
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    _stackView = [[MMJUiStackView alloc] init];
-    MMJUiStackLayout* layouter = _stackView.stackLayout;
+    _stackView = [[MICUiStackView alloc] init];
+    MICUiStackLayout* layouter = _stackView.stackLayout;
     
-//    layouter = [[MMJUiStackLayout alloc] initWithOrientation:MMJUiVertical alignment:MMJUiAlignExCENTER];
-    layouter.orientation = MMJUiVertical;
-    layouter.cellAlignment = MMJUiAlignExCENTER;
+//    layouter = [[MICUiStackLayout alloc] initWithOrientation:MICUiVertical alignment:MICUiAlignExCENTER];
+    layouter.orientation = MICUiVertical;
+    layouter.cellAlignment = MICUiAlignExCENTER;
     layouter.fixedSideSize = self.view.frame.size.width;
     layouter.cellSpacing = 15;
     
@@ -154,7 +154,7 @@ typedef enum _CMD{
     if(m<MARGIN_VERT) {
         m = MARGIN_VERT;
     }
-    _stackView.frame = MMJRect(frame) - MMJEdgeInsets(0,m,0,m);
+    _stackView.frame = MICRect(frame) - MICEdgeInsets(0,m,0,m);
     [_stackView updateLayout:false];
     
     [self.view addSubview:_stackView];
@@ -275,7 +275,7 @@ typedef enum _CMD{
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    MMJSize bounds = self.view.bounds.size;
+    MICSize bounds = self.view.bounds.size;
     CGSize contents = [_stackView.stackLayout getContentRect].size;
     
     if(UIInterfaceOrientationIsLandscape(self.interfaceOrientation) && UIInterfaceOrientationIsPortrait(toInterfaceOrientation)) {
@@ -292,7 +292,7 @@ typedef enum _CMD{
         m = MARGIN_VERT;
     }
     
-    _stackView.frame = self.view.bounds - MMJEdgeInsets(0,m,0,0);
+    _stackView.frame = self.view.bounds - MICEdgeInsets(0,m,0,0);
     _stackView.stackLayout.fixedSideSize = bounds.width;
     [_stackView updateLayout:true];
     

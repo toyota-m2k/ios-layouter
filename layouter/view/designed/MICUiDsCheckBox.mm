@@ -40,8 +40,10 @@
           customColorResource:(id<MICUiStatefulResourceProtocol>)colorResource {
     self = [super initWithFrame:MICRect::zero() iconSize:MICSize(24) pathViewboxSize:MICSize(24) pathRepositiory:repo];
     if(nil!=self) {
-        if(colorResource==nil) {
             let resource = [[MICUiStatefulResource alloc] init];
+        if(colorResource!=nil) {
+            [resource mergeWithDictionary:colorResource.asDictionary overwrite:true];
+        }
             if(radioButton) {
                 // ラジオボタン
                 // 丸いチェックボックス
@@ -54,19 +56,17 @@
                 [resource complementResource:PATH_SQUARE_CHECKED forName:MICUiStatefulSvgPathSELECTED];
             }
             [resource mergeWithDictionary:@{
-                          MICUiStatefulFgColorNORMAL: UIColor.blackColor,
-                          MICUiStatefulFgColorDISABLED: UIColor.grayColor,
-                          MICUiStatefulBgColorNORMAL: UIColor.clearColor,
-                          MICUiStatefulSvgBgColorNORMAL: UIColor.whiteColor,
-                          MICUiStatefulSvgColorNORMAL: UIColor.blackColor,
-                          MICUiStatefulSvgColorSELECTED: MICUiColorRGB(0x0080FF),
-                          MICUiStatefulSvgColorDISABLED:UIColor.grayColor
-                          } overwrite:false];
-            colorResource = resource;
-        }
+                      MICUiStatefulFgColorNORMAL: MICUiDynColor(UIColor.blackColor, UIColor.whiteColor),
+                      MICUiStatefulFgColorDISABLED: UIColor.grayColor,
+                      MICUiStatefulBgColorNORMAL: UIColor.clearColor,
+                      MICUiStatefulSvgBgColorNORMAL: MICUiDynColor(UIColor.whiteColor,UIColor.blackColor),
+                      MICUiStatefulSvgColorNORMAL: MICUiDynColor(UIColor.blackColor,UIColor.whiteColor),
+                      MICUiStatefulSvgColorSELECTED: MICUiDynColorRGB(0x0080FF, 0x80FFFF),
+                      MICUiStatefulSvgColorDISABLED:UIColor.grayColor
+                      } overwrite:false];
         _radioButton = radioButton;
         self.text = label;
-        self.colorResources = colorResource;
+        self.colorResources = resource;
         self.textHorzAlignment = MICUiAlignLEFT;
     }
     return self;

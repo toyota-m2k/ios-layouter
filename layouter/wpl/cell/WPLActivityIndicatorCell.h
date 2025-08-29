@@ -1,4 +1,4 @@
-//
+﻿//
 //  WPLActivityIndicatorCell.h
 //
 //  Created by toyota-m2k on 2020/04/16.

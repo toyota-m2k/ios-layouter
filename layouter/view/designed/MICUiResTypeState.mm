@@ -1,4 +1,4 @@
-//
+﻿//
 //  MICUiResTypeState.m
 //  Anytime
 //

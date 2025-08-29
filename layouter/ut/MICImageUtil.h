@@ -12,6 +12,20 @@
 @interface MICImageUtil : NSObject
 
 /**
+ * UIGraphicsImageRendererのラッパー
+ * formatに、opaque, scale を指定する（それら以外はデフォルト値のまま）
+ */
++ (UIImage*) withImageRendererContext:(CGSize)size opaque:(bool)opaque scale:(CGFloat)scale action: (void (^)(CGContextRef))action;
+
+/**
+ * UIGraphicsImageRendererのラッパー
+ * 仕様的に怪しい format 引数を指定しないUIGraphicsImageRendererを使わないようにしている。
+ * [MICImageUtil withImageRendererContext:size opaque:false scale:0 action:action] と等価。
+ * sale=0 の場合は、UIScreen.mainScreen.scale が使用される。
+ */
++ (UIImage*) withImageRendererContext:(CGSize)size action: (void (^)(CGContextRef))action;
+
+/**
  * 画像のサイズを変更する
  */
 + (UIImage*) image:(UIImage*)originalImage resizeTo:(CGSize)size;

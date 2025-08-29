@@ -901,25 +901,57 @@ public:
 
 /**
  * UIGraphicsBeginImageContext() または、UIGraphicsBeginImageContextWithOptions()で確保されるコンテキスト
+ * UIGraphicsBeginImageContextWithOptionsが deprecated になったので使用禁止
+ * 代わりに、micWithImageRendererContext を使う。
  */
-class MICCGImageContext : public MICCGContext {
-public:
-    MICCGImageContext(const CGSize& size) : MICCGContext(false) {
-        UIGraphicsBeginImageContextWithOptions(size, NO, [UIScreen mainScreen].scale);
-        _res = UIGraphicsGetCurrentContext();
+//class MICCGImageContext : public MICCGContext {
+//public:
+//    MICCGImageContext(const CGSize& size) : MICCGContext(false) {
+//        UIGraphicsBeginImageContextWithOptions(size, NO, [UIScreen mainScreen].scale);
+//        _res = UIGraphicsGetCurrentContext();
+//    }
+//    MICCGImageContext(const CGSize& size, BOOL opaque, CGFloat scale) : MICCGContext(false) {
+//        UIGraphicsBeginImageContextWithOptions(size, opaque, scale);
+//        _res = UIGraphicsGetCurrentContext();
+//    }
+//    ~MICCGImageContext() {
+//        UIGraphicsEndImageContext();
+//    }
+//    
+//    UIImage* getCurrentImage() {
+//        return UIGraphicsGetImageFromCurrentImageContext();
+//    }
+//};
+
+#pragma mark - MICCGContext with UIGraphicImageRendererContext
+
+inline UIImage* micWithImageRendererContext(const CGSize& size, bool opaque, CGFloat scale, void (^callback)(MICCGContext&)) {
+    UIGraphicsImageRendererFormat* format = [[UIGraphicsImageRendererFormat alloc] init];
+    format.opaque = opaque;
+    // デフォルトで format.scale には、UIScreen.mainScreen.scale が入っている模様
+    // UIGraphicsBeginImageContextの場合は、scale = 0 を渡すと、mainScreen.scale が使われていたので、
+    // ここでもゼロは mainScreen.scaleを意味するものとする。
+    // format.scale にゼロを入れても、期待通りに動作するように見えるが、安全のため、明示的にゼロ以外の値が指定された場合のみ、scaleを変更することにする。
+    if(scale!=0) {
+        format.scale = scale;
     }
-    MICCGImageContext(const CGSize& size, BOOL opaque, CGFloat scale) : MICCGContext(false) {
-        UIGraphicsBeginImageContextWithOptions(size, opaque, scale);
-        _res = UIGraphicsGetCurrentContext();
+
+    UIGraphicsImageRenderer* renderer = [[UIGraphicsImageRenderer alloc] initWithSize:size format:format];
+    return [renderer imageWithActions:^(UIGraphicsImageRendererContext * _Nonnull rendererContext) {
+        MICCGContext ctx(rendererContext.CGContext, false);
+        callback(ctx);
+    }];
     }
-    ~MICCGImageContext() {
-        UIGraphicsEndImageContext();
+
+inline UIImage* micWithImageRendererContext(const CGSize& size, bool opaque, void (^callback)(MICCGContext&)) {
+    return micWithImageRendererContext(size, opaque, 0, callback);
     }
     
-    UIImage* getCurrentImage() {
-        return UIGraphicsGetImageFromCurrentImageContext();
+inline UIImage* micWithImageRendererContext(const CGSize& size, void (^callback)(MICCGContext&)) {
+    return micWithImageRendererContext(size, false, 0, callback);
     }
-};
+
+
 
 #pragma mark - MICCGBitmapContext
 

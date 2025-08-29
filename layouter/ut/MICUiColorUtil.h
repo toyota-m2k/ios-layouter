@@ -4,6 +4,7 @@
 //  Created by @toyota-m2k on 2015/03/17.
 //  Copyright (c) 2015年 @toyota-m2k. All rights reserved.
 //
+#import <Foundation/Foundation.h>
 
 /**
  * 0xABCDEF のような　UINT型RGB値から　UIColorを生成
@@ -24,3 +25,11 @@
  * 256階調A,R,G,B値からUIColorを生成
  */
 #define MICUiColorARGB256(a,r,g,b) [UIColor colorWithRed:((CGFloat)(r))/255.0 green:((CGFloat)(g))/255.0 blue:((CGFloat)(b))/255.0 alpha:((CGFloat)(a))/255.0]
+
+extern UIColor* MICUiDynColor(UIColor* light, UIColor* dark);
+
+#define MICUiDynColorRGB(rgbValueLight,rgbValueDark) MICUiDynColor(MICUiColorRGB(rgbValueLight), MICUiColorRGB(rgbValueDark))
+
+#define MICUiDynColorARGB(argbValueLight,argbValueDark) MICUiDynColor(MICUiColorARGB(argbValueLight), MICUiColorARGB(argbValueDark))
+
+

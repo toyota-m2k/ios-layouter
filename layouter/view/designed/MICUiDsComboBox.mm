@@ -107,10 +107,10 @@
             MICUiStatefulSvgPathNORMAL:PATH_CHEVRON,
             MICUiStatefulSvgColorNORMAL:UIColor.lightGrayColor,
             MICUiStatefulSvgColorDISABLED:UIColor.clearColor,
-            MICUiStatefulFgColorNORMAL: UIColor.blackColor,
+            MICUiStatefulFgColorNORMAL: MICUiDynColor(UIColor.blackColor, UIColor.whiteColor),
             MICUiStatefulFgColorDISABLED: UIColor.grayColor,
-            MICUiStatefulBgColorNORMAL: UIColor.whiteColor,
-            MICUiStatefulBorderColorNORMAL:UIColor.grayColor,
+            MICUiStatefulBgColorNORMAL: MICUiDynColor(UIColor.whiteColor, MICUiColorRGB(0x303030)),
+            MICUiStatefulBorderColorNORMAL:MICUiDynColor(UIColor.grayColor,UIColor.whiteColor),
         }];
         [self setTarget:self action:@selector(onTapped:)];
         _droppingDown = false;
@@ -242,11 +242,11 @@
     let resources = [[MICUiStatefulResource alloc] initWithDictionary:@{
         MICUiStatefulSvgPathNORMAL:PATH_CHECKED,
         MICUiStatefulSvgColorNORMAL:UIColor.clearColor,
-        MICUiStatefulSvgColorSELECTED:MICUiColorRGB(0x5050FF),
-        MICUiStatefulFgColorNORMAL: UIColor.blackColor,
+        MICUiStatefulSvgColorSELECTED:MICUiDynColorRGB(0x5050FF, 0xa0FFFF),
+        MICUiStatefulFgColorNORMAL: MICUiDynColor(UIColor.blackColor, UIColor.whiteColor),
         MICUiStatefulFgColorDISABLED: UIColor.grayColor,
-        MICUiStatefulBgColorNORMAL: UIColor.whiteColor,
-        MICUiStatefulBgColorSELECTED: MICUiColorRGB(0xE0FFFF),
+        MICUiStatefulBgColorNORMAL: MICUiDynColor(UIColor.whiteColor, UIColor.blackColor),
+        MICUiStatefulBgColorSELECTED: MICUiDynColorRGB(0xE0FFFF, 0x004040),
         MICUiStatefulBgColorACTIVATED_SELECTED: MICUiColorRGB(0xA0FFFF),
     }];
     

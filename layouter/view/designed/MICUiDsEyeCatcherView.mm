@@ -29,11 +29,11 @@
         self.textHorzAlignment = MICUiAlignLEFT;
         self.iconTextMargin += 4;
         self.colorResources = [[MICUiStatefulResource alloc] initWithDictionary:@{
-            MICUiStatefulBgColorNORMAL:UIColor.whiteColor,
-            MICUiStatefulFgColorNORMAL:UIColor.blackColor,
-            MICUiStatefulBorderColorNORMAL:UIColor.grayColor,
+            MICUiStatefulBgColorNORMAL:MICUiDynColor(UIColor.whiteColor, MICUiColorRGB(0x303030)),
+            MICUiStatefulFgColorNORMAL:MICUiDynColor(UIColor.blackColor,UIColor.whiteColor),
+            MICUiStatefulBorderColorNORMAL:MICUiDynColor(UIColor.grayColor, UIColor.whiteColor),
             MICUiStatefulSvgPathNORMAL:PATH_BALLOON,
-            MICUiStatefulSvgColorNORMAL:MICUiColorRGB(0x0050FF),
+            MICUiStatefulSvgColorNORMAL:MICUiDynColorRGB(0x0050FF, 0x80FFFF),
         }];
     }
     return self;

@@ -6,6 +6,7 @@
 //
 
 #import "MICListeners.h"
+#import "MICVar.h"
 
 @implementation MICListeners {
     NSMutableArray<MICTargetSelector*>* _listeners;
@@ -74,22 +75,24 @@
 
 - (void)fire:(id)param {
     if(nil!=_listeners) {
-        _firing = true;
-        for(MICTargetSelector* ts in _listeners) {
+        let me = self;                  // TargetSelector#perform中に self が破棄されるかもしれないのでローカル変数にリテインしておく。
+        let listeners = _listeners;
+        me->_firing = true;
+        for(MICTargetSelector* ts in listeners) {
             [ts performWithParam:&param];
         }
-        _firing = false;
-        [self trim];
+        me->_firing = false;
+        [me trim];
     }
 }
 
-- (void) forEach:(void (^)(MICTargetSelector*))cb {
-    if(nil!=_listeners) {
-        for(MICTargetSelector* ts in _listeners) {
-            cb(ts);
-        }
-    }
-}
+//- (void) forEach:(void (^)(MICTargetSelector*))cb {
+//    if(nil!=_listeners) {
+//        for(MICTargetSelector* ts in _listeners) {
+//            cb(ts);
+//        }
+//    }
+//}
 
 - (bool) isEmpty {
     return nil==_listeners || _listeners.count==0;

@@ -34,6 +34,7 @@
         _contentMargin = MIC_BTN_CONTENT_MARGIN;
         _iconTextMargin = MIC_BTN_ICON_TEXT_MARGIN;
         _textHorzAlignment = MICUiAlignCENTER;
+        _iconHorzAlignment = MICUiAlignCENTER;
         _multiLineText = false;
         _lineSpacing = 0.3;
         _lines = nil;
@@ -294,7 +295,7 @@
         if(rcIcon.height()>rcBounds.height()) {
             // アイコンが大きい→要縮小
             CGFloat r = rcContent.height() / rcIcon.height();
-            rcIcon.setY(rcBounds.y());
+            rcIcon.setY(rcBounds.y()+_contentMargin.top);
             rcIcon.size.width *= r;
             rcIcon.size.height *= r;
         } else {
@@ -303,7 +304,17 @@
         }
         if(nil==_text) {
             // only icon --> アイコンを横方向にセンタリング
+            switch(_iconHorzAlignment) {
+                case MICUiAlignTOP:
+                    rcIcon.moveLeft(rcBounds.x()+_contentMargin.left);
+                    break;
+                case MICUiAlignBOTTOM:
+                    rcIcon.moveRight(rcBounds.left()-_contentMargin.right);
+                    break;
+                case MICUiAlignCENTER:
+                default:
             rcIcon.moveToHCenterOfOuterRect(rcContent);
+            }
         } else {
             // text & icon
             MICRect rcText = rcContent;

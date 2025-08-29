@@ -53,6 +53,13 @@ public:
         return *this;
     }
     
+    bool isEmpty() {
+        return _str==nil || _str.length==0;
+    }
+    bool isNotEmpty() {
+        return _str!=nil && _str.length>0;
+    }
+    
     operator NSString* () {
         return _str;
     }
@@ -121,9 +128,20 @@ public:
 inline NSString* MICTrimString(NSString* str) {
     return [str stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
+
+inline bool MICIsStringEmpty(NSString* _Nullable  str) {
+    return str==nil || str.length==0;
+}
+
+inline bool MICIsStringNotEmpty(NSString* _Nullable str) {
+    return str!=nil && str.length>0;
+}
+
 #else
 
 #define MICTrimString(str)  [(str) stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+#define MICIsStringEmpty(str) ((str)==nil || (str).length==0)
+#define MICIsStringNotEmpty(str) ((str)!=nil && (str).length>0)
 
 #endif
 

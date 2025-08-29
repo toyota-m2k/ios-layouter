@@ -16,6 +16,7 @@
 //
 
 #import "MICTargetSelector.h"
+#import "MICVar.h"
 
 @implementation MICTargetSelector {
     NSInvocation* _invocation;
@@ -176,19 +177,21 @@
  * 呼び出しを実行
  */
 - (void) endCall {
-    if(nil!=_invocation) {
-        [_invocation invoke];
+    let invocation = _invocation;       // invoke の中で dispose される可能性があるので、ローカル変数にキャプチャして、メンバ変数は前もってクリアしておく #12431
         _invocation = nil;
+    if(nil!=invocation) {
+        [invocation invoke];
     }
 }
 
 - (void) endCallGetResult:(void*)result {
-    if(nil!=_invocation) {
-        [_invocation invoke];
+    let invocation = _invocation;       // invoke の中で dispose される可能性があるので、ローカル変数にキャプチャして、メンバ変数は前もってクリアしておく
+    _invocation = nil;
+    if(nil!=invocation) {
+        [invocation invoke];
         if(nil!=result){
-            [_invocation getReturnValue:result];
+            [invocation getReturnValue:result];
         }
-        _invocation = nil;
     }
 }
 
